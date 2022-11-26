@@ -12,6 +12,7 @@ import it.frafol.cleanss.velocity.commands.ControlCommand;
 import it.frafol.cleanss.velocity.commands.FinishCommand;
 import it.frafol.cleanss.velocity.commands.ReloadCommand;
 import it.frafol.cleanss.velocity.enums.VelocityConfig;
+import it.frafol.cleanss.velocity.enums.VelocityMessages;
 import it.frafol.cleanss.velocity.listeners.ChatListener;
 import it.frafol.cleanss.velocity.listeners.CommandListener;
 import it.frafol.cleanss.velocity.listeners.KickListener;
@@ -28,7 +29,7 @@ import java.nio.file.Path;
 @Plugin(
 		id = "cleanscreenshare",
 		name = "CleanScreenShare",
-		version = "1.0",
+		version = "1.0-alpha",
 		description = "Make control hacks on your players.",
 		authors = { "frafol" })
 
@@ -94,7 +95,9 @@ public class CleanSS {
 				(server.getCommandManager().metaBuilder("ssreload").aliases("cleanssreload", "controlreload")
 						.build(), new ReloadCommand(this));
 		server.getEventManager().register(this, new CommandListener());
-		server.getEventManager().register(this, new ChatListener());
+		if (!VelocityMessages.CONTROL_CHAT.get(Boolean.class)) {
+			server.getEventManager().register(this, new ChatListener());
+		}
 		server.getEventManager().register(this, new KickListener(this));
 
 		if (VelocityConfig.STATS.get(Boolean.class)) {

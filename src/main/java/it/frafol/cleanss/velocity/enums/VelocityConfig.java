@@ -30,8 +30,4 @@ public enum VelocityConfig {
         return clazz.cast(instance.getConfigTextFile().getConfig().get(path));
     }
 
-    public @NotNull String color() {
-        return get(String.class).replace("&", "§");
-    }
-
 }

@@ -17,10 +17,6 @@ public class ChatListener {
     @Subscribe
     public void onChat(@NotNull PlayerChatEvent event) {
 
-        if (!VelocityMessages.CONTROL_CHAT.get(Boolean.class)) {
-            return;
-        }
-
         final Player player = event.getPlayer();
 
         if (!player.getCurrentServer().isPresent()) {
