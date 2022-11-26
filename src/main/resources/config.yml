@@ -1,0 +1,31 @@
+#   ___  __    ____    __    _  _   ___  ___
+#  / __)(  )  ( ___)  /__\  ( \( ) / __)/ __)
+# ( (__  )(__  )__)  /(__)\  )  (  \__ \\__ \
+#  \___)(____)(____)(__)(__)(_)\_) (___/(___/
+# Configuration file. Made with ❤ by frafol.
+# For support: discord.io/futuredevelopment
+
+
+settings:
+
+  # Name of the Hack Control server and the fallback server.
+  server_name: "Control"
+  fallback_server_name: "Hub"
+
+  command_on_disconnect:
+
+    # There can be many problems with the use of this function, so please deactivate it
+    enable: false
+    command: "tempban %player% Slog under hack control -s"
+
+
+  update_check: true
+  stats: true
+
+permissions:
+
+  # You can personalize permissions.
+  control: screenshare.control
+  bypass: screenshare.bypass
+
+# Enjoy.

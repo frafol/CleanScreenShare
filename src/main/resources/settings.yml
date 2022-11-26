@@ -1,0 +1,23 @@
+options:
+
+  staff_permission: "screenshare.control"
+
+  invincible: true
+
+  teleport_to_spawn_on_join: true
+  change_gamemode_on_join: true
+
+  prevent:
+    void: true
+    hunger: true
+    commands: true
+
+chat:
+
+  enable: true
+
+  format: "%state% %player% &7» &f%message%"
+
+  states:
+    suspect: "&b&lSUSPECT &b"
+    staffer: "&c&lSTAFFER &c"

@@ -1,0 +1,80 @@
+#   ___  __    ____    __    _  _   ___  ___
+#  / __)(  )  ( ___)  /__\  ( \( ) / __)/ __)
+# ( (__  )(__  )__)  /(__)\  )  (  \__ \\__ \
+#  \___)(____)(____)(__)(__)(_)\_) (___/(___/
+# Messages file. Made with ❤ by frafol.
+# For support: discord.io/futuredevelopment
+
+messages:
+
+  prefix: "&d&lSS &7»"
+
+  usage: "%prefix% &7Use: &d/ss [player] &7- &d/ssfinish [player]"
+
+  only_players: "%prefix% &7This command is only for &dplayers&7."
+
+  no_permission: "%prefix% &7You do not have the &dpermission &7to do this."
+  not_online: "%prefix% &7The user &d%player% &7is not &donline&7."
+
+  yourself: "%prefix% &7You can't control &dyourself&7."
+  player_bypass: "%prefix% &7You can't control &dthis player&7."
+  not_under_control: "%prefix% &7This player is not under an &dhack control&7."
+
+  reloaded: "%prefix% &7Configuration reloaded &dsuccessfully&7."
+
+  server_offline: "%prefix% &7The server where you have to connect is not &donline&7."
+
+  control:
+    suspicious_main: "%prefix% &7You're now under &dhack control&7, please read the chat."
+    suspicious_finish: "%prefix% &7Hack control &dfinished&7, thanks for your patience."
+    suspicious_disconnect: "%prefix% &7Hack control &dfinished&7, %player% has just disconnected."
+
+  staff_message:
+
+    # Administration message sent to the staffer when sending in hack control server.
+    format:
+      - "&8&m------&5&m------&d&m------&5&m------&8&m------"
+      - ""
+      - "&d%cleanname% &7(Click to view)"
+      - "&d%hackername% &7(Click to view)"
+      - "&d%admitname% &7(Click to view)"
+      - ""
+      - "&8&m------&5&m------&d&m------&5&m------&8&m------"
+
+    # Clickable messages to put in the Administration message.
+    clean:
+      name: "[Clean]"
+      command: "/controlfinish %player%"
+    cheater:
+      name: "[Cheater]"
+      command: "/ban %player%"
+    admit:
+      name: "[Admit]"
+      command: "/ban %player%"
+
+  title:
+
+    # Here you can set a title that will be sent to the user when it is put into hack control.
+    enable: true
+
+    delay: 2 # In seconds
+
+    title: "&c&lHACK CONTROL"
+    subtitle: "&7Please read the chat"
+
+    fade_in: 1
+    stay: 3
+    fade_out: 1
+
+  chat:
+
+    # Here you can set a chat format that will be used during the hack control.
+    enable: true
+
+    format: "%state%%player% &7» &f%message%"
+
+    states:
+      suspect: "&b&lSUSPECT &b"
+      staffer: "&c&lSTAFFER &c"
+
+# Enjoy.

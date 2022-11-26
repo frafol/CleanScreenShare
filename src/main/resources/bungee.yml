@@ -1,0 +1,4 @@
+name: CleanSS
+version: ${project.version}
+main: it.frafol.cleanss.bungee.CleanSS
+author: frafol
