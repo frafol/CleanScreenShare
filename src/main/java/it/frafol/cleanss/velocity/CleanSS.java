@@ -85,19 +85,25 @@ public class CleanSS {
 		messagesTextFile = new TextFile(path, "messages.yml");
 
 		logger.info("§7Loading §dplugin§7...");
+
 		getInstance().getServer().getCommandManager().register
 				(server.getCommandManager().metaBuilder("ss").aliases("cleanss", "control")
 						.build(), new ControlCommand(this));
+
 		getInstance().getServer().getCommandManager().register
 				(server.getCommandManager().metaBuilder("ssfinish").aliases("cleanssfinish", "controlfinish")
 						.build(), new FinishCommand(this));
+
 		getInstance().getServer().getCommandManager().register
 				(server.getCommandManager().metaBuilder("ssreload").aliases("cleanssreload", "controlreload")
 						.build(), new ReloadCommand(this));
+
 		server.getEventManager().register(this, new CommandListener());
-		if (!VelocityMessages.CONTROL_CHAT.get(Boolean.class)) {
+
+		if (VelocityMessages.CONTROL_CHAT.get(Boolean.class)) {
 			server.getEventManager().register(this, new ChatListener());
 		}
+
 		server.getEventManager().register(this, new KickListener(this));
 
 		if (VelocityConfig.STATS.get(Boolean.class)) {
