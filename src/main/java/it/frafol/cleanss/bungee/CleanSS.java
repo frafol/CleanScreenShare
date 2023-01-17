@@ -11,6 +11,8 @@ import it.frafol.cleanss.bungee.listeners.KickListener;
 import it.frafol.cleanss.bungee.objects.TextFile;
 import net.byteflux.libby.BungeeLibraryManager;
 import net.byteflux.libby.Library;
+import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import org.simpleyaml.configuration.file.YamlFile;
@@ -103,6 +105,17 @@ public class CleanSS extends Plugin {
 		}
 	}
 
+	public void UpdateChecker(ProxiedPlayer player) {
+
+		if (BungeeConfig.UPDATE_CHECK.get(Boolean.class)) {
+			new UpdateCheck(this).getVersion(version -> {
+				if (!this.getDescription().getVersion().equals(version)) {
+					player.sendMessage(TextComponent.fromLegacyText("§e[CleanScreenShare] There is a new update available, download it on SpigotMC!"));
+				}
+			});
+		}
+	}
+
 	private void loadLibraries() {
 
 		BungeeLibraryManager bungeeLibraryManager = new BungeeLibraryManager(this);
@@ -144,5 +157,4 @@ public class CleanSS extends Plugin {
 		}
 		return null;
 	}
-
 }

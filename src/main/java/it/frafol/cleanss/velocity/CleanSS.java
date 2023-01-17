@@ -7,6 +7,7 @@ import com.velocitypowered.api.event.proxy.ProxyShutdownEvent;
 import com.velocitypowered.api.plugin.Plugin;
 import com.velocitypowered.api.plugin.PluginContainer;
 import com.velocitypowered.api.plugin.annotation.DataDirectory;
+import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
 import it.frafol.cleanss.velocity.commands.ControlCommand;
 import it.frafol.cleanss.velocity.commands.FinishCommand;
@@ -20,6 +21,7 @@ import it.frafol.cleanss.velocity.objects.TextFile;
 import lombok.Getter;
 import net.byteflux.libby.Library;
 import net.byteflux.libby.VelocityLibraryManager;
+import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 
@@ -100,7 +102,7 @@ public class CleanSS {
 		logger.info("§7Plugin successfully §ddisabled§7!");
 	}
 
-	public void loadLibraries() {
+	private void loadLibraries() {
 		VelocityLibraryManager<CleanSS> velocityLibraryManager = new VelocityLibraryManager<>(getLogger(), path, getServer().getPluginManager(), this);
 
 		Library yaml = Library.builder()
@@ -113,12 +115,12 @@ public class CleanSS {
 		velocityLibraryManager.loadLibrary(yaml);
 	}
 
-	public void loadFiles() {
+	private void loadFiles() {
 		configTextFile = new TextFile(path, "config.yml");
 		messagesTextFile = new TextFile(path, "messages.yml");
 	}
 
-	public void loadCommands() {
+	private void loadCommands() {
 		getInstance().getServer().getCommandManager().register
 				(server.getCommandManager().metaBuilder("ss").aliases("cleanss", "control")
 						.build(), new ControlCommand(this));
@@ -132,7 +134,7 @@ public class CleanSS {
 						.build(), new ReloadCommand(this));
 	}
 
-	public void loadListeners() {
+	private void loadListeners() {
 		server.getEventManager().register(this, new CommandListener());
 
 		if (VelocityMessages.CONTROL_CHAT.get(Boolean.class)) {
@@ -142,7 +144,7 @@ public class CleanSS {
 		server.getEventManager().register(this, new KickListener(this));
 	}
 
-	public void UpdateChecker() {
+	private void UpdateChecker() {
 		if (VelocityConfig.UPDATE_CHECK.get(Boolean.class)) {
 			new UpdateCheck(this).getVersion(version -> {
 				if (container.getDescription().getVersion().isPresent()) {
@@ -151,7 +153,18 @@ public class CleanSS {
 					}
 				}
 			});
+		}
+	}
 
+	public void UpdateChecker(Player player) {
+		if (VelocityConfig.UPDATE_CHECK.get(Boolean.class)) {
+			new UpdateCheck(this).getVersion(version -> {
+				if (container.getDescription().getVersion().isPresent()) {
+					if (!container.getDescription().getVersion().get().equals(version)) {
+						player.sendMessage(Component.text("§e[CleanScreenShare] There is a new update available, download it on SpigotMC!"));
+					}
+				}
+			});
 		}
 	}
 
@@ -172,5 +185,4 @@ public class CleanSS {
 		}
 		return null;
 	}
-
 }

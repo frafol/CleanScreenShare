@@ -27,6 +27,11 @@ public class KickListener implements Listener {
         final ProxiedPlayer player = event.getPlayer();
 
         if (event.getPlayer().getServer() == null) {
+
+            if (player.hasPermission(BungeeConfig.RELOAD_PERMISSION.get(String.class))) {
+                instance.UpdateChecker(player);
+            }
+
             return;
         }
 
