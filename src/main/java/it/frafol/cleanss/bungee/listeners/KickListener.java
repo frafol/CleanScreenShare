@@ -8,12 +8,10 @@ import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.PlayerDisconnectEvent;
-import net.md_5.bungee.api.event.ServerSwitchEvent;
+import net.md_5.bungee.api.event.ServerConnectEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.Map;
 
 public class KickListener implements Listener {
 
@@ -24,55 +22,51 @@ public class KickListener implements Listener {
     }
 
     @EventHandler
-    public void onPlayerChange(@NotNull ServerSwitchEvent event) {
+    public void onPlayerChange(@NotNull ServerConnectEvent event) {
 
-        if (event.getFrom() == null) {
+        final ProxiedPlayer player = event.getPlayer();
+
+        if (event.getPlayer().getServer() == null) {
             return;
         }
 
-        if (!(event.getPlayer().getServer().getInfo().getName().equals(BungeeConfig.CONTROL.get(String.class))) &&
-                PlayerCache.getSuspicious().contains(event.getPlayer().getUniqueId())) {
-
-            event.getPlayer().connect(event.getFrom());
-
+        if (event.getPlayer().getServer().getInfo().getName().equals(BungeeConfig.CONTROL.get(String.class)) &&
+                PlayerCache.getCouples().containsValue(player)
+                || PlayerCache.getCouples().containsKey(player)
+                || PlayerCache.getSuspicious().contains(player.getUniqueId())) {
+            event.setCancelled(true);
         }
 
-        if (event.getFrom().getName().equals(BungeeConfig.CONTROL.get(String.class)) &&
-                PlayerCache.getCouples().get(event.getPlayer()) != null) {
-
-            event.getPlayer().connect(event.getFrom());
-
-        }
     }
 
     @EventHandler
     public void onPlayerDisconnect(@NotNull PlayerDisconnectEvent event) {
 
         final ServerInfo proxyServer = instance.getProxy().getServers().get(BungeeConfig.CONTROL_FALLBACK.get(String.class));
+        final ProxiedPlayer player = event.getPlayer();
 
-        for (Map.Entry<ProxiedPlayer, ProxiedPlayer> entry : PlayerCache.getCouples().entrySet()) {
+            if (PlayerCache.getAdministrator().contains(player.getUniqueId())) {
 
-            if (event.getPlayer() == entry.getKey()) {
+                PlayerCache.getSuspicious().remove(instance.getValue(PlayerCache.getCouples(), player).getUniqueId());
+                PlayerCache.getCouples().get(player).connect(proxyServer);
 
-                PlayerCache.getSuspicious().remove(entry.getValue().getUniqueId());
-
-                entry.getValue().connect(proxyServer);
-
-                entry.getValue().sendMessage(TextComponent.fromLegacyText(BungeeMessages.FINISHSUS.color().replace("%prefix%", BungeeMessages.PREFIX.color())));
+                PlayerCache.getCouples().get(player).sendMessage(TextComponent.fromLegacyText(BungeeMessages.FINISHSUS.color()
+                        .replace("%prefix%", BungeeMessages.PREFIX.color())));
 
                 return;
+
             }
 
-            if (event.getPlayer() == entry.getValue()) {
-                PlayerCache.getSuspicious().remove(entry.getValue().getUniqueId());
+            if (PlayerCache.getSuspicious().contains(player.getUniqueId())) {
 
-                entry.getKey().connect(proxyServer);
+                PlayerCache.getSuspicious().remove(player.getUniqueId());
 
-                entry.getKey().sendMessage(TextComponent.fromLegacyText(BungeeMessages.LEAVESUS.color()
+                instance.getKey(PlayerCache.getCouples(), player).connect(proxyServer);
+
+                instance.getKey(PlayerCache.getCouples(), player).sendMessage(TextComponent.fromLegacyText(BungeeMessages.LEAVESUS.color()
                         .replace("%prefix%", BungeeMessages.PREFIX.color())
-                        .replace("%player%", entry.getValue().getName())));
+                        .replace("%player%", player.getName())));
 
-            }
         }
     }
 }

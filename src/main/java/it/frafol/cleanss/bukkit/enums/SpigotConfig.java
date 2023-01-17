@@ -11,11 +11,9 @@ public enum SpigotConfig {
     BLOCK_COMMANDS("options.prevent.commands"),
     HUNGER("options.prevent.hunger"),
     VOID("options.prevent.void"),
+    MOVE("options.prevent.move"),
     SPAWN("options.teleport_to_spawn_on_join"),
-    GAMEMODE("options.change_gamemode_on_join"),
-
-    SUSPECT("chat.states.suspect"),
-    STAFFER("chat.states.staffer"),
+    GAMEMODE("options.change_gamemode_to_adventure_on_join"),
 
     INVINCIBLE("options.invincible");
 

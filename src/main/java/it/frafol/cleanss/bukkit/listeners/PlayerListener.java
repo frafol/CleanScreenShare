@@ -11,11 +11,12 @@ import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.jetbrains.annotations.NotNull;
 
 public class PlayerListener implements Listener {
 
-    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerChat(AsyncPlayerChatEvent event) {
 
         if (!SpigotConfig.CHAT_ENABLE.get(Boolean.class)) {
@@ -23,7 +24,7 @@ public class PlayerListener implements Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerCommand(@NotNull PlayerCommandPreprocessEvent event) {
 
         final Player player = event.getPlayer();
@@ -39,7 +40,7 @@ public class PlayerListener implements Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerDamage(@NotNull EntityDamageEvent event) {
 
         if (!(event.getEntity() instanceof Player)) {
@@ -59,7 +60,7 @@ public class PlayerListener implements Listener {
 
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onHunger(@NotNull FoodLevelChangeEvent event) {
 
         if (!(event.getEntity() instanceof Player)) {
@@ -85,6 +86,25 @@ public class PlayerListener implements Listener {
 
         if (SpigotConfig.GAMEMODE.get(Boolean.class)) {
             player.setGameMode(GameMode.ADVENTURE);
+        }
+
+        if (SpigotConfig.HUNGER.get(Boolean.class)) {
+            player.setFoodLevel(20);
+        }
+
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void onPlayerMove(@NotNull PlayerMoveEvent event) {
+
+        final Player player = event.getPlayer();
+
+        if (player.hasPermission(SpigotConfig.STAFF_PERMISSION.get(String.class))) {
+            return;
+        }
+
+        if (SpigotConfig.MOVE.get(Boolean.class)) {
+            event.setCancelled(true);
         }
     }
 }

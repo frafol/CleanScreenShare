@@ -1,5 +1,6 @@
 package it.frafol.cleanss.bungee.listeners;
 
+import it.frafol.cleanss.bungee.CleanSS;
 import it.frafol.cleanss.bungee.enums.BungeeConfig;
 import it.frafol.cleanss.bungee.enums.BungeeMessages;
 import it.frafol.cleanss.bungee.objects.PlayerCache;
@@ -10,9 +11,13 @@ import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Map;
-
 public class ChatListener implements Listener {
+
+    public final CleanSS instance;
+
+    public ChatListener(CleanSS instance) {
+        this.instance = instance;
+    }
 
     @EventHandler
     public void onChat(@NotNull ChatEvent event) {
@@ -29,42 +34,39 @@ public class ChatListener implements Listener {
 
         if (player.getServer().getInfo().getName().equals(BungeeConfig.CONTROL.get(String.class))) {
 
-            for (Map.Entry<ProxiedPlayer, ProxiedPlayer> entry : PlayerCache.getCouples().entrySet()) {
-                if (PlayerCache.getCouples().containsKey(player)) {
+            if (PlayerCache.getCouples().containsKey(player)) {
 
-                    entry.getKey().sendMessage(TextComponent.fromLegacyText(BungeeMessages.CONTROL_CHAT_FORMAT.color()
-                            .replace("%prefix%", BungeeMessages.PREFIX.color())
-                            .replace("%player%", player.getName())
-                            .replace("%message%", event.getMessage())
-                            .replace("%state%", BungeeMessages.CONTROL_CHAT_STAFF.color())));
+                player.sendMessage(TextComponent.fromLegacyText(BungeeMessages.CONTROL_CHAT_FORMAT.color()
+                        .replace("%prefix%", BungeeMessages.PREFIX.color())
+                        .replace("%player%", player.getName())
+                        .replace("%message%", event.getMessage())
+                        .replace("%state%", BungeeMessages.CONTROL_CHAT_STAFF.color())));
 
-                    entry.getValue().sendMessage(TextComponent.fromLegacyText(BungeeMessages.CONTROL_CHAT_FORMAT.color()
-                            .replace("%prefix%", BungeeMessages.PREFIX.color())
-                            .replace("%player%", player.getName())
-                            .replace("%message%", event.getMessage())
-                            .replace("%state%", BungeeMessages.CONTROL_CHAT_STAFF.color())));
+                instance.getValue(PlayerCache.getCouples(), player).sendMessage(TextComponent.fromLegacyText(BungeeMessages.CONTROL_CHAT_FORMAT.color()
+                        .replace("%prefix%", BungeeMessages.PREFIX.color())
+                        .replace("%player%", player.getName())
+                        .replace("%message%", event.getMessage())
+                        .replace("%state%", BungeeMessages.CONTROL_CHAT_STAFF.color())));
 
-                    return;
+                return;
 
-                }
+            }
 
-                if (PlayerCache.getCouples().containsValue(player)) {
+            if (PlayerCache.getCouples().containsValue(player)) {
 
-                    entry.getKey().sendMessage(TextComponent.fromLegacyText(BungeeMessages.CONTROL_CHAT_FORMAT.color()
-                            .replace("%prefix%", BungeeMessages.PREFIX.color())
-                            .replace("%player%", player.getName())
-                            .replace("%message%", event.getMessage())
-                            .replace("%state%", BungeeMessages.CONTROL_CHAT_SUS.color())));
+                player.sendMessage(TextComponent.fromLegacyText(BungeeMessages.CONTROL_CHAT_FORMAT.color()
+                        .replace("%prefix%", BungeeMessages.PREFIX.color())
+                        .replace("%player%", player.getName())
+                        .replace("%message%", event.getMessage())
+                        .replace("%state%", BungeeMessages.CONTROL_CHAT_SUS.color())));
 
-                    entry.getValue().sendMessage(TextComponent.fromLegacyText(BungeeMessages.CONTROL_CHAT_FORMAT.color()
-                            .replace("%prefix%", BungeeMessages.PREFIX.color())
-                            .replace("%player%", player.getName())
-                            .replace("%message%", event.getMessage())
-                            .replace("%state%", BungeeMessages.CONTROL_CHAT_SUS.color())));
+                instance.getKey(PlayerCache.getCouples(), player).sendMessage(TextComponent.fromLegacyText(BungeeMessages.CONTROL_CHAT_FORMAT.color()
+                        .replace("%prefix%", BungeeMessages.PREFIX.color())
+                        .replace("%player%", player.getName())
+                        .replace("%message%", event.getMessage())
+                        .replace("%state%", BungeeMessages.CONTROL_CHAT_SUS.color())));
 
-                    return;
 
-                }
             }
         }
     }

@@ -55,6 +55,13 @@ public class CleanSS extends JavaPlugin {
 
 	}
 
+	public void onDisable() {
+
+		instance = null;
+		getLogger().info("Successfully disabled!");
+
+	}
+
 	public TextFile getConfigTextFile() {
 		return configTextFile;
 	}

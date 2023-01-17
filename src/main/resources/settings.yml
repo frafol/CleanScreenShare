@@ -1,14 +1,20 @@
 options:
 
-  # Bypass command prevent.
+  # Bypass command and move prevention.
   staff_permission: "screenshare.control"
 
+  # Makes players invincible.
   invincible: true
 
+  # Teleports to World Spawn at Join (if it is set).
   teleport_to_spawn_on_join: true
-  change_gamemode_on_join: true
 
+  # Change player's gamemode to Adventure when player's join.
+  change_gamemode_to_adventure_on_join: true
+
+  # Action preventions.
   prevent:
+    move: true
     void: true
     hunger: true
     chat: true

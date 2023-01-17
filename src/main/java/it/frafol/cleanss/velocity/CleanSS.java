@@ -16,14 +16,15 @@ import it.frafol.cleanss.velocity.enums.VelocityMessages;
 import it.frafol.cleanss.velocity.listeners.ChatListener;
 import it.frafol.cleanss.velocity.listeners.CommandListener;
 import it.frafol.cleanss.velocity.listeners.KickListener;
-import it.frafol.cleanss.velocity.objects.PlayerCache;
 import it.frafol.cleanss.velocity.objects.TextFile;
 import lombok.Getter;
 import net.byteflux.libby.Library;
 import net.byteflux.libby.VelocityLibraryManager;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 
 import java.nio.file.Path;
+import java.util.Map;
 
 @Getter
 @Plugin(
@@ -96,10 +97,6 @@ public class CleanSS {
 		logger.info("§7Clearing §dinstances§7...");
 		instance = null;
 
-		logger.info("§7Clearing §dlists§7...");
-		PlayerCache.getSuspicious().clear();
-		PlayerCache.getCouples().clear();
-
 		logger.info("§7Plugin successfully §ddisabled§7!");
 	}
 
@@ -139,7 +136,7 @@ public class CleanSS {
 		server.getEventManager().register(this, new CommandListener());
 
 		if (VelocityMessages.CONTROL_CHAT.get(Boolean.class)) {
-			server.getEventManager().register(this, new ChatListener());
+			server.getEventManager().register(this, new ChatListener(this));
 		}
 
 		server.getEventManager().register(this, new KickListener(this));
@@ -157,4 +154,23 @@ public class CleanSS {
 
 		}
 	}
+
+	public <K, V> K getKey(@NotNull Map<K, V> map, V value) {
+		for (Map.Entry<K, V> entry : map.entrySet()) {
+			if (entry.getValue().equals(value)) {
+				return entry.getKey();
+			}
+		}
+		return null;
+	}
+
+	public <K, V> V getValue(@NotNull Map<K, V> map, K key) {
+		for (Map.Entry<K, V> entry : map.entrySet()) {
+			if (entry.getKey().equals(key)) {
+				return entry.getValue();
+			}
+		}
+		return null;
+	}
+
 }

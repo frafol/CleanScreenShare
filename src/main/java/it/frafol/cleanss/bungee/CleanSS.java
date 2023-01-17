@@ -8,12 +8,14 @@ import it.frafol.cleanss.bungee.enums.BungeeMessages;
 import it.frafol.cleanss.bungee.listeners.ChatListener;
 import it.frafol.cleanss.bungee.listeners.CommandListener;
 import it.frafol.cleanss.bungee.listeners.KickListener;
-import it.frafol.cleanss.bungee.objects.PlayerCache;
 import it.frafol.cleanss.bungee.objects.TextFile;
 import net.byteflux.libby.BungeeLibraryManager;
 import net.byteflux.libby.Library;
 import net.md_5.bungee.api.plugin.Plugin;
+import org.jetbrains.annotations.NotNull;
 import org.simpleyaml.configuration.file.YamlFile;
+
+import java.util.Map;
 
 public class CleanSS extends Plugin {
 
@@ -84,7 +86,7 @@ public class CleanSS extends Plugin {
 		getProxy().getPluginManager().registerListener(this, new CommandListener());
 
 		if (BungeeMessages.CONTROL_CHAT.get(Boolean.class)) {
-			getProxy().getPluginManager().registerListener(this, new ChatListener());
+			getProxy().getPluginManager().registerListener(this, new ChatListener(this));
 		}
 
 		getProxy().getPluginManager().registerListener(this, new KickListener(this));
@@ -122,11 +124,25 @@ public class CleanSS extends Plugin {
 		getLogger().info("§7Clearing §dinstances§7...");
 		instance = null;
 
-		getLogger().info("§7Clearing §dlists§7...");
-		PlayerCache.getSuspicious().clear();
-		PlayerCache.getCouples().clear();
-
 		getLogger().info("§7Plugin successfully §ddisabled§7!");
+	}
+
+	public <K, V> K getKey(@NotNull Map<K, V> map, V value) {
+		for (Map.Entry<K, V> entry : map.entrySet()) {
+			if (entry.getValue().equals(value)) {
+				return entry.getKey();
+			}
+		}
+		return null;
+	}
+
+	public <K, V> V getValue(@NotNull Map<K, V> map, K key) {
+		for (Map.Entry<K, V> entry : map.entrySet()) {
+			if (entry.getKey().equals(key)) {
+				return entry.getValue();
+			}
+		}
+		return null;
 	}
 
 }

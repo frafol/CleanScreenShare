@@ -12,7 +12,6 @@ import it.frafol.cleanss.velocity.objects.PlayerCache;
 import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Map;
 import java.util.Optional;
 
 public class KickListener {
@@ -26,16 +25,17 @@ public class KickListener {
     @Subscribe
     public void onPlayerChange(@NotNull ServerPreConnectEvent event) {
 
-        assert event.getPreviousServer() != null;
-        if (event.getPreviousServer().getServerInfo().getName().equals(VelocityConfig.CONTROL.get(String.class)) &&
-                PlayerCache.getSuspicious().contains(event.getPlayer().getUniqueId())) {
+        final Player player = event.getPlayer();
+        final RegisteredServer server = event.getPreviousServer();
 
-            event.setResult(ServerPreConnectEvent.ServerResult.denied());
-
+        if (server == null) {
+            return;
         }
 
-        if (event.getPreviousServer().getServerInfo().getName().equals(VelocityConfig.CONTROL.get(String.class)) &&
-                PlayerCache.getCouples().get(event.getPlayer()) != null) {
+        if (server.getServerInfo().getName().equals(VelocityConfig.CONTROL.get(String.class)) &&
+                PlayerCache.getSuspicious().contains(player.getUniqueId())
+                || PlayerCache.getCouples().containsKey(player)
+                || PlayerCache.getCouples().containsValue(player)) {
 
             event.setResult(ServerPreConnectEvent.ServerResult.denied());
 
@@ -46,31 +46,35 @@ public class KickListener {
     public void onPlayerDisconnect(@NotNull DisconnectEvent event) {
 
         final Optional<RegisteredServer> proxyServer = instance.getServer().getServer(VelocityConfig.CONTROL_FALLBACK.get(String.class));
+        final Player player = event.getPlayer();
 
-        for (Map.Entry<Player, Player> entry : PlayerCache.getCouples().entrySet()) {
-
-            if (event.getPlayer() == entry.getKey()) {
-                PlayerCache.getSuspicious().remove(entry.getValue().getUniqueId());
-
-                assert proxyServer.isPresent();
-                entry.getValue().createConnectionRequest(proxyServer.get()).fireAndForget();
-
-                entry.getValue().sendMessage(Component.text(VelocityMessages.FINISHSUS.color().replace("%prefix%", VelocityMessages.PREFIX.color())));
-
-                return;
-            }
-
-            if (event.getPlayer() == entry.getValue()) {
-                PlayerCache.getSuspicious().remove(entry.getValue().getUniqueId());
-
-                assert proxyServer.isPresent();
-                entry.getKey().createConnectionRequest(proxyServer.get()).fireAndForget();
-
-                entry.getKey().sendMessage(Component.text(VelocityMessages.LEAVESUS.color()
-                        .replace("%prefix%", VelocityMessages.PREFIX.color())
-                        .replace("%player%", entry.getValue().getUsername())));
-
-            }
+        if (!proxyServer.isPresent()) {
+            return;
         }
+
+        if (PlayerCache.getAdministrator().contains(player.getUniqueId())) {
+
+            PlayerCache.getSuspicious().remove(instance.getValue(PlayerCache.getCouples(), player).getUniqueId());
+            PlayerCache.getCouples().get(player).createConnectionRequest(proxyServer.get()).fireAndForget();
+
+            PlayerCache.getCouples().get(player).sendMessage(Component.text(VelocityMessages.FINISHSUS.color()
+                    .replace("%prefix%", VelocityMessages.PREFIX.color())));
+
+            return;
+
+        }
+
+        if (PlayerCache.getSuspicious().contains(player.getUniqueId())) {
+
+            PlayerCache.getSuspicious().remove(player.getUniqueId());
+
+            instance.getKey(PlayerCache.getCouples(), player).createConnectionRequest(proxyServer.get()).fireAndForget();
+
+            instance.getKey(PlayerCache.getCouples(), player).sendMessage(Component.text(VelocityMessages.LEAVESUS.color()
+                    .replace("%prefix%", VelocityMessages.PREFIX.color())
+                    .replace("%player%", player.getUsername())));
+
+        }
+
     }
 }
