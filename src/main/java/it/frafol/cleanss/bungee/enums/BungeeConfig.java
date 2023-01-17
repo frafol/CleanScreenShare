@@ -1,9 +1,9 @@
-package it.frafol.cleanss.velocity.enums;
+package it.frafol.cleanss.bungee.enums;
 
-import it.frafol.cleanss.velocity.CleanSS;
+import it.frafol.cleanss.bungee.CleanSS;
 import org.jetbrains.annotations.NotNull;
 
-public enum VelocityConfig {
+public enum BungeeConfig {
 
     CONTROL_PERMISSION("permissions.control"),
     BYPASS_PERMISSION("permissions.bypass"),
@@ -19,12 +19,15 @@ public enum VelocityConfig {
     private final String path;
     public static final CleanSS instance = CleanSS.getInstance();
 
-    VelocityConfig(String path) {
+    BungeeConfig(String path) {
         this.path = path;
     }
 
     public <T> T get(@NotNull Class<T> clazz) {
-        return clazz.cast(instance.getConfigTextFile().getConfig().get(path));
+        return clazz.cast(instance.getConfigTextFile().get(path));
     }
 
+    public @NotNull String color() {
+        return get(String.class).replace("&", "§");
+    }
 }

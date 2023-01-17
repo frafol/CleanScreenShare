@@ -1,13 +1,13 @@
-package it.frafol.cleanss.velocity.enums;
+package it.frafol.cleanss.bungee.enums;
 
-import com.velocitypowered.api.command.CommandSource;
-import com.velocitypowered.api.proxy.Player;
-import it.frafol.cleanss.velocity.CleanSS;
-import it.frafol.cleanss.velocity.objects.ChatUtil;
-import it.frafol.cleanss.velocity.objects.Placeholder;
+import it.frafol.cleanss.bungee.CleanSS;
+import it.frafol.cleanss.bungee.objects.ChatUtil;
+import it.frafol.cleanss.bungee.objects.Placeholder;
+import net.md_5.bungee.api.CommandSender;
+import net.md_5.bungee.api.connection.ProxiedPlayer;
 import org.jetbrains.annotations.NotNull;
 
-public enum VelocityMessages {
+public enum BungeeMessages {
 
     PREFIX("messages.prefix"),
 
@@ -62,12 +62,12 @@ public enum VelocityMessages {
     private final String path;
     public static final CleanSS instance = CleanSS.getInstance();
 
-    VelocityMessages(String path) {
+    BungeeMessages(String path) {
         this.path = path;
     }
 
     public <T> T get(@NotNull Class<T> clazz) {
-        return clazz.cast(instance.getMessagesTextFile().getConfig().get(path));
+        return clazz.cast(instance.getMessagesTextFile().get(path));
     }
 
     public @NotNull String color() {
@@ -78,7 +78,7 @@ public enum VelocityMessages {
         return path;
     }
 
-    public void sendList(CommandSource commandSource, Player player_name, Placeholder... placeHolder) {
+    public void sendList(CommandSender commandSource, ProxiedPlayer player_name, Placeholder... placeHolder) {
         ChatUtil.sendFormattedList(this, commandSource, player_name, placeHolder);
     }
 

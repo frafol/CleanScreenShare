@@ -19,24 +19,8 @@ public class PlayerListener implements Listener {
     public void onPlayerChat(AsyncPlayerChatEvent event) {
 
         if (!SpigotConfig.CHAT_ENABLE.get(Boolean.class)) {
-            return;
+            event.setCancelled(true);
         }
-
-        final Player player = event.getPlayer();
-
-        if (player.hasPermission(SpigotConfig.STAFF_PERMISSION.get(String.class))) {
-            event.setFormat(SpigotConfig.CHAT_FORMAT.color()
-                    .replace("%player%", player.getName())
-                    .replace("%state%", SpigotConfig.STAFFER.color())
-                    .replace("%message%", event.getMessage()));
-            return;
-        }
-
-        event.setFormat(SpigotConfig.CHAT_FORMAT.color()
-                .replace("%player%", player.getName())
-                .replace("%state%", SpigotConfig.SUSPECT.color())
-                .replace("%message%", event.getMessage()));
-
     }
 
     @EventHandler

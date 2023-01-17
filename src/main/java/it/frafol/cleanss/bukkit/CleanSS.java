@@ -26,7 +26,7 @@ public class CleanSS extends JavaPlugin {
 		Library yaml = Library.builder()
 				.groupId("me{}carleslc{}Simple-YAML")
 				.artifactId("Simple-Yaml")
-				.version("1.7.2")
+				.version("1.8.3")
 				.build();
 
 		bukkitLibraryManager.addJitPack();
@@ -38,13 +38,8 @@ public class CleanSS extends JavaPlugin {
 				"  \\___)(____)(____)(__)(__)(_)\\_) (___/(___/\n");
 
 		getLogger().info("Server version: " + Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3] + ".");
-		if (Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3].contains("1_6_R")
-				|| Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3].contains("1_5_R")
-				|| Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3].contains("1_4_R")
-				|| Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3].contains("1_3_R")
-				|| Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3].contains("1_2_R")
-				|| Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3].contains("1_1_R")
-				|| Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3].contains("1_0_R")) {
+
+		if (getSuperLegacy()) {
 			getLogger().severe("Support for your version was declined.");
 			Bukkit.getPluginManager().disablePlugin(this);
 			return;
@@ -62,5 +57,15 @@ public class CleanSS extends JavaPlugin {
 
 	public TextFile getConfigTextFile() {
 		return configTextFile;
+	}
+
+	public boolean getSuperLegacy() {
+		return Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3].contains("1_6_R")
+				|| Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3].contains("1_5_R")
+				|| Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3].contains("1_4_R")
+				|| Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3].contains("1_3_R")
+				|| Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3].contains("1_2_R")
+				|| Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3].contains("1_1_R")
+				|| Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3].contains("1_0_R");
 	}
 }

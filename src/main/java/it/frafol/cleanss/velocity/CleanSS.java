@@ -29,7 +29,7 @@ import java.nio.file.Path;
 @Plugin(
 		id = "cleanscreenshare",
 		name = "CleanScreenShare",
-		version = "1.0-alpha",
+		version = "1.0",
 		description = "Make control hacks on your players.",
 		authors = { "frafol" })
 
@@ -64,16 +64,7 @@ public class CleanSS {
 
 		instance = this;
 
-		VelocityLibraryManager<CleanSS> velocityLibraryManager = new VelocityLibraryManager<>(getLogger(), path, getServer().getPluginManager(), this);
-
-		Library yaml = Library.builder()
-				.groupId("me{}carleslc{}Simple-YAML")
-				.artifactId("Simple-Yaml")
-				.version("1.7.2")
-				.build();
-
-		velocityLibraryManager.addJitPack();
-		velocityLibraryManager.loadLibrary(yaml);
+		loadLibraries();
 
 		logger.info("\n§d   ___  __    ____    __    _  _   ___  ___\n" +
 				"  / __)(  )  ( ___)  /__\\  ( \\( ) / __)/ __)\n" +
@@ -81,30 +72,11 @@ public class CleanSS {
 				"  \\___)(____)(____)(__)(__)(_)\\_) (___/(___/\n");
 
 		logger.info("§7Loading §dconfiguration§7...");
-		configTextFile = new TextFile(path, "config.yml");
-		messagesTextFile = new TextFile(path, "messages.yml");
+		loadFiles();
 
 		logger.info("§7Loading §dplugin§7...");
-
-		getInstance().getServer().getCommandManager().register
-				(server.getCommandManager().metaBuilder("ss").aliases("cleanss", "control")
-						.build(), new ControlCommand(this));
-
-		getInstance().getServer().getCommandManager().register
-				(server.getCommandManager().metaBuilder("ssfinish").aliases("cleanssfinish", "controlfinish")
-						.build(), new FinishCommand(this));
-
-		getInstance().getServer().getCommandManager().register
-				(server.getCommandManager().metaBuilder("ssreload").aliases("cleanssreload", "controlreload")
-						.build(), new ReloadCommand(this));
-
-		server.getEventManager().register(this, new CommandListener());
-
-		if (VelocityMessages.CONTROL_CHAT.get(Boolean.class)) {
-			server.getEventManager().register(this, new ChatListener());
-		}
-
-		server.getEventManager().register(this, new KickListener(this));
+		loadListeners();
+		loadCommands();
 
 		if (VelocityConfig.STATS.get(Boolean.class)) {
 
@@ -114,16 +86,7 @@ public class CleanSS {
 
 		}
 
-		if (VelocityConfig.UPDATE_CHECK.get(Boolean.class)) {
-			new UpdateCheck(this).getVersion(version -> {
-				if (container.getDescription().getVersion().isPresent()) {
-					if (!container.getDescription().getVersion().get().equals(version)) {
-						logger.warn("There is a new update available, download it on SpigotMC!");
-					}
-				}
-			});
-		}
-
+		UpdateChecker();
 		logger.info("§7Plugin §dsuccessfully §7loaded!");
 	}
 
@@ -140,4 +103,58 @@ public class CleanSS {
 		logger.info("§7Plugin successfully §ddisabled§7!");
 	}
 
+	public void loadLibraries() {
+		VelocityLibraryManager<CleanSS> velocityLibraryManager = new VelocityLibraryManager<>(getLogger(), path, getServer().getPluginManager(), this);
+
+		Library yaml = Library.builder()
+				.groupId("me{}carleslc{}Simple-YAML")
+				.artifactId("Simple-Yaml")
+				.version("1.8.3")
+				.build();
+
+		velocityLibraryManager.addJitPack();
+		velocityLibraryManager.loadLibrary(yaml);
+	}
+
+	public void loadFiles() {
+		configTextFile = new TextFile(path, "config.yml");
+		messagesTextFile = new TextFile(path, "messages.yml");
+	}
+
+	public void loadCommands() {
+		getInstance().getServer().getCommandManager().register
+				(server.getCommandManager().metaBuilder("ss").aliases("cleanss", "control")
+						.build(), new ControlCommand(this));
+
+		getInstance().getServer().getCommandManager().register
+				(server.getCommandManager().metaBuilder("ssfinish").aliases("cleanssfinish", "controlfinish")
+						.build(), new FinishCommand(this));
+
+		getInstance().getServer().getCommandManager().register
+				(server.getCommandManager().metaBuilder("ssreload").aliases("cleanssreload", "controlreload")
+						.build(), new ReloadCommand(this));
+	}
+
+	public void loadListeners() {
+		server.getEventManager().register(this, new CommandListener());
+
+		if (VelocityMessages.CONTROL_CHAT.get(Boolean.class)) {
+			server.getEventManager().register(this, new ChatListener());
+		}
+
+		server.getEventManager().register(this, new KickListener(this));
+	}
+
+	public void UpdateChecker() {
+		if (VelocityConfig.UPDATE_CHECK.get(Boolean.class)) {
+			new UpdateCheck(this).getVersion(version -> {
+				if (container.getDescription().getVersion().isPresent()) {
+					if (!container.getDescription().getVersion().get().equals(version)) {
+						logger.warn("There is a new update available, download it on SpigotMC!");
+					}
+				}
+			});
+
+		}
+	}
 }

@@ -66,13 +66,6 @@ public class KickListener {
                 assert proxyServer.isPresent();
                 entry.getKey().createConnectionRequest(proxyServer.get()).fireAndForget();
 
-                if (VelocityConfig.DISCONNECT_COMMAND_TOGGLE.get(Boolean.class)) {
-                    instance.getServer().getCommandManager().executeImmediatelyAsync(
-                            instance.getServer().getConsoleCommandSource(),
-                            VelocityConfig.DISCONNECT_COMMAND.get(String.class)
-                                    .replace("%player%", entry.getValue().getUsername()));
-                }
-
                 entry.getKey().sendMessage(Component.text(VelocityMessages.LEAVESUS.color()
                         .replace("%prefix%", VelocityMessages.PREFIX.color())
                         .replace("%player%", entry.getValue().getUsername())));

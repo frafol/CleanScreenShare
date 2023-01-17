@@ -1,5 +1,6 @@
 options:
 
+  # Bypass command prevent.
   staff_permission: "screenshare.control"
 
   invincible: true
@@ -10,14 +11,5 @@ options:
   prevent:
     void: true
     hunger: true
+    chat: true
     commands: true
-
-chat:
-
-  enable: true
-
-  format: "%state% %player% &7» &f%message%"
-
-  states:
-    suspect: "&b&lSUSPECT &b"
-    staffer: "&c&lSTAFFER &c"

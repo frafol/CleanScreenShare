@@ -6,8 +6,7 @@ public enum SpigotConfig {
 
     STAFF_PERMISSION("options.staff_permission"),
 
-    CHAT_ENABLE("chat.enable"),
-    CHAT_FORMAT("chat.format"),
+    CHAT_ENABLE("options.prevent.chat"),
 
     BLOCK_COMMANDS("options.prevent.commands"),
     HUNGER("options.prevent.hunger"),

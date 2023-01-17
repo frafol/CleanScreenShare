@@ -54,17 +54,31 @@ messages:
 
   title:
 
-    # Here you can set a title that will be sent to the user when it is put into hack control.
-    enable: true
+    start:
+      # Here you can set a title that will be sent to the user when it is put into hack control.
+      enable: true
 
-    delay: 2 # In seconds
+      delay: 2 # In seconds
 
-    title: "&c&lHACK CONTROL"
-    subtitle: "&7Please read the chat"
+      title: "&c&lHACK CONTROL"
+      subtitle: "&7&oPlease read the chat..."
 
-    fade_in: 1
-    stay: 3
-    fade_out: 1
+      fade_in: 1
+      stay: 3
+      fade_out: 1
+
+    finish:
+      # Here you can set a title that will be sent to the user when it is leaving the hack control.
+      enable: true
+
+      delay: 2 # In seconds
+
+      title: "&a&lHACK CONTROL"
+      subtitle: "&7You've finished the control!"
+
+      fade_in: 1
+      stay: 3
+      fade_out: 1
 
   chat:
 

@@ -4,14 +4,19 @@ import com.velocitypowered.api.command.CommandSource;
 import com.velocitypowered.api.command.SimpleCommand;
 import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.server.RegisteredServer;
+import com.velocitypowered.api.scheduler.ScheduledTask;
 import it.frafol.cleanss.velocity.CleanSS;
 import it.frafol.cleanss.velocity.enums.VelocityConfig;
 import it.frafol.cleanss.velocity.enums.VelocityMessages;
 import it.frafol.cleanss.velocity.objects.PlayerCache;
+import lombok.Getter;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.title.Title;
 import org.jetbrains.annotations.NotNull;
 
+import java.time.Duration;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 public class FinishCommand implements SimpleCommand {
 
@@ -20,6 +25,9 @@ public class FinishCommand implements SimpleCommand {
     public FinishCommand(CleanSS instance) {
         this.instance = instance;
     }
+
+    @Getter
+    private ScheduledTask titleTask;
 
     @Override
     public void execute(SimpleCommand.@NotNull Invocation invocation) {
@@ -72,6 +80,25 @@ public class FinishCommand implements SimpleCommand {
                     }
 
                     player.get().createConnectionRequest(proxyServer.get()).fireAndForget();
+
+                    if (VelocityMessages.CONTROLFINISH_USETITLE.get(Boolean.class)) {
+
+                        Title controlTitle = Title.title(
+
+                                Component.text(VelocityMessages.CONTROLFINISH_TITLE.color()),
+                                Component.text(VelocityMessages.CONTROLFINISH_SUBTITLE.color()),
+
+                                Title.Times.times(
+                                        Duration.ofSeconds(VelocityMessages.CONTROLFINISH_FADEIN.get(Integer.class)),
+                                        Duration.ofSeconds(VelocityMessages.CONTROLFINISH_STAY.get(Integer.class)),
+                                        Duration.ofSeconds(VelocityMessages.CONTROLFINISH_FADEOUT.get(Integer.class))));
+
+                        titleTask = instance.getServer().getScheduler().buildTask(
+                                        instance, () -> player.get().showTitle(controlTitle))
+                                .delay(VelocityMessages.CONTROLFINISH_DELAY.get(Integer.class), TimeUnit.SECONDS)
+                                .schedule();
+
+                    }
 
                     player.get().sendMessage(Component.text(VelocityMessages.FINISHSUS.color().replace("%prefix%", VelocityMessages.PREFIX.color())));
 

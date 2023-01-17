@@ -1,0 +1,132 @@
+package it.frafol.cleanss.bungee;
+
+import it.frafol.cleanss.bungee.commands.ControlCommand;
+import it.frafol.cleanss.bungee.commands.FinishCommand;
+import it.frafol.cleanss.bungee.commands.ReloadCommand;
+import it.frafol.cleanss.bungee.enums.BungeeConfig;
+import it.frafol.cleanss.bungee.enums.BungeeMessages;
+import it.frafol.cleanss.bungee.listeners.ChatListener;
+import it.frafol.cleanss.bungee.listeners.CommandListener;
+import it.frafol.cleanss.bungee.listeners.KickListener;
+import it.frafol.cleanss.bungee.objects.PlayerCache;
+import it.frafol.cleanss.bungee.objects.TextFile;
+import net.byteflux.libby.BungeeLibraryManager;
+import net.byteflux.libby.Library;
+import net.md_5.bungee.api.plugin.Plugin;
+import org.simpleyaml.configuration.file.YamlFile;
+
+public class CleanSS extends Plugin {
+
+    private TextFile messagesTextFile;
+	private TextFile configTextFile;
+	private static CleanSS instance;
+
+	public static CleanSS getInstance() {
+		return instance;
+	}
+
+	@Override
+	public void onEnable() {
+
+		instance = this;
+
+		loadLibraries();
+
+		getLogger().info("\n§d   ___  __    ____    __    _  _    ___  ___\n" +
+				"  / __)(  )  ( ___)  /__\\  ( \\( )  / __)/ __)\n" +
+				" ( (__  )(__  )__)  /(__)\\  )  (   \\__ \\\\__ \\\n" +
+				"  \\___)(____)(____)(__)(__)(_)\\_)  (___/(___/\n");
+
+		getLogger().info("§7Loading §dconfiguration§7...");
+		loadFiles();
+
+		getLogger().info("§7Loading §dplugin§7...");
+
+		registerCommands();
+		registerListeners();
+
+		if (BungeeConfig.STATS.get(Boolean.class) && !getDescription().getVersion().contains("alpha")) {
+
+			new Metrics(this, 17063);
+
+			getLogger().info("§7Metrics loaded §dsuccessfully§7!");
+		}
+
+		UpdateChecker();
+
+		getLogger().info("§7Plugin §dsuccessfully §7loaded!");
+	}
+
+	public YamlFile getConfigTextFile() {
+		return getInstance().configTextFile.getConfig();
+	}
+
+	public YamlFile getMessagesTextFile() {
+		return getInstance().messagesTextFile.getConfig();
+	}
+
+	private void registerCommands() {
+
+		getProxy().getPluginManager().registerCommand(this, new ControlCommand(this));
+		getProxy().getPluginManager().registerCommand(this, new FinishCommand(this));
+		getProxy().getPluginManager().registerCommand(this, new ReloadCommand());
+
+	}
+
+	private void loadFiles() {
+
+		configTextFile = new TextFile(getDataFolder().toPath(), "config.yml");
+		messagesTextFile = new TextFile(getDataFolder().toPath(), "messages.yml");
+
+	}
+
+	private void registerListeners() {
+		getProxy().getPluginManager().registerListener(this, new CommandListener());
+
+		if (BungeeMessages.CONTROL_CHAT.get(Boolean.class)) {
+			getProxy().getPluginManager().registerListener(this, new ChatListener());
+		}
+
+		getProxy().getPluginManager().registerListener(this, new KickListener(this));
+	}
+
+	private void UpdateChecker() {
+
+		if (BungeeConfig.UPDATE_CHECK.get(Boolean.class)) {
+			new UpdateCheck(this).getVersion(version -> {
+				if (!this.getDescription().getVersion().equals(version)) {
+					getLogger().warning("§eThere is a new update available, download it on SpigotMC!");
+				}
+			});
+		}
+	}
+
+	private void loadLibraries() {
+
+		BungeeLibraryManager bungeeLibraryManager = new BungeeLibraryManager(this);
+
+		Library yaml = Library.builder()
+				.groupId("me{}carleslc{}Simple-YAML")
+				.artifactId("Simple-Yaml")
+				.version("1.8.3")
+				.build();
+
+		bungeeLibraryManager.addJitPack();
+		bungeeLibraryManager.loadLibrary(yaml);
+
+	}
+
+	@Override
+	public void onDisable() {
+
+		getLogger().info("§7Clearing §dinstances§7...");
+		instance = null;
+
+		getLogger().info("§7Clearing §dlists§7...");
+		PlayerCache.getSuspicious().clear();
+		PlayerCache.getCouples().clear();
+
+		getLogger().info("§7Plugin successfully §ddisabled§7!");
+	}
+
+}
