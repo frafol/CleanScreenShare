@@ -38,7 +38,7 @@ public class KickListener {
         }
 
         if (!server.getServerInfo().getName().equals(VelocityConfig.CONTROL.get(String.class))
-                && (PlayerCache.getCouples().containsKey(player) || PlayerCache.getCouples().containsValue(player))) {
+                && (PlayerCache.getSuspicious().contains(player.getUniqueId()) || PlayerCache.getAdministrator().contains(player.getUniqueId()))) {
 
             event.setResult(ServerPreConnectEvent.ServerResult.denied());
 
@@ -58,10 +58,14 @@ public class KickListener {
         if (PlayerCache.getAdministrator().contains(player.getUniqueId())) {
 
             PlayerCache.getSuspicious().remove(instance.getValue(PlayerCache.getCouples(), player).getUniqueId());
-            PlayerCache.getCouples().get(player).createConnectionRequest(proxyServer.get()).fireAndForget();
+            PlayerCache.getAdministrator().remove(player.getUniqueId());
 
-            PlayerCache.getCouples().get(player).sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.FINISHSUS.color()
+            instance.getValue(PlayerCache.getCouples(), player).createConnectionRequest(proxyServer.get()).fireAndForget();
+
+            instance.getValue(PlayerCache.getCouples(), player).sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.FINISHSUS.color()
                     .replace("%prefix%", VelocityMessages.PREFIX.color())));
+
+            PlayerCache.getCouples().remove(player);
 
             return;
 
@@ -69,6 +73,7 @@ public class KickListener {
 
         if (PlayerCache.getSuspicious().contains(player.getUniqueId())) {
 
+            PlayerCache.getAdministrator().remove(instance.getKey(PlayerCache.getCouples(), player).getUniqueId());
             PlayerCache.getSuspicious().remove(player.getUniqueId());
 
             instance.getKey(PlayerCache.getCouples(), player).createConnectionRequest(proxyServer.get()).fireAndForget();
@@ -76,6 +81,8 @@ public class KickListener {
             instance.getKey(PlayerCache.getCouples(), player).sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.LEAVESUS.color()
                     .replace("%prefix%", VelocityMessages.PREFIX.color())
                     .replace("%player%", player.getUsername())));
+
+            PlayerCache.getCouples().remove(instance.getKey(PlayerCache.getCouples(), player));
 
         }
 

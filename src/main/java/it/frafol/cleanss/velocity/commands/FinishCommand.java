@@ -111,6 +111,10 @@ public class FinishCommand implements SimpleCommand {
                         sender.createConnectionRequest(proxyServer.get()).fireAndForget();
                     }
                 }
+            } else {
+                source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.NOT_ONLINE.color()
+                        .replace("%prefix%", VelocityMessages.PREFIX.color())
+                        .replace("%player%", invocation.arguments()[0])));
             }
         }
     }

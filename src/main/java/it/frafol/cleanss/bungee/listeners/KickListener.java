@@ -59,27 +59,34 @@ public class KickListener implements Listener {
         final ServerInfo proxyServer = instance.getProxy().getServers().get(BungeeConfig.CONTROL_FALLBACK.get(String.class));
         final ProxiedPlayer player = event.getPlayer();
 
-            if (PlayerCache.getAdministrator().contains(player.getUniqueId())) {
+        if (PlayerCache.getAdministrator().contains(player.getUniqueId())) {
 
-                PlayerCache.getSuspicious().remove(instance.getValue(PlayerCache.getCouples(), player).getUniqueId());
-                PlayerCache.getCouples().get(player).connect(proxyServer);
+            PlayerCache.getSuspicious().remove(instance.getValue(PlayerCache.getCouples(), player).getUniqueId());
+            PlayerCache.getAdministrator().remove(player.getUniqueId());
 
-                PlayerCache.getCouples().get(player).sendMessage(TextComponent.fromLegacyText(BungeeMessages.FINISHSUS.color()
-                        .replace("%prefix%", BungeeMessages.PREFIX.color())));
+            instance.getValue(PlayerCache.getCouples(), player).connect(proxyServer);
 
-                return;
+            instance.getValue(PlayerCache.getCouples(), player).sendMessage(TextComponent.fromLegacyText(BungeeMessages.FINISHSUS.color()
+                    .replace("%prefix%", BungeeMessages.PREFIX.color())));
 
-            }
+            PlayerCache.getCouples().remove(player);
 
-            if (PlayerCache.getSuspicious().contains(player.getUniqueId())) {
+            return;
 
-                PlayerCache.getSuspicious().remove(player.getUniqueId());
+        }
 
-                instance.getKey(PlayerCache.getCouples(), player).connect(proxyServer);
+        if (PlayerCache.getSuspicious().contains(player.getUniqueId())) {
 
-                instance.getKey(PlayerCache.getCouples(), player).sendMessage(TextComponent.fromLegacyText(BungeeMessages.LEAVESUS.color()
-                        .replace("%prefix%", BungeeMessages.PREFIX.color())
-                        .replace("%player%", player.getName())));
+            PlayerCache.getAdministrator().remove(instance.getKey(PlayerCache.getCouples(), player).getUniqueId());
+            PlayerCache.getSuspicious().remove(player.getUniqueId());
+
+            instance.getKey(PlayerCache.getCouples(), player).connect(proxyServer);
+
+            instance.getKey(PlayerCache.getCouples(), player).sendMessage(TextComponent.fromLegacyText(BungeeMessages.LEAVESUS.color()
+                    .replace("%prefix%", BungeeMessages.PREFIX.color())
+                    .replace("%player%", player.getName())));
+
+            PlayerCache.getCouples().remove(instance.getKey(PlayerCache.getCouples(), player));
 
         }
     }
