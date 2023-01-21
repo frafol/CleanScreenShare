@@ -11,12 +11,12 @@ import it.frafol.cleanss.velocity.enums.VelocityMessages;
 import it.frafol.cleanss.velocity.objects.Placeholder;
 import it.frafol.cleanss.velocity.objects.PlayerCache;
 import lombok.Getter;
-import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.kyori.adventure.title.Title;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.Duration;
-import java.util.*;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 public class ControlCommand implements SimpleCommand {
@@ -36,7 +36,7 @@ public class ControlCommand implements SimpleCommand {
 		final CommandSource source = invocation.source();
 
 		if (!(source instanceof Player)) {
-			source.sendMessage(Component.text(VelocityMessages.ONLY_PLAYERS.color()
+			source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.ONLY_PLAYERS.color()
 					.replace("%prefix%", VelocityMessages.PREFIX.color())));
 			return;
 		}
@@ -44,12 +44,12 @@ public class ControlCommand implements SimpleCommand {
 		if (invocation.arguments().length == 0) {
 
 			if (!source.hasPermission(VelocityConfig.CONTROL_PERMISSION.get(String.class))) {
-				source.sendMessage(Component.text(VelocityMessages.NO_PERMISSION.color()
+				source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.NO_PERMISSION.color()
 						.replace("%prefix%", VelocityMessages.PREFIX.color())));
 				return;
 			}
 
-			source.sendMessage(Component.text(VelocityMessages.USAGE.color().replace("%prefix%", VelocityMessages.PREFIX.color())));
+			source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.USAGE.color().replace("%prefix%", VelocityMessages.PREFIX.color())));
 			return;
 
 		}
@@ -62,14 +62,14 @@ public class ControlCommand implements SimpleCommand {
 				final Player sender = (Player) source;
 
 				if (!player.isPresent()) {
-					source.sendMessage(Component.text(VelocityMessages.NOT_ONLINE.get(String.class)
+					source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.NOT_ONLINE.get(String.class)
 							.replace("%prefix%", VelocityMessages.PREFIX.color())
 							.replace("%player%", invocation.arguments()[0])));
 					return;
 				}
 
 				if (player.get().hasPermission(VelocityConfig.BYPASS_PERMISSION.get(String.class))) {
-					source.sendMessage(Component.text(VelocityMessages.PLAYER_BYPASS.color()
+					source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.PLAYER_BYPASS.color()
 							.replace("%prefix%", VelocityMessages.PREFIX.color())));
 					return;
 				}
@@ -83,7 +83,7 @@ public class ControlCommand implements SimpleCommand {
 					}
 
 					if (sender.getUniqueId() == player.get().getUniqueId()) {
-						source.sendMessage(Component.text(VelocityMessages.YOURSELF.color()
+						source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.YOURSELF.color()
 								.replace("%prefix%", VelocityMessages.PREFIX.color())));
 						return;
 					}
@@ -96,13 +96,13 @@ public class ControlCommand implements SimpleCommand {
 					proxyServer.get().ping().whenComplete((result, throwable) -> {
 
 						if (throwable != null) {
-							source.sendMessage(Component.text(VelocityMessages.NO_EXIST.color()
+							source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.NO_EXIST.color()
 									.replace("%prefix%", VelocityMessages.PREFIX.color())));
 							return;
 						}
 
 						if (result == null) {
-							source.sendMessage(Component.text(VelocityMessages.NO_EXIST.color()
+							source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.NO_EXIST.color()
 									.replace("%prefix%", VelocityMessages.PREFIX.color())));
 							return;
 						}
@@ -131,8 +131,8 @@ public class ControlCommand implements SimpleCommand {
 
 							Title controlTitle = Title.title(
 
-									Component.text(VelocityMessages.CONTROL_TITLE.color()),
-									Component.text(VelocityMessages.CONTROL_SUBTITLE.color()),
+									LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.CONTROL_TITLE.color()),
+									LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.CONTROL_SUBTITLE.color()),
 
 									Title.Times.times(
 											Duration.ofSeconds(VelocityMessages.CONTROL_FADEIN.get(Integer.class)),
@@ -146,7 +146,7 @@ public class ControlCommand implements SimpleCommand {
 
 						}
 
-						player.get().sendMessage(Component.text(VelocityMessages.MAINSUS.color()
+						player.get().sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.MAINSUS.color()
 								.replace("%prefix%", VelocityMessages.PREFIX.color())));
 
 						VelocityMessages.CONTROL_FORMAT.sendList(sender, player.get(),
@@ -157,12 +157,12 @@ public class ControlCommand implements SimpleCommand {
 					});
 
 				} else {
-					source.sendMessage(Component.text(VelocityMessages.NO_EXIST.color()
+					source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.NO_EXIST.color()
 							.replace("%prefix%", VelocityMessages.PREFIX.color())));
 				}
 
 			} else {
-				source.sendMessage(Component.text(VelocityMessages.NOT_ONLINE.get(String.class)
+				source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.NOT_ONLINE.get(String.class)
 						.replace("%prefix%", VelocityMessages.PREFIX.color())
 						.replace("%player%", invocation.arguments()[0])));
 			}

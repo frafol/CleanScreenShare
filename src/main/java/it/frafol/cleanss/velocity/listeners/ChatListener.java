@@ -8,7 +8,7 @@ import it.frafol.cleanss.velocity.CleanSS;
 import it.frafol.cleanss.velocity.enums.VelocityConfig;
 import it.frafol.cleanss.velocity.enums.VelocityMessages;
 import it.frafol.cleanss.velocity.objects.PlayerCache;
-import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.jetbrains.annotations.NotNull;
 
 public class ChatListener {
@@ -46,13 +46,13 @@ public class ChatListener {
 
             if (PlayerCache.getCouples().containsKey(player)) {
 
-                instance.getValue(PlayerCache.getCouples(), player).sendMessage(Component.text(VelocityMessages.CONTROL_CHAT_FORMAT.color()
+                instance.getValue(PlayerCache.getCouples(), player).sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.CONTROL_CHAT_FORMAT.color()
                         .replace("%prefix%", VelocityMessages.PREFIX.color())
                         .replace("%player%", player.getUsername())
                         .replace("%message%", event.getMessage())
                         .replace("%state%", VelocityMessages.CONTROL_CHAT_STAFF.color())));
 
-                player.sendMessage(Component.text(VelocityMessages.CONTROL_CHAT_FORMAT.color()
+                player.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.CONTROL_CHAT_FORMAT.color()
                         .replace("%prefix%", VelocityMessages.PREFIX.color())
                         .replace("%player%", player.getUsername())
                         .replace("%message%", event.getMessage())
@@ -64,13 +64,13 @@ public class ChatListener {
 
             if (PlayerCache.getCouples().containsValue(player)) {
 
-                instance.getKey(PlayerCache.getCouples(), player).sendMessage(Component.text(VelocityMessages.CONTROL_CHAT_FORMAT.color()
+                instance.getKey(PlayerCache.getCouples(), player).sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.CONTROL_CHAT_FORMAT.color()
                         .replace("%prefix%", VelocityMessages.PREFIX.color())
                         .replace("%player%", player.getUsername())
                         .replace("%message%", event.getMessage())
                         .replace("%state%", VelocityMessages.CONTROL_CHAT_SUS.color())));
 
-                player.sendMessage(Component.text(VelocityMessages.CONTROL_CHAT_FORMAT.color()
+                player.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.CONTROL_CHAT_FORMAT.color()
                         .replace("%prefix%", VelocityMessages.PREFIX.color())
                         .replace("%player%", player.getUsername())
                         .replace("%message%", event.getMessage())

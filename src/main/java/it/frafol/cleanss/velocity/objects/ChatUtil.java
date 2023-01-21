@@ -5,8 +5,8 @@ import com.velocitypowered.api.proxy.Player;
 import it.frafol.cleanss.velocity.CleanSS;
 import it.frafol.cleanss.velocity.enums.VelocityMessages;
 import lombok.experimental.UtilityClass;
-import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -56,19 +56,19 @@ public class ChatUtil {
         for (String message : stringList) {
 
             if (message.contains(VelocityMessages.CONTROL_CLEAN_NAME.get(String.class))) {
-                commandSource.sendMessage(Component.text(message).clickEvent(ClickEvent
+                commandSource.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(message).clickEvent(ClickEvent
                         .clickEvent(ClickEvent.Action.SUGGEST_COMMAND, VelocityMessages.CONTROL_CLEAN_COMMAND.get(String.class)
                                 .replace("%player%", player_name.getUsername()))));
             } else if (message.contains(VelocityMessages.CONTROL_CHEATER_NAME.get(String.class))) {
-                commandSource.sendMessage(Component.text(message).clickEvent(ClickEvent
+                commandSource.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(message).clickEvent(ClickEvent
                         .clickEvent(ClickEvent.Action.SUGGEST_COMMAND, VelocityMessages.CONTROL_CHEATER_COMMAND.get(String.class)
                                 .replace("%player%", player_name.getUsername()))));
             } else if (message.contains(VelocityMessages.CONTROL_ADMIT_NAME.get(String.class))) {
-                commandSource.sendMessage(Component.text(message)
+                commandSource.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(message)
                         .clickEvent(ClickEvent.clickEvent(ClickEvent.Action.SUGGEST_COMMAND, VelocityMessages.CONTROL_ADMIT_COMMAND.get(String.class)
                                 .replace("%player%", player_name.getUsername()))));
             } else {
-                commandSource.sendMessage(Component.text(message));
+                commandSource.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(message));
             }
 
         }

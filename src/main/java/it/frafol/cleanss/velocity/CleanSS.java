@@ -21,7 +21,7 @@ import it.frafol.cleanss.velocity.objects.TextFile;
 import lombok.Getter;
 import net.byteflux.libby.Library;
 import net.byteflux.libby.VelocityLibraryManager;
-import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 
@@ -161,7 +161,7 @@ public class CleanSS {
 			new UpdateCheck(this).getVersion(version -> {
 				if (container.getDescription().getVersion().isPresent()) {
 					if (!container.getDescription().getVersion().get().equals(version)) {
-						player.sendMessage(Component.text("§e[CleanScreenShare] There is a new update available, download it on SpigotMC!"));
+						player.sendMessage(LegacyComponentSerializer.legacy('§').deserialize("§e[CleanScreenShare] There is a new update available, download it on SpigotMC!"));
 					}
 				}
 			});

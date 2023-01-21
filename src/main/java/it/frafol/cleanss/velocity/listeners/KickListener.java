@@ -9,7 +9,7 @@ import it.frafol.cleanss.velocity.CleanSS;
 import it.frafol.cleanss.velocity.enums.VelocityConfig;
 import it.frafol.cleanss.velocity.enums.VelocityMessages;
 import it.frafol.cleanss.velocity.objects.PlayerCache;
-import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
@@ -61,7 +61,7 @@ public class KickListener {
             PlayerCache.getSuspicious().remove(instance.getValue(PlayerCache.getCouples(), player).getUniqueId());
             PlayerCache.getCouples().get(player).createConnectionRequest(proxyServer.get()).fireAndForget();
 
-            PlayerCache.getCouples().get(player).sendMessage(Component.text(VelocityMessages.FINISHSUS.color()
+            PlayerCache.getCouples().get(player).sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.FINISHSUS.color()
                     .replace("%prefix%", VelocityMessages.PREFIX.color())));
 
             return;
@@ -74,7 +74,7 @@ public class KickListener {
 
             instance.getKey(PlayerCache.getCouples(), player).createConnectionRequest(proxyServer.get()).fireAndForget();
 
-            instance.getKey(PlayerCache.getCouples(), player).sendMessage(Component.text(VelocityMessages.LEAVESUS.color()
+            instance.getKey(PlayerCache.getCouples(), player).sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.LEAVESUS.color()
                     .replace("%prefix%", VelocityMessages.PREFIX.color())
                     .replace("%player%", player.getUsername())));
 

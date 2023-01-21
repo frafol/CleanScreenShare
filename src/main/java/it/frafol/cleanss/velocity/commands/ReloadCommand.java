@@ -6,7 +6,7 @@ import it.frafol.cleanss.velocity.CleanSS;
 import it.frafol.cleanss.velocity.enums.VelocityConfig;
 import it.frafol.cleanss.velocity.enums.VelocityMessages;
 import it.frafol.cleanss.velocity.objects.TextFile;
-import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 
 public class ReloadCommand implements SimpleCommand {
 
@@ -22,13 +22,13 @@ public class ReloadCommand implements SimpleCommand {
         final CommandSource source = invocation.source();
 
         if (!source.hasPermission(VelocityConfig.RELOAD_PERMISSION.get(String.class))) {
-            source.sendMessage(Component.text(VelocityMessages.NO_PERMISSION.color()
+            source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.NO_PERMISSION.color()
                     .replace("%prefix%", VelocityMessages.PREFIX.color())));
             return;
         }
 
         TextFile.reloadAll();
-        source.sendMessage(Component.text(VelocityMessages.RELOADED.color()
+        source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.RELOADED.color()
                 .replace("%prefix%", VelocityMessages.PREFIX.color())));
     }
 }
