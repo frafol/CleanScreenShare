@@ -137,7 +137,7 @@ public class CleanSS {
 	}
 
 	private void loadListeners() {
-		server.getEventManager().register(this, new CommandListener());
+		server.getEventManager().register(this, new CommandListener(this));
 
 		if (VelocityMessages.CONTROL_CHAT.get(Boolean.class)) {
 			server.getEventManager().register(this, new ChatListener(this));
