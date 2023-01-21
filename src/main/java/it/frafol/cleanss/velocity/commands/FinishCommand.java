@@ -66,6 +66,7 @@ public class FinishCommand implements SimpleCommand {
                     return;
                 }
 
+                PlayerCache.getAdministrator().remove(sender.getUniqueId());
                 PlayerCache.getSuspicious().remove(player.get().getUniqueId());
                 PlayerCache.getCouples().remove(sender, player.get());
 

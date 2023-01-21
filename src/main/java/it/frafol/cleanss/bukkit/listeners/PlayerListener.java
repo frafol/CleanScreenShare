@@ -2,6 +2,9 @@ package it.frafol.cleanss.bukkit.listeners;
 
 import it.frafol.cleanss.bukkit.enums.SpigotConfig;
 import org.bukkit.GameMode;
+import org.bukkit.World;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -43,7 +46,9 @@ public class PlayerListener implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerDamage(@NotNull EntityDamageEvent event) {
 
-        if (!(event.getEntity() instanceof Player)) {
+        final Entity entity = event.getEntity();
+
+        if (!(entity instanceof Player)) {
             return;
         }
 
@@ -63,7 +68,9 @@ public class PlayerListener implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onHunger(@NotNull FoodLevelChangeEvent event) {
 
-        if (!(event.getEntity() instanceof Player)) {
+        final HumanEntity entity = event.getEntity();
+
+        if (!(entity instanceof Player)) {
             return;
         }
 
@@ -79,9 +86,10 @@ public class PlayerListener implements Listener {
     public void onPlayerJoin(@NotNull PlayerJoinEvent event) {
 
         final Player player = event.getPlayer();
+        final World world = event.getPlayer().getWorld();
 
         if (SpigotConfig.SPAWN.get(Boolean.class)) {
-            player.teleport(player.getWorld().getSpawnLocation());
+            player.teleport(world.getSpawnLocation());
         }
 
         if (SpigotConfig.GAMEMODE.get(Boolean.class)) {
@@ -106,5 +114,6 @@ public class PlayerListener implements Listener {
         if (SpigotConfig.MOVE.get(Boolean.class)) {
             event.setCancelled(true);
         }
+
     }
 }

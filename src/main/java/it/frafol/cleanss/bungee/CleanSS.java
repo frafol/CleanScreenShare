@@ -95,7 +95,6 @@ public class CleanSS extends Plugin {
 	}
 
 	private void UpdateChecker() {
-
 		if (BungeeConfig.UPDATE_CHECK.get(Boolean.class)) {
 			new UpdateCheck(this).getVersion(version -> {
 				if (!this.getDescription().getVersion().equals(version)) {
@@ -106,7 +105,6 @@ public class CleanSS extends Plugin {
 	}
 
 	public void UpdateChecker(ProxiedPlayer player) {
-
 		if (BungeeConfig.UPDATE_CHECK.get(Boolean.class)) {
 			new UpdateCheck(this).getVersion(version -> {
 				if (!this.getDescription().getVersion().equals(version)) {
@@ -141,19 +139,25 @@ public class CleanSS extends Plugin {
 	}
 
 	public <K, V> K getKey(@NotNull Map<K, V> map, V value) {
+
 		for (Map.Entry<K, V> entry : map.entrySet()) {
+
 			if (entry.getValue().equals(value)) {
 				return entry.getKey();
 			}
+
 		}
 		return null;
 	}
 
 	public <K, V> V getValue(@NotNull Map<K, V> map, K key) {
+
 		for (Map.Entry<K, V> entry : map.entrySet()) {
+
 			if (entry.getKey().equals(key)) {
 				return entry.getValue();
 			}
+
 		}
 		return null;
 	}

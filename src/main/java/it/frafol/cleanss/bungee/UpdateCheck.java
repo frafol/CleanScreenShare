@@ -15,7 +15,6 @@ public class UpdateCheck {
     }
 
     public void getVersion(final Consumer<String> consumer) {
-
         PLUGIN.getProxy().getScheduler().runAsync(PLUGIN, () -> {
             try (InputStream inputStream = new URL("https://api.spigotmc.org/legacy/update.php?resource=105475")
                     .openStream(); Scanner scanner = new Scanner(inputStream)) {

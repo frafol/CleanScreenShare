@@ -41,16 +41,16 @@ messages:
       - ""
       - "&8&m------&5&m------&d&m------&5&m------&8&m------"
 
-    # Clickable messages to put in the Administration message.
+    # Clickable messages to put in the Administration message. (%player% is the suspicious player name)
     clean:
       name: "[Clean]"
       command: "/controlfinish %player%"
     cheater:
       name: "[Cheater]"
-      command: "/ban %player%"
+      command: "/tempban %player% 30d Cheating -s"
     admit:
       name: "[Admit]"
-      command: "/ban %player%"
+      command: "/tempban %player% 14d Admit -s"
 
   title:
 

@@ -20,5 +20,6 @@ permissions:
   # You can personalize permissions.
   control: screenshare.control
   bypass: screenshare.bypass
+  reload: screenshare.reload
 
 # Enjoy.

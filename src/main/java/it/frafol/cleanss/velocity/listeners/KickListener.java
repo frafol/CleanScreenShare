@@ -29,12 +29,11 @@ public class KickListener {
         final RegisteredServer server = event.getPreviousServer();
 
         if (server == null) {
-
-            if (player.hasPermission(VelocityConfig.RELOAD_PERMISSION.get(String.class))) {
-                instance.UpdateChecker(player);
-            }
-
             return;
+        }
+
+        if (player.hasPermission(VelocityConfig.RELOAD_PERMISSION.get(String.class))) {
+            instance.UpdateChecker(player);
         }
 
         if (server.getServerInfo().getName().equals(VelocityConfig.CONTROL.get(String.class)) &&

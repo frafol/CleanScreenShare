@@ -7,6 +7,7 @@ import it.frafol.cleanss.bungee.objects.PlayerCache;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
+import net.md_5.bungee.api.connection.Server;
 import net.md_5.bungee.api.event.PlayerDisconnectEvent;
 import net.md_5.bungee.api.event.ServerConnectEvent;
 import net.md_5.bungee.api.plugin.Listener;
@@ -25,8 +26,9 @@ public class KickListener implements Listener {
     public void onPlayerChange(@NotNull ServerConnectEvent event) {
 
         final ProxiedPlayer player = event.getPlayer();
+        final Server server = event.getPlayer().getServer();
 
-        if (event.getPlayer().getServer() == null) {
+        if (server == null) {
 
             if (player.hasPermission(BungeeConfig.RELOAD_PERMISSION.get(String.class))) {
                 instance.UpdateChecker(player);
@@ -35,7 +37,7 @@ public class KickListener implements Listener {
             return;
         }
 
-        if (event.getPlayer().getServer().getInfo().getName().equals(BungeeConfig.CONTROL.get(String.class)) &&
+        if (server.getInfo().getName().equals(BungeeConfig.CONTROL.get(String.class)) &&
                 PlayerCache.getCouples().containsValue(player)
                 || PlayerCache.getCouples().containsKey(player)
                 || PlayerCache.getSuspicious().contains(player.getUniqueId())) {

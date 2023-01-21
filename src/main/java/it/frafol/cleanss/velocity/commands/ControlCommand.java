@@ -107,6 +107,7 @@ public class ControlCommand implements SimpleCommand {
 							return;
 						}
 
+						PlayerCache.getAdministrator().add(sender.getUniqueId());
 						PlayerCache.getSuspicious().add(player.get().getUniqueId());
 						PlayerCache.getCouples().put(sender, player.get());
 

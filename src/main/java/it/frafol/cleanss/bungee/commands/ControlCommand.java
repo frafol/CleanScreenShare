@@ -103,6 +103,7 @@ public class ControlCommand extends Command {
 							return;
 						}
 
+						PlayerCache.getAdministrator().add(sender.getUniqueId());
 						PlayerCache.getSuspicious().add(player.get().getUniqueId());
 						PlayerCache.getCouples().put(sender, player.get());
 
