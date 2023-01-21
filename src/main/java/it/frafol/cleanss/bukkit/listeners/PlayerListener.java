@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
@@ -25,6 +26,7 @@ public class PlayerListener implements Listener {
         if (!SpigotConfig.CHAT_ENABLE.get(Boolean.class)) {
             event.setCancelled(true);
         }
+
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -41,6 +43,15 @@ public class PlayerListener implements Listener {
                 event.setCancelled(true);
             }
         }
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void onPlayerPvP(EntityDamageByEntityEvent event) {
+
+        if (SpigotConfig.PVP.get(Boolean.class)) {
+            event.setCancelled(true);
+        }
+
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)

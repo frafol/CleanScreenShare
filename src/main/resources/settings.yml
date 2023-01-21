@@ -1,3 +1,10 @@
+#   ___  __    ____    __    _  _   ___  ___
+#  / __)(  )  ( ___)  /__\  ( \( ) / __)/ __)
+# ( (__  )(__  )__)  /(__)\  )  (  \__ \\__ \
+#  \___)(____)(____)(__)(__)(_)\_) (___/(___/
+# Configuration file. Made with ❤ by frafol.
+# For support: discord.io/futuredevelopment
+
 options:
 
   # Bypass command and move prevention.
@@ -6,7 +13,7 @@ options:
   # Makes players invincible.
   invincible: true
 
-  # Teleports to World Spawn at Join (if it is set).
+  # Teleports to World Spawn at Join (set up it with /setworldspawn).
   teleport_to_spawn_on_join: true
 
   # Change player's gamemode to Adventure when player's join.
@@ -14,8 +21,20 @@ options:
 
   # Action preventions.
   prevent:
-    move: true
-    void: true
-    hunger: true
-    chat: true
-    commands: true
+
+    # Prevent player actions.
+    player:
+      move: true
+      pvp: true
+      void: true
+      hunger: true
+      chat: true
+      commands: true
+
+    # Prevent world changes.
+    world:
+      weather_change: true
+      daylight_cycle: true
+      mob_spawning: true
+
+# Enjoy.

@@ -22,7 +22,9 @@ public class ChatListener implements Listener {
     @EventHandler
     public void onChat(@NotNull ChatEvent event) {
 
-        if (event.getMessage().startsWith("/")) {
+        final String message = event.getMessage();
+
+        if (message.startsWith("/")) {
             return;
         }
 

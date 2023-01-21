@@ -23,23 +23,22 @@ public class KickListener {
     }
 
     @Subscribe
-    public void onPlayerChange(@NotNull ServerPreConnectEvent event) {
+    public void onPlayerConnect(@NotNull ServerPreConnectEvent event) {
 
         final Player player = event.getPlayer();
-        final RegisteredServer server = event.getPreviousServer();
+        final RegisteredServer server = event.getOriginalServer();
 
         if (server == null) {
+
+            if (player.hasPermission(VelocityConfig.RELOAD_PERMISSION.get(String.class))) {
+                instance.UpdateChecker(player);
+            }
+
             return;
         }
 
-        if (player.hasPermission(VelocityConfig.RELOAD_PERMISSION.get(String.class))) {
-            instance.UpdateChecker(player);
-        }
-
-        if (server.getServerInfo().getName().equals(VelocityConfig.CONTROL.get(String.class)) &&
-                PlayerCache.getSuspicious().contains(player.getUniqueId())
-                || PlayerCache.getCouples().containsKey(player)
-                || PlayerCache.getCouples().containsValue(player)) {
+        if (!server.getServerInfo().getName().equals(VelocityConfig.CONTROL.get(String.class))
+                && (PlayerCache.getCouples().containsKey(player) || PlayerCache.getCouples().containsValue(player))) {
 
             event.setResult(ServerPreConnectEvent.ServerResult.denied());
 

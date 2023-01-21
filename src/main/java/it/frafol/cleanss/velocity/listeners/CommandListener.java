@@ -2,6 +2,7 @@ package it.frafol.cleanss.velocity.listeners;
 
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.command.CommandExecuteEvent;
+import com.velocitypowered.api.network.ProtocolVersion;
 import com.velocitypowered.api.proxy.Player;
 import it.frafol.cleanss.velocity.objects.PlayerCache;
 import org.jetbrains.annotations.NotNull;
@@ -18,7 +19,11 @@ public class CommandListener {
         final Player player = (Player) event.getCommandSource();
 
         if (PlayerCache.getSuspicious().contains(player.getUniqueId())) {
-            event.setResult(CommandExecuteEvent.CommandResult.denied());
+
+            if (!(player.getProtocolVersion().getProtocol() >= ProtocolVersion.getProtocolVersion(759).getProtocol())) {
+                event.setResult(CommandExecuteEvent.CommandResult.denied());
+            }
+
         }
 
     }

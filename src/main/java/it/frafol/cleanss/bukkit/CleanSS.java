@@ -1,10 +1,13 @@
 package it.frafol.cleanss.bukkit;
 
+import it.frafol.cleanss.bukkit.enums.SpigotConfig;
 import it.frafol.cleanss.bukkit.listeners.PlayerListener;
+import it.frafol.cleanss.bukkit.listeners.WorldListener;
 import it.frafol.cleanss.bukkit.objects.TextFile;
 import net.byteflux.libby.BukkitLibraryManager;
 import net.byteflux.libby.Library;
 import org.bukkit.Bukkit;
+import org.bukkit.World;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class CleanSS extends JavaPlugin {
@@ -50,8 +53,17 @@ public class CleanSS extends JavaPlugin {
 
 		getLogger().info("Loading listeners...");
 		Bukkit.getServer().getPluginManager().registerEvents(new PlayerListener(), this);
+		Bukkit.getServer().getPluginManager().registerEvents(new WorldListener(), this);
 
 		getLogger().info("Successfully loaded!");
+
+		if (SpigotConfig.DAY_CYCLE.get(Boolean.class)) {
+
+			for (World worlds : getServer().getWorlds()) {
+				worlds.setGameRuleValue("doDaylightCycle", "false");
+			}
+
+		}
 
 	}
 

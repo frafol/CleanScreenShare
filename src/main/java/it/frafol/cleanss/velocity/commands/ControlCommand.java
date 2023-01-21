@@ -62,7 +62,7 @@ public class ControlCommand implements SimpleCommand {
 				final Player sender = (Player) source;
 
 				if (!player.isPresent()) {
-					source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.NOT_ONLINE.get(String.class)
+					source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.NOT_ONLINE.color()
 							.replace("%prefix%", VelocityMessages.PREFIX.color())
 							.replace("%player%", invocation.arguments()[0])));
 					return;

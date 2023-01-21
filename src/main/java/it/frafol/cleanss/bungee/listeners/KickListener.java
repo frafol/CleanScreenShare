@@ -9,6 +9,7 @@ import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.connection.Server;
 import net.md_5.bungee.api.event.PlayerDisconnectEvent;
+import net.md_5.bungee.api.event.PostLoginEvent;
 import net.md_5.bungee.api.event.ServerConnectEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
@@ -23,17 +24,23 @@ public class KickListener implements Listener {
     }
 
     @EventHandler
+    public void onPlayerJoin(@NotNull PostLoginEvent event) {
+
+        final ProxiedPlayer player = event.getPlayer();
+
+        if (player.hasPermission(BungeeConfig.RELOAD_PERMISSION.get(String.class))) {
+                instance.UpdateChecker(player);
+        }
+
+    }
+
+    @EventHandler
     public void onPlayerChange(@NotNull ServerConnectEvent event) {
 
         final ProxiedPlayer player = event.getPlayer();
         final Server server = event.getPlayer().getServer();
 
         if (server == null) {
-
-            if (player.hasPermission(BungeeConfig.RELOAD_PERMISSION.get(String.class))) {
-                instance.UpdateChecker(player);
-            }
-
             return;
         }
 

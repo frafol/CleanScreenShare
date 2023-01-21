@@ -45,6 +45,7 @@ public class CleanSS {
 
     private TextFile messagesTextFile;
 	private TextFile configTextFile;
+	private TextFile config2TextFile;
 	private static CleanSS instance;
 
 	public static CleanSS getInstance() {
@@ -117,6 +118,7 @@ public class CleanSS {
 
 	private void loadFiles() {
 		configTextFile = new TextFile(path, "config.yml");
+		config2TextFile = new TextFile(path, "velocity.yml");
 		messagesTextFile = new TextFile(path, "messages.yml");
 	}
 

@@ -1,0 +1,11 @@
+#   ___  __    ____    __    _  _   ___  ___
+#  / __)(  )  ( ___)  /__\  ( \( ) / __)/ __)
+# ( (__  )(__  )__)  /(__)\  )  (  \__ \\__ \
+#  \___)(____)(____)(__)(__)(_)\_) (___/(___/
+# Velocity Configuration file. Made with ❤ by frafol.
+# For support: discord.io/futuredevelopment
+
+# Remove warnings when 1.19+ player talks in chat.
+remove_warnings: false
+
+# Enjoy.
