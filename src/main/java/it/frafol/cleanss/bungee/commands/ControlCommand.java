@@ -57,7 +57,7 @@ public class ControlCommand extends Command {
 				final ProxiedPlayer sender = (ProxiedPlayer) invocation;
 
 				if (!player.isPresent()) {
-					invocation.sendMessage(TextComponent.fromLegacyText(BungeeMessages.NOT_ONLINE.get(String.class)
+					invocation.sendMessage(TextComponent.fromLegacyText(BungeeMessages.NOT_ONLINE.color()
 							.replace("%prefix%", BungeeMessages.PREFIX.color())
 							.replace("%player%", args[0])
 							.replace("&", "§")));
@@ -103,10 +103,6 @@ public class ControlCommand extends Command {
 							return;
 						}
 
-						PlayerCache.getAdministrator().add(sender.getUniqueId());
-						PlayerCache.getSuspicious().add(player.get().getUniqueId());
-						PlayerCache.getCouples().put(sender, player.get());
-
 						if (sender.getServer() == null) {
 							return;
 						}
@@ -122,6 +118,10 @@ public class ControlCommand extends Command {
 						if (!Objects.equals(player.get().getServer().getInfo(), proxyServer)) {
 							player.get().connect(proxyServer);
 						}
+
+						PlayerCache.getAdministrator().add(sender.getUniqueId());
+						PlayerCache.getSuspicious().add(player.get().getUniqueId());
+						PlayerCache.getCouples().put(sender, player.get());
 
 						if (BungeeMessages.CONTROL_USETITLE.get(Boolean.class)) {
 
@@ -154,7 +154,7 @@ public class ControlCommand extends Command {
 				}
 
 			} else {
-				invocation.sendMessage(TextComponent.fromLegacyText(BungeeMessages.NOT_ONLINE.get(String.class)
+				invocation.sendMessage(TextComponent.fromLegacyText(BungeeMessages.NOT_ONLINE.color()
 						.replace("%prefix%", BungeeMessages.PREFIX.color())
 						.replace("%player%", args[0])));
 			}

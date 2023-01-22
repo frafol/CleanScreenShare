@@ -60,7 +60,7 @@ public class FinishCommand extends Command {
                     return;
                 }
 
-                PlayerCache.getSuspicious().remove(((ProxiedPlayer) invocation).getUniqueId());
+                PlayerCache.getAdministrator().remove(((ProxiedPlayer) invocation).getUniqueId());
                 PlayerCache.getSuspicious().remove(player.getUniqueId());
                 PlayerCache.getCouples().remove(((ProxiedPlayer) invocation), player);
 

@@ -8,9 +8,7 @@ import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.connection.Server;
-import net.md_5.bungee.api.event.PlayerDisconnectEvent;
-import net.md_5.bungee.api.event.PostLoginEvent;
-import net.md_5.bungee.api.event.ServerConnectEvent;
+import net.md_5.bungee.api.event.*;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
 import org.jetbrains.annotations.NotNull;
@@ -44,13 +42,13 @@ public class KickListener implements Listener {
             return;
         }
 
-        if (server.getInfo().getName().equals(BungeeConfig.CONTROL.get(String.class)) &&
-                PlayerCache.getCouples().containsValue(player)
-                || PlayerCache.getCouples().containsKey(player)
-                || PlayerCache.getSuspicious().contains(player.getUniqueId())) {
-            event.setCancelled(true);
-        }
+        if (!server.getInfo().getName().equals(BungeeConfig.CONTROL.get(String.class)) &&
+                (PlayerCache.getAdministrator().contains(player.getUniqueId())
+                || PlayerCache.getSuspicious().contains(player.getUniqueId()))) {
 
+            event.setCancelled(true);
+
+        }
     }
 
     @EventHandler
@@ -60,6 +58,10 @@ public class KickListener implements Listener {
         final ProxiedPlayer player = event.getPlayer();
 
         if (PlayerCache.getAdministrator().contains(player.getUniqueId())) {
+
+            if (instance.getValue(PlayerCache.getCouples(), player) == null) {
+                return;
+            }
 
             PlayerCache.getSuspicious().remove(instance.getValue(PlayerCache.getCouples(), player).getUniqueId());
             PlayerCache.getAdministrator().remove(player.getUniqueId());
