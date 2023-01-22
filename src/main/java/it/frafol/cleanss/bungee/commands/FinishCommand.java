@@ -60,6 +60,11 @@ public class FinishCommand extends Command {
                     return;
                 }
 
+                if (instance.getValue(PlayerCache.getCouples(), ((ProxiedPlayer) invocation)) != player) {
+                    invocation.sendMessage(TextComponent.fromLegacyText(BungeeMessages.NOT_CONTROL.color().replace("%prefix%", BungeeMessages.PREFIX.color())));
+                    return;
+                }
+
                 PlayerCache.getAdministrator().remove(((ProxiedPlayer) invocation).getUniqueId());
                 PlayerCache.getSuspicious().remove(player.getUniqueId());
                 PlayerCache.getCouples().remove(((ProxiedPlayer) invocation), player);
