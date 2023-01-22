@@ -60,7 +60,7 @@ public class FinishCommand extends Command {
                     return;
                 }
 
-                if (instance.getValue(PlayerCache.getCouples(), ((ProxiedPlayer) invocation)) != player) {
+                if (instance.getValue(PlayerCache.getCouples(), ((ProxiedPlayer) invocation)) != null && instance.getValue(PlayerCache.getCouples(), ((ProxiedPlayer) invocation)) != player) {
                     invocation.sendMessage(TextComponent.fromLegacyText(BungeeMessages.NOT_CONTROL.color().replace("%prefix%", BungeeMessages.PREFIX.color())));
                     return;
                 }
