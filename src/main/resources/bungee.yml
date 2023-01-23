@@ -1,4 +1,4 @@
-name: CleanSS
+name: CleanScreenShare
 version: ${project.version}
 main: it.frafol.cleanss.bungee.CleanSS
 author: frafol

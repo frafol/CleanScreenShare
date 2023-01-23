@@ -66,7 +66,7 @@ public class FinishCommand implements SimpleCommand {
                     return;
                 }
 
-                if (instance.getValue(PlayerCache.getCouples(), sender) != null && instance.getValue(PlayerCache.getCouples(), sender) != player.get()) {
+                if (instance.getValue(PlayerCache.getCouples(), sender) == null || instance.getValue(PlayerCache.getCouples(), sender) != player.get()) {
                     source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.NOT_CONTROL.color().replace("%prefix%", VelocityMessages.PREFIX.color())));
                     return;
                 }
