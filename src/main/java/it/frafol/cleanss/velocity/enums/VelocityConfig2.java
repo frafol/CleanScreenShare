@@ -15,7 +15,7 @@ public enum VelocityConfig2 {
     }
 
     public <T> T get(@NotNull Class<T> clazz) {
-        return clazz.cast(instance.getConfigTextFile().getConfig().get(path));
+        return clazz.cast(instance.getConfig2TextFile().getConfig().get(path));
     }
 
 }
