@@ -23,7 +23,7 @@ public class PlayerListener implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerChat(AsyncPlayerChatEvent event) {
 
-        if (!SpigotConfig.CHAT_ENABLE.get(Boolean.class)) {
+        if (SpigotConfig.PREVENT_CHAT.get(Boolean.class)) {
             event.setCancelled(true);
         }
 

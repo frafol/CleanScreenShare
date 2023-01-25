@@ -32,7 +32,7 @@ import java.util.Map;
 @Plugin(
 		id = "cleanscreenshare",
 		name = "CleanScreenShare",
-		version = "1.0",
+		version = "1.0.1",
 		description = "Make control hacks on your players.",
 		authors = { "frafol" })
 

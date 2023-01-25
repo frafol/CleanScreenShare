@@ -24,7 +24,7 @@ options:
 
     # Prevent player actions.
     player:
-      move: true
+      move: false
       pvp: true
       void: true
       hunger: true
