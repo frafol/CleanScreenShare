@@ -2,6 +2,7 @@ package it.frafol.cleanss.velocity;
 
 import com.google.inject.Inject;
 import com.velocitypowered.api.event.Subscribe;
+import com.velocitypowered.api.event.connection.PluginMessageEvent;
 import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
 import com.velocitypowered.api.event.proxy.ProxyShutdownEvent;
 import com.velocitypowered.api.plugin.Plugin;
@@ -9,6 +10,8 @@ import com.velocitypowered.api.plugin.PluginContainer;
 import com.velocitypowered.api.plugin.annotation.DataDirectory;
 import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
+import com.velocitypowered.api.proxy.messages.ChannelIdentifier;
+import com.velocitypowered.api.proxy.messages.MinecraftChannelIdentifier;
 import it.frafol.cleanss.velocity.commands.ControlCommand;
 import it.frafol.cleanss.velocity.commands.FinishCommand;
 import it.frafol.cleanss.velocity.commands.ReloadCommand;
@@ -32,11 +35,14 @@ import java.util.Map;
 @Plugin(
 		id = "cleanscreenshare",
 		name = "CleanScreenShare",
-		version = "1.0.1",
+		version = "1.1",
 		description = "Make control hacks on your players.",
 		authors = { "frafol" })
 
 public class CleanSS {
+
+	public static final ChannelIdentifier channel_join = MinecraftChannelIdentifier.create("cleanss", "join");
+	public static final ChannelIdentifier channel_reload = MinecraftChannelIdentifier.create("cleanss", "join");
 
 	private final Logger logger;
 	private final ProxyServer server;
@@ -80,18 +86,19 @@ public class CleanSS {
 
 		logger.info("§7Loading §dplugin§7...");
 		loadListeners();
+		loadChannelRegistrar();
 		loadCommands();
 
 		if (VelocityConfig.STATS.get(Boolean.class)) {
 
 			metricsFactory.make(this, 16951);
-
 			logger.info("§7Metrics loaded §dsuccessfully§7!");
 
 		}
 
 		UpdateChecker();
 		logger.info("§7Plugin §dsuccessfully §7loaded!");
+
 	}
 
 	@Subscribe
@@ -123,6 +130,7 @@ public class CleanSS {
 	}
 
 	private void loadCommands() {
+
 		getInstance().getServer().getCommandManager().register
 				(server.getCommandManager().metaBuilder("ss").aliases("cleanss", "control")
 						.build(), new ControlCommand(this));
@@ -134,9 +142,16 @@ public class CleanSS {
 		getInstance().getServer().getCommandManager().register
 				(server.getCommandManager().metaBuilder("ssreload").aliases("cleanssreload", "controlreload")
 						.build(), new ReloadCommand(this));
+
+	}
+
+	private void loadChannelRegistrar() {
+		server.getChannelRegistrar().register(channel_join);
+		server.getChannelRegistrar().register(channel_reload);
 	}
 
 	private void loadListeners() {
+
 		server.getEventManager().register(this, new CommandListener(this));
 
 		if (VelocityMessages.CONTROL_CHAT.get(Boolean.class)) {
@@ -144,6 +159,7 @@ public class CleanSS {
 		}
 
 		server.getEventManager().register(this, new KickListener(this));
+
 	}
 
 	private void UpdateChecker() {
@@ -163,7 +179,8 @@ public class CleanSS {
 			new UpdateCheck(this).getVersion(version -> {
 				if (container.getDescription().getVersion().isPresent()) {
 					if (!container.getDescription().getVersion().get().equals(version)) {
-						player.sendMessage(LegacyComponentSerializer.legacy('§').deserialize("§e[CleanScreenShare] There is a new update available, download it on SpigotMC!"));
+						player.sendMessage(LegacyComponentSerializer.legacy('§')
+								.deserialize("§e[CleanScreenShare] There is a new update available, download it on SpigotMC!"));
 					}
 				}
 			});
@@ -192,5 +209,19 @@ public class CleanSS {
 
 		}
 		return null;
+	}
+
+	@Subscribe
+	public void onPluginMessage(@NotNull PluginMessageEvent event) {
+
+		if (event.getIdentifier().getId().equals("cleanss:join")) {
+			event.setResult(PluginMessageEvent.ForwardResult.handled());
+			return;
+		}
+
+		if (event.getIdentifier().getId().equals("cleanss:reload")) {
+			event.setResult(PluginMessageEvent.ForwardResult.handled());
+		}
+
 	}
 }

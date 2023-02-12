@@ -1,6 +1,8 @@
 package it.frafol.cleanss.bukkit.listeners;
 
+import it.frafol.cleanss.bukkit.CleanSS;
 import it.frafol.cleanss.bukkit.enums.SpigotConfig;
+import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
@@ -97,11 +99,6 @@ public class PlayerListener implements Listener {
     public void onPlayerJoin(@NotNull PlayerJoinEvent event) {
 
         final Player player = event.getPlayer();
-        final World world = event.getPlayer().getWorld();
-
-        if (SpigotConfig.SPAWN.get(Boolean.class)) {
-            player.teleport(world.getSpawnLocation());
-        }
 
         if (SpigotConfig.GAMEMODE.get(Boolean.class)) {
             player.setGameMode(GameMode.ADVENTURE);

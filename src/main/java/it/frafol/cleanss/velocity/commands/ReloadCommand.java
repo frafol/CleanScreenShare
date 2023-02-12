@@ -1,5 +1,7 @@
 package it.frafol.cleanss.velocity.commands;
 
+import com.google.common.io.ByteArrayDataOutput;
+import com.google.common.io.ByteStreams;
 import com.velocitypowered.api.command.CommandSource;
 import com.velocitypowered.api.command.SimpleCommand;
 import it.frafol.cleanss.velocity.CleanSS;
@@ -7,6 +9,7 @@ import it.frafol.cleanss.velocity.enums.VelocityConfig;
 import it.frafol.cleanss.velocity.enums.VelocityMessages;
 import it.frafol.cleanss.velocity.objects.TextFile;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import org.jetbrains.annotations.NotNull;
 
 public class ReloadCommand implements SimpleCommand {
 
@@ -16,8 +19,9 @@ public class ReloadCommand implements SimpleCommand {
         this.PLUGIN = plugin;
     }
 
+    @SuppressWarnings("UnstableApiUsage")
     @Override
-    public void execute(Invocation invocation) {
+    public void execute(@NotNull Invocation invocation) {
 
         final CommandSource source = invocation.source();
 
@@ -30,5 +34,12 @@ public class ReloadCommand implements SimpleCommand {
         TextFile.reloadAll();
         source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.RELOADED.color()
                 .replace("%prefix%", VelocityMessages.PREFIX.color())));
+
+        ByteArrayDataOutput dataOutput = ByteStreams.newDataOutput();
+        dataOutput.writeUTF("RELOAD");
+
+        PLUGIN.getServer().getAllPlayers().iterator().next()
+                .sendPluginMessage(CleanSS.channel_reload, dataOutput.toByteArray());
+
     }
 }

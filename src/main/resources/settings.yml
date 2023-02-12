@@ -9,11 +9,12 @@ options:
 
   # Bypass command and move prevention.
   staff_permission: "screenshare.control"
+  admin_permission: "screenshare.admin"
 
   # Makes players invincible.
   invincible: true
 
-  # Teleports to World Spawn at Join (set up it with /setworldspawn).
+  # Teleports to Spawn at Join.
   teleport_to_spawn_on_join: true
 
   # Change player's gamemode to Adventure when player's join.
@@ -37,4 +38,6 @@ options:
       daylight_cycle: true
       mob_spawning: true
 
+  messages:
+    spawn_set: "&aSpawn has been set in your position."
 # Enjoy.

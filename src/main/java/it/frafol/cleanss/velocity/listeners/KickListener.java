@@ -51,6 +51,7 @@ public class KickListener {
         final Optional<RegisteredServer> proxyServer = instance.getServer().getServer(VelocityConfig.CONTROL_FALLBACK.get(String.class));
         final Player player = event.getPlayer();
 
+
         if (!proxyServer.isPresent()) {
             return;
         }

@@ -6,8 +6,11 @@ import org.jetbrains.annotations.NotNull;
 public enum SpigotConfig {
 
     STAFF_PERMISSION("options.staff_permission"),
+    ADMIN_PERMISSION("options.admin_permission"),
 
     PREVENT_CHAT("options.prevent.player.chat"),
+
+    SPAWN_SET("options.messages.spawn_set"),
 
     BLOCK_COMMANDS("options.prevent.player.commands"),
     PVP("options.prevent.player.pvp"),
