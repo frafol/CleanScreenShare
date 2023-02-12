@@ -1,30 +1,15 @@
 package it.frafol.cleanss.bukkit.objects;
 
-import lombok.Getter;
 import lombok.experimental.UtilityClass;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
-import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.UUID;
-
 @UtilityClass
 public class PlayerCache {
-
-    @Getter
-    private final HashSet<UUID> Suspicious = new HashSet<>();
-
-    @Getter
-    private final HashSet<UUID> Administrator = new HashSet<>();
-
-    @Getter
-    private final HashMap<Player, Player> couples = new HashMap<>();
 
     @Contract("_ -> new")
     public static @NotNull Location StringToLocation(@NotNull String line) {
