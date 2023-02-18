@@ -6,7 +6,6 @@ import com.velocitypowered.api.network.ProtocolVersion;
 import com.velocitypowered.api.proxy.Player;
 import it.frafol.cleanss.velocity.CleanSS;
 import it.frafol.cleanss.velocity.enums.VelocityConfig;
-import it.frafol.cleanss.velocity.enums.VelocityConfig2;
 import it.frafol.cleanss.velocity.enums.VelocityMessages;
 import it.frafol.cleanss.velocity.objects.PlayerCache;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
@@ -34,16 +33,6 @@ public class ChatListener {
             if (!(player.getProtocolVersion().getProtocol() >= ProtocolVersion.getProtocolVersion(759).getProtocol())) {
 
                 event.setResult(PlayerChatEvent.ChatResult.denied());
-
-            } else {
-
-                if (!VelocityConfig2.REMOVE_WARNINGS.get(Boolean.class)) {
-
-                    instance.getLogger().warn("Unable to delete message for " + player.getUsername() + ". " +
-                            "This is a Velocity issue affecting Minecraft 1.19+ clients. " +
-                            "To fix this, make sure you have also installed the plugin on your Spigot server and enabled chat prevention.");
-
-                }
 
             }
 

@@ -4,9 +4,7 @@ import com.velocitypowered.api.proxy.Player;
 import lombok.Getter;
 import lombok.experimental.UtilityClass;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.UUID;
+import java.util.*;
 
 @UtilityClass
 public class PlayerCache {

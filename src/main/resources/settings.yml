@@ -29,8 +29,6 @@ options:
       pvp: true
       void: true
       hunger: true
-      chat: true
-      commands: true
 
     # Prevent world changes.
     world:

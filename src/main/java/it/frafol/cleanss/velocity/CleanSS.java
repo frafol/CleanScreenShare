@@ -2,7 +2,6 @@ package it.frafol.cleanss.velocity;
 
 import com.google.inject.Inject;
 import com.velocitypowered.api.event.Subscribe;
-import com.velocitypowered.api.event.connection.PluginMessageEvent;
 import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
 import com.velocitypowered.api.event.proxy.ProxyShutdownEvent;
 import com.velocitypowered.api.plugin.Plugin;
@@ -20,6 +19,7 @@ import it.frafol.cleanss.velocity.enums.VelocityMessages;
 import it.frafol.cleanss.velocity.listeners.ChatListener;
 import it.frafol.cleanss.velocity.listeners.CommandListener;
 import it.frafol.cleanss.velocity.listeners.KickListener;
+import it.frafol.cleanss.velocity.listeners.ServerListener;
 import it.frafol.cleanss.velocity.objects.TextFile;
 import lombok.Getter;
 import net.byteflux.libby.Library;
@@ -42,7 +42,6 @@ import java.util.Map;
 public class CleanSS {
 
 	public static final ChannelIdentifier channel_join = MinecraftChannelIdentifier.create("cleanss", "join");
-	public static final ChannelIdentifier channel_reload = MinecraftChannelIdentifier.create("cleanss", "join");
 
 	private final Logger logger;
 	private final ProxyServer server;
@@ -51,7 +50,6 @@ public class CleanSS {
 
     private TextFile messagesTextFile;
 	private TextFile configTextFile;
-	private TextFile config2TextFile;
 	private static CleanSS instance;
 
 	public static CleanSS getInstance() {
@@ -85,8 +83,8 @@ public class CleanSS {
 		loadFiles();
 
 		logger.info("§7Loading §dplugin§7...");
-		loadListeners();
 		loadChannelRegistrar();
+		loadListeners();
 		loadCommands();
 
 		if (VelocityConfig.STATS.get(Boolean.class)) {
@@ -125,7 +123,6 @@ public class CleanSS {
 
 	private void loadFiles() {
 		configTextFile = new TextFile(path, "config.yml");
-		config2TextFile = new TextFile(path, "velocity.yml");
 		messagesTextFile = new TextFile(path, "messages.yml");
 	}
 
@@ -147,11 +144,11 @@ public class CleanSS {
 
 	private void loadChannelRegistrar() {
 		server.getChannelRegistrar().register(channel_join);
-		server.getChannelRegistrar().register(channel_reload);
 	}
 
 	private void loadListeners() {
 
+		server.getEventManager().register(this, new ServerListener(this));
 		server.getEventManager().register(this, new CommandListener(this));
 
 		if (VelocityMessages.CONTROL_CHAT.get(Boolean.class)) {
@@ -209,19 +206,5 @@ public class CleanSS {
 
 		}
 		return null;
-	}
-
-	@Subscribe
-	public void onPluginMessage(@NotNull PluginMessageEvent event) {
-
-		if (event.getIdentifier().getId().equals("cleanss:join")) {
-			event.setResult(PluginMessageEvent.ForwardResult.handled());
-			return;
-		}
-
-		if (event.getIdentifier().getId().equals("cleanss:reload")) {
-			event.setResult(PluginMessageEvent.ForwardResult.handled());
-		}
-
 	}
 }

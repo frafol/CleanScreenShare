@@ -4,6 +4,7 @@ import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 import com.velocitypowered.api.command.CommandSource;
 import com.velocitypowered.api.command.SimpleCommand;
+import com.velocitypowered.api.proxy.Player;
 import it.frafol.cleanss.velocity.CleanSS;
 import it.frafol.cleanss.velocity.enums.VelocityConfig;
 import it.frafol.cleanss.velocity.enums.VelocityMessages;
@@ -25,6 +26,14 @@ public class ReloadCommand implements SimpleCommand {
 
         final CommandSource source = invocation.source();
 
+        if (!(source instanceof Player)) {
+            source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.ONLY_PLAYERS.color()
+                    .replace("%prefix%", VelocityMessages.PREFIX.color())));
+            return;
+        }
+
+        final Player sender = (Player) source;
+
         if (!source.hasPermission(VelocityConfig.RELOAD_PERMISSION.get(String.class))) {
             source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.NO_PERMISSION.color()
                     .replace("%prefix%", VelocityMessages.PREFIX.color())));
@@ -35,11 +44,11 @@ public class ReloadCommand implements SimpleCommand {
         source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.RELOADED.color()
                 .replace("%prefix%", VelocityMessages.PREFIX.color())));
 
-        ByteArrayDataOutput dataOutput = ByteStreams.newDataOutput();
-        dataOutput.writeUTF("RELOAD");
+        ByteArrayDataOutput buf = ByteStreams.newDataOutput();
+        buf.writeUTF("RELOAD");
 
-        PLUGIN.getServer().getAllPlayers().iterator().next()
-                .sendPluginMessage(CleanSS.channel_reload, dataOutput.toByteArray());
+        sender.getCurrentServer().ifPresent(sv ->
+                sv.sendPluginMessage(CleanSS.channel_join, buf.toByteArray()));
 
     }
 }

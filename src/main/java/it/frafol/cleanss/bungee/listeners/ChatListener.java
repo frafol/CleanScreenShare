@@ -68,7 +68,6 @@ public class ChatListener implements Listener {
                         .replace("%message%", event.getMessage())
                         .replace("%state%", BungeeMessages.CONTROL_CHAT_SUS.color())));
 
-
             }
         }
     }

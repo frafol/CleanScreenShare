@@ -46,6 +46,7 @@ public class CleanSS extends Plugin {
 
 		getLogger().info("§7Loading §dplugin§7...");
 
+		registerChannelRegistrar();
 		registerCommands();
 		registerListeners();
 
@@ -82,6 +83,10 @@ public class CleanSS extends Plugin {
 		configTextFile = new TextFile(getDataFolder().toPath(), "config.yml");
 		messagesTextFile = new TextFile(getDataFolder().toPath(), "messages.yml");
 
+	}
+
+	private void registerChannelRegistrar() {
+		getProxy().getChannels().add("cleanss:join");
 	}
 
 	private void registerListeners() {

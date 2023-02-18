@@ -42,7 +42,6 @@ public class TextFile {
         return yamlFile;
     }
 
-
     @SneakyThrows
     public void reload() {
         yamlFile.load();

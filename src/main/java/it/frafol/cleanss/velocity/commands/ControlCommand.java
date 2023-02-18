@@ -1,7 +1,5 @@
 package it.frafol.cleanss.velocity.commands;
 
-import com.google.common.io.ByteArrayDataOutput;
-import com.google.common.io.ByteStreams;
 import com.velocitypowered.api.command.CommandSource;
 import com.velocitypowered.api.command.SimpleCommand;
 import com.velocitypowered.api.proxy.Player;
@@ -32,7 +30,6 @@ public class ControlCommand implements SimpleCommand {
 	@Getter
 	private ScheduledTask titleTask;
 
-	@SuppressWarnings("UnstableApiUsage")
 	@Override
 	public void execute(@NotNull Invocation invocation) {
 
@@ -92,7 +89,6 @@ public class ControlCommand implements SimpleCommand {
 					}
 
 					if (PlayerCache.getSuspicious().contains(player.get().getUniqueId())) {
-						instance.getLogger().error("Player already in control");
 						return;
 					}
 
@@ -156,16 +152,6 @@ public class ControlCommand implements SimpleCommand {
 								new Placeholder("cleanname", VelocityMessages.CONTROL_CLEAN_NAME.color()),
 								new Placeholder("hackername", VelocityMessages.CONTROL_CHEATER_NAME.color()),
 								new Placeholder("admitname", VelocityMessages.CONTROL_ADMIT_NAME.color()));
-
-						ByteArrayDataOutput dataOutput1 = ByteStreams.newDataOutput();
-						dataOutput1.writeUTF("SUSPECT");
-						dataOutput1.writeUTF(player.get().getUsername());
-						player.get().sendPluginMessage(CleanSS.channel_join, dataOutput1.toByteArray());
-
-						ByteArrayDataOutput dataOutput2 = ByteStreams.newDataOutput();
-						dataOutput2.writeUTF("ADMIN");
-						dataOutput2.writeUTF(sender.getUsername());
-						sender.sendPluginMessage(CleanSS.channel_join, dataOutput2.toByteArray());
 
 					});
 

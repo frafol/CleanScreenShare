@@ -1,10 +1,8 @@
 package it.frafol.cleanss.bukkit.listeners;
 
-import it.frafol.cleanss.bukkit.CleanSS;
 import it.frafol.cleanss.bukkit.enums.SpigotConfig;
-import org.bukkit.Bukkit;
+import it.frafol.cleanss.bukkit.objects.PlayerCache;
 import org.bukkit.GameMode;
-import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
@@ -14,21 +12,16 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.bukkit.event.player.PlayerCommandPreprocessEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.*;
 import org.jetbrains.annotations.NotNull;
 
 public class PlayerListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
-    public void onPlayerChat(AsyncPlayerChatEvent event) {
-
-        if (SpigotConfig.PREVENT_CHAT.get(Boolean.class)) {
+    public void onPlayerChat(@NotNull AsyncPlayerChatEvent event) {
+        if (PlayerCache.getNo_chat().contains(event.getPlayer().getUniqueId())) {
             event.setCancelled(true);
         }
-
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -40,8 +33,8 @@ public class PlayerListener implements Listener {
             return;
         }
 
-        if (SpigotConfig.BLOCK_COMMANDS.get(Boolean.class)) {
-            if (event.getMessage().startsWith("/")) {
+        if (event.getMessage().startsWith("/")) {
+            if (PlayerCache.getNo_chat().contains(event.getPlayer().getUniqueId())) {
                 event.setCancelled(true);
             }
         }
@@ -108,6 +101,11 @@ public class PlayerListener implements Listener {
             player.setFoodLevel(20);
         }
 
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void onQuit(@NotNull PlayerQuitEvent event) {
+        PlayerCache.getNo_chat().remove(event.getPlayer().getUniqueId());
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
