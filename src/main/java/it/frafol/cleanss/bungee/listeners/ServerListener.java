@@ -21,11 +21,11 @@ public class ServerListener implements Listener {
 
         final ProxiedPlayer player = event.getPlayer();
 
-        if (!player.getServer().getInfo().getName().equals(BungeeConfig.CONTROL.get(String.class))) {
-            return;
-        }
-
         CleanSS.getInstance().getProxy().getScheduler().schedule(CleanSS.getInstance(), () -> {
+
+            if (!player.getServer().getInfo().getName().equals(BungeeConfig.CONTROL.get(String.class))) {
+                return;
+            }
 
             if (PlayerCache.getSuspicious().contains(player.getUniqueId())) {
 

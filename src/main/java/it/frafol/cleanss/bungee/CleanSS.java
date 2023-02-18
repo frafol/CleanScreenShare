@@ -8,6 +8,7 @@ import it.frafol.cleanss.bungee.enums.BungeeMessages;
 import it.frafol.cleanss.bungee.listeners.ChatListener;
 import it.frafol.cleanss.bungee.listeners.CommandListener;
 import it.frafol.cleanss.bungee.listeners.KickListener;
+import it.frafol.cleanss.bungee.listeners.ServerListener;
 import it.frafol.cleanss.bungee.objects.TextFile;
 import net.byteflux.libby.BungeeLibraryManager;
 import net.byteflux.libby.Library;
@@ -46,7 +47,7 @@ public class CleanSS extends Plugin {
 
 		getLogger().info("§7Loading §dplugin§7...");
 
-		registerChannelRegistrar();
+		getProxy().registerChannel("cleanss:join");
 		registerCommands();
 		registerListeners();
 
@@ -85,11 +86,9 @@ public class CleanSS extends Plugin {
 
 	}
 
-	private void registerChannelRegistrar() {
-		getProxy().getChannels().add("cleanss:join");
-	}
-
 	private void registerListeners() {
+
+		getProxy().getPluginManager().registerListener(this, new ServerListener());
 		getProxy().getPluginManager().registerListener(this, new CommandListener());
 
 		if (BungeeMessages.CONTROL_CHAT.get(Boolean.class)) {
@@ -139,6 +138,7 @@ public class CleanSS extends Plugin {
 
 		getLogger().info("§7Clearing §dinstances§7...");
 		instance = null;
+		getProxy().unregisterChannel("cleanss:join");
 
 		getLogger().info("§7Plugin successfully §ddisabled§7!");
 	}
