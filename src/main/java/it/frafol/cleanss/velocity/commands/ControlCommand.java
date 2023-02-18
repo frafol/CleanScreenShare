@@ -151,7 +151,8 @@ public class ControlCommand implements SimpleCommand {
 						VelocityMessages.CONTROL_FORMAT.sendList(sender, player.get(),
 								new Placeholder("cleanname", VelocityMessages.CONTROL_CLEAN_NAME.color()),
 								new Placeholder("hackername", VelocityMessages.CONTROL_CHEATER_NAME.color()),
-								new Placeholder("admitname", VelocityMessages.CONTROL_ADMIT_NAME.color()));
+								new Placeholder("admitname", VelocityMessages.CONTROL_ADMIT_NAME.color()),
+								new Placeholder("refusename", VelocityMessages.CONTROL_REFUSE_NAME.color()));
 
 					});
 

@@ -144,7 +144,8 @@ public class ControlCommand extends Command {
 						BungeeMessages.CONTROL_FORMAT.sendList(sender, player.get(),
 								new Placeholder("cleanname", BungeeMessages.CONTROL_CLEAN_NAME.color()),
 								new Placeholder("hackername", BungeeMessages.CONTROL_CHEATER_NAME.color()),
-								new Placeholder("admitname", BungeeMessages.CONTROL_ADMIT_NAME.color()));
+								new Placeholder("admitname", BungeeMessages.CONTROL_ADMIT_NAME.color()),
+								new Placeholder("refusename", BungeeMessages.CONTROL_REFUSE_NAME.color()));
 
 					});
 

@@ -38,6 +38,7 @@ messages:
       - "&d%cleanname% &7(Click to view)"
       - "&d%hackername% &7(Click to view)"
       - "&d%admitname% &7(Click to view)"
+      - "&d%refusename% &7(Click to view)"
       - ""
       - "&8&m------&5&m------&d&m------&5&m------&8&m------"
 
@@ -51,10 +52,14 @@ messages:
     admit:
       name: "[Admit]"
       command: "/tempban %player% 14d Admit -s"
+    refuse:
+      name: "[Refuse]"
+      command: "/tempban %player% 30d Refusal to SS -s"
 
   title:
 
     start:
+
       # Here you can set a title that will be sent to the user when it is put into hack control.
       enable: true
 
@@ -68,6 +73,7 @@ messages:
       fade_out: 1
 
     finish:
+
       # Here you can set a title that will be sent to the user when it is leaving the hack control.
       enable: true
 
@@ -85,8 +91,10 @@ messages:
     # Here you can set a chat format that will be used during the hack control.
     enable: true
 
+    # Sets the Chat Format of the Control server.
     format: "%state%%player% &7» &f%message%"
 
+    # Set a prefix for users (suspect and staffer) in the chat.
     states:
       suspect: "&b&lSUSPECT &b"
       staffer: "&c&lSTAFFER &c"

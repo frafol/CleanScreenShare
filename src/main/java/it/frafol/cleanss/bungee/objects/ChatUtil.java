@@ -82,6 +82,14 @@ public class ChatUtil {
 
                 commandSource.sendMessage(suggestMessage);
 
+            } else if (message.contains(BungeeMessages.CONTROL_REFUSE_NAME.get(String.class))) {
+
+                suggestMessage.setClickEvent(new ClickEvent(
+                        ClickEvent.Action.SUGGEST_COMMAND,
+                        BungeeMessages.CONTROL_REFUSE_COMMAND.get(String.class).replace("%player%", player_name.getName())));
+
+                commandSource.sendMessage(suggestMessage);
+
             } else {
 
                 commandSource.sendMessage(TextComponent.fromLegacyText(message));
