@@ -68,7 +68,6 @@ public class ChatListener {
                         .replace("%message%", event.getMessage())
                         .replace("%state%", VelocityMessages.CONTROL_CHAT_SUS.color())));
 
-
             }
         }
     }

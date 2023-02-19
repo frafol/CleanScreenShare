@@ -1,5 +1,7 @@
 package it.frafol.cleanss.bungee.objects;
 
+import com.google.common.io.ByteArrayDataOutput;
+import com.google.common.io.ByteStreams;
 import it.frafol.cleanss.bungee.CleanSS;
 import it.frafol.cleanss.bungee.enums.BungeeConfig;
 import it.frafol.cleanss.bungee.enums.BungeeMessages;
@@ -181,11 +183,23 @@ public class Utils {
         PlayerCache.getCouples().put(administrator, suspicious);
 
         if (!Objects.equals(administrator.getServer().getInfo(), proxyServer)) {
+
             administrator.connect(proxyServer);
+
+        } else {
+
+            Utils.sendChannelMessage(administrator, "ADMIN");
+
         }
 
         if (!Objects.equals(suspicious.getServer().getInfo(), proxyServer)) {
+
             suspicious.connect(proxyServer);
+
+        } else {
+
+            Utils.sendChannelMessage(suspicious, "SUSPECT");
+
         }
 
         Utils.sendStartTitle(suspicious);
@@ -223,6 +237,18 @@ public class Utils {
                     "The Control cannot be handled!");
 
         }, 2L, TimeUnit.SECONDS);
+    }
+
+    @SuppressWarnings("UnstableApiUsage")
+    public void sendChannelMessage(@NotNull ProxiedPlayer player, String type) {
+
+        final ByteArrayDataOutput buf = ByteStreams.newDataOutput();
+
+        buf.writeUTF(type);
+        buf.writeUTF(player.getName());
+
+        player.getServer().sendData("cleanss:join", buf.toByteArray());
+
     }
 
     private void sendStartTitle(ProxiedPlayer suspicious) {

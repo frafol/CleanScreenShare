@@ -1,6 +1,9 @@
 package it.frafol.cleanss.velocity.objects;
 
+import com.google.common.io.ByteArrayDataOutput;
+import com.google.common.io.ByteStreams;
 import com.velocitypowered.api.command.CommandSource;
+import com.velocitypowered.api.network.ProtocolVersion;
 import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.server.RegisteredServer;
 import com.velocitypowered.api.scheduler.ScheduledTask;
@@ -181,11 +184,29 @@ public class Utils {
         }
 
         if (administrator.getCurrentServer().get().getServer() != proxyServer) {
+
             administrator.createConnectionRequest(proxyServer).fireAndForget();
+
+        } else {
+
+            Utils.sendChannelMessage(administrator, "ADMIN");
+
+            if (administrator.getProtocolVersion().getProtocol() >= ProtocolVersion.getProtocolVersion(759).getProtocol()) {
+                Utils.sendChannelMessage(administrator, "NO_CHAT");
+            }
         }
 
         if (suspicious.getCurrentServer().get().getServer() != proxyServer) {
+
             suspicious.createConnectionRequest(proxyServer).fireAndForget();
+
+        } else {
+
+            Utils.sendChannelMessage(suspicious, "SUSPECT");
+
+            if (suspicious.getProtocolVersion().getProtocol() >= ProtocolVersion.getProtocolVersion(759).getProtocol()) {
+                Utils.sendChannelMessage(suspicious, "NO_CHAT");
+            }
         }
 
         Utils.sendStartTitle(suspicious);
@@ -199,6 +220,18 @@ public class Utils {
                 new Placeholder("hackername", VelocityMessages.CONTROL_CHEATER_NAME.color()),
                 new Placeholder("admitname", VelocityMessages.CONTROL_ADMIT_NAME.color()),
                 new Placeholder("refusename", VelocityMessages.CONTROL_REFUSE_NAME.color()));
+
+    }
+
+    @SuppressWarnings("UnstableApiUsage")
+    public void sendChannelMessage(@NotNull Player player, String type) {
+
+        final ByteArrayDataOutput buf = ByteStreams.newDataOutput();
+
+        buf.writeUTF(type);
+        buf.writeUTF(player.getUsername());
+        player.getCurrentServer().ifPresent(sv ->
+                sv.sendPluginMessage(CleanSS.channel_join, buf.toByteArray()));
 
     }
 
