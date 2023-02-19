@@ -3,8 +3,8 @@ package it.frafol.cleanss.velocity.enums;
 import com.velocitypowered.api.command.CommandSource;
 import com.velocitypowered.api.proxy.Player;
 import it.frafol.cleanss.velocity.CleanSS;
-import it.frafol.cleanss.velocity.objects.ChatUtil;
 import it.frafol.cleanss.velocity.objects.Placeholder;
+import it.frafol.cleanss.velocity.objects.Utils;
 import org.jetbrains.annotations.NotNull;
 
 public enum VelocityMessages {
@@ -85,7 +85,7 @@ public enum VelocityMessages {
     }
 
     public void sendList(CommandSource commandSource, Player player_name, Placeholder... placeHolder) {
-        ChatUtil.sendFormattedList(this, commandSource, player_name, placeHolder);
+        Utils.sendFormattedList(this, commandSource, player_name, placeHolder);
     }
 
 }

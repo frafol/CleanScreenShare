@@ -1,8 +1,8 @@
 package it.frafol.cleanss.bungee.enums;
 
 import it.frafol.cleanss.bungee.CleanSS;
-import it.frafol.cleanss.bungee.objects.ChatUtil;
 import it.frafol.cleanss.bungee.objects.Placeholder;
+import it.frafol.cleanss.bungee.objects.Utils;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import org.jetbrains.annotations.NotNull;
@@ -85,7 +85,7 @@ public enum BungeeMessages {
     }
 
     public void sendList(CommandSender commandSource, ProxiedPlayer player_name, Placeholder... placeHolder) {
-        ChatUtil.sendFormattedList(this, commandSource, player_name, placeHolder);
+        Utils.sendFormattedList(this, commandSource, player_name, placeHolder);
     }
 
 }

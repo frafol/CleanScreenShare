@@ -2,13 +2,14 @@ package it.frafol.cleanss.bungee.listeners;
 
 import it.frafol.cleanss.bungee.CleanSS;
 import it.frafol.cleanss.bungee.enums.BungeeConfig;
-import it.frafol.cleanss.bungee.enums.BungeeMessages;
 import it.frafol.cleanss.bungee.objects.PlayerCache;
-import net.md_5.bungee.api.chat.TextComponent;
+import it.frafol.cleanss.bungee.objects.Utils;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.connection.Server;
-import net.md_5.bungee.api.event.*;
+import net.md_5.bungee.api.event.PlayerDisconnectEvent;
+import net.md_5.bungee.api.event.PostLoginEvent;
+import net.md_5.bungee.api.event.ServerConnectEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
 import org.jetbrains.annotations.NotNull;
@@ -59,36 +60,13 @@ public class KickListener implements Listener {
 
         if (PlayerCache.getAdministrator().contains(player.getUniqueId())) {
 
-            if (instance.getValue(PlayerCache.getCouples(), player) == null) {
-                return;
-            }
-
-            PlayerCache.getSuspicious().remove(instance.getValue(PlayerCache.getCouples(), player).getUniqueId());
-            PlayerCache.getAdministrator().remove(player.getUniqueId());
-
-            instance.getValue(PlayerCache.getCouples(), player).connect(proxyServer);
-
-            instance.getValue(PlayerCache.getCouples(), player).sendMessage(TextComponent.fromLegacyText(BungeeMessages.FINISHSUS.color()
-                    .replace("%prefix%", BungeeMessages.PREFIX.color())));
-
-            PlayerCache.getCouples().remove(player);
-
-            return;
+            Utils.finishControl(instance.getValue(PlayerCache.getCouples(), player), player, proxyServer);
 
         }
 
         if (PlayerCache.getSuspicious().contains(player.getUniqueId())) {
 
-            PlayerCache.getAdministrator().remove(instance.getKey(PlayerCache.getCouples(), player).getUniqueId());
-            PlayerCache.getSuspicious().remove(player.getUniqueId());
-
-            instance.getKey(PlayerCache.getCouples(), player).connect(proxyServer);
-
-            instance.getKey(PlayerCache.getCouples(), player).sendMessage(TextComponent.fromLegacyText(BungeeMessages.LEAVESUS.color()
-                    .replace("%prefix%", BungeeMessages.PREFIX.color())
-                    .replace("%player%", player.getName())));
-
-            PlayerCache.getCouples().remove(instance.getKey(PlayerCache.getCouples(), player));
+            Utils.finishControl(player, instance.getKey(PlayerCache.getCouples(), player), proxyServer);
 
         }
     }
