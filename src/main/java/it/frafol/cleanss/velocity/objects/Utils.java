@@ -116,24 +116,7 @@ public class Utils {
 
                 suspicious.createConnectionRequest(proxyServer).fireAndForget();
 
-                if (VelocityMessages.CONTROLFINISH_USETITLE.get(Boolean.class)) {
-
-                    Title controlTitle = Title.title(
-
-                            LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.CONTROLFINISH_TITLE.color()),
-                            LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.CONTROLFINISH_SUBTITLE.color()),
-
-                            Title.Times.times(
-                                    Duration.ofSeconds(VelocityMessages.CONTROLFINISH_FADEIN.get(Integer.class)),
-                                    Duration.ofSeconds(VelocityMessages.CONTROLFINISH_STAY.get(Integer.class)),
-                                    Duration.ofSeconds(VelocityMessages.CONTROLFINISH_FADEOUT.get(Integer.class))));
-
-                    titleTask = instance.getServer().getScheduler().buildTask(
-                                    instance, () -> suspicious.showTitle(controlTitle))
-                            .delay(VelocityMessages.CONTROLFINISH_DELAY.get(Integer.class), TimeUnit.SECONDS)
-                            .schedule();
-
-                }
+                Utils.sendEndTitle(suspicious);
 
                 suspicious.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.FINISHSUS.color().replace("%prefix%", VelocityMessages.PREFIX.color())));
 
@@ -153,24 +136,7 @@ public class Utils {
 
             suspicious.createConnectionRequest(proxyServer).fireAndForget();
 
-            if (VelocityMessages.CONTROLFINISH_USETITLE.get(Boolean.class)) {
-
-                Title controlTitle = Title.title(
-
-                        LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.CONTROLFINISH_TITLE.color()),
-                        LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.CONTROLFINISH_SUBTITLE.color()),
-
-                        Title.Times.times(
-                                Duration.ofSeconds(VelocityMessages.CONTROLFINISH_FADEIN.get(Integer.class)),
-                                Duration.ofSeconds(VelocityMessages.CONTROLFINISH_STAY.get(Integer.class)),
-                                Duration.ofSeconds(VelocityMessages.CONTROLFINISH_FADEOUT.get(Integer.class))));
-
-                titleTask = instance.getServer().getScheduler().buildTask(
-                                instance, () -> suspicious.showTitle(controlTitle))
-                        .delay(VelocityMessages.CONTROLFINISH_DELAY.get(Integer.class), TimeUnit.SECONDS)
-                        .schedule();
-
-            }
+            Utils.sendEndTitle(suspicious);
 
             suspicious.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.FINISHSUS.color()
                     .replace("%prefix%", VelocityMessages.PREFIX.color())));
@@ -232,7 +198,7 @@ public class Utils {
         return !(invocation instanceof Player);
     }
 
-    public void sendStartTitle(Player player) {
+    private void sendStartTitle(Player suspicious) {
 
         if (VelocityMessages.CONTROL_USETITLE.get(Boolean.class)) {
 
@@ -247,8 +213,30 @@ public class Utils {
                             Duration.ofSeconds(VelocityMessages.CONTROL_FADEOUT.get(Integer.class))));
 
             titleTask = instance.getServer().getScheduler().buildTask(
-                            instance, () -> player.showTitle(controlTitle))
+                            instance, () -> suspicious.showTitle(controlTitle))
                     .delay(VelocityMessages.CONTROL_DELAY.get(Integer.class), TimeUnit.SECONDS)
+                    .schedule();
+
+        }
+    }
+
+    private void sendEndTitle(Player suspicious) {
+
+        if (VelocityMessages.CONTROLFINISH_USETITLE.get(Boolean.class)) {
+
+            Title controlTitle = Title.title(
+
+                    LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.CONTROLFINISH_TITLE.color()),
+                    LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.CONTROLFINISH_SUBTITLE.color()),
+
+                    Title.Times.times(
+                            Duration.ofSeconds(VelocityMessages.CONTROLFINISH_FADEIN.get(Integer.class)),
+                            Duration.ofSeconds(VelocityMessages.CONTROLFINISH_STAY.get(Integer.class)),
+                            Duration.ofSeconds(VelocityMessages.CONTROLFINISH_FADEOUT.get(Integer.class))));
+
+            titleTask = instance.getServer().getScheduler().buildTask(
+                            instance, () -> suspicious.showTitle(controlTitle))
+                    .delay(VelocityMessages.CONTROLFINISH_DELAY.get(Integer.class), TimeUnit.SECONDS)
                     .schedule();
 
         }

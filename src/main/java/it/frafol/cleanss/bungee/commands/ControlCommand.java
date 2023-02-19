@@ -5,6 +5,7 @@ import it.frafol.cleanss.bungee.enums.BungeeConfig;
 import it.frafol.cleanss.bungee.enums.BungeeMessages;
 import it.frafol.cleanss.bungee.objects.Placeholder;
 import it.frafol.cleanss.bungee.objects.PlayerCache;
+import it.frafol.cleanss.bungee.objects.Utils;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.Title;
@@ -111,41 +112,7 @@ public class ControlCommand extends Command {
 							return;
 						}
 
-						if (!Objects.equals(sender.getServer().getInfo(), proxyServer)) {
-							sender.connect(proxyServer);
-						}
-
-						if (!Objects.equals(player.get().getServer().getInfo(), proxyServer)) {
-							player.get().connect(proxyServer);
-						}
-
-						PlayerCache.getAdministrator().add(sender.getUniqueId());
-						PlayerCache.getSuspicious().add(player.get().getUniqueId());
-						PlayerCache.getCouples().put(sender, player.get());
-
-						if (BungeeMessages.CONTROL_USETITLE.get(Boolean.class)) {
-
-							final Title title = ProxyServer.getInstance().createTitle();
-
-							title.fadeIn(BungeeMessages.CONTROL_FADEIN.get(Integer.class) * 20);
-							title.stay(BungeeMessages.CONTROL_STAY.get(Integer.class) * 20);
-							title.fadeOut(BungeeMessages.CONTROL_FADEOUT.get(Integer.class) * 20);
-
-							title.title(new TextComponent(BungeeMessages.CONTROL_TITLE.color()));
-							title.subTitle(new TextComponent(BungeeMessages.CONTROL_SUBTITLE.color()));
-
-							ProxyServer.getInstance().getScheduler().schedule(instance, () ->
-									title.send(player.get()), BungeeMessages.CONTROL_DELAY.get(Integer.class), TimeUnit.SECONDS);
-						}
-
-							player.get().sendMessage(TextComponent.fromLegacyText(BungeeMessages.MAINSUS.color()
-								.replace("%prefix%", BungeeMessages.PREFIX.color())));
-
-						BungeeMessages.CONTROL_FORMAT.sendList(sender, player.get(),
-								new Placeholder("cleanname", BungeeMessages.CONTROL_CLEAN_NAME.color()),
-								new Placeholder("hackername", BungeeMessages.CONTROL_CHEATER_NAME.color()),
-								new Placeholder("admitname", BungeeMessages.CONTROL_ADMIT_NAME.color()),
-								new Placeholder("refusename", BungeeMessages.CONTROL_REFUSE_NAME.color()));
+						Utils.startControl(player.get(), sender, proxyServer);
 
 					});
 

@@ -15,6 +15,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -58,7 +59,6 @@ public class Utils {
 
     public void sendList(CommandSender commandSource, @NotNull List<String> stringList, ProxiedPlayer player_name) {
 
-
         for (String message : stringList) {
 
             TextComponent suggestMessage = new TextComponent(message);
@@ -100,7 +100,6 @@ public class Utils {
                 commandSource.sendMessage(TextComponent.fromLegacyText(message));
 
             }
-
         }
     }
 
@@ -128,20 +127,7 @@ public class Utils {
 
                 administrator.connect(proxyServer);
 
-                if (BungeeMessages.CONTROLFINISH_USETITLE.get(Boolean.class)) {
-
-                    final Title title = ProxyServer.getInstance().createTitle();
-
-                    title.fadeIn(BungeeMessages.CONTROLFINISH_FADEIN.get(Integer.class) * 20);
-                    title.stay(BungeeMessages.CONTROLFINISH_STAY.get(Integer.class) * 20);
-                    title.fadeOut(BungeeMessages.CONTROLFINISH_FADEOUT.get(Integer.class) * 20);
-
-                    title.title(new TextComponent(BungeeMessages.CONTROLFINISH_TITLE.color()));
-                    title.subTitle(new TextComponent(BungeeMessages.CONTROLFINISH_SUBTITLE.color()));
-
-                    ProxyServer.getInstance().getScheduler().schedule(instance, () ->
-                            title.send(suspicious), BungeeMessages.CONTROLFINISH_DELAY.get(Integer.class), TimeUnit.SECONDS);
-                }
+                Utils.sendEndTitle(suspicious);
 
                 administrator.sendMessage(TextComponent.fromLegacyText(BungeeMessages.FINISHSUS.color().replace("%prefix%", BungeeMessages.PREFIX.color())));
 
@@ -165,20 +151,7 @@ public class Utils {
 
             suspicious.connect(proxyServer);
 
-            if (BungeeMessages.CONTROLFINISH_USETITLE.get(Boolean.class)) {
-
-                final Title title = ProxyServer.getInstance().createTitle();
-
-                title.fadeIn(BungeeMessages.CONTROLFINISH_FADEIN.get(Integer.class) * 20);
-                title.stay(BungeeMessages.CONTROLFINISH_STAY.get(Integer.class) * 20);
-                title.fadeOut(BungeeMessages.CONTROLFINISH_FADEOUT.get(Integer.class) * 20);
-
-                title.title(new TextComponent(BungeeMessages.CONTROLFINISH_TITLE.color()));
-                title.subTitle(new TextComponent(BungeeMessages.CONTROLFINISH_SUBTITLE.color()));
-
-                ProxyServer.getInstance().getScheduler().schedule(instance, () ->
-                        title.send(suspicious), BungeeMessages.CONTROLFINISH_DELAY.get(Integer.class), TimeUnit.SECONDS);
-            }
+            Utils.sendEndTitle(suspicious);
 
             suspicious.sendMessage(TextComponent.fromLegacyText(BungeeMessages.FINISHSUS.color()
                     .replace("%prefix%", BungeeMessages.PREFIX.color())));
@@ -199,5 +172,72 @@ public class Utils {
             PlayerCache.getCouples().remove(administrator);
 
         }
+    }
+
+    public void startControl(@NotNull ProxiedPlayer suspicious, @NotNull ProxiedPlayer administrator, ServerInfo proxyServer) {
+
+        PlayerCache.getAdministrator().add(administrator.getUniqueId());
+        PlayerCache.getSuspicious().add(suspicious.getUniqueId());
+        PlayerCache.getCouples().put(administrator, suspicious);
+
+        if (!Objects.equals(administrator.getServer().getInfo(), proxyServer)) {
+            administrator.connect(proxyServer);
+        }
+
+        if (!Objects.equals(suspicious.getServer().getInfo(), proxyServer)) {
+            suspicious.connect(proxyServer);
+        }
+
+        Utils.sendStartTitle(suspicious);
+
+        suspicious.sendMessage(TextComponent.fromLegacyText(BungeeMessages.MAINSUS.color()
+                .replace("%prefix%", BungeeMessages.PREFIX.color())));
+
+        BungeeMessages.CONTROL_FORMAT.sendList(administrator, suspicious,
+                new Placeholder("cleanname", BungeeMessages.CONTROL_CLEAN_NAME.color()),
+                new Placeholder("hackername", BungeeMessages.CONTROL_CHEATER_NAME.color()),
+                new Placeholder("admitname", BungeeMessages.CONTROL_ADMIT_NAME.color()),
+                new Placeholder("refusename", BungeeMessages.CONTROL_REFUSE_NAME.color()));
+
+    }
+
+    private void sendStartTitle(ProxiedPlayer suspicious) {
+
+        if (!BungeeMessages.CONTROL_USETITLE.get(Boolean.class)) {
+            return;
+        }
+
+        final Title title = ProxyServer.getInstance().createTitle();
+
+        title.fadeIn(BungeeMessages.CONTROL_FADEIN.get(Integer.class) * 20);
+        title.stay(BungeeMessages.CONTROL_STAY.get(Integer.class) * 20);
+        title.fadeOut(BungeeMessages.CONTROL_FADEOUT.get(Integer.class) * 20);
+
+        title.title(new TextComponent(BungeeMessages.CONTROL_TITLE.color()));
+        title.subTitle(new TextComponent(BungeeMessages.CONTROL_SUBTITLE.color()));
+
+        ProxyServer.getInstance().getScheduler().schedule(instance, () ->
+                title.send(suspicious), BungeeMessages.CONTROL_DELAY.get(Integer.class), TimeUnit.SECONDS);
+
+    }
+
+    private void sendEndTitle(ProxiedPlayer suspicious) {
+
+        if (!BungeeMessages.CONTROLFINISH_USETITLE.get(Boolean.class)) {
+            return;
+        }
+
+        final Title title = ProxyServer.getInstance().createTitle();
+
+        title.fadeIn(BungeeMessages.CONTROLFINISH_FADEIN.get(Integer.class) * 20);
+        title.stay(BungeeMessages.CONTROLFINISH_STAY.get(Integer.class) * 20);
+        title.fadeOut(BungeeMessages.CONTROLFINISH_FADEOUT.get(Integer.class) * 20);
+
+        title.title(new TextComponent(BungeeMessages.CONTROLFINISH_TITLE.color()));
+        title.subTitle(new TextComponent(BungeeMessages.CONTROLFINISH_SUBTITLE.color()));
+
+        ProxyServer.getInstance().getScheduler().schedule(instance, () ->
+                title.send(suspicious), BungeeMessages.CONTROLFINISH_DELAY.get(Integer.class), TimeUnit.SECONDS);
+
     }
 }
