@@ -206,6 +206,10 @@ public class Utils {
 
         instance.getProxy().getScheduler().schedule(instance, () -> {
 
+            if (!(PlayerCache.getSuspicious().contains(suspicious.getUniqueId()) && PlayerCache.getAdministrator().contains(administrator.getUniqueId()))) {
+                return;
+            }
+
             if (suspicious.getServer().getInfo().equals(proxyServer) && administrator.getServer().getInfo().equals(proxyServer)) {
                 return;
             }

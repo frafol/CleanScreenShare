@@ -206,6 +206,10 @@ public class Utils {
 
         instance.getServer().getScheduler().buildTask(instance, () -> {
 
+            if (!(PlayerCache.getSuspicious().contains(suspicious.getUniqueId()) && PlayerCache.getAdministrator().contains(administrator.getUniqueId()))) {
+                return;
+            }
+
             if (!(suspicious.getCurrentServer().isPresent() || administrator.getCurrentServer().isPresent())) {
                 return;
             }
