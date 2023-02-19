@@ -17,6 +17,7 @@ import org.jetbrains.annotations.NotNull;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -156,6 +157,12 @@ public class Utils {
 
             PlayerCache.getCouples().remove(administrator);
 
+        } else {
+
+            PlayerCache.getAdministrator().remove(administrator.getUniqueId());
+            PlayerCache.getSuspicious().remove(suspicious.getUniqueId());
+            PlayerCache.getCouples().remove(administrator);
+
         }
     }
 
@@ -182,6 +189,7 @@ public class Utils {
         }
 
         Utils.sendStartTitle(suspicious);
+        Utils.checkForErrors(suspicious, administrator, proxyServer);
 
         suspicious.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.MAINSUS.color()
                 .replace("%prefix%", VelocityMessages.PREFIX.color())));
@@ -192,6 +200,33 @@ public class Utils {
                 new Placeholder("admitname", VelocityMessages.CONTROL_ADMIT_NAME.color()),
                 new Placeholder("refusename", VelocityMessages.CONTROL_REFUSE_NAME.color()));
 
+    }
+
+    private void checkForErrors(@NotNull Player suspicious, @NotNull Player administrator, RegisteredServer proxyServer) {
+
+        instance.getServer().getScheduler().buildTask(instance, () -> {
+
+            if (!(suspicious.getCurrentServer().isPresent() || administrator.getCurrentServer().isPresent())) {
+                return;
+            }
+
+            if (suspicious.getCurrentServer().get().getServer().equals(proxyServer) && administrator.getCurrentServer().get().getServer().equals(proxyServer)) {
+                return;
+            }
+
+            final Optional<RegisteredServer> fallbackServer = instance.getServer().getServer(VelocityConfig.CONTROL_FALLBACK.get(String.class));
+
+            if (!fallbackServer.isPresent()) {
+                return;
+            }
+
+            Utils.finishControl(suspicious, administrator, fallbackServer.get());
+            administrator.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.NO_EXIST.color()
+                    .replace("%prefix%", VelocityMessages.PREFIX.color())));
+            instance.getLogger().error("Your control server is not configured correctly or is crashed, please check the configuration file. " +
+                    "The Control cannot be handled!");
+
+        }).delay(2L, TimeUnit.SECONDS).schedule();
     }
 
     public boolean isConsole(CommandSource invocation) {

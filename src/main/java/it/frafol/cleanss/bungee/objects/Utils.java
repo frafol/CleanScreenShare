@@ -189,6 +189,7 @@ public class Utils {
         }
 
         Utils.sendStartTitle(suspicious);
+        Utils.checkForErrors(suspicious, administrator, proxyServer);
 
         suspicious.sendMessage(TextComponent.fromLegacyText(BungeeMessages.MAINSUS.color()
                 .replace("%prefix%", BungeeMessages.PREFIX.color())));
@@ -199,6 +200,25 @@ public class Utils {
                 new Placeholder("admitname", BungeeMessages.CONTROL_ADMIT_NAME.color()),
                 new Placeholder("refusename", BungeeMessages.CONTROL_REFUSE_NAME.color()));
 
+    }
+
+    private void checkForErrors(ProxiedPlayer suspicious, ProxiedPlayer administrator, ServerInfo proxyServer) {
+
+        instance.getProxy().getScheduler().schedule(instance, () -> {
+
+            if (suspicious.getServer().getInfo().equals(proxyServer) && administrator.getServer().getInfo().equals(proxyServer)) {
+                return;
+            }
+
+            final ServerInfo fallbackServer = instance.getProxy().getServerInfo(BungeeConfig.CONTROL_FALLBACK.get(String.class));
+
+            Utils.finishControl(suspicious, administrator, fallbackServer);
+            administrator.sendMessage(TextComponent.fromLegacyText(BungeeMessages.NO_EXIST.color()
+                    .replace("%prefix%", BungeeMessages.PREFIX.color())));
+            instance.getLogger().severe("Your control server is not configured correctly or is crashed, please check the configuration file. " +
+                    "The Control cannot be handled!");
+
+        }, 2L, TimeUnit.SECONDS);
     }
 
     private void sendStartTitle(ProxiedPlayer suspicious) {

@@ -160,28 +160,48 @@ public class CleanSS {
 	}
 
 	private void UpdateChecker() {
-		if (VelocityConfig.UPDATE_CHECK.get(Boolean.class)) {
-			new UpdateCheck(this).getVersion(version -> {
-				if (container.getDescription().getVersion().isPresent()) {
-					if (!container.getDescription().getVersion().get().equals(version)) {
-						logger.warn("There is a new update available, download it on SpigotMC!");
-					}
-				}
-			});
+
+		if (!VelocityConfig.UPDATE_CHECK.get(Boolean.class)) {
+			return;
 		}
+
+		if (!container.getDescription().getVersion().isPresent()) {
+			return;
+		}
+
+		new UpdateCheck(this).getVersion(version -> {
+
+			if (Double.parseDouble(container.getDescription().getVersion().get()) < Double.parseDouble(version)) {
+				logger.warn("There is a new update available, download it on SpigotMC!");
+			}
+
+			if (Double.parseDouble(container.getDescription().getVersion().get()) > Double.parseDouble(version)) {
+				logger.warn("You are using a development version, please report any bugs!");
+			}
+
+		});
 	}
 
 	public void UpdateChecker(Player player) {
-		if (VelocityConfig.UPDATE_CHECK.get(Boolean.class)) {
-			new UpdateCheck(this).getVersion(version -> {
-				if (container.getDescription().getVersion().isPresent()) {
-					if (!container.getDescription().getVersion().get().equals(version)) {
-						player.sendMessage(LegacyComponentSerializer.legacy('§')
-								.deserialize("§e[CleanScreenShare] There is a new update available, download it on SpigotMC!"));
-					}
-				}
-			});
+
+		if (!VelocityConfig.UPDATE_CHECK.get(Boolean.class)) {
+			return;
 		}
+
+		if (!container.getDescription().getVersion().isPresent()) {
+			return;
+		}
+
+		new UpdateCheck(this).getVersion(version -> {
+
+			if (!(Double.parseDouble(container.getDescription().getVersion().get()) < Double.parseDouble(version))) {
+				return;
+			}
+
+			player.sendMessage(LegacyComponentSerializer.legacy('§')
+					.deserialize("§e[CleanScreenShare] There is a new update available, download it on SpigotMC!"));
+
+		});
 	}
 
 	public <K, V> K getKey(@NotNull Map<K, V> map, V value) {

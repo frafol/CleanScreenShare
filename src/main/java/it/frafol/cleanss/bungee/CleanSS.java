@@ -99,23 +99,37 @@ public class CleanSS extends Plugin {
 	}
 
 	private void UpdateChecker() {
-		if (BungeeConfig.UPDATE_CHECK.get(Boolean.class)) {
-			new UpdateCheck(this).getVersion(version -> {
-				if (!this.getDescription().getVersion().equals(version)) {
-					getLogger().warning("§eThere is a new update available, download it on SpigotMC!");
-				}
-			});
+
+		if (!BungeeConfig.UPDATE_CHECK.get(Boolean.class)) {
+			return;
 		}
+
+		new UpdateCheck(this).getVersion(version -> {
+
+			if (Double.parseDouble(getDescription().getVersion()) < Double.parseDouble(version)) {
+				getLogger().warning("§eThere is a new update available, download it on SpigotMC!");
+			}
+
+			if (Double.parseDouble(getDescription().getVersion()) > Double.parseDouble(version)) {
+				getLogger().warning("§eYou are using a development version, please report any bugs!");
+			}
+
+		});
 	}
 
 	public void UpdateChecker(ProxiedPlayer player) {
-		if (BungeeConfig.UPDATE_CHECK.get(Boolean.class)) {
-			new UpdateCheck(this).getVersion(version -> {
-				if (!this.getDescription().getVersion().equals(version)) {
-					player.sendMessage(TextComponent.fromLegacyText("§e[CleanScreenShare] There is a new update available, download it on SpigotMC!"));
-				}
-			});
+
+		if (!BungeeConfig.UPDATE_CHECK.get(Boolean.class)) {
+			return;
 		}
+
+		new UpdateCheck(this).getVersion(version -> {
+
+			if (Double.parseDouble(getDescription().getVersion()) < Double.parseDouble(version)) {
+				player.sendMessage(TextComponent.fromLegacyText("§e[CleanScreenShare] There is a new update available, download it on SpigotMC!"));
+			}
+
+		});
 	}
 
 	private void loadLibraries() {
