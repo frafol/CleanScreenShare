@@ -35,7 +35,7 @@ import java.util.Map;
 @Plugin(
 		id = "cleanscreenshare",
 		name = "CleanScreenShare",
-		version = "1.1.1",
+		version = "1.1.2",
 		description = "Make control hacks on your players.",
 		authors = { "frafol" })
 
@@ -171,11 +171,11 @@ public class CleanSS {
 
 		new UpdateCheck(this).getVersion(version -> {
 
-			if (Double.parseDouble(container.getDescription().getVersion().get()) < Double.parseDouble(version)) {
+			if (Integer.parseInt(container.getDescription().getVersion().get().replace(".", "")) < Integer.parseInt(version.replace(".", ""))) {
 				logger.warn("There is a new update available, download it on SpigotMC!");
 			}
 
-			if (Double.parseDouble(container.getDescription().getVersion().get()) > Double.parseDouble(version)) {
+			if (Integer.parseInt(container.getDescription().getVersion().get().replace(".", "")) > Integer.parseInt(version.replace(".", ""))) {
 				logger.warn("You are using a development version, please report any bugs!");
 			}
 
@@ -194,7 +194,8 @@ public class CleanSS {
 
 		new UpdateCheck(this).getVersion(version -> {
 
-			if (!(Double.parseDouble(container.getDescription().getVersion().get()) < Double.parseDouble(version))) {
+			if (!(Integer.parseInt(container.getDescription().getVersion().get().replace(".", ""))
+					< Integer.parseInt(version.replace(".", "")))) {
 				return;
 			}
 

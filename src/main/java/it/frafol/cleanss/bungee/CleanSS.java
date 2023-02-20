@@ -106,11 +106,11 @@ public class CleanSS extends Plugin {
 
 		new UpdateCheck(this).getVersion(version -> {
 
-			if (Double.parseDouble(getDescription().getVersion()) < Double.parseDouble(version)) {
+			if (Integer.parseInt(getDescription().getVersion().replace(".", "")) < Integer.parseInt(version.replace(".", ""))) {
 				getLogger().warning("§eThere is a new update available, download it on SpigotMC!");
 			}
 
-			if (Double.parseDouble(getDescription().getVersion()) > Double.parseDouble(version)) {
+			if (Integer.parseInt(getDescription().getVersion().replace(".", "")) > Integer.parseInt(version.replace(".", ""))) {
 				getLogger().warning("§eYou are using a development version, please report any bugs!");
 			}
 
@@ -125,7 +125,7 @@ public class CleanSS extends Plugin {
 
 		new UpdateCheck(this).getVersion(version -> {
 
-			if (Double.parseDouble(getDescription().getVersion()) < Double.parseDouble(version)) {
+			if (Integer.parseInt(getDescription().getVersion().replace(".", "")) < Integer.parseInt(version.replace(".", ""))) {
 				player.sendMessage(TextComponent.fromLegacyText("§e[CleanScreenShare] There is a new update available, download it on SpigotMC!"));
 			}
 
