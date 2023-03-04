@@ -94,6 +94,11 @@ public class CleanSS {
 
 		}
 
+		if (!getUnsignedVelocityAddon()) {
+			getLogger().warn("To get the full functionality of CleanScreenShare for versions 1.19.1 and later on Velocity, " +
+					"consider downloading https://github.com/4drian3d/UnSignedVelocity/releases/latest");
+		}
+
 		UpdateChecker();
 		logger.info("§7Plugin §dsuccessfully §7loaded!");
 
@@ -228,4 +233,10 @@ public class CleanSS {
 		}
 		return null;
 	}
+
+	@SuppressWarnings("ALL")
+	public boolean getUnsignedVelocityAddon() {
+		return getServer().getPluginManager().isLoaded("unsignedvelocity");
+	}
+
 }

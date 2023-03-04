@@ -30,7 +30,7 @@ public class ChatListener {
 
         if (player.getCurrentServer().get().getServerInfo().getName().equals(VelocityConfig.CONTROL.get(String.class))) {
 
-            if (!(player.getProtocolVersion().getProtocol() >= ProtocolVersion.getProtocolVersion(759).getProtocol())) {
+            if (!(player.getProtocolVersion().getProtocol() >= ProtocolVersion.getProtocolVersion(759).getProtocol() && !instance.getUnsignedVelocityAddon())) {
 
                 event.setResult(PlayerChatEvent.ChatResult.denied());
 
