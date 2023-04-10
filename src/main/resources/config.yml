@@ -12,6 +12,12 @@ settings:
   server_name: "Control"
   fallback_server_name: "Hub"
 
+  # This will check if you have been properly connected to the control server,
+  # and if not, it will exit the control. If you encounter an error in the console
+  # telling you that the server may be offline or crashed,
+  # but you are sure that this is active, disable this feature.
+  check_for_problems: true
+
   update_check: true
   stats: true
 

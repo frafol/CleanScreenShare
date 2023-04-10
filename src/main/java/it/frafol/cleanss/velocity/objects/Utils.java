@@ -210,7 +210,10 @@ public class Utils {
         }
 
         Utils.sendStartTitle(suspicious);
-        Utils.checkForErrors(suspicious, administrator, proxyServer);
+
+        if (VelocityConfig.CHECK_FOR_PROBLEMS.get(Boolean.class)) {
+            Utils.checkForErrors(suspicious, administrator, proxyServer);
+        }
 
         suspicious.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.MAINSUS.color()
                 .replace("%prefix%", VelocityMessages.PREFIX.color())));

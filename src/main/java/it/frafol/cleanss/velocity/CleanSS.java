@@ -35,7 +35,7 @@ import java.util.Map;
 @Plugin(
 		id = "cleanscreenshare",
 		name = "CleanScreenShare",
-		version = "1.1.2",
+		version = "1.1.3",
 		description = "Make control hacks on your players.",
 		authors = { "frafol" })
 
@@ -119,7 +119,7 @@ public class CleanSS {
 		Library yaml = Library.builder()
 				.groupId("me{}carleslc{}Simple-YAML")
 				.artifactId("Simple-Yaml")
-				.version("1.8.3")
+				.version("1.8.4")
 				.build();
 
 		velocityLibraryManager.addJitPack();

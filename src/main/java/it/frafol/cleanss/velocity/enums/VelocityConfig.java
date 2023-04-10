@@ -9,6 +9,8 @@ public enum VelocityConfig {
     BYPASS_PERMISSION("permissions.bypass"),
     RELOAD_PERMISSION("permissions.reload"),
 
+    CHECK_FOR_PROBLEMS("settings.check_for_problems"),
+
     UPDATE_CHECK("settings.update_check"),
 
     CONTROL("settings.server_name"),

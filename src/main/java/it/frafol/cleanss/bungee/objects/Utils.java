@@ -183,27 +183,22 @@ public class Utils {
         PlayerCache.getCouples().put(administrator, suspicious);
 
         if (!Objects.equals(administrator.getServer().getInfo(), proxyServer)) {
-
             administrator.connect(proxyServer);
-
         } else {
-
             Utils.sendChannelMessage(administrator, "ADMIN");
-
         }
 
         if (!Objects.equals(suspicious.getServer().getInfo(), proxyServer)) {
-
             suspicious.connect(proxyServer);
-
         } else {
-
             Utils.sendChannelMessage(suspicious, "SUSPECT");
-
         }
 
         Utils.sendStartTitle(suspicious);
-        Utils.checkForErrors(suspicious, administrator, proxyServer);
+
+        if (BungeeConfig.CHECK_FOR_PROBLEMS.get(Boolean.class)) {
+            Utils.checkForErrors(suspicious, administrator, proxyServer);
+        }
 
         suspicious.sendMessage(TextComponent.fromLegacyText(BungeeMessages.MAINSUS.color()
                 .replace("%prefix%", BungeeMessages.PREFIX.color())));
