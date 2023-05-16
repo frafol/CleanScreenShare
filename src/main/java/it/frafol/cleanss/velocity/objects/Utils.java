@@ -171,10 +171,6 @@ public class Utils {
 
     public void startControl(@NotNull Player suspicious, @NotNull Player administrator, RegisteredServer proxyServer) {
 
-        PlayerCache.getAdministrator().add(administrator.getUniqueId());
-        PlayerCache.getSuspicious().add(suspicious.getUniqueId());
-        PlayerCache.getCouples().put(administrator, suspicious);
-
         if (!administrator.getCurrentServer().isPresent()) {
             return;
         }
@@ -194,6 +190,7 @@ public class Utils {
             if (administrator.getProtocolVersion().getProtocol() >= ProtocolVersion.getProtocolVersion(759).getProtocol()) {
                 Utils.sendChannelMessage(administrator, "NO_CHAT");
             }
+
         }
 
         if (suspicious.getCurrentServer().get().getServer() != proxyServer) {
@@ -207,7 +204,12 @@ public class Utils {
             if (suspicious.getProtocolVersion().getProtocol() >= ProtocolVersion.getProtocolVersion(759).getProtocol()) {
                 Utils.sendChannelMessage(suspicious, "NO_CHAT");
             }
+
         }
+
+        PlayerCache.getAdministrator().add(administrator.getUniqueId());
+        PlayerCache.getSuspicious().add(suspicious.getUniqueId());
+        PlayerCache.getCouples().put(administrator, suspicious);
 
         Utils.sendStartTitle(suspicious);
 

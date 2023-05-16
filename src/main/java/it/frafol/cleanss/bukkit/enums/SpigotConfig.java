@@ -14,6 +14,7 @@ public enum SpigotConfig {
     HUNGER("options.prevent.player.hunger"),
     VOID("options.prevent.player.void"),
     MOVE("options.prevent.player.move"),
+    CHAT("options.prevent.player.chat"),
     SPAWN("options.teleport_to_spawn_on_join"),
     GAMEMODE("options.change_gamemode_to_adventure_on_join"),
 

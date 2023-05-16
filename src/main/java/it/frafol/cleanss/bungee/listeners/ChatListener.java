@@ -38,6 +38,8 @@ public class ChatListener implements Listener {
 
             if (PlayerCache.getCouples().containsKey(player)) {
 
+                event.setCancelled(true);
+
                 player.sendMessage(TextComponent.fromLegacyText(BungeeMessages.CONTROL_CHAT_FORMAT.color()
                         .replace("%prefix%", BungeeMessages.PREFIX.color())
                         .replace("%player%", player.getName())
@@ -55,6 +57,8 @@ public class ChatListener implements Listener {
             }
 
             if (PlayerCache.getCouples().containsValue(player)) {
+
+                event.setCancelled(true);
 
                 player.sendMessage(TextComponent.fromLegacyText(BungeeMessages.CONTROL_CHAT_FORMAT.color()
                         .replace("%prefix%", BungeeMessages.PREFIX.color())

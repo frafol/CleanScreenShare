@@ -3,21 +3,17 @@ package it.frafol.cleanss.bungee.commands;
 import it.frafol.cleanss.bungee.CleanSS;
 import it.frafol.cleanss.bungee.enums.BungeeConfig;
 import it.frafol.cleanss.bungee.enums.BungeeMessages;
-import it.frafol.cleanss.bungee.objects.Placeholder;
 import it.frafol.cleanss.bungee.objects.PlayerCache;
 import it.frafol.cleanss.bungee.objects.Utils;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
-import net.md_5.bungee.api.Title;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Command;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Objects;
 import java.util.Optional;
-import java.util.concurrent.TimeUnit;
 
 public class ControlCommand extends Command {
 

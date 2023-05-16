@@ -22,6 +22,11 @@ public class PlayerListener implements Listener {
         if (PlayerCache.getNo_chat().contains(event.getPlayer().getUniqueId())) {
             event.setCancelled(true);
         }
+
+        if (SpigotConfig.CHAT.get(Boolean.class)) {
+            event.setCancelled(true);
+        }
+
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)

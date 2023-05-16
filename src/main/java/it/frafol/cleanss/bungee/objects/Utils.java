@@ -178,10 +178,6 @@ public class Utils {
 
     public void startControl(@NotNull ProxiedPlayer suspicious, @NotNull ProxiedPlayer administrator, ServerInfo proxyServer) {
 
-        PlayerCache.getAdministrator().add(administrator.getUniqueId());
-        PlayerCache.getSuspicious().add(suspicious.getUniqueId());
-        PlayerCache.getCouples().put(administrator, suspicious);
-
         if (!Objects.equals(administrator.getServer().getInfo(), proxyServer)) {
             administrator.connect(proxyServer);
         } else {
@@ -193,6 +189,10 @@ public class Utils {
         } else {
             Utils.sendChannelMessage(suspicious, "SUSPECT");
         }
+
+        PlayerCache.getAdministrator().add(administrator.getUniqueId());
+        PlayerCache.getSuspicious().add(suspicious.getUniqueId());
+        PlayerCache.getCouples().put(administrator, suspicious);
 
         Utils.sendStartTitle(suspicious);
 
