@@ -51,6 +51,10 @@ public class CleanSS extends JavaPlugin {
 			return;
 		}
 
+		if (isFolia()) {
+			getLogger().warning("Support for Folia has not been tested and is only for experimental purposes.");
+		}
+
 		getLogger().info("Loading configuration...");
 		configTextFile = new TextFile(getDataFolder().toPath(), "settings.yml");
 		cacheTextFile = new TextFile(getDataFolder().toPath(), "cache_do_not_touch.yml");
@@ -67,12 +71,15 @@ public class CleanSS extends JavaPlugin {
 
 		if (SpigotConfig.DAY_CYCLE.get(Boolean.class)) {
 
-			for (World worlds : getServer().getWorlds()) {
-				worlds.setGameRuleValue("doDaylightCycle", "false");
+			if (!isFolia()) {
+				for (World worlds : getServer().getWorlds()) {
+					worlds.setGameRuleValue("doDaylightCycle", "false");
+				}
+			} else {
+				getLogger().severe("Cannot set 'doDaylightCycle' to 'false' in Folia.");
 			}
 
 		}
-
 	}
 
 	public void onDisable() {
@@ -84,6 +91,16 @@ public class CleanSS extends JavaPlugin {
 		getLogger().info("Successfully disabled!");
 
 	}
+
+	public static boolean isFolia() {
+		try {
+			Class.forName("io.papermc.paper.threadedregions.RegionizedServerInitEvent");
+		} catch (ClassNotFoundException e) {
+			return false;
+		}
+		return true;
+	}
+
 
 	public TextFile getConfigTextFile() {
 		return configTextFile;

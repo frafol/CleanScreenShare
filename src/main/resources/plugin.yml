@@ -2,4 +2,5 @@ name: CleanScreenShare
 version: '${project.version}'
 main: it.frafol.cleanss.bukkit.CleanSS
 authors: [ frafol ]
+folia-supported: true
 description: "Addition for CleanSS (Bungee/Velocity)"
