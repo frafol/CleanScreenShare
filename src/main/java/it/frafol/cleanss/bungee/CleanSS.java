@@ -9,9 +9,14 @@ import it.frafol.cleanss.bungee.listeners.ChatListener;
 import it.frafol.cleanss.bungee.listeners.CommandListener;
 import it.frafol.cleanss.bungee.listeners.KickListener;
 import it.frafol.cleanss.bungee.listeners.ServerListener;
+import it.frafol.cleanss.bungee.objects.PlayerCache;
 import it.frafol.cleanss.bungee.objects.TextFile;
 import net.byteflux.libby.BungeeLibraryManager;
 import net.byteflux.libby.Library;
+import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.entities.Activity;
+import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Plugin;
@@ -24,6 +29,7 @@ public class CleanSS extends Plugin {
 
     private TextFile messagesTextFile;
 	private TextFile configTextFile;
+	private JDA jda;
 	private static CleanSS instance;
 
 	public static CleanSS getInstance() {
@@ -50,6 +56,10 @@ public class CleanSS extends Plugin {
 		getProxy().registerChannel("cleanss:join");
 		registerCommands();
 		registerListeners();
+
+		if (BungeeConfig.DISCORD_ENABLED.get(Boolean.class)) {
+			loadDiscord();
+		}
 
 		if (BungeeConfig.STATS.get(Boolean.class) && !getDescription().getVersion().contains("alpha")) {
 
@@ -132,6 +142,33 @@ public class CleanSS extends Plugin {
 		});
 	}
 
+	private void loadDiscord() {
+		jda = JDABuilder.createDefault(BungeeConfig.DISCORD_TOKEN.get(String.class)).enableIntents(GatewayIntent.MESSAGE_CONTENT).build();
+		updateJDA();
+	}
+
+	public JDA getJda() {
+		return jda;
+	}
+
+	public void updateJDA() {
+
+		if (!BungeeConfig.DISCORD_ENABLED.get(Boolean.class)) {
+			return;
+		}
+
+		if (jda == null) {
+			getLogger().severe("Fatal error while updating JDA. Please report this error to discord.io/futurevelopment.");
+			return;
+		}
+
+		jda.getPresence().setActivity(Activity.of(Activity.ActivityType.valueOf
+						(BungeeConfig.DISCORD_ACTIVITY_TYPE.get(String.class).toUpperCase()), BungeeConfig.DISCORD_ACTIVITY.get(String.class)
+				.replace("%players%", String.valueOf(getProxy().getOnlineCount()))
+				.replace("%suspiciouses%", String.valueOf(PlayerCache.getSuspicious().size()))));
+
+	}
+
 	private void loadLibraries() {
 
 		BungeeLibraryManager bungeeLibraryManager = new BungeeLibraryManager(this);
@@ -142,8 +179,17 @@ public class CleanSS extends Plugin {
 				.version("1.8.4")
 				.build();
 
+		Library discord = Library.builder()
+				.groupId("net{}dv8tion")
+				.artifactId("JDA")
+				.version("5.0.0-beta.5")
+				.url("https://github.com/DV8FromTheWorld/JDA/releases/download/v5.0.0-beta.5/JDA-5.0.0-beta.5-withDependencies-min.jar")
+				.build();
+
+		bungeeLibraryManager.addMavenCentral();
 		bungeeLibraryManager.addJitPack();
 		bungeeLibraryManager.loadLibrary(yaml);
+		bungeeLibraryManager.loadLibrary(discord);
 
 	}
 

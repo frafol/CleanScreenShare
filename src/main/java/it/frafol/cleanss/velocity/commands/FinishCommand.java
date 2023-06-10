@@ -75,6 +75,7 @@ public class FinishCommand implements SimpleCommand {
                 }
 
                 Utils.finishControl(player.get(), sender, proxyServer.get());
+                Utils.sendDiscordMessage(player.get(), sender, VelocityMessages.DISCORD_FINISHED.get(String.class));
 
             } else {
 

@@ -28,4 +28,24 @@ permissions:
   bypass: screenshare.bypass
   reload: screenshare.reload
 
+discord-webhook: # The Discord Integration is an experimental feature, report all problems on our Discord.
+
+  # Toggle discord feature.
+  enabled: false
+
+  # Your Discord bot's token.
+  token: ""
+
+  # Types: WATCHING, PLAYING, STREAMING.
+  activity_type: "WATCHING"
+
+  # The Discord bot's activity. You can use %players% to see the amount of players online.
+  activity: "%players% online players."
+
+  # To use CleanScreenShare with Discord, enter the ID of the chat where you want messages to be sent.
+  channel_id: ""
+
+  # The 'title' of the embed message sent on Discord.
+  embed_title: "ScreenShare handler"
+
 # Enjoy.

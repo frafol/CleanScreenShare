@@ -20,8 +20,11 @@ import it.frafol.cleanss.velocity.listeners.ChatListener;
 import it.frafol.cleanss.velocity.listeners.CommandListener;
 import it.frafol.cleanss.velocity.listeners.KickListener;
 import it.frafol.cleanss.velocity.listeners.ServerListener;
+import it.frafol.cleanss.velocity.objects.JdaBuilder;
+import it.frafol.cleanss.velocity.objects.PlayerCache;
 import it.frafol.cleanss.velocity.objects.TextFile;
 import lombok.Getter;
+import lombok.SneakyThrows;
 import net.byteflux.libby.Library;
 import net.byteflux.libby.VelocityLibraryManager;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
@@ -35,7 +38,7 @@ import java.util.Map;
 @Plugin(
 		id = "cleanscreenshare",
 		name = "CleanScreenShare",
-		version = "1.1.5",
+		version = "1.2",
 		description = "Make control hacks on your players.",
 		authors = { "frafol" })
 
@@ -48,8 +51,11 @@ public class CleanSS {
 	private final Path path;
 	private final Metrics.Factory metricsFactory;
 
+	private final JdaBuilder jda = new JdaBuilder();
+
     private TextFile messagesTextFile;
 	private TextFile configTextFile;
+
 	private static CleanSS instance;
 
 	public static CleanSS getInstance() {
@@ -86,6 +92,7 @@ public class CleanSS {
 		loadChannelRegistrar();
 		loadListeners();
 		loadCommands();
+		loadDiscord();
 
 		if (VelocityConfig.STATS.get(Boolean.class)) {
 
@@ -122,8 +129,17 @@ public class CleanSS {
 				.version("1.8.4")
 				.build();
 
+		Library discord = Library.builder()
+				.groupId("net{}dv8tion")
+				.artifactId("JDA")
+				.version("5.0.0-beta.5")
+				.url("https://github.com/DV8FromTheWorld/JDA/releases/download/v5.0.0-beta.5/JDA-5.0.0-beta.5-withDependencies-min.jar")
+				.build();
+
+		velocityLibraryManager.addMavenCentral();
 		velocityLibraryManager.addJitPack();
 		velocityLibraryManager.loadLibrary(yaml);
+		velocityLibraryManager.loadLibrary(discord);
 	}
 
 	private void loadFiles() {
@@ -162,6 +178,14 @@ public class CleanSS {
 
 		server.getEventManager().register(this, new KickListener(this));
 
+	}
+
+	private void loadDiscord() {
+		if (VelocityConfig.DISCORD_ENABLED.get(Boolean.class)) {
+			jda.startJDA();
+			UpdateJDA();
+			getLogger().info("§7Hooked into Discord §dsuccessfully§7!");
+		}
 	}
 
 	private void UpdateChecker() {
@@ -208,6 +232,26 @@ public class CleanSS {
 					.deserialize("§e[CleanScreenShare] There is a new update available, download it on SpigotMC!"));
 
 		});
+	}
+
+	@SneakyThrows
+	public void UpdateJDA() {
+
+		if (!VelocityConfig.DISCORD_ENABLED.get(Boolean.class)) {
+			return;
+		}
+
+		if (jda.getJda() == null) {
+			logger.error("Fatal error while updating JDA, please report this error on discord.io/futuredevelopment.");
+			return;
+		}
+
+		jda.getJda().getPresence().setActivity(net.dv8tion.jda.api.entities.Activity.of(net.dv8tion.jda.api.entities.Activity.ActivityType.valueOf
+						(VelocityConfig.DISCORD_ACTIVITY_TYPE.get(String.class).toUpperCase()),
+				VelocityConfig.DISCORD_ACTIVITY.get(String.class)
+						.replace("%players%", String.valueOf(server.getAllPlayers().size()))
+						.replace("%suspiciouses%", String.valueOf(PlayerCache.getSuspicious().size()))));
+
 	}
 
 	public <K, V> K getKey(@NotNull Map<K, V> map, V value) {

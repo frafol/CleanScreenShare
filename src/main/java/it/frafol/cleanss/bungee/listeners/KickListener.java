@@ -2,6 +2,7 @@ package it.frafol.cleanss.bungee.listeners;
 
 import it.frafol.cleanss.bungee.CleanSS;
 import it.frafol.cleanss.bungee.enums.BungeeConfig;
+import it.frafol.cleanss.bungee.enums.BungeeMessages;
 import it.frafol.cleanss.bungee.objects.PlayerCache;
 import it.frafol.cleanss.bungee.objects.Utils;
 import net.md_5.bungee.api.config.ServerInfo;
@@ -31,6 +32,8 @@ public class KickListener implements Listener {
                 instance.UpdateChecker(player);
         }
 
+        instance.updateJDA();
+
     }
 
     @EventHandler
@@ -58,6 +61,8 @@ public class KickListener implements Listener {
         final ServerInfo proxyServer = instance.getProxy().getServers().get(BungeeConfig.CONTROL_FALLBACK.get(String.class));
         final ProxiedPlayer player = event.getPlayer();
 
+        instance.updateJDA();
+
         if (PlayerCache.getAdministrator().contains(player.getUniqueId())) {
 
             Utils.finishControl(instance.getValue(PlayerCache.getCouples(), player), player, proxyServer);
@@ -67,6 +72,7 @@ public class KickListener implements Listener {
         if (PlayerCache.getSuspicious().contains(player.getUniqueId())) {
 
             Utils.finishControl(player, instance.getKey(PlayerCache.getCouples(), player), proxyServer);
+            Utils.sendDiscordMessage(player, instance.getKey(PlayerCache.getCouples(), player), BungeeMessages.DISCORD_QUIT.get(String.class));
 
         }
     }

@@ -6,6 +6,8 @@ import it.frafol.cleanss.bungee.CleanSS;
 import it.frafol.cleanss.bungee.enums.BungeeConfig;
 import it.frafol.cleanss.bungee.enums.BungeeMessages;
 import lombok.experimental.UtilityClass;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.Title;
@@ -15,6 +17,7 @@ import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import org.jetbrains.annotations.NotNull;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -107,6 +110,32 @@ public class Utils {
 
     public void sendFormattedList(BungeeMessages velocityMessages, CommandSender commandSender, ProxiedPlayer player_name, Placeholder... placeholders) {
         sendList(commandSender, color(getStringList(velocityMessages, placeholders)), player_name);
+    }
+
+    public void sendDiscordMessage(ProxiedPlayer suspect, ProxiedPlayer staffer, String message) {
+
+        if (BungeeConfig.DISCORD_ENABLED.get(Boolean.class)) {
+
+            final TextChannel channel = instance.getJda().getTextChannelById(BungeeConfig.DISCORD_CHANNEL_ID.get(String.class));
+
+            if (channel == null) {
+                return;
+            }
+
+            EmbedBuilder embed = new EmbedBuilder();
+
+            embed.setTitle(BungeeConfig.DISCORD_EMBED_TITLE.get(String.class), null);
+
+            embed.setDescription(message
+                    .replace("%suspect%", suspect.getName())
+                    .replace("%staffer%", staffer.getName()));
+
+            embed.setColor(Color.RED);
+            embed.setFooter("Powered by CleanStaffChat");
+
+            channel.sendMessageEmbeds(embed.build()).queue();
+
+        }
     }
 
     public void finishControl(@NotNull ProxiedPlayer suspicious, @NotNull ProxiedPlayer administrator, ServerInfo proxyServer) {

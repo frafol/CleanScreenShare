@@ -12,11 +12,14 @@ import it.frafol.cleanss.velocity.enums.VelocityConfig;
 import it.frafol.cleanss.velocity.enums.VelocityMessages;
 import lombok.Getter;
 import lombok.experimental.UtilityClass;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.kyori.adventure.title.Title;
 import org.jetbrains.annotations.NotNull;
 
+import java.awt.*;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
@@ -96,6 +99,32 @@ public class Utils {
             } else {
                 commandSource.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(message));
             }
+
+        }
+    }
+
+    public void sendDiscordMessage(Player suspect, Player staffer, String message) {
+
+        if (VelocityConfig.DISCORD_ENABLED.get(Boolean.class)) {
+
+            final TextChannel channel = instance.getJda().getJda().getTextChannelById(VelocityConfig.DISCORD_CHANNEL_ID.get(String.class));
+
+            if (channel == null) {
+                return;
+            }
+
+            EmbedBuilder embed = new EmbedBuilder();
+
+            embed.setTitle(VelocityConfig.DISCORD_EMBED_TITLE.get(String.class), null);
+
+            embed.setDescription(message
+                            .replace("%suspect%", suspect.getUsername()
+                            .replace("%staffer%", staffer.getUsername())));
+
+            embed.setColor(Color.RED);
+            embed.setFooter("Powered by CleanScreenShare");
+
+            channel.sendMessageEmbeds(embed.build()).queue();
 
         }
     }

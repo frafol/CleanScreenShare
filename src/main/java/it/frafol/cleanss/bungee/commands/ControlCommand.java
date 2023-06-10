@@ -109,6 +109,7 @@ public class ControlCommand extends Command {
 						}
 
 						Utils.startControl(player.get(), sender, proxyServer);
+						Utils.sendDiscordMessage(player.get(), sender, BungeeMessages.DISCORD_STARTED.get(String.class));
 
 					});
 

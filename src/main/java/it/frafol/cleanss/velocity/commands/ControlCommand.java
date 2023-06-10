@@ -99,6 +99,7 @@ public class ControlCommand implements SimpleCommand {
 						}
 
 						Utils.startControl(player.get(), sender, proxyServer.get());
+						Utils.sendDiscordMessage(player.get(), sender, VelocityMessages.DISCORD_STARTED.get(String.class));
 
 					});
 

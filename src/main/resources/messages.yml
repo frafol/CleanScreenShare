@@ -99,4 +99,13 @@ messages:
       suspect: "&b&lSUSPECT &b"
       staffer: "&c&lSTAFFER &c"
 
+  discord:
+
+    # These messages will be sent in the discord channel when a certain thing happens.
+    started: "The staffer %staffer% started an hack control to %suspect%."
+    finished: "The staffer %staffer% finished the control to %suspect%."
+
+    suspect_left_during_control: "The suspect %suspect%, left the server during a control."
+
+
 # Enjoy.

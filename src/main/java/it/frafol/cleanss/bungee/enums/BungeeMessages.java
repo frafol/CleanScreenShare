@@ -63,6 +63,10 @@ public enum BungeeMessages {
     CONTROL_CHAT_SUS("messages.chat.states.suspect"),
     CONTROL_CHAT_STAFF("messages.chat.states.staffer"),
 
+    DISCORD_STARTED("messages.discord.started"),
+    DISCORD_FINISHED("messages.discord.finished"),
+    DISCORD_QUIT("messages.discord.suspect_left_during_control"),
+
     RELOADED("messages.reloaded");
 
     private final String path;

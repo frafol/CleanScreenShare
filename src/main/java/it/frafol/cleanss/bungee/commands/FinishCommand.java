@@ -69,6 +69,7 @@ public class FinishCommand extends Command {
                 }
 
                 Utils.finishControl(player, (ProxiedPlayer) invocation, proxyServer);
+                Utils.sendDiscordMessage(player, (ProxiedPlayer) invocation, BungeeMessages.DISCORD_FINISHED.get(String.class));
 
             }
         }
