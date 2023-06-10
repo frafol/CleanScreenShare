@@ -21,6 +21,13 @@ settings:
   update_check: true
   stats: true
 
+  slog:
+    # WARNING! This will only work if you have LiteBans on your Proxy. At this time, no other bans plugins are supported.
+    punish: false
+
+    # Enter the command to be executed by the console when the player disconnects from the server.
+    punish_command: "ban %player% Slog under hack control -s"
+
 permissions:
 
   # You can personalize permissions.

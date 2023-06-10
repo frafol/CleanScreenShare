@@ -106,6 +106,10 @@ public class CleanSS {
 					"consider downloading https://github.com/4drian3d/UnSignedVelocity/releases/latest");
 		}
 
+		if (isLiteBans()) {
+			logger.info("§7LiteBans hooked §dsuccessfully§7!");
+		}
+
 		UpdateChecker();
 		logger.info("§7Plugin §dsuccessfully §7loaded!");
 
@@ -186,6 +190,10 @@ public class CleanSS {
 			UpdateJDA();
 			getLogger().info("§7Hooked into Discord §dsuccessfully§7!");
 		}
+	}
+
+	public boolean isLiteBans() {
+		return server.getPluginManager().isLoaded("litebans");
 	}
 
 	private void UpdateChecker() {

@@ -64,8 +64,11 @@ public class CleanSS extends Plugin {
 		if (BungeeConfig.STATS.get(Boolean.class) && !getDescription().getVersion().contains("alpha")) {
 
 			new Metrics(this, 17063);
-
 			getLogger().info("§7Metrics loaded §dsuccessfully§7!");
+		}
+
+		if (isLiteBans()) {
+			getLogger().info("§7LiteBans hooked §dsuccessfully§7!");
 		}
 
 		UpdateChecker();
@@ -149,6 +152,10 @@ public class CleanSS extends Plugin {
 
 	public JDA getJda() {
 		return jda;
+	}
+
+	public boolean isLiteBans() {
+		return getProxy().getPluginManager().getPlugin("LiteBans") != null;
 	}
 
 	public void updateJDA() {

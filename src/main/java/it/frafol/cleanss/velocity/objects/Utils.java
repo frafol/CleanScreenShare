@@ -10,6 +10,7 @@ import com.velocitypowered.api.scheduler.ScheduledTask;
 import it.frafol.cleanss.velocity.CleanSS;
 import it.frafol.cleanss.velocity.enums.VelocityConfig;
 import it.frafol.cleanss.velocity.enums.VelocityMessages;
+import litebans.api.Database;
 import lombok.Getter;
 import lombok.experimental.UtilityClass;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -24,6 +25,7 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -127,6 +129,28 @@ public class Utils {
             channel.sendMessageEmbeds(embed.build()).queue();
 
         }
+    }
+
+    public void punishPlayer(UUID uuid, String address) {
+
+        if (!instance.isLiteBans()) {
+            return;
+        }
+
+        if (!VelocityConfig.SLOG_PUNISH.get(Boolean.class)) {
+            return;
+        }
+
+        if (address == null) {
+            return;
+        }
+
+        if (Database.get().isPlayerBanned(uuid, address)) {
+            return;
+        }
+
+        instance.getServer().getCommandManager().executeAsync(instance.getServer().getConsoleCommandSource(), VelocityConfig.SLOG_COMMAND.get(String.class));
+
     }
 
     public void sendFormattedList(VelocityMessages velocityMessages, CommandSource commandSource, Player player_name, Placeholder... placeholders) {

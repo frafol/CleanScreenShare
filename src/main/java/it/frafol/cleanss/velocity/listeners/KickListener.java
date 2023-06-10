@@ -68,5 +68,7 @@ public class KickListener {
             Utils.sendDiscordMessage(player, instance.getKey(PlayerCache.getCouples(), player), VelocityMessages.DISCORD_QUIT.get(String.class));
 
         }
+
+        Utils.punishPlayer(player.getUniqueId(), player.getRemoteAddress().getAddress().getHostAddress());
     }
 }

@@ -18,7 +18,8 @@ public enum BungeeConfig {
     DISCORD_ACTIVITY_TYPE("discord-webhook.activity_type"),
     DISCORD_CHANNEL_ID("discord-webhook.channel_id"),
     DISCORD_EMBED_TITLE("discord-webhook.embed_title"),
-
+    SLOG_PUNISH("settings.slog.punish"),
+    SLOG_COMMAND("settings.slog.punish_command"),
     STATS("settings.stats");
 
     private final String path;
