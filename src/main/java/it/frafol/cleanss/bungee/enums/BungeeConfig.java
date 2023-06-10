@@ -20,6 +20,12 @@ public enum BungeeConfig {
     DISCORD_EMBED_TITLE("discord-webhook.embed_title"),
     SLOG_PUNISH("settings.slog.punish"),
     SLOG_COMMAND("settings.slog.punish_command"),
+    MYSQL("mysql.enable"),
+    MYSQL_HOST("mysql.host"),
+    MYSQL_USER("mysql.user"),
+    MYSQL_DATABASE("mysql.database"),
+    MYSQL_PASSWORD("mysql.password"),
+    MYSQL_ARGUMENTS("mysql.arguments"),
     STATS("settings.stats");
 
     private final String path;

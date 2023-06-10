@@ -11,6 +11,7 @@ import it.frafol.cleanss.bungee.listeners.KickListener;
 import it.frafol.cleanss.bungee.listeners.ServerListener;
 import it.frafol.cleanss.bungee.objects.PlayerCache;
 import it.frafol.cleanss.bungee.objects.TextFile;
+import it.frafol.cleanss.bungee.mysql.MySQLWorker;
 import net.byteflux.libby.BungeeLibraryManager;
 import net.byteflux.libby.Library;
 import net.dv8tion.jda.api.JDA;
@@ -24,6 +25,7 @@ import org.jetbrains.annotations.NotNull;
 import org.simpleyaml.configuration.file.YamlFile;
 
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 public class CleanSS extends Plugin {
 
@@ -31,6 +33,8 @@ public class CleanSS extends Plugin {
 	private TextFile configTextFile;
 	private JDA jda;
 	private static CleanSS instance;
+
+	private MySQLWorker data;
 
 	public static CleanSS getInstance() {
 		return instance;
@@ -57,6 +61,12 @@ public class CleanSS extends Plugin {
 		registerCommands();
 		registerListeners();
 
+		if (BungeeConfig.MYSQL.get(Boolean.class)) {
+			data = new MySQLWorker();
+			inControlTask();
+			controlNumberTask();
+		}
+
 		if (BungeeConfig.DISCORD_ENABLED.get(Boolean.class)) {
 			loadDiscord();
 		}
@@ -72,7 +82,6 @@ public class CleanSS extends Plugin {
 		}
 
 		UpdateChecker();
-
 		getLogger().info("§7Plugin §dsuccessfully §7loaded!");
 	}
 
@@ -128,6 +137,30 @@ public class CleanSS extends Plugin {
 			}
 
 		});
+	}
+
+	private void inControlTask() {
+
+		instance.getProxy().getScheduler().schedule(this, () -> {
+
+			for (ProxiedPlayer players : getProxy().getPlayers()) {
+				PlayerCache.getIn_control().put(players.getUniqueId(), data.getStats(players.getUniqueId(), "incontrol"));
+			}
+
+		}, 1L, 1L, TimeUnit.SECONDS);
+
+	}
+
+	private void controlNumberTask() {
+
+		instance.getProxy().getScheduler().schedule(this, () -> {
+
+			for (ProxiedPlayer players : getProxy().getPlayers()) {
+				PlayerCache.getControls().put(players.getUniqueId(), data.getStats(players.getUniqueId(), "controls"));
+			}
+
+		}, 5L, 5L, TimeUnit.MINUTES);
+
 	}
 
 	public void UpdateChecker(ProxiedPlayer player) {
@@ -207,6 +240,11 @@ public class CleanSS extends Plugin {
 		instance = null;
 		getProxy().unregisterChannel("cleanss:join");
 
+		if (BungeeConfig.MYSQL.get(Boolean.class)) {
+			getLogger().info("§7Closing §ddatabase§7...");
+			data.close();
+		}
+
 		getLogger().info("§7Plugin successfully §ddisabled§7!");
 	}
 
@@ -233,4 +271,9 @@ public class CleanSS extends Plugin {
 		}
 		return null;
 	}
+
+	public MySQLWorker getData() {
+		return data;
+	}
+
 }

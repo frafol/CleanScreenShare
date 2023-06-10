@@ -4,6 +4,7 @@ import com.google.inject.Inject;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
 import com.velocitypowered.api.event.proxy.ProxyShutdownEvent;
+import com.velocitypowered.api.plugin.Dependency;
 import com.velocitypowered.api.plugin.Plugin;
 import com.velocitypowered.api.plugin.PluginContainer;
 import com.velocitypowered.api.plugin.annotation.DataDirectory;
@@ -20,9 +21,11 @@ import it.frafol.cleanss.velocity.listeners.ChatListener;
 import it.frafol.cleanss.velocity.listeners.CommandListener;
 import it.frafol.cleanss.velocity.listeners.KickListener;
 import it.frafol.cleanss.velocity.listeners.ServerListener;
+import it.frafol.cleanss.velocity.mysql.MySQLWorker;
 import it.frafol.cleanss.velocity.objects.JdaBuilder;
 import it.frafol.cleanss.velocity.objects.PlayerCache;
 import it.frafol.cleanss.velocity.objects.TextFile;
+import it.frafol.cleanss.velocity.objects.adapter.MySQLFix;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import net.byteflux.libby.Library;
@@ -33,6 +36,7 @@ import org.slf4j.Logger;
 
 import java.nio.file.Path;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 @Getter
 @Plugin(
@@ -40,11 +44,15 @@ import java.util.Map;
 		name = "CleanScreenShare",
 		version = "1.2",
 		description = "Make control hacks on your players.",
+		dependencies = {@Dependency(id = "litebans", optional = true)},
 		authors = { "frafol" })
 
 public class CleanSS {
 
 	public static final ChannelIdentifier channel_join = MinecraftChannelIdentifier.create("cleanss", "join");
+
+	private static final String MYSQL_VERSION = "8.0.30";
+	private static final String MYSQL_SHA256 = "b5bf2f0987197c30adf74a9e419b89cda4c257da2d1142871f508416d5f2227a";
 
 	private final Logger logger;
 	private final ProxyServer server;
@@ -57,6 +65,9 @@ public class CleanSS {
 	private TextFile configTextFile;
 
 	private static CleanSS instance;
+
+	private MySQLWorker data;
+	private MySQLFix mysql;
 
 	public static CleanSS getInstance() {
 		return instance;
@@ -73,12 +84,17 @@ public class CleanSS {
 	@Inject
 	public PluginContainer container;
 
+	@SneakyThrows
 	@Subscribe
 	public void onProxyInitialization(ProxyInitializeEvent event) {
 
 		instance = this;
 
 		loadLibraries();
+
+		if (VelocityConfig.MYSQL.get(Boolean.class)) {
+			mysql = new MySQLFix(this);
+		}
 
 		logger.info("\n§d   ___  __    ____    __    _  _   ___  ___\n" +
 				"  / __)(  )  ( ___)  /__\\  ( \\( ) / __)/ __)\n" +
@@ -94,6 +110,14 @@ public class CleanSS {
 		loadCommands();
 		loadDiscord();
 
+		if (VelocityConfig.MYSQL.get(Boolean.class)) {
+			data = new MySQLWorker();
+
+			inControlTask();
+			controlNumberTask();
+
+		}
+
 		if (VelocityConfig.STATS.get(Boolean.class)) {
 
 			metricsFactory.make(this, 16951);
@@ -102,8 +126,10 @@ public class CleanSS {
 		}
 
 		if (!getUnsignedVelocityAddon()) {
-			getLogger().warn("To get the full functionality of CleanScreenShare for versions 1.19.1 and later on Velocity, " +
+			logger.warn("To get the full functionality of CleanScreenShare for versions 1.19.1 and later on Velocity, " +
 					"consider downloading https://github.com/4drian3d/UnSignedVelocity/releases/latest");
+		} else {
+			logger.info("§7UnsignedVelocity hooked §dsuccessfully§7!");
 		}
 
 		if (isLiteBans()) {
@@ -118,10 +144,25 @@ public class CleanSS {
 	@Subscribe
 	public void onProxyShutdown(ProxyShutdownEvent event) {
 
+		if (VelocityConfig.MYSQL.get(Boolean.class)) {
+			logger.info("§7Closing §ddatabase§7...");
+
+			for (Player players : server.getAllPlayers()) {
+				data.setInControl(players.getUniqueId(), 0);
+				data.setControls(players.getUniqueId(), PlayerCache.getControls().get(players.getUniqueId()));
+			}
+
+			data.close();
+		}
+
 		logger.info("§7Clearing §dinstances§7...");
 		instance = null;
 
 		logger.info("§7Plugin successfully §ddisabled§7!");
+	}
+
+	public MySQLWorker getData() {
+		return data;
 	}
 
 	private void loadLibraries() {
@@ -144,6 +185,9 @@ public class CleanSS {
 		velocityLibraryManager.addJitPack();
 		velocityLibraryManager.loadLibrary(yaml);
 		velocityLibraryManager.loadLibrary(discord);
+
+
+
 	}
 
 	private void loadFiles() {
@@ -217,6 +261,30 @@ public class CleanSS {
 			}
 
 		});
+	}
+
+	private void inControlTask() {
+
+		instance.getServer().getScheduler().buildTask(this, () -> {
+
+			for (Player players : server.getAllPlayers()) {
+				PlayerCache.getIn_control().put(players.getUniqueId(), data.getStats(players.getUniqueId(), "incontrol"));
+			}
+
+		}).repeat(1, TimeUnit.SECONDS).schedule();
+
+	}
+
+	private void controlNumberTask() {
+
+		instance.getServer().getScheduler().buildTask(this, () -> {
+
+			for (Player players : server.getAllPlayers()) {
+				PlayerCache.getControls().put(players.getUniqueId(), data.getStats(players.getUniqueId(), "controls"));
+			}
+
+		}).repeat(5, TimeUnit.MINUTES).schedule();
+
 	}
 
 	public void UpdateChecker(Player player) {

@@ -16,7 +16,7 @@ import java.util.Optional;
 
 public class ControlCommand implements SimpleCommand {
 
-	public final CleanSS instance;
+	private final CleanSS instance;
 
 	public ControlCommand(CleanSS instance) {
 		this.instance = instance;
@@ -33,13 +33,13 @@ public class ControlCommand implements SimpleCommand {
 			return;
 		}
 
-		if (invocation.arguments().length == 0) {
+		if (!source.hasPermission(VelocityConfig.CONTROL_PERMISSION.get(String.class))) {
+			source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.NO_PERMISSION.color()
+					.replace("%prefix%", VelocityMessages.PREFIX.color())));
+			return;
+		}
 
-			if (!source.hasPermission(VelocityConfig.CONTROL_PERMISSION.get(String.class))) {
-				source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.NO_PERMISSION.color()
-						.replace("%prefix%", VelocityMessages.PREFIX.color())));
-				return;
-			}
+		if (invocation.arguments().length == 0) {
 
 			source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.USAGE.color().replace("%prefix%", VelocityMessages.PREFIX.color())));
 			return;
@@ -81,6 +81,14 @@ public class ControlCommand implements SimpleCommand {
 					}
 
 					if (PlayerCache.getSuspicious().contains(player.get().getUniqueId())) {
+						source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.CONTROL_ALREADY.color()
+								.replace("%prefix%", VelocityMessages.PREFIX.color())));
+						return;
+					}
+
+					if (PlayerCache.getIn_control().get(player.get().getUniqueId()) == 1) {
+						source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.CONTROL_ALREADY.color()
+								.replace("%prefix%", VelocityMessages.PREFIX.color())));
 						return;
 					}
 
@@ -100,6 +108,7 @@ public class ControlCommand implements SimpleCommand {
 
 						Utils.startControl(player.get(), sender, proxyServer.get());
 						Utils.sendDiscordMessage(player.get(), sender, VelocityMessages.DISCORD_STARTED.get(String.class));
+
 
 					});
 

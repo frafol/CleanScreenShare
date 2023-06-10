@@ -35,6 +35,7 @@ public class KickListener {
             }
 
             instance.UpdateJDA();
+            instance.getData().setupPlayer(player.getUniqueId());
             return;
         }
 

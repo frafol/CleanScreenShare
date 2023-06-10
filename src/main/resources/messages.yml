@@ -18,6 +18,7 @@ messages:
 
   yourself: "%prefix% &7You can't control &dyourself&7."
   player_bypass: "%prefix% &7You can't control &dthis player&7."
+  already_in_control: "%prefix% &7This player is already under an &dhack control&7."
   not_under_control: "%prefix% &7This player is not under an &dhack control&7."
 
   reloaded: "%prefix% &7Configuration reloaded &dsuccessfully&7."

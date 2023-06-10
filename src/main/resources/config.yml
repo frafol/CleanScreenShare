@@ -55,4 +55,15 @@ discord-webhook: # The Discord Integration is an experimental feature, report al
   # The 'title' of the embed message sent on Discord.
   embed_title: "ScreenShare handler"
 
+mysql:
+  # The MySQL database is an experimental feature, it's just to allow compatibility with multiple proxies (e.g. redisbungee)
+  enable: false
+
+  # MySQL database connection details
+  host: "127.0.0.1:3306"
+  user: "root"
+  database: "cleanscreenshare"
+  password: "password"
+  arguments: "?autoReconnect=true&maxReconnects=10"
+
 # Enjoy.

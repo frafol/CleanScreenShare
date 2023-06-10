@@ -165,6 +165,9 @@ public class Utils {
             PlayerCache.getSuspicious().remove(suspicious.getUniqueId());
             PlayerCache.getCouples().remove(administrator, suspicious);
 
+            instance.getData().setInControl(suspicious.getUniqueId(), 0);
+            instance.getData().setInControl(administrator.getUniqueId(), 0);
+
             if (!suspicious.getCurrentServer().isPresent()) {
                 return;
             }
@@ -191,6 +194,9 @@ public class Utils {
             PlayerCache.getSuspicious().remove(suspicious.getUniqueId());
             PlayerCache.getAdministrator().remove(administrator.getUniqueId());
 
+            instance.getData().setInControl(suspicious.getUniqueId(), 0);
+            instance.getData().setInControl(administrator.getUniqueId(), 0);
+
             suspicious.createConnectionRequest(proxyServer).fireAndForget();
 
             Utils.sendEndTitle(suspicious);
@@ -205,6 +211,9 @@ public class Utils {
             PlayerCache.getAdministrator().remove(administrator.getUniqueId());
             PlayerCache.getSuspicious().remove(suspicious.getUniqueId());
 
+            instance.getData().setInControl(suspicious.getUniqueId(), 0);
+            instance.getData().setInControl(administrator.getUniqueId(), 0);
+
             administrator.createConnectionRequest(proxyServer).fireAndForget();
 
             administrator.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.LEAVESUS.color()
@@ -218,6 +227,9 @@ public class Utils {
             PlayerCache.getAdministrator().remove(administrator.getUniqueId());
             PlayerCache.getSuspicious().remove(suspicious.getUniqueId());
             PlayerCache.getCouples().remove(administrator);
+
+            instance.getData().setInControl(suspicious.getUniqueId(), 0);
+            instance.getData().setInControl(administrator.getUniqueId(), 0);
 
         }
     }
@@ -263,6 +275,13 @@ public class Utils {
         PlayerCache.getAdministrator().add(administrator.getUniqueId());
         PlayerCache.getSuspicious().add(suspicious.getUniqueId());
         PlayerCache.getCouples().put(administrator, suspicious);
+
+        instance.getData().setInControl(suspicious.getUniqueId(), 1);
+        instance.getData().setInControl(administrator.getUniqueId(), 1);
+
+        if (instance.getData().getStats(administrator.getUniqueId(), "controls") != -1) {
+            instance.getData().setControls(administrator.getUniqueId(), instance.getData().getStats(administrator.getUniqueId(), "controls") + 1);
+        }
 
         Utils.sendStartTitle(suspicious);
 

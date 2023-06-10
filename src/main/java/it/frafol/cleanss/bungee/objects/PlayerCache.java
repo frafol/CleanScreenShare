@@ -20,4 +20,10 @@ public class PlayerCache {
     @Getter
     private final HashMap<ProxiedPlayer, ProxiedPlayer> couples = new HashMap<>();
 
+    @Getter
+    private final HashMap<UUID, Integer> controls = new HashMap<>();
+
+    @Getter
+    private final HashMap<UUID, Integer> in_control = new HashMap<>();
+
 }
