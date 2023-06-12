@@ -101,7 +101,7 @@ messages:
     # Here you can set a chat format that will be used during the hack control.
     enable: true
 
-    # Sets the Chat Format of the Control server.
+    # Sets the Chat Format of the Control server. (You can use %userprefix% or %usersuffix% if you have LuckPerms installed)
     format: "%state%%player% &7» &f%message%"
 
     # Set a prefix for users (suspect and staffer) in the chat.
