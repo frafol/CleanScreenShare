@@ -1,6 +1,8 @@
 package it.frafol.cleanss.velocity.objects;
 
 import com.google.common.collect.Lists;
+import it.frafol.cleanss.bungee.CleanSS;
+import it.frafol.cleanss.velocity.enums.VelocityConfig;
 import lombok.SneakyThrows;
 import org.simpleyaml.configuration.file.YamlFile;
 
@@ -41,7 +43,18 @@ public class TextFile {
 
     @SneakyThrows
     public void reload() {
+
+        boolean first = VelocityConfig.MYSQL.get(Boolean.class);
+
         yamlFile.load();
+
+        if (VelocityConfig.MYSQL.get(Boolean.class)) {
+            if (!first) {
+                CleanSS.getInstance().setData();
+                CleanSS.getInstance().ControlTask();
+            }
+        }
+
     }
 
     public static void reloadAll() {

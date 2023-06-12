@@ -86,7 +86,7 @@ public class ControlCommand implements SimpleCommand {
 						return;
 					}
 
-					if (PlayerCache.getIn_control().get(player.get().getUniqueId()) == 1) {
+					if (PlayerCache.getIn_control().get(player.get().getUniqueId()) != null && PlayerCache.getIn_control().get(player.get().getUniqueId()) == 1) {
 						source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.CONTROL_ALREADY.color()
 								.replace("%prefix%", VelocityMessages.PREFIX.color())));
 						return;

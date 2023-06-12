@@ -1,5 +1,6 @@
 package it.frafol.cleanss.bungee.objects;
 
+import it.frafol.cleanss.bungee.enums.BungeeConfig;
 import it.frafol.cleanss.bungee.CleanSS;
 
 import java.sql.Connection;
@@ -46,11 +47,13 @@ public class SQLConnection {
 
     private void connect() {
         try {
-            CleanSS.getInstance().getLogger().info("[Database] Connecting to MySQL database... (host: " + host + ", database: " + database + ", user: " + user + ")");
-            connection = DriverManager.getConnection("JDBC:mysql://" + host + "/" + database + "?autoReconnect=true&maxReconnects=10", user, password);
+            CleanSS.getInstance().getLogger().info("§7Connecting to §dMySQL database§7...");
+            connection = DriverManager.getConnection("JDBC:mysql://" + host + "/" + database + BungeeConfig.MYSQL_ARGUMENTS.get(String.class), user, password);
+            CleanSS.getInstance().getLogger().info("§7Connected to §dMySQL database§7.");
         } catch (SQLException sqlException) {
+            CleanSS.getInstance().getLogger().severe("§cUnable to connect to the database, cannot start the plugin. Is password correct?");
             sqlException.printStackTrace();
-            CleanSS.getInstance().getLogger().severe("[Database] Unable to connect to the database, cannot start the plugin.");
+            CleanSS.getInstance().getProxy().stop();
         }
     }
 

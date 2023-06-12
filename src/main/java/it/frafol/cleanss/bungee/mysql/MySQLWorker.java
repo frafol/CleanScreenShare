@@ -1,6 +1,5 @@
 package it.frafol.cleanss.bungee.mysql;
 
-import com.velocitypowered.api.proxy.Player;
 import it.frafol.cleanss.bungee.CleanSS;
 import it.frafol.cleanss.bungee.enums.BungeeConfig;
 import it.frafol.cleanss.bungee.objects.PlayerCache;
@@ -10,7 +9,6 @@ import net.md_5.bungee.api.connection.ProxiedPlayer;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Optional;
 import java.util.UUID;
 
 public class MySQLWorker {
@@ -21,10 +19,14 @@ public class MySQLWorker {
     }
 
     private void connect() {
-        connection.execute("CREATE TABLE IF NOT EXISTS `DataPlayer` (`uuid` VARCHAR(36) PRIMARY KEY, `name` VARCHAR(16), `in_control` TINYINT(1), `controls` INT(16))");
+        connection.execute("CREATE TABLE IF NOT EXISTS `DataPlayer` (`uuid` VARCHAR(36) PRIMARY KEY, `name` VARCHAR(16), `in_control` TINYINT(1), `controls` INT(16), `controls_suffered` INT(16))");
     }
 
     public void setupPlayer(UUID uuid) {
+
+        if (!BungeeConfig.MYSQL.get(Boolean.class)) {
+            return;
+        }
 
         try {
             Statement statement = connection.getConnection().createStatement();
@@ -38,9 +40,10 @@ public class MySQLWorker {
                     return;
                 }
 
-                connection.execute("INSERT INTO `DataPlayer` (`uuid`, `name`, `in_control`, `controls`) VALUES ('" + uuid + "', '" + player.getName() + "', " + 0 + "', " + 0 + ")");
+                connection.execute("INSERT INTO `DataPlayer` (`uuid`, `name`, `in_control`, `controls`, `controls_suffered`) VALUES ('" + uuid + "', '" + player.getName() + "', " + 0 + "', " + 0 + "', " + 0 + ")");
                 PlayerCache.getControls().put(uuid, 0);
                 PlayerCache.getIn_control().put(uuid, 0);
+                PlayerCache.getControls_suffered().put(uuid, 0);
 
             }
 
@@ -60,6 +63,7 @@ public class MySQLWorker {
 
         int incontrol = 0;
         int controls = 0;
+        int suffered = 0;
 
         try {
             Statement statement = connection.getConnection().createStatement();
@@ -68,6 +72,7 @@ public class MySQLWorker {
             if (rs.next()) {
                 incontrol = rs.getInt("in_control");
                 controls = rs.getInt("controls");
+                suffered = rs.getInt("controls_suffered");
 
             } else {
                 ProxiedPlayer player = CleanSS.getInstance().getProxy().getPlayer(uuid);
@@ -76,7 +81,7 @@ public class MySQLWorker {
                     return 0;
                 }
 
-                connection.execute("INSERT INTO `DataPlayer` (`uuid`, `name`, `in_control`, `controls`) VALUES ('" + uuid + "', '" + player.getName() + "', '" + 0 + "', '" + 0 + "')");
+                connection.execute("INSERT INTO `DataPlayer` (`uuid`, `name`, `in_control`, `controls`, `controls_suffered`) VALUES ('" + uuid + "', '" + player.getName() + "', '" + 0 + "', '" + 0 + "', '" + 0 +"')");
                 PlayerCache.getControls().put(uuid, 0);
                 PlayerCache.getIn_control().put(uuid, 0);
 
@@ -91,6 +96,10 @@ public class MySQLWorker {
                 case "controls":
                     data = controls;
                     PlayerCache.getControls().put(uuid, data);
+                    break;
+                case "suffered":
+                    data = suffered;
+                    PlayerCache.getControls_suffered().put(uuid, data);
                     break;
                 default:
                     data = -1;
@@ -124,6 +133,17 @@ public class MySQLWorker {
 
         connection.execute("UPDATE `DataPlayer` SET `controls`=" + controls + " WHERE `uuid`='" + uuid + "';");
         PlayerCache.getControls().put(uuid, controls);
+    }
+
+    public void setControlsSuffered(UUID uuid, Integer controls) {
+
+        if (!BungeeConfig.MYSQL.get(Boolean.class)) {
+            return;
+        }
+
+        connection.execute("UPDATE `DataPlayer` SET `controls_suffered`=" + controls + " WHERE `uuid`='" + uuid + "';");
+        PlayerCache.getControls().put(uuid, controls);
+
     }
 
     public void close() {

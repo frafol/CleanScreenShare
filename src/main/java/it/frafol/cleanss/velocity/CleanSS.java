@@ -14,6 +14,7 @@ import com.velocitypowered.api.proxy.messages.ChannelIdentifier;
 import com.velocitypowered.api.proxy.messages.MinecraftChannelIdentifier;
 import it.frafol.cleanss.velocity.commands.ControlCommand;
 import it.frafol.cleanss.velocity.commands.FinishCommand;
+import it.frafol.cleanss.velocity.commands.InfoCommand;
 import it.frafol.cleanss.velocity.commands.ReloadCommand;
 import it.frafol.cleanss.velocity.enums.VelocityConfig;
 import it.frafol.cleanss.velocity.enums.VelocityMessages;
@@ -25,7 +26,7 @@ import it.frafol.cleanss.velocity.mysql.MySQLWorker;
 import it.frafol.cleanss.velocity.objects.JdaBuilder;
 import it.frafol.cleanss.velocity.objects.PlayerCache;
 import it.frafol.cleanss.velocity.objects.TextFile;
-import it.frafol.cleanss.velocity.objects.adapter.MySQLFix;
+import it.frafol.cleanss.velocity.objects.adapter.ReflectUtil;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import net.byteflux.libby.Library;
@@ -34,7 +35,13 @@ import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -44,15 +51,14 @@ import java.util.concurrent.TimeUnit;
 		name = "CleanScreenShare",
 		version = "1.2",
 		description = "Make control hacks on your players.",
-		dependencies = {@Dependency(id = "litebans", optional = true)},
+		dependencies = {@Dependency(id = "mysqlandconfigurateforvelocity", optional = true), @Dependency(id = "litebans", optional = true)},
 		authors = { "frafol" })
 
 public class CleanSS {
 
 	public static final ChannelIdentifier channel_join = MinecraftChannelIdentifier.create("cleanss", "join");
 
-	private static final String MYSQL_VERSION = "8.0.30";
-	private static final String MYSQL_SHA256 = "b5bf2f0987197c30adf74a9e419b89cda4c257da2d1142871f508416d5f2227a";
+	public boolean mysql_installation = false;
 
 	private final Logger logger;
 	private final ProxyServer server;
@@ -67,7 +73,6 @@ public class CleanSS {
 	private static CleanSS instance;
 
 	private MySQLWorker data;
-	private MySQLFix mysql;
 
 	public static CleanSS getInstance() {
 		return instance;
@@ -92,8 +97,8 @@ public class CleanSS {
 
 		loadLibraries();
 
-		if (VelocityConfig.MYSQL.get(Boolean.class)) {
-			mysql = new MySQLFix(this);
+		if (mysql_installation) {
+			return;
 		}
 
 		logger.info("\n§d   ___  __    ____    __    _  _   ___  ___\n" +
@@ -111,10 +116,26 @@ public class CleanSS {
 		loadDiscord();
 
 		if (VelocityConfig.MYSQL.get(Boolean.class)) {
+
+			loadLibrariesSQL();
+
+			if (mysql_installation) {
+				server.shutdown();
+				return;
+			}
+
+			if (ReflectUtil.getClass("com.mysql.cj.jdbc.Driver") == null) {
+				return;
+			}
+
 			data = new MySQLWorker();
 
-			inControlTask();
-			controlNumberTask();
+			if (mysql_installation) {
+				server.shutdown();
+				return;
+			}
+
+			ControlTask();
 
 		}
 
@@ -144,16 +165,22 @@ public class CleanSS {
 	@Subscribe
 	public void onProxyShutdown(ProxyShutdownEvent event) {
 
-		if (VelocityConfig.MYSQL.get(Boolean.class)) {
-			logger.info("§7Closing §ddatabase§7...");
+		if (getConfigTextFile() == null || VelocityConfig.MYSQL.get(Boolean.class)) {
 
+			logger.info("§7Closing §ddatabase§7...");
 			for (Player players : server.getAllPlayers()) {
-				data.setInControl(players.getUniqueId(), 0);
-				data.setControls(players.getUniqueId(), PlayerCache.getControls().get(players.getUniqueId()));
+				if (data != null) {
+					data.setInControl(players.getUniqueId(), 0);
+					data.setControls(players.getUniqueId(), PlayerCache.getControls().get(players.getUniqueId()));
+				}
 			}
 
-			data.close();
+			if (data != null) {
+				data.close();
+			}
+
 		}
+
 
 		logger.info("§7Clearing §dinstances§7...");
 		instance = null;
@@ -163,6 +190,25 @@ public class CleanSS {
 
 	public MySQLWorker getData() {
 		return data;
+	}
+
+	public void loadLibrariesSQL() {
+		try {
+			String fileUrl = "https://simonsator.de/repo/de/simonsator/MySQL-And-Configurate-For-Velocity/1.0.1-RELEASE/MySQL-And-Configurate-For-Velocity-1.0.1-RELEASE.jar";
+			String destination = "./plugins/";
+
+			String fileName = getFileNameFromUrl(fileUrl);
+			File outputFile = new File(destination, fileName);
+
+			if (!outputFile.exists()) {
+				downloadFile(fileUrl, outputFile);
+				mysql_installation = true;
+				logger.warn("MySQL drivers (" + fileName + ") are now successfully installed. A restart is required.");
+			}
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	private void loadLibraries() {
@@ -177,17 +223,29 @@ public class CleanSS {
 		Library discord = Library.builder()
 				.groupId("net{}dv8tion")
 				.artifactId("JDA")
-				.version("5.0.0-beta.5")
-				.url("https://github.com/DV8FromTheWorld/JDA/releases/download/v5.0.0-beta.5/JDA-5.0.0-beta.5-withDependencies-min.jar")
+				.version("5.0.0-beta.10")
+				.url("https://github.com/DV8FromTheWorld/JDA/releases/download/v5.0.0-beta.10/JDA-5.0.0-beta.10-withDependencies-min.jar")
 				.build();
 
 		velocityLibraryManager.addMavenCentral();
 		velocityLibraryManager.addJitPack();
 		velocityLibraryManager.loadLibrary(yaml);
 		velocityLibraryManager.loadLibrary(discord);
+	}
 
+	private String getFileNameFromUrl(String fileUrl) {
+		int slashIndex = fileUrl.lastIndexOf('/');
+		if (slashIndex != -1 && slashIndex < fileUrl.length() - 1) {
+			return fileUrl.substring(slashIndex + 1);
+		}
+		throw new IllegalArgumentException("Invalid file URL");
+	}
 
-
+	private void downloadFile(String fileUrl, File outputFile) throws IOException {
+		URL url = new URL(fileUrl);
+		try (InputStream inputStream = url.openStream()) {
+			Files.copy(inputStream, outputFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+		}
 	}
 
 	private void loadFiles() {
@@ -204,6 +262,10 @@ public class CleanSS {
 		getInstance().getServer().getCommandManager().register
 				(server.getCommandManager().metaBuilder("ssfinish").aliases("cleanssfinish", "controlfinish")
 						.build(), new FinishCommand(this));
+
+		getInstance().getServer().getCommandManager().register
+				(server.getCommandManager().metaBuilder("ssinfo").aliases("cleanssinfo", "controlinfo")
+						.build(), new InfoCommand(this));
 
 		getInstance().getServer().getCommandManager().register
 				(server.getCommandManager().metaBuilder("ssreload").aliases("cleanssreload", "controlreload")
@@ -263,27 +325,17 @@ public class CleanSS {
 		});
 	}
 
-	private void inControlTask() {
+	public void ControlTask() {
 
 		instance.getServer().getScheduler().buildTask(this, () -> {
 
 			for (Player players : server.getAllPlayers()) {
 				PlayerCache.getIn_control().put(players.getUniqueId(), data.getStats(players.getUniqueId(), "incontrol"));
+				PlayerCache.getControls().put(players.getUniqueId(), data.getStats(players.getUniqueId(), "controls"));
+				PlayerCache.getControls_suffered().put(players.getUniqueId(), data.getStats(players.getUniqueId(), "suffered"));
 			}
 
 		}).repeat(1, TimeUnit.SECONDS).schedule();
-
-	}
-
-	private void controlNumberTask() {
-
-		instance.getServer().getScheduler().buildTask(this, () -> {
-
-			for (Player players : server.getAllPlayers()) {
-				PlayerCache.getControls().put(players.getUniqueId(), data.getStats(players.getUniqueId(), "controls"));
-			}
-
-		}).repeat(5, TimeUnit.MINUTES).schedule();
 
 	}
 

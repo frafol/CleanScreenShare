@@ -33,13 +33,13 @@ public class ControlCommand extends Command {
 			return;
 		}
 
-		if (args.length == 0) {
+		if (!invocation.hasPermission(BungeeConfig.CONTROL_PERMISSION.get(String.class))) {
+			invocation.sendMessage(TextComponent.fromLegacyText(BungeeMessages.NO_PERMISSION.color()
+					.replace("%prefix%", BungeeMessages.PREFIX.color())));
+			return;
+		}
 
-			if (!invocation.hasPermission(BungeeConfig.CONTROL_PERMISSION.get(String.class))) {
-				invocation.sendMessage(TextComponent.fromLegacyText(BungeeMessages.NO_PERMISSION.color()
-						.replace("%prefix%", BungeeMessages.PREFIX.color())));
-				return;
-			}
+		if (args.length == 0) {
 
 			invocation.sendMessage(TextComponent.fromLegacyText(BungeeMessages.USAGE.color().replace("%prefix%", BungeeMessages.PREFIX.color())));
 			return;
@@ -82,7 +82,14 @@ public class ControlCommand extends Command {
 					}
 
 					if (PlayerCache.getSuspicious().contains(player.get().getUniqueId())) {
-						ProxyServer.getInstance().getLogger().severe("Player already in control");
+						invocation.sendMessage(TextComponent.fromLegacyText(BungeeMessages.CONTROL_ALREADY.color()
+								.replace("%prefix%", BungeeMessages.PREFIX.color())));
+						return;
+					}
+
+					if (PlayerCache.getIn_control().get(player.get().getUniqueId()) != null && PlayerCache.getIn_control().get(player.get().getUniqueId()) == 1) {
+						invocation.sendMessage(TextComponent.fromLegacyText(BungeeMessages.CONTROL_ALREADY.color()
+								.replace("%prefix%", BungeeMessages.PREFIX.color())));
 						return;
 					}
 

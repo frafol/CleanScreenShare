@@ -2,6 +2,7 @@ package it.frafol.cleanss.bungee;
 
 import it.frafol.cleanss.bungee.commands.ControlCommand;
 import it.frafol.cleanss.bungee.commands.FinishCommand;
+import it.frafol.cleanss.bungee.commands.InfoCommand;
 import it.frafol.cleanss.bungee.commands.ReloadCommand;
 import it.frafol.cleanss.bungee.enums.BungeeConfig;
 import it.frafol.cleanss.bungee.enums.BungeeMessages;
@@ -63,8 +64,7 @@ public class CleanSS extends Plugin {
 
 		if (BungeeConfig.MYSQL.get(Boolean.class)) {
 			data = new MySQLWorker();
-			inControlTask();
-			controlNumberTask();
+			ControlTask();
 		}
 
 		if (BungeeConfig.DISCORD_ENABLED.get(Boolean.class)) {
@@ -72,7 +72,6 @@ public class CleanSS extends Plugin {
 		}
 
 		if (BungeeConfig.STATS.get(Boolean.class) && !getDescription().getVersion().contains("alpha")) {
-
 			new Metrics(this, 17063);
 			getLogger().info("§7Metrics loaded §dsuccessfully§7!");
 		}
@@ -97,6 +96,7 @@ public class CleanSS extends Plugin {
 
 		getProxy().getPluginManager().registerCommand(this, new ControlCommand(this));
 		getProxy().getPluginManager().registerCommand(this, new FinishCommand(this));
+		getProxy().getPluginManager().registerCommand(this, new InfoCommand(this));
 		getProxy().getPluginManager().registerCommand(this, new ReloadCommand());
 
 	}
@@ -139,27 +139,17 @@ public class CleanSS extends Plugin {
 		});
 	}
 
-	private void inControlTask() {
+	public void ControlTask() {
 
 		instance.getProxy().getScheduler().schedule(this, () -> {
 
 			for (ProxiedPlayer players : getProxy().getPlayers()) {
 				PlayerCache.getIn_control().put(players.getUniqueId(), data.getStats(players.getUniqueId(), "incontrol"));
+				PlayerCache.getControls().put(players.getUniqueId(), data.getStats(players.getUniqueId(), "controls"));
+				PlayerCache.getControls_suffered().put(players.getUniqueId(), data.getStats(players.getUniqueId(), "controls"));
 			}
 
 		}, 1L, 1L, TimeUnit.SECONDS);
-
-	}
-
-	private void controlNumberTask() {
-
-		instance.getProxy().getScheduler().schedule(this, () -> {
-
-			for (ProxiedPlayer players : getProxy().getPlayers()) {
-				PlayerCache.getControls().put(players.getUniqueId(), data.getStats(players.getUniqueId(), "controls"));
-			}
-
-		}, 5L, 5L, TimeUnit.MINUTES);
 
 	}
 
@@ -222,8 +212,8 @@ public class CleanSS extends Plugin {
 		Library discord = Library.builder()
 				.groupId("net{}dv8tion")
 				.artifactId("JDA")
-				.version("5.0.0-beta.5")
-				.url("https://github.com/DV8FromTheWorld/JDA/releases/download/v5.0.0-beta.5/JDA-5.0.0-beta.5-withDependencies-min.jar")
+				.version("5.0.0-beta.10")
+				.url("https://github.com/DV8FromTheWorld/JDA/releases/download/v5.0.0-beta.10/JDA-5.0.0-beta.10-withDependencies-min.jar")
 				.build();
 
 		bungeeLibraryManager.addMavenCentral();
@@ -274,6 +264,10 @@ public class CleanSS extends Plugin {
 
 	public MySQLWorker getData() {
 		return data;
+	}
+
+	public void setData() {
+		data = new MySQLWorker();
 	}
 
 }

@@ -68,7 +68,7 @@ public enum VelocityMessages {
     DISCORD_STARTED("messages.discord.started"),
     DISCORD_FINISHED("messages.discord.finished"),
     DISCORD_QUIT("messages.discord.suspect_left_during_control"),
-
+    INFO_MESSAGE("messages.info.main_message"),
     RELOADED("messages.reloaded");
 
     private final String path;

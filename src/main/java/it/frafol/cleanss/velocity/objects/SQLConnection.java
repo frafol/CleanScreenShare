@@ -47,11 +47,13 @@ public class SQLConnection {
 
     private void connect() {
         try {
-            CleanSS.getInstance().getLogger().info("[Database] Connecting to MySQL database...");
+            CleanSS.getInstance().getLogger().info("§7Connecting to §dMySQL database§7...");
             connection = DriverManager.getConnection("JDBC:mysql://" + host + "/" + database + VelocityConfig.MYSQL_ARGUMENTS.get(String.class), user, password);
+            CleanSS.getInstance().getLogger().info("§7Connected to §dMySQL database§7.");
         } catch (SQLException sqlException) {
+            CleanSS.getInstance().getLogger().error("§cUnable to connect to the database, cannot start the plugin. Is password correct? Are drivers loaded?");
             sqlException.printStackTrace();
-            CleanSS.getInstance().getLogger().error("[Database] Unable to connect to the database, cannot start the plugin.");
+            CleanSS.getInstance().mysql_installation = true;
         }
     }
 

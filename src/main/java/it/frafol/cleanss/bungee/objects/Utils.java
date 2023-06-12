@@ -169,8 +169,13 @@ public class Utils {
             PlayerCache.getSuspicious().remove(suspicious.getUniqueId());
             PlayerCache.getCouples().remove(administrator, suspicious);
 
-            instance.getData().setInControl(suspicious.getUniqueId(), 0);
-            instance.getData().setInControl(administrator.getUniqueId(), 0);
+            if (BungeeConfig.MYSQL.get(Boolean.class)) {
+                instance.getData().setInControl(suspicious.getUniqueId(), 0);
+                instance.getData().setInControl(administrator.getUniqueId(), 0);
+            } else {
+                PlayerCache.getIn_control().put(suspicious.getUniqueId(), 0);
+                PlayerCache.getIn_control().put(administrator.getUniqueId(), 0);
+            }
 
             if (administrator.getServer() == null) {
                 return;
@@ -215,8 +220,13 @@ public class Utils {
 
             PlayerCache.getCouples().remove(administrator);
 
-            instance.getData().setInControl(suspicious.getUniqueId(), 0);
-            instance.getData().setInControl(administrator.getUniqueId(), 0);
+            if (BungeeConfig.MYSQL.get(Boolean.class)) {
+                instance.getData().setInControl(suspicious.getUniqueId(), 0);
+                instance.getData().setInControl(administrator.getUniqueId(), 0);
+            } else {
+                PlayerCache.getIn_control().put(suspicious.getUniqueId(), 0);
+                PlayerCache.getIn_control().put(administrator.getUniqueId(), 0);
+            }
 
         } else if (administrator.isConnected()) {
 
@@ -255,11 +265,36 @@ public class Utils {
         PlayerCache.getSuspicious().add(suspicious.getUniqueId());
         PlayerCache.getCouples().put(administrator, suspicious);
 
-        instance.getData().setInControl(suspicious.getUniqueId(), 1);
-        instance.getData().setInControl(administrator.getUniqueId(), 1);
+        if (BungeeConfig.MYSQL.get(Boolean.class)) {
 
-        if (instance.getData().getStats(administrator.getUniqueId(), "controls") != -1) {
-            instance.getData().setControls(administrator.getUniqueId(), instance.getData().getStats(administrator.getUniqueId(), "controls") + 1);
+            instance.getData().setInControl(suspicious.getUniqueId(), 1);
+            instance.getData().setInControl(administrator.getUniqueId(), 1);
+
+            if (instance.getData().getStats(administrator.getUniqueId(), "controls") != -1) {
+                instance.getData().setControls(administrator.getUniqueId(), instance.getData().getStats(administrator.getUniqueId(), "controls") + 1);
+            }
+
+            if (instance.getData().getStats(suspicious.getUniqueId(), "suffered") != -1) {
+                instance.getData().setControlsSuffered(suspicious.getUniqueId(), instance.getData().getStats(suspicious.getUniqueId(), "suffered") + 1);
+            }
+
+        } else {
+
+            PlayerCache.getIn_control().put(suspicious.getUniqueId(), 1);
+            PlayerCache.getIn_control().put(administrator.getUniqueId(), 1);
+
+            if (PlayerCache.getControls().get(administrator.getUniqueId()) != null) {
+                PlayerCache.getControls().put(administrator.getUniqueId(), PlayerCache.getControls().get(administrator.getUniqueId()) + 1);
+            } else {
+                PlayerCache.getControls().put(administrator.getUniqueId(), 1);
+            }
+
+            if (PlayerCache.getControls_suffered().get(suspicious.getUniqueId()) != null) {
+                PlayerCache.getControls_suffered().put(suspicious.getUniqueId(), PlayerCache.getControls_suffered().get(suspicious.getUniqueId()) + 1);
+            } else {
+                PlayerCache.getControls_suffered().put(suspicious.getUniqueId(), 1);
+            }
+
         }
 
         Utils.sendStartTitle(suspicious);

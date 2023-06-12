@@ -36,6 +36,10 @@ public class KickListener {
 
             instance.UpdateJDA();
             instance.getData().setupPlayer(player.getUniqueId());
+
+            PlayerCache.getControls().putIfAbsent(player.getUniqueId(), 0);
+            PlayerCache.getControls_suffered().putIfAbsent(player.getUniqueId(), 0);
+
             return;
         }
 

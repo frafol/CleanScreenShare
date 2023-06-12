@@ -34,6 +34,7 @@ public class KickListener implements Listener {
                 instance.UpdateChecker(player);
         }
 
+        instance.getData().setupPlayer(player.getUniqueId());
         instance.updateJDA();
 
     }

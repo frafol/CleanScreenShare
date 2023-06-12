@@ -7,6 +7,7 @@ public enum BungeeConfig {
 
     CONTROL_PERMISSION("permissions.control"),
     BYPASS_PERMISSION("permissions.bypass"),
+    INFO_PERMISSION("permissions.info"),
     RELOAD_PERMISSION("permissions.reload"),
     CHECK_FOR_PROBLEMS("settings.check_for_problems"),
     UPDATE_CHECK("settings.update_check"),

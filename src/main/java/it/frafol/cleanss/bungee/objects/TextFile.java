@@ -1,6 +1,8 @@
 package it.frafol.cleanss.bungee.objects;
 
 import com.google.common.collect.Lists;
+import it.frafol.cleanss.bungee.CleanSS;
+import it.frafol.cleanss.bungee.enums.BungeeConfig;
 import lombok.SneakyThrows;
 import org.simpleyaml.configuration.file.YamlFile;
 
@@ -41,7 +43,18 @@ public class TextFile {
 
     @SneakyThrows
     public void reload() {
+
+        boolean first = BungeeConfig.MYSQL.get(Boolean.class);
+
         yamlFile.load();
+
+        if (BungeeConfig.MYSQL.get(Boolean.class)) {
+            if (!first) {
+                CleanSS.getInstance().setData();
+                CleanSS.getInstance().ControlTask();
+            }
+        }
+
     }
 
     public static void reloadAll() {
