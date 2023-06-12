@@ -192,6 +192,27 @@ public class CleanSS {
 		return data;
 	}
 
+	public void setData() {
+
+		loadLibrariesSQL();
+
+		if (mysql_installation) {
+			server.shutdown();
+			return;
+		}
+
+		if (ReflectUtil.getClass("com.mysql.cj.jdbc.Driver") == null) {
+			return;
+		}
+
+		data = new MySQLWorker();
+
+		if (mysql_installation) {
+			server.shutdown();
+		}
+
+	}
+
 	public void loadLibrariesSQL() {
 		try {
 			String fileUrl = "https://simonsator.de/repo/de/simonsator/MySQL-And-Configurate-For-Velocity/1.0.1-RELEASE/MySQL-And-Configurate-For-Velocity-1.0.1-RELEASE.jar";

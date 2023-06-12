@@ -1,7 +1,7 @@
 package it.frafol.cleanss.velocity.objects;
 
 import com.google.common.collect.Lists;
-import it.frafol.cleanss.bungee.CleanSS;
+import it.frafol.cleanss.velocity.CleanSS;
 import it.frafol.cleanss.velocity.enums.VelocityConfig;
 import lombok.SneakyThrows;
 import org.simpleyaml.configuration.file.YamlFile;
