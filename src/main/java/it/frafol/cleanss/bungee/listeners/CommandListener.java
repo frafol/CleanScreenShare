@@ -1,11 +1,14 @@
 package it.frafol.cleanss.bungee.listeners;
 
+import it.frafol.cleanss.bungee.CleanSS;
 import it.frafol.cleanss.bungee.objects.PlayerCache;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.ChatEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.concurrent.TimeUnit;
 
 public class CommandListener implements Listener {
 
@@ -26,5 +29,11 @@ public class CommandListener implements Listener {
             event.setCancelled(true);
         }
 
+        if ((event.getMessage().startsWith("/ban") || event.getMessage().startsWith("/tempban"))
+                && event.getMessage().contains(CleanSS.getInstance().getValue(PlayerCache.getCouples(), player).getName())) {
+
+            PlayerCache.getBan_execution().add(player.getUniqueId());
+            CleanSS.getInstance().getProxy().getScheduler().schedule(CleanSS.getInstance(), () -> PlayerCache.getBan_execution().remove(player.getUniqueId()), 2L, TimeUnit.SECONDS);
+        }
     }
 }

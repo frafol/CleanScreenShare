@@ -10,7 +10,6 @@ import com.velocitypowered.api.scheduler.ScheduledTask;
 import it.frafol.cleanss.velocity.CleanSS;
 import it.frafol.cleanss.velocity.enums.VelocityConfig;
 import it.frafol.cleanss.velocity.enums.VelocityMessages;
-import litebans.api.Database;
 import lombok.Getter;
 import lombok.experimental.UtilityClass;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -131,25 +130,17 @@ public class Utils {
         }
     }
 
-    public void punishPlayer(UUID uuid, String address) {
-
-        if (!instance.isLiteBans()) {
-            return;
-        }
+    public void punishPlayer(UUID administrator, String suspicious) {
 
         if (!VelocityConfig.SLOG_PUNISH.get(Boolean.class)) {
             return;
         }
 
-        if (address == null) {
+        if (PlayerCache.getBan_execution().contains(administrator)) {
             return;
         }
 
-        if (Database.get().isPlayerBanned(uuid, address)) {
-            return;
-        }
-
-        instance.getServer().getCommandManager().executeAsync(instance.getServer().getConsoleCommandSource(), VelocityConfig.SLOG_COMMAND.get(String.class));
+        instance.getServer().getCommandManager().executeAsync(instance.getServer().getConsoleCommandSource(), VelocityConfig.SLOG_COMMAND.get(String.class).replace("%player%", suspicious));
 
     }
 

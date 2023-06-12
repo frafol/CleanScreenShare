@@ -1,7 +1,7 @@
 package it.frafol.cleanss.velocity.objects;
 
-import it.frafol.cleanss.velocity.enums.VelocityConfig;
 import it.frafol.cleanss.velocity.CleanSS;
+import it.frafol.cleanss.velocity.enums.VelocityConfig;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

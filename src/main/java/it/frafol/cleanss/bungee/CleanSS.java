@@ -10,9 +10,9 @@ import it.frafol.cleanss.bungee.listeners.ChatListener;
 import it.frafol.cleanss.bungee.listeners.CommandListener;
 import it.frafol.cleanss.bungee.listeners.KickListener;
 import it.frafol.cleanss.bungee.listeners.ServerListener;
+import it.frafol.cleanss.bungee.mysql.MySQLWorker;
 import it.frafol.cleanss.bungee.objects.PlayerCache;
 import it.frafol.cleanss.bungee.objects.TextFile;
-import it.frafol.cleanss.bungee.mysql.MySQLWorker;
 import net.byteflux.libby.BungeeLibraryManager;
 import net.byteflux.libby.Library;
 import net.dv8tion.jda.api.JDA;
@@ -74,10 +74,6 @@ public class CleanSS extends Plugin {
 		if (BungeeConfig.STATS.get(Boolean.class) && !getDescription().getVersion().contains("alpha")) {
 			new Metrics(this, 17063);
 			getLogger().info("§7Metrics loaded §dsuccessfully§7!");
-		}
-
-		if (isLiteBans()) {
-			getLogger().info("§7LiteBans hooked §dsuccessfully§7!");
 		}
 
 		UpdateChecker();
@@ -175,10 +171,6 @@ public class CleanSS extends Plugin {
 
 	public JDA getJda() {
 		return jda;
-	}
-
-	public boolean isLiteBans() {
-		return getProxy().getPluginManager().getPlugin("LiteBans") != null;
 	}
 
 	public void updateJDA() {

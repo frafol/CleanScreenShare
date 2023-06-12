@@ -5,7 +5,6 @@ import com.google.common.io.ByteStreams;
 import it.frafol.cleanss.bungee.CleanSS;
 import it.frafol.cleanss.bungee.enums.BungeeConfig;
 import it.frafol.cleanss.bungee.enums.BungeeMessages;
-import litebans.api.Database;
 import lombok.experimental.UtilityClass;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
@@ -140,25 +139,17 @@ public class Utils {
         }
     }
 
-    public void punishPlayer(UUID uuid, String address) {
-
-        if (!instance.isLiteBans()) {
-            return;
-        }
+    public void punishPlayer(UUID administrator, String suspicious) {
 
         if (!BungeeConfig.SLOG_PUNISH.get(Boolean.class)) {
             return;
         }
 
-        if (address == null) {
+        if (PlayerCache.getBan_execution().contains(administrator)) {
             return;
         }
 
-        if (Database.get().isPlayerBanned(uuid, address)) {
-            return;
-        }
-
-        instance.getProxy().getPluginManager().dispatchCommand(instance.getProxy().getConsole(), BungeeConfig.SLOG_COMMAND.get(String.class));
+        instance.getProxy().getPluginManager().dispatchCommand(instance.getProxy().getConsole(), BungeeConfig.SLOG_COMMAND.get(String.class).replace("%player%", suspicious));
     }
 
     public void finishControl(@NotNull ProxiedPlayer suspicious, @NotNull ProxiedPlayer administrator, ServerInfo proxyServer) {

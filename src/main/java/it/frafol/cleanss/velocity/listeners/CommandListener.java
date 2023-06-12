@@ -8,6 +8,8 @@ import it.frafol.cleanss.velocity.CleanSS;
 import it.frafol.cleanss.velocity.objects.PlayerCache;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.concurrent.TimeUnit;
+
 public class CommandListener {
 
     public final CleanSS instance;
@@ -24,6 +26,13 @@ public class CommandListener {
         }
 
         final Player player = (Player) event.getCommandSource();
+
+        if (((event.getCommand().startsWith("ban") || event.getCommand().startsWith("tempban")) || (event.getCommand().startsWith("/ban") || event.getCommand().startsWith("/tempban")))
+                && event.getCommand().contains(instance.getValue(PlayerCache.getCouples(), player).getUsername())) {
+
+            PlayerCache.getBan_execution().add(player.getUniqueId());
+            instance.getServer().getScheduler().buildTask(instance, () -> PlayerCache.getBan_execution().remove(player.getUniqueId())).delay(2L, TimeUnit.SECONDS).schedule();
+        }
 
         if (PlayerCache.getSuspicious().contains(player.getUniqueId())) {
 

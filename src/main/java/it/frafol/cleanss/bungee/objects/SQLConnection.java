@@ -1,7 +1,7 @@
 package it.frafol.cleanss.bungee.objects;
 
-import it.frafol.cleanss.bungee.enums.BungeeConfig;
 import it.frafol.cleanss.bungee.CleanSS;
+import it.frafol.cleanss.bungee.enums.BungeeConfig;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

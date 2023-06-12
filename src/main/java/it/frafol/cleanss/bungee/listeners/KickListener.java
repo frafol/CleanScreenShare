@@ -15,8 +15,6 @@ import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
 import org.jetbrains.annotations.NotNull;
 
-import java.net.InetSocketAddress;
-
 public class KickListener implements Listener {
 
     public CleanSS instance;
@@ -69,17 +67,18 @@ public class KickListener implements Listener {
         if (PlayerCache.getAdministrator().contains(player.getUniqueId())) {
 
             Utils.finishControl(instance.getValue(PlayerCache.getCouples(), player), player, proxyServer);
+            Utils.punishPlayer(instance.getValue(PlayerCache.getCouples(), player).getUniqueId(), player.getName());
 
         }
 
         if (PlayerCache.getSuspicious().contains(player.getUniqueId())) {
 
             Utils.finishControl(player, instance.getKey(PlayerCache.getCouples(), player), proxyServer);
+            Utils.punishPlayer(player.getUniqueId(), instance.getKey(PlayerCache.getCouples(), player).getName());
             Utils.sendDiscordMessage(player, instance.getKey(PlayerCache.getCouples(), player), BungeeMessages.DISCORD_QUIT.get(String.class));
 
         }
 
-        final InetSocketAddress address = (InetSocketAddress) player.getSocketAddress();
-        Utils.punishPlayer(player.getUniqueId(), address.getHostString());
+
     }
 }

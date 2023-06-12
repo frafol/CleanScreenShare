@@ -49,9 +49,9 @@ import java.util.concurrent.TimeUnit;
 @Plugin(
 		id = "cleanscreenshare",
 		name = "CleanScreenShare",
-		version = "1.2",
+		version = "1.2.1",
 		description = "Make control hacks on your players.",
-		dependencies = {@Dependency(id = "mysqlandconfigurateforvelocity", optional = true), @Dependency(id = "litebans", optional = true)},
+		dependencies = {@Dependency(id = "mysqlandconfigurateforvelocity", optional = true)},
 		authors = { "frafol" })
 
 public class CleanSS {
@@ -151,10 +151,6 @@ public class CleanSS {
 					"consider downloading https://github.com/4drian3d/UnSignedVelocity/releases/latest");
 		} else {
 			logger.info("§7UnsignedVelocity hooked §dsuccessfully§7!");
-		}
-
-		if (isLiteBans()) {
-			logger.info("§7LiteBans hooked §dsuccessfully§7!");
 		}
 
 		UpdateChecker();
@@ -317,10 +313,6 @@ public class CleanSS {
 			UpdateJDA();
 			getLogger().info("§7Hooked into Discord §dsuccessfully§7!");
 		}
-	}
-
-	public boolean isLiteBans() {
-		return server.getPluginManager().isLoaded("litebans");
 	}
 
 	private void UpdateChecker() {
