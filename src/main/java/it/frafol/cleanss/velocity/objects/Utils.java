@@ -17,6 +17,9 @@ import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.kyori.adventure.title.Title;
+import net.luckperms.api.LuckPerms;
+import net.luckperms.api.LuckPermsProvider;
+import net.luckperms.api.model.user.User;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
@@ -130,13 +133,66 @@ public class Utils {
         }
     }
 
-    public void punishPlayer(UUID administrator, String suspicious) {
+    public void sendDiscordMessage(Player suspect, Player staffer, String message, String result) {
 
-        if (!VelocityConfig.SLOG_PUNISH.get(Boolean.class)) {
-            return;
+        if (VelocityConfig.DISCORD_ENABLED.get(Boolean.class)) {
+
+            final TextChannel channel = instance.getJda().getJda().getTextChannelById(VelocityConfig.DISCORD_CHANNEL_ID.get(String.class));
+
+            if (channel == null) {
+                return;
+            }
+
+            EmbedBuilder embed = new EmbedBuilder();
+
+            embed.setTitle(VelocityConfig.DISCORD_EMBED_TITLE.get(String.class), null);
+
+            embed.setDescription(message
+                    .replace("%suspect%", suspect.getUsername())
+                    .replace("%staffer%", staffer.getUsername())
+                    .replace("%result%", result));
+
+            embed.setColor(Color.RED);
+            embed.setFooter("Powered by CleanScreenShare");
+
+            channel.sendMessageEmbeds(embed.build()).queue();
+
+        }
+    }
+
+    public void punishPlayer(UUID administrator, String suspicious, Player administrator_user, Player suspect) {
+
+        boolean luckperms = instance.getServer().getPluginManager().isLoaded("luckperms");
+        String admin_group = "";
+        String suspect_group = "";
+
+        if (luckperms) {
+
+            final LuckPerms api = LuckPermsProvider.get();
+
+            final User admin = api.getUserManager().getUser(administrator_user.getUniqueId());
+            final User suspect2 = api.getUserManager().getUser(suspect.getUniqueId());
+
+            if (admin == null || suspect2 == null) {
+                return;
+            }
+
+            final String admingroup = admin.getCachedData().getMetaData().getPrimaryGroup();
+            admin_group = admingroup == null ? "" : admingroup;
+
+            final String suspectgroup = suspect2.getCachedData().getMetaData().getPrimaryGroup();
+            suspect_group = suspectgroup == null ? "" : suspectgroup;
+
         }
 
         if (PlayerCache.getBan_execution().contains(administrator)) {
+            Utils.sendDiscordMessage(suspect, administrator_user, VelocityMessages.DISCORD_QUIT.get(String.class).replace("%suspectgroup%", suspect_group).replace("%admingroup%", admin_group), VelocityMessages.CHEATER.get(String.class));
+            return;
+        }
+
+        Utils.sendDiscordMessage(suspect, administrator_user, VelocityMessages.DISCORD_QUIT.get(String.class).replace("%suspectgroup%", suspect_group).replace("%admingroup%", admin_group), VelocityMessages.LEFT.get(String.class));
+
+        if (!VelocityConfig.SLOG_PUNISH.get(Boolean.class)) {
             return;
         }
 

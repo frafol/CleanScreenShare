@@ -5,6 +5,9 @@ import it.frafol.cleanss.bungee.enums.BungeeConfig;
 import it.frafol.cleanss.bungee.enums.BungeeMessages;
 import it.frafol.cleanss.bungee.objects.PlayerCache;
 import it.frafol.cleanss.bungee.objects.Utils;
+import net.luckperms.api.LuckPerms;
+import net.luckperms.api.LuckPermsProvider;
+import net.luckperms.api.model.user.User;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.config.ServerInfo;
@@ -23,6 +26,8 @@ public class FinishCommand extends Command {
 
     @Override
     public void execute(@NotNull CommandSender invocation, String[] args) {
+
+        boolean luckperms = instance.getProxy().getPluginManager().getPlugin("LuckPermsBungee") != null;
 
         if (!invocation.hasPermission(BungeeConfig.CONTROL_PERMISSION.get(String.class))) {
             invocation.sendMessage(TextComponent.fromLegacyText(BungeeMessages.NO_PERMISSION.color()
@@ -69,7 +74,30 @@ public class FinishCommand extends Command {
                 }
 
                 Utils.finishControl(player, (ProxiedPlayer) invocation, proxyServer);
-                Utils.sendDiscordMessage(player, (ProxiedPlayer) invocation, BungeeMessages.DISCORD_FINISHED.get(String.class));
+
+                String admin_group = "";
+                String suspect_group = "";
+
+                if (luckperms) {
+
+                    final LuckPerms api = LuckPermsProvider.get();
+
+                    final User admin = api.getUserManager().getUser(player.getUniqueId());
+                    final User suspect = api.getUserManager().getUser(instance.getValue(PlayerCache.getCouples(), ((ProxiedPlayer) invocation)).getUniqueId());
+
+                    if (admin == null || suspect == null) {
+                        return;
+                    }
+
+                    final String admingroup = admin.getCachedData().getMetaData().getPrimaryGroup();
+                    admin_group = admingroup == null ? "" : admingroup;
+
+                    final String suspectgroup = suspect.getCachedData().getMetaData().getPrimaryGroup();
+                    suspect_group = suspectgroup == null ? "" : suspectgroup;
+
+                }
+
+                Utils.sendDiscordMessage(player, (ProxiedPlayer) invocation, BungeeMessages.DISCORD_FINISHED.get(String.class).replace("%suspectgroup%", suspect_group).replace("%admingroup%", admin_group), BungeeMessages.CLEAN.get(String.class));
 
             }
         }

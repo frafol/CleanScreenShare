@@ -35,7 +35,10 @@ public class KickListener {
             }
 
             instance.UpdateJDA();
-            instance.getData().setupPlayer(player.getUniqueId());
+
+            if (instance.getData() != null) {
+                instance.getData().setupPlayer(player.getUniqueId());
+            }
 
             PlayerCache.getControls().putIfAbsent(player.getUniqueId(), 0);
             PlayerCache.getControls_suffered().putIfAbsent(player.getUniqueId(), 0);
@@ -66,14 +69,13 @@ public class KickListener {
         if (PlayerCache.getAdministrator().contains(player.getUniqueId())) {
 
             Utils.finishControl(instance.getValue(PlayerCache.getCouples(), player), player, proxyServer.get());
+            Utils.sendDiscordMessage(instance.getValue(PlayerCache.getCouples(), player), player, VelocityMessages.DISCORD_QUIT.get(String.class), VelocityMessages.CLEAN.get(String.class));
 
         } else if (PlayerCache.getSuspicious().contains(player.getUniqueId())) {
 
             Utils.finishControl(player, instance.getKey(PlayerCache.getCouples(), player), proxyServer.get());
-            Utils.sendDiscordMessage(player, instance.getKey(PlayerCache.getCouples(), player), VelocityMessages.DISCORD_QUIT.get(String.class));
+            Utils.punishPlayer(player.getUniqueId(), instance.getValue(PlayerCache.getCouples(), player).getUsername(), player, instance.getValue(PlayerCache.getCouples(), player));
 
         }
-
-        Utils.punishPlayer(player.getUniqueId(), player.getRemoteAddress().getAddress().getHostAddress());
     }
 }

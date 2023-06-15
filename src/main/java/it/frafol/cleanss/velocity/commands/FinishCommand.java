@@ -10,6 +10,9 @@ import it.frafol.cleanss.velocity.enums.VelocityMessages;
 import it.frafol.cleanss.velocity.objects.PlayerCache;
 import it.frafol.cleanss.velocity.objects.Utils;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import net.luckperms.api.LuckPerms;
+import net.luckperms.api.LuckPermsProvider;
+import net.luckperms.api.model.user.User;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
@@ -26,6 +29,7 @@ public class FinishCommand implements SimpleCommand {
     public void execute(SimpleCommand.@NotNull Invocation invocation) {
 
         final CommandSource source = invocation.source();
+        boolean luckperms = instance.getServer().getPluginManager().isLoaded("luckperms");
 
         if (Utils.isConsole(source)) {
             source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.ONLY_PLAYERS.color()
@@ -75,7 +79,30 @@ public class FinishCommand implements SimpleCommand {
                 }
 
                 Utils.finishControl(player.get(), sender, proxyServer.get());
-                Utils.sendDiscordMessage(player.get(), sender, VelocityMessages.DISCORD_FINISHED.get(String.class));
+
+                String admin_group = "";
+                String suspect_group = "";
+
+                if (luckperms) {
+
+                    final LuckPerms api = LuckPermsProvider.get();
+
+                    final User admin = api.getUserManager().getUser(player.get().getUniqueId());
+                    final User suspect = api.getUserManager().getUser(instance.getValue(PlayerCache.getCouples(), sender).getUniqueId());
+
+                    if (admin == null || suspect == null) {
+                        return;
+                    }
+
+                    final String admingroup = admin.getCachedData().getMetaData().getPrimaryGroup();
+                    admin_group = admingroup == null ? "" : admingroup;
+
+                    final String suspectgroup = suspect.getCachedData().getMetaData().getPrimaryGroup();
+                    suspect_group = suspectgroup == null ? "" : suspectgroup;
+
+                }
+
+                Utils.sendDiscordMessage(player.get(), sender, VelocityMessages.DISCORD_FINISHED.get(String.class).replace("%suspectgroup%", suspect_group).replace("%admingroup%", admin_group), VelocityMessages.CLEAN.get(String.class));
 
             } else {
 

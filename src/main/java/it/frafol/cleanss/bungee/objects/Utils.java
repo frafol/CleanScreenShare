@@ -8,6 +8,9 @@ import it.frafol.cleanss.bungee.enums.BungeeMessages;
 import lombok.experimental.UtilityClass;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.luckperms.api.LuckPerms;
+import net.luckperms.api.LuckPermsProvider;
+import net.luckperms.api.model.user.User;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.Title;
@@ -113,6 +116,33 @@ public class Utils {
         sendList(commandSender, color(getStringList(velocityMessages, placeholders)), player_name);
     }
 
+    public void sendDiscordMessage(ProxiedPlayer suspect, ProxiedPlayer staffer, String message, String result) {
+
+        if (BungeeConfig.DISCORD_ENABLED.get(Boolean.class)) {
+
+            final TextChannel channel = instance.getJda().getTextChannelById(BungeeConfig.DISCORD_CHANNEL_ID.get(String.class));
+
+            if (channel == null) {
+                return;
+            }
+
+            EmbedBuilder embed = new EmbedBuilder();
+
+            embed.setTitle(BungeeConfig.DISCORD_EMBED_TITLE.get(String.class), null);
+
+            embed.setDescription(message
+                    .replace("%suspect%", suspect.getName())
+                    .replace("%staffer%", staffer.getName())
+                    .replace("%result%", result));
+
+            embed.setColor(Color.RED);
+            embed.setFooter("Powered by CleanStaffChat");
+
+            channel.sendMessageEmbeds(embed.build()).queue();
+
+        }
+    }
+
     public void sendDiscordMessage(ProxiedPlayer suspect, ProxiedPlayer staffer, String message) {
 
         if (BungeeConfig.DISCORD_ENABLED.get(Boolean.class)) {
@@ -139,13 +169,40 @@ public class Utils {
         }
     }
 
-    public void punishPlayer(UUID administrator, String suspicious) {
+    public void punishPlayer(UUID administrator, String suspicious, ProxiedPlayer administrator_player, ProxiedPlayer suspect) {
 
-        if (!BungeeConfig.SLOG_PUNISH.get(Boolean.class)) {
-            return;
+        boolean luckperms = instance.getProxy().getPluginManager().getPlugin("LuckPermsBungee") != null;
+
+        String admin_group = "";
+        String suspect_group = "";
+
+        if (luckperms) {
+
+            final LuckPerms api = LuckPermsProvider.get();
+
+            final User admin = api.getUserManager().getUser(administrator_player.getUniqueId());
+            final User suspect2 = api.getUserManager().getUser(suspect.getUniqueId());
+
+            if (admin == null || suspect2 == null) {
+                return;
+            }
+
+            final String admingroup = admin.getCachedData().getMetaData().getPrimaryGroup();
+            admin_group = admingroup == null ? "" : admingroup;
+
+            final String suspectgroup = suspect2.getCachedData().getMetaData().getPrimaryGroup();
+            suspect_group = suspectgroup == null ? "" : suspectgroup;
+
         }
 
         if (PlayerCache.getBan_execution().contains(administrator)) {
+            Utils.sendDiscordMessage(suspect, administrator_player, BungeeMessages.DISCORD_QUIT.get(String.class).replace("%admingroup%", admin_group).replace("%suspectgroup%", suspect_group), BungeeMessages.CHEATER.get(String.class));
+            return;
+        }
+
+        Utils.sendDiscordMessage(suspect, administrator_player, BungeeMessages.DISCORD_QUIT.get(String.class).replace("%admingroup%", admin_group).replace("%suspectgroup%", suspect_group), BungeeMessages.LEFT.get(String.class));
+
+        if (!BungeeConfig.SLOG_PUNISH.get(Boolean.class)) {
             return;
         }
 

@@ -112,10 +112,19 @@ messages:
   discord:
 
     # These messages will be sent in the discord channel when a certain thing happens.
+    # You can use %staffer%, %suspect%. If you are using LuckPerms, you can also use %admingroup% and %suspectgroup%.
     started: "The staffer %staffer% started an hack control to %suspect%."
+
+    # You can use %staffer%, %suspect% and %result%. If you are using LuckPerms, you can also use %admingroup% and %suspectgroup%.
     finished: "The staffer %staffer% finished the control to %suspect%."
 
+    # You can use %staffer%, %suspect% and %result%. If you are using LuckPerms, you can also use %admingroup% and %suspectgroup%.
     suspect_left_during_control: "The suspect %suspect%, left the server during a control."
 
+    # Output of placeholder %result%.
+    results:
+      clean: "Clean"
+      cheater: "Cheater"
+      left: "Left"
 
 # Enjoy.

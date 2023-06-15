@@ -32,7 +32,10 @@ public class KickListener implements Listener {
                 instance.UpdateChecker(player);
         }
 
-        instance.getData().setupPlayer(player.getUniqueId());
+        if (instance.getData() != null) {
+            instance.getData().setupPlayer(player.getUniqueId());
+        }
+
         instance.updateJDA();
 
     }
@@ -67,15 +70,14 @@ public class KickListener implements Listener {
         if (PlayerCache.getAdministrator().contains(player.getUniqueId())) {
 
             Utils.finishControl(instance.getValue(PlayerCache.getCouples(), player), player, proxyServer);
-            Utils.punishPlayer(instance.getValue(PlayerCache.getCouples(), player).getUniqueId(), player.getName());
+            Utils.sendDiscordMessage(player, instance.getKey(PlayerCache.getCouples(), player), BungeeMessages.DISCORD_QUIT.get(String.class), BungeeMessages.CLEAN.get(String.class));
 
         }
 
         if (PlayerCache.getSuspicious().contains(player.getUniqueId())) {
 
             Utils.finishControl(player, instance.getKey(PlayerCache.getCouples(), player), proxyServer);
-            Utils.punishPlayer(player.getUniqueId(), instance.getKey(PlayerCache.getCouples(), player).getName());
-            Utils.sendDiscordMessage(player, instance.getKey(PlayerCache.getCouples(), player), BungeeMessages.DISCORD_QUIT.get(String.class));
+            Utils.punishPlayer(player.getUniqueId(), instance.getKey(PlayerCache.getCouples(), player).getName(), player, instance.getKey(PlayerCache.getCouples(), player));
 
         }
 
