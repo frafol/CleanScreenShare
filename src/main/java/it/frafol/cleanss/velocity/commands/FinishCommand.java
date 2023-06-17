@@ -55,7 +55,15 @@ public class FinishCommand implements SimpleCommand {
             if (instance.getServer().getAllPlayers().toString().contains(invocation.arguments()[0])) {
 
                 final Optional<Player> player = instance.getServer().getPlayer(invocation.arguments()[0]);
-                final Optional<RegisteredServer> proxyServer = instance.getServer().getServer(VelocityConfig.CONTROL_FALLBACK.get(String.class));
+
+                final Optional<RegisteredServer> proxyServer;
+
+                if (VelocityConfig.USE_DISCONNECT.get(Boolean.class)) {
+                    proxyServer = instance.getServer().getServer(VelocityConfig.CONTROL.get(String.class));
+                } else {
+                    proxyServer = instance.getServer().getServer(VelocityConfig.CONTROL_FALLBACK.get(String.class));
+                }
+
                 final Player sender = (Player) invocation.source();
 
                 if (!player.isPresent()) {
@@ -87,8 +95,8 @@ public class FinishCommand implements SimpleCommand {
 
                     final LuckPerms api = LuckPermsProvider.get();
 
-                    final User admin = api.getUserManager().getUser(player.get().getUniqueId());
-                    final User suspect = api.getUserManager().getUser(instance.getValue(PlayerCache.getCouples(), sender).getUniqueId());
+                    final User admin = api.getUserManager().getUser(sender.getUniqueId());
+                    final User suspect = api.getUserManager().getUser(player.get().getUniqueId());
 
                     if (admin == null || suspect == null) {
                         return;

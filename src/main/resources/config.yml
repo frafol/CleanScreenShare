@@ -10,6 +10,12 @@ settings:
 
   # Name of the Hack Control server and the fallback server.
   server_name: "Control"
+
+  # Disconnect the player from the control server instead of taking it to a fallback server.
+  # It can be useful if you use plugins that allow multilobby fallback (e.g., FallbackServer).
+  use_disconnect_instead_of_fallback: false
+
+  # The server name that will be used when the player is disconnected from the control.
   fallback_server_name: "Hub"
 
   # This will check if you have been properly connected to the control server,

@@ -82,8 +82,8 @@ public class FinishCommand extends Command {
 
                     final LuckPerms api = LuckPermsProvider.get();
 
-                    final User admin = api.getUserManager().getUser(player.getUniqueId());
-                    final User suspect = api.getUserManager().getUser(instance.getValue(PlayerCache.getCouples(), ((ProxiedPlayer) invocation)).getUniqueId());
+                    final User admin = api.getUserManager().getUser(((ProxiedPlayer) invocation).getUniqueId());
+                    final User suspect = api.getUserManager().getUser(player.getUniqueId());
 
                     if (admin == null || suspect == null) {
                         return;

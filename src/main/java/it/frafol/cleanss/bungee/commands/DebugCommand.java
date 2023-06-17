@@ -22,13 +22,13 @@ public class DebugCommand extends Command {
             return;
         }
 
-        invocation.sendMessage(TextComponent.fromLegacyText("&d| "));
-        invocation.sendMessage(TextComponent.fromLegacyText("&d| &7CleanScreenShare Informations"));
-        invocation.sendMessage(TextComponent.fromLegacyText("&d| "));
-        invocation.sendMessage(TextComponent.fromLegacyText("&d| &7Version: &d" + instance.getDescription().getVersion()));
-        invocation.sendMessage(TextComponent.fromLegacyText("&d| &7BungeeCord: &d" + instance.getProxy().getVersion()));
-        invocation.sendMessage(TextComponent.fromLegacyText("&d| &7MySQL: &d" + getMySQL()));
-        invocation.sendMessage(TextComponent.fromLegacyText("&d| "));
+        invocation.sendMessage(TextComponent.fromLegacyText("§d| "));
+        invocation.sendMessage(TextComponent.fromLegacyText("§d| §7CleanScreenShare Informations"));
+        invocation.sendMessage(TextComponent.fromLegacyText("§d| "));
+        invocation.sendMessage(TextComponent.fromLegacyText("§d| §7Version: §d" + instance.getDescription().getVersion()));
+        invocation.sendMessage(TextComponent.fromLegacyText("§d| §7BungeeCord: §d" + instance.getProxy().getVersion()));
+        invocation.sendMessage(TextComponent.fromLegacyText("§d| §7MySQL: §d" + getMySQL()));
+        invocation.sendMessage(TextComponent.fromLegacyText("§d| "));
 
     }
 

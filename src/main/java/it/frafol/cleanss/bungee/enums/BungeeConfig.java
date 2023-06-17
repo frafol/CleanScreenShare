@@ -11,6 +11,7 @@ public enum BungeeConfig {
     RELOAD_PERMISSION("permissions.reload"),
     CHECK_FOR_PROBLEMS("settings.check_for_problems"),
     UPDATE_CHECK("settings.update_check"),
+    USE_DISCONNECT("settings.use_disconnect_instead_of_fallback"),
     CONTROL("settings.server_name"),
     CONTROL_FALLBACK("settings.fallback_server_name"),
     DISCORD_ENABLED("discord-webhook.enabled"),

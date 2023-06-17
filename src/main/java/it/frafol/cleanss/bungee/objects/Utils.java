@@ -235,7 +235,11 @@ public class Utils {
                     return;
                 }
 
-                administrator.connect(proxyServer);
+                if (!BungeeConfig.USE_DISCONNECT.get(Boolean.class)) {
+                    administrator.connect(proxyServer);
+                } else {
+                    Utils.sendChannelMessage(administrator, "DISCONNECT_NOW");
+                }
 
                 Utils.sendEndTitle(suspicious);
 
@@ -259,7 +263,11 @@ public class Utils {
             PlayerCache.getSuspicious().remove(suspicious.getUniqueId());
             PlayerCache.getAdministrator().remove(administrator.getUniqueId());
 
-            suspicious.connect(proxyServer);
+            if (!BungeeConfig.USE_DISCONNECT.get(Boolean.class)) {
+                suspicious.connect(proxyServer);
+            } else {
+                Utils.sendChannelMessage(suspicious, "DISCONNECT_NOW");
+            }
 
             Utils.sendEndTitle(suspicious);
 
@@ -281,7 +289,11 @@ public class Utils {
             PlayerCache.getAdministrator().remove(administrator.getUniqueId());
             PlayerCache.getSuspicious().remove(suspicious.getUniqueId());
 
-            administrator.connect(proxyServer);
+            if (!BungeeConfig.USE_DISCONNECT.get(Boolean.class)) {
+                administrator.connect(proxyServer);
+            } else {
+                Utils.sendChannelMessage(administrator, "DISCONNECT_NOW");
+            }
 
             administrator.sendMessage(TextComponent.fromLegacyText(BungeeMessages.LEAVESUS.color()
                     .replace("%prefix%", BungeeMessages.PREFIX.color())
@@ -292,6 +304,19 @@ public class Utils {
             instance.getData().setInControl(suspicious.getUniqueId(), 0);
             instance.getData().setInControl(administrator.getUniqueId(), 0);
 
+        } else {
+
+            PlayerCache.getAdministrator().remove(administrator.getUniqueId());
+            PlayerCache.getSuspicious().remove(suspicious.getUniqueId());
+            PlayerCache.getCouples().remove(administrator);
+
+            if (BungeeConfig.MYSQL.get(Boolean.class)) {
+                instance.getData().setInControl(suspicious.getUniqueId(), 0);
+                instance.getData().setInControl(administrator.getUniqueId(), 0);
+            } else {
+                PlayerCache.getIn_control().put(suspicious.getUniqueId(), 0);
+                PlayerCache.getIn_control().put(administrator.getUniqueId(), 0);
+            }
         }
     }
 

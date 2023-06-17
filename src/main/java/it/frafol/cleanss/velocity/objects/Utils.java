@@ -226,7 +226,11 @@ public class Utils {
 
             if (suspicious.getCurrentServer().get().getServer().getServerInfo().getName().equals(VelocityConfig.CONTROL.get(String.class))) {
 
-                suspicious.createConnectionRequest(proxyServer).fireAndForget();
+                if (!VelocityConfig.USE_DISCONNECT.get(Boolean.class)) {
+                    suspicious.createConnectionRequest(proxyServer).fireAndForget();
+                } else {
+                    Utils.sendChannelMessage(suspicious, "DISCONNECT_NOW");
+                }
 
                 Utils.sendEndTitle(suspicious);
 
@@ -237,7 +241,11 @@ public class Utils {
                 }
 
                 if (administrator.getCurrentServer().get().getServer().getServerInfo().getName().equals(VelocityConfig.CONTROL.get(String.class))) {
-                    administrator.createConnectionRequest(proxyServer).fireAndForget();
+                    if (!VelocityConfig.USE_DISCONNECT.get(Boolean.class)) {
+                        administrator.createConnectionRequest(proxyServer).fireAndForget();
+                    } else {
+                        Utils.sendChannelMessage(administrator, "DISCONNECT_NOW");
+                    }
                 }
             }
 
@@ -254,7 +262,11 @@ public class Utils {
                 PlayerCache.getIn_control().put(administrator.getUniqueId(), 0);
             }
 
-            suspicious.createConnectionRequest(proxyServer).fireAndForget();
+            if (!VelocityConfig.USE_DISCONNECT.get(Boolean.class)) {
+                suspicious.createConnectionRequest(proxyServer).fireAndForget();
+            } else {
+                Utils.sendChannelMessage(suspicious, "DISCONNECT_NOW");
+            }
 
             Utils.sendEndTitle(suspicious);
 
@@ -276,7 +288,11 @@ public class Utils {
                 PlayerCache.getIn_control().put(administrator.getUniqueId(), 0);
             }
 
-            administrator.createConnectionRequest(proxyServer).fireAndForget();
+            if (!VelocityConfig.USE_DISCONNECT.get(Boolean.class)) {
+                administrator.createConnectionRequest(proxyServer).fireAndForget();
+            } else {
+                Utils.sendChannelMessage(administrator, "DISCONNECT_NOW");
+            }
 
             administrator.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.LEAVESUS.color()
                     .replace("%prefix%", VelocityMessages.PREFIX.color())

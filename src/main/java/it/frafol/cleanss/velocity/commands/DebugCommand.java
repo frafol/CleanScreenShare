@@ -27,13 +27,13 @@ public class DebugCommand implements SimpleCommand {
             return;
         }
 
-        source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize("&d| "));
-        source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize("&d| &7CleanScreenShare Informations"));
-        source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize("&d| "));
-        source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize("&d| &7Version: &d" + instance.getContainer().getDescription().getVersion().get()));
-        source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize("&d| &7Velocity: &d" + instance.getServer().getVersion().getVersion()));
-        source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize("&d| &7MySQL: &d" + getMySQL()));
-        source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize("&d| "));
+        source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize("§d| "));
+        source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize("§d| §7CleanScreenShare Informations"));
+        source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize("§d| "));
+        source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize("§d| §7Version: §d" + instance.getContainer().getDescription().getVersion().get()));
+        source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize("§d| §7Velocity: §d" + instance.getServer().getVersion().getVersion()));
+        source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize("§d| §7MySQL: §d" + getMySQL()));
+        source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize("§d| "));
 
     }
 
