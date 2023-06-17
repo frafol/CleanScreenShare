@@ -415,7 +415,7 @@ public class Utils {
                 return;
             }
 
-            if (suspicious.getCurrentServer().get().getServer().equals(proxyServer) && administrator.getCurrentServer().get().getServer().equals(proxyServer)) {
+            if (suspicious.getCurrentServer().get().getServer().equals(proxyServer) || administrator.getCurrentServer().get().getServer().equals(proxyServer)) {
                 return;
             }
 

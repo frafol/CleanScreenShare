@@ -26,7 +26,7 @@ public class ChatListener implements Listener {
     public void onChat(@NotNull ChatEvent event) {
 
         final String message = event.getMessage();
-        boolean luckperms = instance.getProxy().getPluginManager().getPlugin("LuckPermsBungee") != null;
+        boolean luckperms = instance.getProxy().getPluginManager().getPlugin("LuckPerms") != null;
 
         if (message.startsWith("/")) {
             return;
@@ -68,16 +68,16 @@ public class ChatListener implements Listener {
                         .replace("%prefix%", BungeeMessages.PREFIX.color())
                         .replace("%player%", player.getName())
                         .replace("%message%", event.getMessage())
-                        .replace("%userprefix%", user_prefix)
-                        .replace("%usersuffix%", user_suffix)
+                        .replace("%userprefix%", user_prefix.replace("&", "§"))
+                        .replace("%usersuffix%", user_suffix.replace("&", "§"))
                         .replace("%state%", BungeeMessages.CONTROL_CHAT_STAFF.color())));
 
                 instance.getValue(PlayerCache.getCouples(), player).sendMessage(TextComponent.fromLegacyText(BungeeMessages.CONTROL_CHAT_FORMAT.color()
                         .replace("%prefix%", BungeeMessages.PREFIX.color())
                         .replace("%player%", player.getName())
                         .replace("%message%", event.getMessage())
-                        .replace("%userprefix%", user_prefix)
-                        .replace("%usersuffix%", user_suffix)
+                        .replace("%userprefix%", user_prefix.replace("&", "§"))
+                        .replace("%usersuffix%", user_suffix.replace("&", "§"))
                         .replace("%state%", BungeeMessages.CONTROL_CHAT_STAFF.color())));
 
                 return;
@@ -92,16 +92,16 @@ public class ChatListener implements Listener {
                         .replace("%prefix%", BungeeMessages.PREFIX.color())
                         .replace("%player%", player.getName())
                         .replace("%message%", event.getMessage())
-                        .replace("%userprefix%", user_prefix)
-                        .replace("%usersuffix%", user_suffix)
+                        .replace("%userprefix%", user_prefix.replace("&", "§"))
+                        .replace("%usersuffix%", user_suffix.replace("&", "§"))
                         .replace("%state%", BungeeMessages.CONTROL_CHAT_SUS.color())));
 
                 instance.getKey(PlayerCache.getCouples(), player).sendMessage(TextComponent.fromLegacyText(BungeeMessages.CONTROL_CHAT_FORMAT.color()
                         .replace("%prefix%", BungeeMessages.PREFIX.color())
                         .replace("%player%", player.getName())
                         .replace("%message%", event.getMessage())
-                        .replace("%userprefix%", user_prefix)
-                        .replace("%usersuffix%", user_suffix)
+                        .replace("%userprefix%", user_prefix.replace("&", "§"))
+                        .replace("%usersuffix%", user_suffix.replace("&", "§"))
                         .replace("%state%", BungeeMessages.CONTROL_CHAT_SUS.color())));
 
             }

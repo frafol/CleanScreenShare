@@ -218,14 +218,26 @@ public class CleanSS extends Plugin {
 	@Override
 	public void onDisable() {
 
-		getLogger().info("§7Clearing §dinstances§7...");
-		instance = null;
 		getProxy().unregisterChannel("cleanss:join");
 
-		if (BungeeConfig.MYSQL.get(Boolean.class)) {
+		if (getConfigTextFile() == null || BungeeConfig.MYSQL.get(Boolean.class)) {
+
 			getLogger().info("§7Closing §ddatabase§7...");
-			data.close();
+			for (ProxiedPlayer players : getProxy().getPlayers()) {
+				if (data != null) {
+					data.setInControl(players.getUniqueId(), 0);
+					data.setControls(players.getUniqueId(), PlayerCache.getControls().get(players.getUniqueId()));
+				}
+			}
+
+			if (data != null) {
+				data.close();
+			}
+
 		}
+
+		getLogger().info("§7Clearing §dinstances§7...");
+		instance = null;
 
 		getLogger().info("§7Plugin successfully §ddisabled§7!");
 	}

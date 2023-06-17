@@ -171,7 +171,7 @@ public class Utils {
 
     public void punishPlayer(UUID administrator, String suspicious, ProxiedPlayer administrator_player, ProxiedPlayer suspect) {
 
-        boolean luckperms = instance.getProxy().getPluginManager().getPlugin("LuckPermsBungee") != null;
+        boolean luckperms = instance.getProxy().getPluginManager().getPlugin("LuckPerms") != null;
 
         String admin_group = "";
         String suspect_group = "";
@@ -370,7 +370,7 @@ public class Utils {
                 return;
             }
 
-            if (suspicious.getServer().getInfo().equals(proxyServer) && administrator.getServer().getInfo().equals(proxyServer)) {
+            if (suspicious.getServer().getInfo().equals(proxyServer) || administrator.getServer().getInfo().equals(proxyServer)) {
                 return;
             }
 

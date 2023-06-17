@@ -29,7 +29,15 @@ public class CommandListener implements Listener {
             event.setCancelled(true);
         }
 
-        if ((event.getMessage().startsWith("/ban") || event.getMessage().startsWith("/tempban"))
+        if (PlayerCache.getIn_control().get(player.getUniqueId()) == null) {
+            return;
+        }
+
+        if (!PlayerCache.getAdministrator().contains(player.getUniqueId())) {
+            return;
+        }
+
+        if ((event.getMessage().startsWith("/ban ") || event.getMessage().startsWith("/tempban "))
                 && event.getMessage().contains(CleanSS.getInstance().getValue(PlayerCache.getCouples(), player).getName())) {
 
             PlayerCache.getBan_execution().add(player.getUniqueId());

@@ -27,26 +27,41 @@ public class CommandListener {
 
         final Player player = (Player) event.getCommandSource();
 
-        if (((event.getCommand().startsWith("ban") || event.getCommand().startsWith("tempban")) || (event.getCommand().startsWith("/ban") || event.getCommand().startsWith("/tempban")))
+        if (!PlayerCache.getSuspicious().contains(player.getUniqueId())) {
+            return;
+        }
+
+        if (!(player.getProtocolVersion().getProtocol() >= ProtocolVersion.getProtocolVersion(759).getProtocol()
+                && !instance.getUnsignedVelocityAddon())) {
+
+            event.setResult(CommandExecuteEvent.CommandResult.denied());
+            return;
+        }
+
+        instance.getLogger().error("Unable to delete command for " + player.getUsername() + ". " +
+                "This is a Velocity issue affecting Minecraft 1.19.1+ clients. " +
+                "To fix this, please install https://github.com/4drian3d/UnSignedVelocity/releases/latest.");
+
+    }
+
+    @Subscribe
+    public void onPlayerBanExecution(CommandExecuteEvent event) {
+
+        final Player player = (Player) event.getCommandSource();
+
+        if (!PlayerCache.getAdministrator().contains(player.getUniqueId())) {
+            return;
+        }
+
+        if (PlayerCache.getIn_control().get(player.getUniqueId()) == null) {
+            return;
+        }
+
+        if (((event.getCommand().startsWith("ban ") || event.getCommand().startsWith("tempban ") || event.getCommand().startsWith("/ban ") || event.getCommand().startsWith("/tempban ")))
                 && event.getCommand().contains(instance.getValue(PlayerCache.getCouples(), player).getUsername())) {
 
             PlayerCache.getBan_execution().add(player.getUniqueId());
             instance.getServer().getScheduler().buildTask(instance, () -> PlayerCache.getBan_execution().remove(player.getUniqueId())).delay(2L, TimeUnit.SECONDS).schedule();
-        }
-
-        if (PlayerCache.getSuspicious().contains(player.getUniqueId())) {
-
-            if (!(player.getProtocolVersion().getProtocol() >= ProtocolVersion.getProtocolVersion(759).getProtocol() && !instance.getUnsignedVelocityAddon())) {
-
-                event.setResult(CommandExecuteEvent.CommandResult.denied());
-
-            } else {
-
-                instance.getLogger().error("Unable to delete command for " + player.getUsername() + ". " +
-                        "This is a Velocity issue affecting Minecraft 1.19.1+ clients. " +
-                        "To fix this, please install https://github.com/4drian3d/UnSignedVelocity/releases/latest.");
-
-            }
         }
     }
 }

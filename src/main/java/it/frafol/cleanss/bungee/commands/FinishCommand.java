@@ -27,7 +27,7 @@ public class FinishCommand extends Command {
     @Override
     public void execute(@NotNull CommandSender invocation, String[] args) {
 
-        boolean luckperms = instance.getProxy().getPluginManager().getPlugin("LuckPermsBungee") != null;
+        boolean luckperms = instance.getProxy().getPluginManager().getPlugin("LuckPerms") != null;
 
         if (!invocation.hasPermission(BungeeConfig.CONTROL_PERMISSION.get(String.class))) {
             invocation.sendMessage(TextComponent.fromLegacyText(BungeeMessages.NO_PERMISSION.color()

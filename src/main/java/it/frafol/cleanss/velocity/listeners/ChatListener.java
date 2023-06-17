@@ -64,16 +64,16 @@ public class ChatListener {
                         .replace("%prefix%", VelocityMessages.PREFIX.color())
                         .replace("%player%", player.getUsername())
                         .replace("%message%", event.getMessage())
-                        .replace("%userprefix%", user_prefix)
-                        .replace("%usersuffix%", user_suffix)
+                        .replace("%userprefix%", user_prefix.replace("&", "§"))
+                        .replace("%usersuffix%", user_suffix.replace("&", "§"))
                         .replace("%state%", VelocityMessages.CONTROL_CHAT_STAFF.color())));
 
                 player.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.CONTROL_CHAT_FORMAT.color()
                         .replace("%prefix%", VelocityMessages.PREFIX.color())
                         .replace("%player%", player.getUsername())
                         .replace("%message%", event.getMessage())
-                        .replace("%userprefix%", user_prefix)
-                        .replace("%usersuffix%", user_suffix)
+                        .replace("%userprefix%", user_prefix.replace("&", "§"))
+                        .replace("%usersuffix%", user_suffix.replace("&", "§"))
                         .replace("%state%", VelocityMessages.CONTROL_CHAT_STAFF.color())));
 
                 return;
@@ -86,16 +86,16 @@ public class ChatListener {
                         .replace("%prefix%", VelocityMessages.PREFIX.color())
                         .replace("%player%", player.getUsername())
                         .replace("%message%", event.getMessage())
-                        .replace("%userprefix%", user_prefix)
-                        .replace("%usersuffix%", user_suffix)
+                        .replace("%userprefix%", user_prefix.replace("&", "§"))
+                        .replace("%usersuffix%", user_suffix.replace("&", "§"))
                         .replace("%state%", VelocityMessages.CONTROL_CHAT_SUS.color())));
 
                 player.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.CONTROL_CHAT_FORMAT.color()
                         .replace("%prefix%", VelocityMessages.PREFIX.color())
                         .replace("%player%", player.getUsername())
                         .replace("%message%", event.getMessage())
-                        .replace("%userprefix%", user_prefix)
-                        .replace("%usersuffix%", user_suffix)
+                        .replace("%userprefix%", user_prefix.replace("&", "§"))
+                        .replace("%usersuffix%", user_suffix.replace("&", "§"))
                         .replace("%state%", VelocityMessages.CONTROL_CHAT_SUS.color())));
 
             }
