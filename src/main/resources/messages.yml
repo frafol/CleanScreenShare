@@ -32,12 +32,16 @@ messages:
 
   info:
     main_message:
+      - "&8&m------&5&m------&d&m------&5&m------&8&m------"
+      - "&f"
       - "&d%player% &7informations:"
       - "&f"
       - "&7Is in control: &d%is_in_control%"
       - "&f"
       - "&7Controls done: &d%controls_done%"
       - "&7Controls suffered: &d%controls_suffered%"
+      - "&f"
+      - "&8&m------&5&m------&d&m------&5&m------&8&m------"
 
   staff_message:
 

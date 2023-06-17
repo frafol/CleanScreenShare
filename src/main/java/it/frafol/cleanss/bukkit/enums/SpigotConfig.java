@@ -16,7 +16,7 @@ public enum SpigotConfig {
     MOVE("options.prevent.player.move"),
     CHAT("options.prevent.player.chat"),
     SPAWN("options.teleport_to_spawn_on_join"),
-    GAMEMODE("options.change_gamemode_to_adventure_on_join"),
+    GAMEMODE("options.change_gamemode_on_join"),
 
     WEATHER("options.prevent.world.weather_change"),
     DAY_CYCLE("options.prevent.world.daylight_cycle"),

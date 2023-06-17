@@ -8,14 +8,16 @@
 
 settings:
 
-  # Name of the Hack Control server and the fallback server.
+  # Name of the ScreenShare server where CleanScreenShare have to send players on control.
   server_name: "Control"
 
   # Disconnect the player from the control server instead of taking it to a fallback server.
-  # It can be useful if you use plugins that allow multilobby fallback (e.g., FallbackServer).
+  # It can be useful if you use plugins that allow multi lobby fallback (e.g., FallbackServer).
+  # NOTE: This function will break CleanScreenShare if you haven't also put it on the server control!
   use_disconnect_instead_of_fallback: false
 
-  # The server name that will be used when the player is disconnected from the control.
+  # The server name that will be used to send the players at the end of a control.
+  # NOTE: if the value use_disconnect_instead_of_fallback is true, this setting will be ignored.
   fallback_server_name: "Hub"
 
   # This will check if you have been properly connected to the control server,
@@ -28,6 +30,7 @@ settings:
   stats: true
 
   slog:
+
     # Enable this if you want to punish the player when it left during a control.
     punish: false
 
@@ -53,6 +56,9 @@ permissions:
 
 discord-webhook: # The Discord Integration is an experimental feature, report all problems on our Discord.
 
+  # Find out how to set up your discord bot through the Discord Web Developer Application via this link.
+  # https://www.ionos.com/digitalguide/server/know-how/creating-discord-bot/#:~:text=Creating%20your%20own%20Discord%20bot
+
   # Toggle discord feature.
   enabled: false
 
@@ -72,10 +78,13 @@ discord-webhook: # The Discord Integration is an experimental feature, report al
   embed_title: "ScreenShare handler"
 
 mysql:
-  # The MySQL database is an experimental feature, it's just to allow compatibility with multiple proxies (e.g. redisbungee)
+
+  # The MySQL database is an experimental feature.
+  # It's just to allow compatibility with multiple proxies (e.g. RedisBungee and RedisVelocity)
+  # and for saving the /ssinfo command (without MySQL, the command will reset on every reboot).
   enable: false
 
-  # MySQL database connection details
+  # MySQL database connection details.
   host: "127.0.0.1:3306"
   user: "root"
   database: "cleanscreenshare"

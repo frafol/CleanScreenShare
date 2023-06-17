@@ -98,8 +98,24 @@ public class PlayerListener implements Listener {
 
         final Player player = event.getPlayer();
 
-        if (SpigotConfig.GAMEMODE.get(Boolean.class)) {
-            player.setGameMode(GameMode.ADVENTURE);
+        switch (SpigotConfig.GAMEMODE.get(String.class)) {
+            case "none":
+                break;
+            case "adventure":
+                player.setGameMode(GameMode.ADVENTURE);
+                break;
+            case "survival":
+                player.setGameMode(GameMode.SURVIVAL);
+                break;
+            case "creative":
+                player.setGameMode(GameMode.CREATIVE);
+                break;
+            case "spectator":
+                player.setGameMode(GameMode.SPECTATOR);
+                break;
+            default:
+                System.out.println(SpigotConfig.GAMEMODE.get(String.class) + " is an invalid gamemode!");
+                break;
         }
 
         if (SpigotConfig.HUNGER.get(Boolean.class)) {

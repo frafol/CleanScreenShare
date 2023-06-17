@@ -2,7 +2,7 @@
 #  / __)(  )  ( ___)  /__\  ( \( ) / __)/ __)
 # ( (__  )(__  )__)  /(__)\  )  (  \__ \\__ \
 #  \___)(____)(____)(__)(__)(_)\_) (___/(___/
-# Configuration file. Made with ❤ by frafol.
+# Settings file. Made with ❤ by frafol.
 # For support: discord.io/futuredevelopment
 
 options:
@@ -11,14 +11,16 @@ options:
   staff_permission: "screenshare.control"
   admin_permission: "screenshare.admin"
 
-  # Makes players invincible.
+  # Makes all online players invincible.
   invincible: true
 
   # Teleports to Spawn at Join.
   teleport_to_spawn_on_join: true
 
-  # Change player's gamemode to Adventure when player's join.
-  change_gamemode_to_adventure_on_join: true
+  # Change player's gamemode on player's join.
+  # Supported values: survival, creative, adventure, spectator.
+  # If you want to disable this feature, set this value to "none".
+  change_gamemode_on_join: "adventure"
 
   # Action preventions.
   prevent:
@@ -39,4 +41,5 @@ options:
 
   messages:
     spawn_set: "&aSpawn has been set in your position."
+
 # Enjoy.
