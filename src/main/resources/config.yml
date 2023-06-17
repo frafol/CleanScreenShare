@@ -25,6 +25,15 @@ settings:
     # Enable this if you want to punish the player when it left during a control.
     punish: false
 
+    # Enter your used ban commands, to predict whether the player has been banned or not.
+    ban_commands:
+      - "tempban"
+      - "ban"
+      - "ban-ip"
+      - "kick"
+      - "ipban"
+      - "tempipban"
+
     # Enter the command to be executed by the console when the player disconnects from the server.
     punish_command: "ban %player% Slog under hack control -s"
 

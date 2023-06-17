@@ -20,6 +20,7 @@ public enum VelocityConfig {
     DISCORD_CHANNEL_ID("discord-webhook.channel_id"),
     DISCORD_EMBED_TITLE("discord-webhook.embed_title"),
     SLOG_PUNISH("settings.slog.punish"),
+    BAN_COMMANDS("settings.slog.ban_commands"),
     SLOG_COMMAND("settings.slog.punish_command"),
     MYSQL("mysql.enable"),
     MYSQL_HOST("mysql.host"),

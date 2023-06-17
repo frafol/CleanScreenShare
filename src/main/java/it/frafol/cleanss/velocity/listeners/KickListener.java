@@ -73,8 +73,8 @@ public class KickListener {
 
         } else if (PlayerCache.getSuspicious().contains(player.getUniqueId())) {
 
+            Utils.punishPlayer(instance.getKey(PlayerCache.getCouples(), player).getUniqueId(), player.getUsername(), instance.getKey(PlayerCache.getCouples(), player), player);
             Utils.finishControl(player, instance.getKey(PlayerCache.getCouples(), player), proxyServer.get());
-            Utils.punishPlayer(player.getUniqueId(), instance.getValue(PlayerCache.getCouples(), player).getUsername(), player, instance.getValue(PlayerCache.getCouples(), player));
 
         }
     }

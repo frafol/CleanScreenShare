@@ -40,10 +40,8 @@ public class ControlCommand implements SimpleCommand {
 		}
 
 		if (invocation.arguments().length == 0) {
-
 			source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.USAGE.color().replace("%prefix%", VelocityMessages.PREFIX.color())));
 			return;
-
 		}
 
 		if (invocation.arguments().length == 1) {

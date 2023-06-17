@@ -1,6 +1,7 @@
 package it.frafol.cleanss.bungee.listeners;
 
 import it.frafol.cleanss.bungee.CleanSS;
+import it.frafol.cleanss.bungee.enums.BungeeConfig;
 import it.frafol.cleanss.bungee.objects.PlayerCache;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.ChatEvent;
@@ -37,11 +38,12 @@ public class CommandListener implements Listener {
             return;
         }
 
-        if ((event.getMessage().startsWith("/ban ") || event.getMessage().startsWith("/tempban "))
-                && event.getMessage().contains(CleanSS.getInstance().getValue(PlayerCache.getCouples(), player).getName())) {
-
-            PlayerCache.getBan_execution().add(player.getUniqueId());
-            CleanSS.getInstance().getProxy().getScheduler().schedule(CleanSS.getInstance(), () -> PlayerCache.getBan_execution().remove(player.getUniqueId()), 2L, TimeUnit.SECONDS);
+        for (String command : CleanSS.getInstance().getConfigTextFile().getStringList("settings.slog.ban_commands")) {
+            if (event.getMessage().startsWith("/" + command + " ") && event.getMessage().contains(CleanSS.getInstance().getValue(PlayerCache.getCouples(), player).getName())) {
+                PlayerCache.getBan_execution().add(player.getUniqueId());
+                CleanSS.getInstance().getProxy().getScheduler().schedule(CleanSS.getInstance(), () -> PlayerCache.getBan_execution().remove(player.getUniqueId()), 2L, TimeUnit.SECONDS);
+            }
         }
+
     }
 }

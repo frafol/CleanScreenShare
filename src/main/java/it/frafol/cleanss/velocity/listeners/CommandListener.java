@@ -47,6 +47,10 @@ public class CommandListener {
     @Subscribe
     public void onPlayerBanExecution(CommandExecuteEvent event) {
 
+        if (!(event.getCommandSource() instanceof Player)) {
+            return;
+        }
+
         final Player player = (Player) event.getCommandSource();
 
         if (!PlayerCache.getAdministrator().contains(player.getUniqueId())) {
@@ -57,11 +61,11 @@ public class CommandListener {
             return;
         }
 
-        if (((event.getCommand().startsWith("ban ") || event.getCommand().startsWith("tempban ") || event.getCommand().startsWith("/ban ") || event.getCommand().startsWith("/tempban ")))
-                && event.getCommand().contains(instance.getValue(PlayerCache.getCouples(), player).getUsername())) {
-
-            PlayerCache.getBan_execution().add(player.getUniqueId());
-            instance.getServer().getScheduler().buildTask(instance, () -> PlayerCache.getBan_execution().remove(player.getUniqueId())).delay(2L, TimeUnit.SECONDS).schedule();
+        for (String command : instance.getConfigTextFile().getConfig().getStringList("settings.slog.ban_commands")) {
+            if ((event.getCommand().startsWith(command + " ")) && event.getCommand().contains(instance.getValue(PlayerCache.getCouples(), player).getUsername())) {
+                PlayerCache.getBan_execution().add(player.getUniqueId());
+                instance.getServer().getScheduler().buildTask(instance, () -> PlayerCache.getBan_execution().remove(player.getUniqueId())).delay(2L, TimeUnit.SECONDS).schedule();
+            }
         }
     }
 }
