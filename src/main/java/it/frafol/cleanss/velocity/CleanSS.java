@@ -12,10 +12,7 @@ import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
 import com.velocitypowered.api.proxy.messages.ChannelIdentifier;
 import com.velocitypowered.api.proxy.messages.MinecraftChannelIdentifier;
-import it.frafol.cleanss.velocity.commands.ControlCommand;
-import it.frafol.cleanss.velocity.commands.FinishCommand;
-import it.frafol.cleanss.velocity.commands.InfoCommand;
-import it.frafol.cleanss.velocity.commands.ReloadCommand;
+import it.frafol.cleanss.velocity.commands.*;
 import it.frafol.cleanss.velocity.enums.VelocityConfig;
 import it.frafol.cleanss.velocity.enums.VelocityMessages;
 import it.frafol.cleanss.velocity.listeners.ChatListener;
@@ -271,6 +268,10 @@ public class CleanSS {
 	}
 
 	private void loadCommands() {
+
+		getInstance().getServer().getCommandManager().register
+				(server.getCommandManager().metaBuilder("ssdebug").aliases("cleanssdebug", "controldebug")
+						.build(), new DebugCommand(this));
 
 		getInstance().getServer().getCommandManager().register
 				(server.getCommandManager().metaBuilder("ss").aliases("cleanss", "control")

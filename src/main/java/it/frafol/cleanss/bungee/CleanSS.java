@@ -1,9 +1,6 @@
 package it.frafol.cleanss.bungee;
 
-import it.frafol.cleanss.bungee.commands.ControlCommand;
-import it.frafol.cleanss.bungee.commands.FinishCommand;
-import it.frafol.cleanss.bungee.commands.InfoCommand;
-import it.frafol.cleanss.bungee.commands.ReloadCommand;
+import it.frafol.cleanss.bungee.commands.*;
 import it.frafol.cleanss.bungee.enums.BungeeConfig;
 import it.frafol.cleanss.bungee.enums.BungeeMessages;
 import it.frafol.cleanss.bungee.listeners.ChatListener;
@@ -90,6 +87,7 @@ public class CleanSS extends Plugin {
 
 	private void registerCommands() {
 
+		getProxy().getPluginManager().registerCommand(this, new DebugCommand(this));
 		getProxy().getPluginManager().registerCommand(this, new ControlCommand(this));
 		getProxy().getPluginManager().registerCommand(this, new FinishCommand(this));
 		getProxy().getPluginManager().registerCommand(this, new InfoCommand(this));
