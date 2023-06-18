@@ -11,11 +11,14 @@ import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Command;
+import net.md_5.bungee.api.plugin.TabExecutor;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 
-public class ControlCommand extends Command {
+public class ControlCommand extends Command implements TabExecutor {
 
 	public final CleanSS instance;
 
@@ -93,20 +96,34 @@ public class ControlCommand extends Command {
 						return;
 					}
 
-					instance.getProxy().getServers().get(proxyServer.getName()).ping((result, throwable) -> {
+					if (!BungeeConfig.DISABLE_PING.get(Boolean.class)) {
+						instance.getProxy().getServers().get(proxyServer.getName()).ping((result, throwable) -> {
 
-						if (throwable != null) {
-							invocation.sendMessage(TextComponent.fromLegacyText(BungeeMessages.NO_EXIST.color()
-									.replace("%prefix%", BungeeMessages.PREFIX.color())));
-							return;
-						}
+							if (throwable != null) {
+								invocation.sendMessage(TextComponent.fromLegacyText(BungeeMessages.NO_EXIST.color()
+										.replace("%prefix%", BungeeMessages.PREFIX.color())));
+								return;
+							}
 
-						if (result == null) {
-							invocation.sendMessage(TextComponent.fromLegacyText(BungeeMessages.NO_EXIST.color()
-									.replace("%prefix%", BungeeMessages.PREFIX.color())));
-							return;
-						}
+							if (result == null) {
+								invocation.sendMessage(TextComponent.fromLegacyText(BungeeMessages.NO_EXIST.color()
+										.replace("%prefix%", BungeeMessages.PREFIX.color())));
+								return;
+							}
 
+							if (sender.getServer() == null) {
+								return;
+							}
+
+							if (player.get().getServer() == null) {
+								return;
+							}
+
+							Utils.startControl(player.get(), sender, proxyServer);
+							Utils.sendDiscordMessage(player.get(), sender, BungeeMessages.DISCORD_STARTED.get(String.class));
+
+						});
+					} else {
 						if (sender.getServer() == null) {
 							return;
 						}
@@ -117,8 +134,7 @@ public class ControlCommand extends Command {
 
 						Utils.startControl(player.get(), sender, proxyServer);
 						Utils.sendDiscordMessage(player.get(), sender, BungeeMessages.DISCORD_STARTED.get(String.class));
-
-					});
+					}
 
 				} else {
 					invocation.sendMessage(TextComponent.fromLegacyText(BungeeMessages.NO_EXIST.color()
@@ -131,5 +147,17 @@ public class ControlCommand extends Command {
 						.replace("%player%", args[0])));
 			}
 		}
+	}
+
+	@Override
+	public Iterable<String> onTabComplete(CommandSender sender, String @NotNull [] args) {
+		Set<String> list = new HashSet<>();
+
+		if (args.length == 1) {
+			for (ProxiedPlayer players : instance.getProxy().getPlayers()) {
+				list.add(players.getName());
+			}
+		}
+		return list;
 	}
 }

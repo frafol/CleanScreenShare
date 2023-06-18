@@ -52,7 +52,8 @@ public class PluginMessageReceiver implements PluginMessageListener {
         }
 
         if (subChannel.equals("RELOAD")) {
-            CleanSS.getInstance().getLogger().warning("CleanScreenShare is reloading on your proxy, running a global reload on this server.");
+            CleanSS.getInstance().getLogger().warning("CleanScreenShare is reloading on your proxy, " +
+                    "running a global reload on this server.");
             TextFile.reloadAll();
         }
 

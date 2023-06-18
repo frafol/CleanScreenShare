@@ -11,6 +11,10 @@ import net.byteflux.libby.Library;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.plugin.java.JavaPlugin;
+import ru.vyarus.yaml.updater.YamlUpdater;
+import ru.vyarus.yaml.updater.util.FileUtils;
+
+import java.io.File;
 
 public class CleanSS extends JavaPlugin {
 
@@ -35,7 +39,15 @@ public class CleanSS extends JavaPlugin {
 				.version("1.8.4")
 				.build();
 
+		Library updater = Library.builder()
+				.groupId("ru{}vyarus")
+				.artifactId("yaml-config-updater")
+				.version("1.4.2")
+				.build();
+
 		bukkitLibraryManager.addJitPack();
+		bukkitLibraryManager.addMavenCentral();
+		bukkitLibraryManager.loadLibrary(updater);
 		bukkitLibraryManager.loadLibrary(yaml);
 
 		getLogger().info("\n   ___  __    ____    __    _  _   ___  ___\n" +
@@ -45,7 +57,7 @@ public class CleanSS extends JavaPlugin {
 
 		getLogger().info("Server version: " + Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3] + ".");
 
-		if (getSuperLegacy()) {
+		if (isSuperLegacy()) {
 			getLogger().severe("Support for your version was declined.");
 			Bukkit.getPluginManager().disablePlugin(this);
 			return;
@@ -57,6 +69,17 @@ public class CleanSS extends JavaPlugin {
 
 		getLogger().info("Loading configuration...");
 		configTextFile = new TextFile(getDataFolder().toPath(), "settings.yml");
+
+		if (!getDescription().getVersion().equals(SpigotConfig.VERSION.get(String.class))) {
+
+			getLogger().info("Creating new configurations...");
+			YamlUpdater.create(new File(getDataFolder().toPath() + "/settings.yml"), FileUtils.findFile("https://raw.githubusercontent.com/frafol/CleanScreenShare/main/src/main/resources/settings.yml"))
+					.backup(true)
+					.update();
+			configTextFile = new TextFile(getDataFolder().toPath(), "settings.yml");
+
+		}
+
 		cacheTextFile = new TextFile(getDataFolder().toPath(), "cache_do_not_touch.yml");
 
 		getLogger().info("Loading channels...");
@@ -110,7 +133,7 @@ public class CleanSS extends JavaPlugin {
 		return cacheTextFile;
 	}
 
-	public boolean getSuperLegacy() {
+	public boolean isSuperLegacy() {
 		return Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3].contains("1_6_R")
 				|| Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3].contains("1_5_R")
 				|| Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3].contains("1_4_R")

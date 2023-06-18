@@ -196,7 +196,7 @@ public class Utils {
         }
 
         if (PlayerCache.getBan_execution().contains(administrator)) {
-            Utils.sendDiscordMessage(suspect, administrator_player, BungeeMessages.DISCORD_QUIT.get(String.class).replace("%admingroup%", admin_group).replace("%suspectgroup%", suspect_group), BungeeMessages.CHEATER.get(String.class));
+            Utils.sendDiscordMessage(suspect, administrator_player, BungeeMessages.DISCORD_FINISHED.get(String.class).replace("%admingroup%", admin_group).replace("%suspectgroup%", suspect_group), BungeeMessages.CHEATER.get(String.class));
             return;
         }
 
@@ -301,8 +301,13 @@ public class Utils {
 
             PlayerCache.getCouples().remove(administrator);
 
-            instance.getData().setInControl(suspicious.getUniqueId(), 0);
-            instance.getData().setInControl(administrator.getUniqueId(), 0);
+            if (BungeeConfig.MYSQL.get(Boolean.class)) {
+                instance.getData().setInControl(suspicious.getUniqueId(), 0);
+                instance.getData().setInControl(administrator.getUniqueId(), 0);
+            } else {
+                PlayerCache.getIn_control().put(suspicious.getUniqueId(), 0);
+                PlayerCache.getIn_control().put(administrator.getUniqueId(), 0);
+            }
 
         } else {
 

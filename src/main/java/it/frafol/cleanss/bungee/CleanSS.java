@@ -21,7 +21,10 @@ import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import org.simpleyaml.configuration.file.YamlFile;
+import ru.vyarus.yaml.updater.YamlUpdater;
+import ru.vyarus.yaml.updater.util.FileUtils;
 
+import java.io.File;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -52,6 +55,7 @@ public class CleanSS extends Plugin {
 
 		getLogger().info("§7Loading §dconfiguration§7...");
 		loadFiles();
+		updateConfig();
 
 		getLogger().info("§7Loading §dplugin§7...");
 
@@ -189,6 +193,21 @@ public class CleanSS extends Plugin {
 
 	}
 
+	private void updateConfig() {
+		if (!getDescription().getVersion().equals(BungeeConfig.VERSION.get(String.class))) {
+
+			getLogger().info("§7Creating new §dconfigurations§7...");
+			YamlUpdater.create(new File(getDataFolder().toPath() + "/config.yml"), FileUtils.findFile("https://raw.githubusercontent.com/frafol/CleanScreenShare/main/src/main/resources/config.yml"))
+					.backup(true)
+					.update();
+			YamlUpdater.create(new File(getDataFolder().toPath() + "/messages.yml"), FileUtils.findFile("https://raw.githubusercontent.com/frafol/CleanScreenShare/main/src/main/resources/messages.yml"))
+					.backup(true)
+					.update();
+			loadFiles();
+
+		}
+	}
+
 	private void loadLibraries() {
 
 		BungeeLibraryManager bungeeLibraryManager = new BungeeLibraryManager(this);
@@ -197,6 +216,12 @@ public class CleanSS extends Plugin {
 				.groupId("me{}carleslc{}Simple-YAML")
 				.artifactId("Simple-Yaml")
 				.version("1.8.4")
+				.build();
+
+		Library updater = Library.builder()
+				.groupId("ru{}vyarus")
+				.artifactId("yaml-config-updater")
+				.version("1.4.2")
 				.build();
 
 		Library discord = Library.builder()
@@ -209,6 +234,7 @@ public class CleanSS extends Plugin {
 		bungeeLibraryManager.addMavenCentral();
 		bungeeLibraryManager.addJitPack();
 		bungeeLibraryManager.loadLibrary(yaml);
+		bungeeLibraryManager.loadLibrary(updater);
 		bungeeLibraryManager.loadLibrary(discord);
 
 	}

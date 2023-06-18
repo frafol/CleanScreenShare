@@ -31,6 +31,8 @@ import net.byteflux.libby.VelocityLibraryManager;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
+import ru.vyarus.yaml.updater.YamlUpdater;
+import ru.vyarus.yaml.updater.util.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -46,7 +48,7 @@ import java.util.concurrent.TimeUnit;
 @Plugin(
 		id = "cleanscreenshare",
 		name = "CleanScreenShare",
-		version = "1.3",
+		version = "1.3.1",
 		description = "Make control hacks on your players.",
 		dependencies = {@Dependency(id = "mysqlandconfigurateforvelocity", optional = true)},
 		authors = { "frafol" })
@@ -105,6 +107,7 @@ public class CleanSS {
 
 		logger.info("§7Loading §dconfiguration§7...");
 		loadFiles();
+		updateConfig();
 
 		logger.info("§7Loading §dplugin§7...");
 		loadChannelRegistrar();
@@ -234,6 +237,12 @@ public class CleanSS {
 				.version("1.8.4")
 				.build();
 
+		Library updater = Library.builder()
+				.groupId("ru{}vyarus")
+				.artifactId("yaml-config-updater")
+				.version("1.4.2")
+				.build();
+
 		Library discord = Library.builder()
 				.groupId("net{}dv8tion")
 				.artifactId("JDA")
@@ -244,6 +253,7 @@ public class CleanSS {
 		velocityLibraryManager.addMavenCentral();
 		velocityLibraryManager.addJitPack();
 		velocityLibraryManager.loadLibrary(yaml);
+		velocityLibraryManager.loadLibrary(updater);
 		velocityLibraryManager.loadLibrary(discord);
 	}
 
@@ -265,6 +275,21 @@ public class CleanSS {
 	private void loadFiles() {
 		configTextFile = new TextFile(path, "config.yml");
 		messagesTextFile = new TextFile(path, "messages.yml");
+	}
+
+	private void updateConfig() {
+		if (container.getDescription().getVersion().isPresent() && (!container.getDescription().getVersion().get().equals(VelocityConfig.VERSION.get(String.class)))) {
+
+			logger.info("§7Creating new §dconfigurations§7...");
+			YamlUpdater.create(new File(path + "/config.yml"), FileUtils.findFile("https://raw.githubusercontent.com/frafol/CleanScreenShare/main/src/main/resources/config.yml"))
+					.backup(true)
+					.update();
+			YamlUpdater.create(new File(path + "/messages.yml"), FileUtils.findFile("https://raw.githubusercontent.com/frafol/CleanScreenShare/main/src/main/resources/messages.yml"))
+					.backup(true)
+					.update();
+			loadFiles();
+
+		}
 	}
 
 	private void loadCommands() {

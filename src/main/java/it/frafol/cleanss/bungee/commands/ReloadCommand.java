@@ -24,24 +24,23 @@ public class ReloadCommand extends Command {
         if (sender.hasPermission(BungeeConfig.RELOAD_PERMISSION.get(String.class))) {
 
             TextFile.reloadAll();
-
             sender.sendMessage(TextComponent.fromLegacyText(BungeeMessages.RELOADED.color()
                     .replace("%prefix%", BungeeMessages.PREFIX.color())));
 
-            if (sender instanceof ProxiedPlayer) {
-
-                final ProxiedPlayer player = (ProxiedPlayer) sender;
-
-                if (player.getServer() == null) {
-                    return;
-                }
-
-                ByteArrayDataOutput buf = ByteStreams.newDataOutput();
-                buf.writeUTF("RELOAD");
-
-                player.getServer().sendData("cleanss:join", buf.toByteArray());
-
+            if (!(sender instanceof ProxiedPlayer)) {
+                return;
             }
+
+            final ProxiedPlayer player = (ProxiedPlayer) sender;
+
+            if (player.getServer() == null) {
+                return;
+            }
+
+            ByteArrayDataOutput buf = ByteStreams.newDataOutput();
+            buf.writeUTF("RELOAD");
+
+            player.getServer().sendData("cleanss:join", buf.toByteArray());
 
         } else {
 

@@ -5,6 +5,9 @@
 # Settings file. Made with ❤ by frafol.
 # For support: discord.io/futuredevelopment
 
+# Please, do not edit this if you don't know what you're doing.
+version: "1.3.1"
+
 options:
 
   # Bypass command and move prevention.
@@ -27,6 +30,8 @@ options:
 
     # Prevent player actions.
     player:
+      block_place: true
+      block_break: true
       move: false
       pvp: true
       void: true

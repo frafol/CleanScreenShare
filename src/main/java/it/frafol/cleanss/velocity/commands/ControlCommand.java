@@ -12,6 +12,9 @@ import it.frafol.cleanss.velocity.objects.Utils;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 public class ControlCommand implements SimpleCommand {
@@ -90,25 +93,32 @@ public class ControlCommand implements SimpleCommand {
 						return;
 					}
 
-					proxyServer.get().ping().whenComplete((result, throwable) -> {
+					if (!VelocityConfig.DISABLE_PING.get(Boolean.class)) {
+						proxyServer.get().ping().whenComplete((result, throwable) -> {
 
-						if (throwable != null) {
-							source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.NO_EXIST.color()
-									.replace("%prefix%", VelocityMessages.PREFIX.color())));
-							return;
-						}
+							if (throwable != null) {
+								source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.NO_EXIST.color()
+										.replace("%prefix%", VelocityMessages.PREFIX.color())));
+								return;
+							}
 
-						if (result == null) {
-							source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.NO_EXIST.color()
-									.replace("%prefix%", VelocityMessages.PREFIX.color())));
-							return;
-						}
+							if (result == null) {
+								source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.NO_EXIST.color()
+										.replace("%prefix%", VelocityMessages.PREFIX.color())));
+								return;
+							}
+
+							Utils.startControl(player.get(), sender, proxyServer.get());
+							Utils.sendDiscordMessage(player.get(), sender, VelocityMessages.DISCORD_STARTED.get(String.class));
+
+
+						});
+					} else {
 
 						Utils.startControl(player.get(), sender, proxyServer.get());
 						Utils.sendDiscordMessage(player.get(), sender, VelocityMessages.DISCORD_STARTED.get(String.class));
 
-
-					});
+					}
 
 				} else {
 
@@ -125,5 +135,20 @@ public class ControlCommand implements SimpleCommand {
 
 			}
 		}
+	}
+
+	@Override
+	public List<String> suggest(@NotNull Invocation invocation) {
+
+		final List<String> list = new ArrayList<>();
+		final String[] args = invocation.arguments();
+
+		if (args.length == 1)  {
+			for (Player players : instance.getServer().getAllPlayers()) {
+				list.add(players.getUsername());
+			}
+			return list;
+		}
+		return Collections.emptyList();
 	}
 }

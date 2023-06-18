@@ -122,8 +122,8 @@ public class Utils {
             embed.setTitle(VelocityConfig.DISCORD_EMBED_TITLE.get(String.class), null);
 
             embed.setDescription(message
-                            .replace("%suspect%", suspect.getUsername()
-                            .replace("%staffer%", staffer.getUsername())));
+                    .replace("%suspect%", suspect.getUsername())
+                    .replace("%staffer%", staffer.getUsername()));
 
             embed.setColor(Color.RED);
             embed.setFooter("Powered by CleanScreenShare");
@@ -186,7 +186,7 @@ public class Utils {
         }
 
         if (PlayerCache.getBan_execution().contains(administrator)) {
-            Utils.sendDiscordMessage(suspect, administrator_user, VelocityMessages.DISCORD_QUIT.get(String.class).replace("%suspectgroup%", suspect_group).replace("%admingroup%", admin_group), VelocityMessages.CHEATER.get(String.class));
+            Utils.sendDiscordMessage(suspect, administrator_user, VelocityMessages.DISCORD_FINISHED.get(String.class).replace("%suspectgroup%", suspect_group).replace("%admingroup%", admin_group), VelocityMessages.CHEATER.get(String.class));
             return;
         }
 

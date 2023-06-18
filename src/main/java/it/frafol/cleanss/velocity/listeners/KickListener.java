@@ -67,12 +67,9 @@ public class KickListener {
         }
 
         if (PlayerCache.getAdministrator().contains(player.getUniqueId())) {
-
             Utils.finishControl(instance.getValue(PlayerCache.getCouples(), player), player, proxyServer.get());
-            Utils.sendDiscordMessage(instance.getValue(PlayerCache.getCouples(), player), player, VelocityMessages.DISCORD_QUIT.get(String.class), VelocityMessages.CLEAN.get(String.class));
 
         } else if (PlayerCache.getSuspicious().contains(player.getUniqueId())) {
-
             Utils.punishPlayer(instance.getKey(PlayerCache.getCouples(), player).getUniqueId(), player.getUsername(), instance.getKey(PlayerCache.getCouples(), player), player);
             Utils.finishControl(player, instance.getKey(PlayerCache.getCouples(), player), proxyServer.get());
 

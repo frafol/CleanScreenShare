@@ -15,6 +15,8 @@ import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
 import org.jetbrains.annotations.NotNull;
 
+import java.awt.*;
+
 public class KickListener implements Listener {
 
     public CleanSS instance;
@@ -69,13 +71,14 @@ public class KickListener implements Listener {
 
         if (PlayerCache.getAdministrator().contains(player.getUniqueId())) {
             Utils.finishControl(instance.getValue(PlayerCache.getCouples(), player), player, proxyServer);
-            Utils.sendDiscordMessage(player, instance.getKey(PlayerCache.getCouples(), player), BungeeMessages.DISCORD_QUIT.get(String.class), BungeeMessages.CLEAN.get(String.class));
         }
 
         if (PlayerCache.getSuspicious().contains(player.getUniqueId())) {
             Utils.punishPlayer(instance.getKey(PlayerCache.getCouples(), player).getUniqueId(), player.getName(), instance.getKey(PlayerCache.getCouples(), player), player);
             Utils.finishControl(player, instance.getKey(PlayerCache.getCouples(), player), proxyServer);
         }
+
+        System.out.println("6");
 
     }
 }

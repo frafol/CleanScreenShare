@@ -11,6 +11,9 @@ import it.frafol.cleanss.velocity.objects.PlayerCache;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 public class InfoCommand implements SimpleCommand {
@@ -79,5 +82,20 @@ public class InfoCommand implements SimpleCommand {
                         .replace("%player%", invocation.arguments()[0])));
             }
         }
+    }
+
+    @Override
+    public List<String> suggest(@NotNull Invocation invocation) {
+
+        final List<String> list = new ArrayList<>();
+        final String[] args = invocation.arguments();
+
+        if (args.length == 1)  {
+            for (Player players : instance.getServer().getAllPlayers()) {
+                list.add(players.getUsername());
+            }
+            return list;
+        }
+        return Collections.emptyList();
     }
 }

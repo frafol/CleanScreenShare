@@ -22,6 +22,8 @@ public enum VelocityConfig {
     DISCORD_EMBED_TITLE("discord-webhook.embed_title"),
     SLOG_PUNISH("settings.slog.punish"),
     SLOG_COMMAND("settings.slog.punish_command"),
+    DISABLE_PING("settings.disable_ping_check"),
+    VERSION("version"),
     MYSQL("mysql.enable"),
     MYSQL_HOST("mysql.host"),
     MYSQL_USER("mysql.user"),

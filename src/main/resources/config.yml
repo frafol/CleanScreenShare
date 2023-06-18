@@ -5,6 +5,8 @@
 # Configuration file. Made with ❤ by frafol.
 # For support: discord.io/futuredevelopment
 
+# Please, do not edit this if you don't know what you're doing.
+version: "1.3.1"
 
 settings:
 
@@ -26,6 +28,13 @@ settings:
   # but you are sure that this is active, disable this feature.
   check_for_problems: true
 
+  # This will disable a check that pings the control server before connecting to prevent problems.
+  # If you disable ping, the plugin may break if your control server is offline.
+  # This can be useful to get past an annoying offline server error given by BungeeCord's incapable ping system
+  # (velocity does not have this problem). NOTE: it is not recommended to disable ping.
+  disable_ping_check: false
+
+  # Check for plugin updates.
   update_check: true
   stats: true
 

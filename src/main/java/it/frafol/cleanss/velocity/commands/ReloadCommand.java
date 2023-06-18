@@ -26,14 +26,6 @@ public class ReloadCommand implements SimpleCommand {
 
         final CommandSource source = invocation.source();
 
-        if (!(source instanceof Player)) {
-            source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.ONLY_PLAYERS.color()
-                    .replace("%prefix%", VelocityMessages.PREFIX.color())));
-            return;
-        }
-
-        final Player sender = (Player) source;
-
         if (!source.hasPermission(VelocityConfig.RELOAD_PERMISSION.get(String.class))) {
             source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.NO_PERMISSION.color()
                     .replace("%prefix%", VelocityMessages.PREFIX.color())));
@@ -43,6 +35,12 @@ public class ReloadCommand implements SimpleCommand {
         TextFile.reloadAll();
         source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.RELOADED.color()
                 .replace("%prefix%", VelocityMessages.PREFIX.color())));
+
+        if (!(source instanceof Player)) {
+            return;
+        }
+
+        final Player sender = (Player) source;
 
         ByteArrayDataOutput buf = ByteStreams.newDataOutput();
         buf.writeUTF("RELOAD");

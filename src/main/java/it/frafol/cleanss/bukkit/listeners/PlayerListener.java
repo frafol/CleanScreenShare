@@ -9,6 +9,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
@@ -115,7 +117,6 @@ public class PlayerListener implements Listener {
                 break;
             default:
                 System.out.println(SpigotConfig.GAMEMODE.get(String.class) + " is an invalid gamemode!");
-                break;
         }
 
         if (SpigotConfig.HUNGER.get(Boolean.class)) {
@@ -139,6 +140,36 @@ public class PlayerListener implements Listener {
         }
 
         if (SpigotConfig.MOVE.get(Boolean.class)) {
+            event.setCancelled(true);
+        }
+
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void onPlayerBreak(BlockBreakEvent event) {
+
+        final Player player = event.getPlayer();
+
+        if (player.hasPermission(SpigotConfig.ADMIN_PERMISSION.get(String.class))) {
+            return;
+        }
+
+        if (SpigotConfig.BREAK.get(Boolean.class)) {
+            event.setCancelled(true);
+        }
+
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void onPlayerPlace(BlockPlaceEvent event) {
+
+        final Player player = event.getPlayer();
+
+        if (player.hasPermission(SpigotConfig.ADMIN_PERMISSION.get(String.class))) {
+            return;
+        }
+
+        if (SpigotConfig.PLACE.get(Boolean.class)) {
             event.setCancelled(true);
         }
 
