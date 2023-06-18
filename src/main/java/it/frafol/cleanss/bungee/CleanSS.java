@@ -3,6 +3,7 @@ package it.frafol.cleanss.bungee;
 import it.frafol.cleanss.bungee.commands.*;
 import it.frafol.cleanss.bungee.enums.BungeeConfig;
 import it.frafol.cleanss.bungee.enums.BungeeMessages;
+import it.frafol.cleanss.bungee.enums.BungeeVersion;
 import it.frafol.cleanss.bungee.listeners.ChatListener;
 import it.frafol.cleanss.bungee.listeners.CommandListener;
 import it.frafol.cleanss.bungee.listeners.KickListener;
@@ -10,6 +11,7 @@ import it.frafol.cleanss.bungee.listeners.ServerListener;
 import it.frafol.cleanss.bungee.mysql.MySQLWorker;
 import it.frafol.cleanss.bungee.objects.PlayerCache;
 import it.frafol.cleanss.bungee.objects.TextFile;
+import lombok.SneakyThrows;
 import net.byteflux.libby.BungeeLibraryManager;
 import net.byteflux.libby.Library;
 import net.dv8tion.jda.api.JDA;
@@ -32,6 +34,7 @@ public class CleanSS extends Plugin {
 
     private TextFile messagesTextFile;
 	private TextFile configTextFile;
+	private TextFile versionTextFile;
 	private JDA jda;
 	private static CleanSS instance;
 
@@ -85,6 +88,10 @@ public class CleanSS extends Plugin {
 		return getInstance().configTextFile.getConfig();
 	}
 
+	public YamlFile getVersionTextFile() {
+		return getInstance().versionTextFile.getConfig();
+	}
+
 	public YamlFile getMessagesTextFile() {
 		return getInstance().messagesTextFile.getConfig();
 	}
@@ -103,6 +110,7 @@ public class CleanSS extends Plugin {
 
 		configTextFile = new TextFile(getDataFolder().toPath(), "config.yml");
 		messagesTextFile = new TextFile(getDataFolder().toPath(), "messages.yml");
+		versionTextFile = new TextFile(getDataFolder().toPath(), "version.yml");
 
 	}
 
@@ -193,8 +201,9 @@ public class CleanSS extends Plugin {
 
 	}
 
+	@SneakyThrows
 	private void updateConfig() {
-		if (!getDescription().getVersion().equals(BungeeConfig.VERSION.get(String.class))) {
+		if (!getDescription().getVersion().equals(BungeeVersion.VERSION.get(String.class))) {
 
 			getLogger().info("§7Creating new §dconfigurations§7...");
 			YamlUpdater.create(new File(getDataFolder().toPath() + "/config.yml"), FileUtils.findFile("https://raw.githubusercontent.com/frafol/CleanScreenShare/main/src/main/resources/config.yml"))
@@ -203,6 +212,8 @@ public class CleanSS extends Plugin {
 			YamlUpdater.create(new File(getDataFolder().toPath() + "/messages.yml"), FileUtils.findFile("https://raw.githubusercontent.com/frafol/CleanScreenShare/main/src/main/resources/messages.yml"))
 					.backup(true)
 					.update();
+			versionTextFile.getConfig().set("version", getDescription().getVersion());
+			versionTextFile.getConfig().save();
 			loadFiles();
 
 		}

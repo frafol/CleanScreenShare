@@ -2,10 +2,12 @@ package it.frafol.cleanss.bukkit;
 
 import it.frafol.cleanss.bukkit.commands.MainCommand;
 import it.frafol.cleanss.bukkit.enums.SpigotConfig;
+import it.frafol.cleanss.bukkit.enums.SpigotVersion;
 import it.frafol.cleanss.bukkit.listeners.PlayerListener;
 import it.frafol.cleanss.bukkit.listeners.PluginMessageReceiver;
 import it.frafol.cleanss.bukkit.listeners.WorldListener;
 import it.frafol.cleanss.bukkit.objects.TextFile;
+import lombok.SneakyThrows;
 import net.byteflux.libby.BukkitLibraryManager;
 import net.byteflux.libby.Library;
 import org.bukkit.Bukkit;
@@ -20,12 +22,14 @@ public class CleanSS extends JavaPlugin {
 
 	private TextFile configTextFile;
 	private TextFile cacheTextFile;
+	private TextFile versionTextFile;
 	public static CleanSS instance;
 
 	public static CleanSS getInstance() {
 		return instance;
 	}
 
+	@SneakyThrows
 	@Override
 	public void onEnable() {
 
@@ -69,13 +73,16 @@ public class CleanSS extends JavaPlugin {
 
 		getLogger().info("Loading configuration...");
 		configTextFile = new TextFile(getDataFolder().toPath(), "settings.yml");
+		versionTextFile = new TextFile(getDataFolder().toPath(), "version.yml");
 
-		if (!getDescription().getVersion().equals(SpigotConfig.VERSION.get(String.class))) {
+		if (!getDescription().getVersion().equals(SpigotVersion.VERSION.get(String.class))) {
 
 			getLogger().info("Creating new configurations...");
 			YamlUpdater.create(new File(getDataFolder().toPath() + "/settings.yml"), FileUtils.findFile("https://raw.githubusercontent.com/frafol/CleanScreenShare/main/src/main/resources/settings.yml"))
 					.backup(true)
 					.update();
+			versionTextFile.getConfig().set("version", getDescription().getVersion());
+			versionTextFile.getConfig().save();
 			configTextFile = new TextFile(getDataFolder().toPath(), "settings.yml");
 
 		}
@@ -131,6 +138,10 @@ public class CleanSS extends JavaPlugin {
 
 	public TextFile getCacheTextFile() {
 		return cacheTextFile;
+	}
+
+	public TextFile getVersionTextFile() {
+		return versionTextFile;
 	}
 
 	public boolean isSuperLegacy() {

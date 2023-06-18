@@ -15,6 +15,7 @@ import com.velocitypowered.api.proxy.messages.MinecraftChannelIdentifier;
 import it.frafol.cleanss.velocity.commands.*;
 import it.frafol.cleanss.velocity.enums.VelocityConfig;
 import it.frafol.cleanss.velocity.enums.VelocityMessages;
+import it.frafol.cleanss.velocity.enums.VelocityVersion;
 import it.frafol.cleanss.velocity.listeners.ChatListener;
 import it.frafol.cleanss.velocity.listeners.CommandListener;
 import it.frafol.cleanss.velocity.listeners.KickListener;
@@ -48,7 +49,7 @@ import java.util.concurrent.TimeUnit;
 @Plugin(
 		id = "cleanscreenshare",
 		name = "CleanScreenShare",
-		version = "1.3.1",
+		version = "1.4",
 		description = "Make control hacks on your players.",
 		dependencies = {@Dependency(id = "mysqlandconfigurateforvelocity", optional = true)},
 		authors = { "frafol" })
@@ -68,6 +69,7 @@ public class CleanSS {
 
     private TextFile messagesTextFile;
 	private TextFile configTextFile;
+	private TextFile versionTextFile;
 
 	private static CleanSS instance;
 
@@ -275,10 +277,12 @@ public class CleanSS {
 	private void loadFiles() {
 		configTextFile = new TextFile(path, "config.yml");
 		messagesTextFile = new TextFile(path, "messages.yml");
+		versionTextFile = new TextFile(path, "version.yml");
 	}
 
+	@SneakyThrows
 	private void updateConfig() {
-		if (container.getDescription().getVersion().isPresent() && (!container.getDescription().getVersion().get().equals(VelocityConfig.VERSION.get(String.class)))) {
+		if (container.getDescription().getVersion().isPresent() && (!container.getDescription().getVersion().get().equals(VelocityVersion.VERSION.get(String.class)))) {
 
 			logger.info("§7Creating new §dconfigurations§7...");
 			YamlUpdater.create(new File(path + "/config.yml"), FileUtils.findFile("https://raw.githubusercontent.com/frafol/CleanScreenShare/main/src/main/resources/config.yml"))
@@ -287,8 +291,9 @@ public class CleanSS {
 			YamlUpdater.create(new File(path + "/messages.yml"), FileUtils.findFile("https://raw.githubusercontent.com/frafol/CleanScreenShare/main/src/main/resources/messages.yml"))
 					.backup(true)
 					.update();
+			versionTextFile.getConfig().set("version", container.getDescription().getVersion().get());
+			versionTextFile.getConfig().save();
 			loadFiles();
-
 		}
 	}
 

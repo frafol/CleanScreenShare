@@ -18,8 +18,6 @@ public enum SpigotConfig {
     SPAWN("options.teleport_to_spawn_on_join"),
     GAMEMODE("options.change_gamemode_on_join"),
 
-    VERSION("version"),
-
     BREAK("options.prevent.player.block_break"),
     PLACE("options.prevent.player.block_place"),
 
