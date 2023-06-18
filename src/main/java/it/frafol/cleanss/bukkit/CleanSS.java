@@ -1,5 +1,6 @@
 package it.frafol.cleanss.bukkit;
 
+import com.tchristofferson.configupdater.ConfigUpdater;
 import it.frafol.cleanss.bukkit.commands.MainCommand;
 import it.frafol.cleanss.bukkit.enums.SpigotConfig;
 import it.frafol.cleanss.bukkit.enums.SpigotVersion;
@@ -13,12 +14,18 @@ import net.byteflux.libby.Library;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.plugin.java.JavaPlugin;
-import ru.vyarus.yaml.updater.YamlUpdater;
-import ru.vyarus.yaml.updater.util.FileUtils;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
+import java.util.Collections;
 
 public class CleanSS extends JavaPlugin {
+
+	public boolean updated = false;
 
 	private TextFile configTextFile;
 	private TextFile cacheTextFile;
@@ -43,15 +50,7 @@ public class CleanSS extends JavaPlugin {
 				.version("1.8.4")
 				.build();
 
-		Library updater = Library.builder()
-				.groupId("ru{}vyarus")
-				.artifactId("yaml-config-updater")
-				.version("1.4.2")
-				.build();
-
 		bukkitLibraryManager.addJitPack();
-		bukkitLibraryManager.addMavenCentral();
-		bukkitLibraryManager.loadLibrary(updater);
 		bukkitLibraryManager.loadLibrary(yaml);
 
 		getLogger().info("\n   ___  __    ____    __    _  _   ___  ___\n" +
@@ -74,13 +73,18 @@ public class CleanSS extends JavaPlugin {
 		getLogger().info("Loading configuration...");
 		configTextFile = new TextFile(getDataFolder().toPath(), "settings.yml");
 		versionTextFile = new TextFile(getDataFolder().toPath(), "version.yml");
+		File configFile = new File(getDataFolder(), "settings.yml");
 
 		if (!getDescription().getVersion().equals(SpigotVersion.VERSION.get(String.class))) {
 
 			getLogger().info("Creating new configurations...");
-			YamlUpdater.create(new File(getDataFolder().toPath() + "/settings.yml"), FileUtils.findFile("https://raw.githubusercontent.com/frafol/CleanScreenShare/main/src/main/resources/settings.yml"))
-					.backup(true)
-					.update();
+			try {
+				ConfigUpdater.update(this, "settings.yml", configFile, Collections.emptyList());
+			} catch (IOException exception) {
+				getLogger().severe("Unable to update configuration file, see the error below:");
+				exception.printStackTrace();
+			}
+
 			versionTextFile.getConfig().set("version", getDescription().getVersion());
 			versionTextFile.getConfig().save();
 			configTextFile = new TextFile(getDataFolder().toPath(), "settings.yml");
@@ -97,6 +101,7 @@ public class CleanSS extends JavaPlugin {
 		Bukkit.getServer().getPluginManager().registerEvents(new PlayerListener(), this);
 		Bukkit.getServer().getPluginManager().registerEvents(new WorldListener(), this);
 
+		UpdateChecker();
 		getLogger().info("Successfully loaded!");
 
 		if (SpigotConfig.DAY_CYCLE.get(Boolean.class)) {
@@ -153,4 +158,64 @@ public class CleanSS extends JavaPlugin {
 				|| Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3].contains("1_1_R")
 				|| Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3].contains("1_0_R");
 	}
+
+	private void UpdateChecker() {
+
+		if (!SpigotConfig.UPDATE_CHECK.get(Boolean.class)) {
+			return;
+		}
+
+		new UpdateCheck(this).getVersion(version -> {
+
+			if (Integer.parseInt(getDescription().getVersion().replace(".", "")) < Integer.parseInt(version.replace(".", ""))) {
+
+				if (SpigotConfig.AUTO_UPDATE.get(Boolean.class) && !updated) {
+					autoUpdate();
+					return;
+				}
+
+				if (!updated) {
+					getLogger().warning("§eThere is a new update available, download it on SpigotMC!");
+				}
+			}
+
+			if (Integer.parseInt(getDescription().getVersion().replace(".", "")) > Integer.parseInt(version.replace(".", ""))) {
+				getLogger().warning("§eYou are using a development version, please report any bugs!");
+			}
+
+		});
+	}
+
+	public void autoUpdate() {
+		try {
+			String fileUrl = "https://github.com/frafol/CleanScreenShare/releases/download/release/CleanScreenShare.jar";
+			String destination = "./plugins/";
+
+			String fileName = getFileNameFromUrl(fileUrl);
+			File outputFile = new File(destination, fileName);
+
+			downloadFile(fileUrl, outputFile);
+			updated = true;
+			getLogger().warning("CleanScreenShare successfully updated, a restart is required.");
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private String getFileNameFromUrl(String fileUrl) {
+		int slashIndex = fileUrl.lastIndexOf('/');
+		if (slashIndex != -1 && slashIndex < fileUrl.length() - 1) {
+			return fileUrl.substring(slashIndex + 1);
+		}
+		throw new IllegalArgumentException("Invalid file URL");
+	}
+
+	private void downloadFile(String fileUrl, File outputFile) throws IOException {
+		URL url = new URL(fileUrl);
+		try (InputStream inputStream = url.openStream()) {
+			Files.copy(inputStream, outputFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+		}
+	}
+
 }

@@ -24,6 +24,7 @@ public enum VelocityConfig {
     SLOG_COMMAND("settings.slog.punish_command"),
     DISABLE_PING("settings.disable_ping_check"),
     MYSQL("mysql.enable"),
+    AUTO_UPDATE("settings.auto_update"),
     MYSQL_HOST("mysql.host"),
     MYSQL_USER("mysql.user"),
     MYSQL_DATABASE("mysql.database"),

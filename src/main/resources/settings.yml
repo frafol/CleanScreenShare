@@ -7,6 +7,9 @@
 
 options:
 
+  update_check: true
+  auto_update: true
+
   # Bypass command and move prevention.
   staff_permission: "screenshare.control"
   admin_permission: "screenshare.admin"

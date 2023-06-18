@@ -74,8 +74,5 @@ public class KickListener implements Listener {
             Utils.punishPlayer(instance.getKey(PlayerCache.getCouples(), player).getUniqueId(), player.getName(), instance.getKey(PlayerCache.getCouples(), player), player);
             Utils.finishControl(player, instance.getKey(PlayerCache.getCouples(), player), proxyServer);
         }
-
-        System.out.println("6");
-
     }
 }

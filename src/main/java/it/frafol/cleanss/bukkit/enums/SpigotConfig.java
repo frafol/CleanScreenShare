@@ -5,6 +5,9 @@ import org.jetbrains.annotations.NotNull;
 
 public enum SpigotConfig {
 
+    UPDATE_CHECK("options.update_check"),
+    AUTO_UPDATE("options.auto_update"),
+
     STAFF_PERMISSION("options.staff_permission"),
     ADMIN_PERMISSION("options.admin_permission"),
 

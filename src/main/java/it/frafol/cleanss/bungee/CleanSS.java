@@ -27,6 +27,11 @@ import ru.vyarus.yaml.updater.YamlUpdater;
 import ru.vyarus.yaml.updater.util.FileUtils;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -37,6 +42,8 @@ public class CleanSS extends Plugin {
 	private TextFile versionTextFile;
 	private JDA jda;
 	private static CleanSS instance;
+
+	public boolean updated = false;
 
 	private MySQLWorker data;
 
@@ -135,7 +142,15 @@ public class CleanSS extends Plugin {
 		new UpdateCheck(this).getVersion(version -> {
 
 			if (Integer.parseInt(getDescription().getVersion().replace(".", "")) < Integer.parseInt(version.replace(".", ""))) {
-				getLogger().warning("§eThere is a new update available, download it on SpigotMC!");
+
+				if (BungeeConfig.AUTO_UPDATE.get(Boolean.class) && !updated) {
+					autoUpdate();
+					return;
+				}
+
+				if (!updated) {
+					getLogger().warning("§eThere is a new update available, download it on SpigotMC!");
+				}
 			}
 
 			if (Integer.parseInt(getDescription().getVersion().replace(".", "")) > Integer.parseInt(version.replace(".", ""))) {
@@ -143,6 +158,38 @@ public class CleanSS extends Plugin {
 			}
 
 		});
+	}
+
+	public void autoUpdate() {
+		try {
+			String fileUrl = "https://github.com/frafol/CleanScreenShare/releases/download/release/CleanScreenShare.jar";
+			String destination = "./plugins/";
+
+			String fileName = getFileNameFromUrl(fileUrl);
+			File outputFile = new File(destination, fileName);
+
+			downloadFile(fileUrl, outputFile);
+			updated = true;
+			getLogger().warning("§eCleanScreenShare successfully updated, a restart is required.");
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private String getFileNameFromUrl(String fileUrl) {
+		int slashIndex = fileUrl.lastIndexOf('/');
+		if (slashIndex != -1 && slashIndex < fileUrl.length() - 1) {
+			return fileUrl.substring(slashIndex + 1);
+		}
+		throw new IllegalArgumentException("Invalid file URL");
+	}
+
+	private void downloadFile(String fileUrl, File outputFile) throws IOException {
+		URL url = new URL(fileUrl);
+		try (InputStream inputStream = url.openStream()) {
+			Files.copy(inputStream, outputFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+		}
 	}
 
 	public void ControlTask() {
@@ -168,9 +215,16 @@ public class CleanSS extends Plugin {
 		new UpdateCheck(this).getVersion(version -> {
 
 			if (Integer.parseInt(getDescription().getVersion().replace(".", "")) < Integer.parseInt(version.replace(".", ""))) {
-				player.sendMessage(TextComponent.fromLegacyText("§e[CleanScreenShare] There is a new update available, download it on SpigotMC!"));
-			}
 
+				if (BungeeConfig.AUTO_UPDATE.get(Boolean.class) && !updated) {
+					autoUpdate();
+					return;
+				}
+
+				if (!updated) {
+					player.sendMessage(TextComponent.fromLegacyText("§e[CleanScreenShare] There is a new update available, download it on SpigotMC!"));
+				}
+			}
 		});
 	}
 

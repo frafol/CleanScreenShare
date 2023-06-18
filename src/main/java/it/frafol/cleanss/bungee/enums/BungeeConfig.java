@@ -23,6 +23,7 @@ public enum BungeeConfig {
     SLOG_PUNISH("settings.slog.punish"),
     SLOG_COMMAND("settings.slog.punish_command"),
     DISABLE_PING("settings.disable_ping_check"),
+    AUTO_UPDATE("settings.auto_update"),
     MYSQL("mysql.enable"),
     MYSQL_HOST("mysql.host"),
     MYSQL_USER("mysql.user"),

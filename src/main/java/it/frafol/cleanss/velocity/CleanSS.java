@@ -59,6 +59,7 @@ public class CleanSS {
 	public static final ChannelIdentifier channel_join = MinecraftChannelIdentifier.create("cleanss", "join");
 
 	public boolean mysql_installation = false;
+	public boolean updated = false;
 
 	private final Logger logger;
 	private final ProxyServer server;
@@ -230,6 +231,23 @@ public class CleanSS {
 		}
 	}
 
+	public void autoUpdate() {
+		try {
+			String fileUrl = "https://github.com/frafol/CleanScreenShare/releases/download/release/CleanScreenShare.jar";
+			String destination = "./plugins/";
+
+			String fileName = getFileNameFromUrl(fileUrl);
+			File outputFile = new File(destination, fileName);
+
+			downloadFile(fileUrl, outputFile);
+			updated = true;
+			logger.warn("CleanScreenShare successfully updated, a restart is required.");
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
 	private void loadLibraries() {
 		VelocityLibraryManager<CleanSS> velocityLibraryManager = new VelocityLibraryManager<>(getLogger(), path, getServer().getPluginManager(), this);
 
@@ -359,7 +377,15 @@ public class CleanSS {
 		new UpdateCheck(this).getVersion(version -> {
 
 			if (Integer.parseInt(container.getDescription().getVersion().get().replace(".", "")) < Integer.parseInt(version.replace(".", ""))) {
-				logger.warn("There is a new update available, download it on SpigotMC!");
+
+				if (VelocityConfig.AUTO_UPDATE.get(Boolean.class) && !updated) {
+					autoUpdate();
+					return;
+				}
+
+				if (!updated) {
+					logger.warn("There is a new update available, download it on SpigotMC!");
+				}
 			}
 
 			if (Integer.parseInt(container.getDescription().getVersion().get().replace(".", "")) > Integer.parseInt(version.replace(".", ""))) {
@@ -400,8 +426,15 @@ public class CleanSS {
 				return;
 			}
 
-			player.sendMessage(LegacyComponentSerializer.legacy('§')
-					.deserialize("§e[CleanScreenShare] There is a new update available, download it on SpigotMC!"));
+			if (VelocityConfig.AUTO_UPDATE.get(Boolean.class) && !updated) {
+				autoUpdate();
+				return;
+			}
+
+			if (!updated) {
+				player.sendMessage(LegacyComponentSerializer.legacy('§')
+						.deserialize("§e[CleanScreenShare] There is a new update available, download it on SpigotMC!"));
+			}
 
 		});
 	}

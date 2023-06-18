@@ -33,6 +33,11 @@ settings:
 
   # Check for plugin updates.
   update_check: true
+
+  # Automatically update the plugin.
+  auto_update: true
+
+  # Enables telemetry.
   stats: true
 
   slog:
