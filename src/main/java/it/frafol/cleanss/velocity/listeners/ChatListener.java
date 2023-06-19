@@ -26,7 +26,7 @@ public class ChatListener {
     public void onChat(@NotNull PlayerChatEvent event) {
 
         final Player player = event.getPlayer();
-        boolean luckperms = instance.getServer().getPluginManager().getPlugin("luckpersmvelocity").isPresent();
+        boolean luckperms = instance.getServer().getPluginManager().getPlugin("luckperms").isPresent();
 
         if (!player.getCurrentServer().isPresent()) {
             return;

@@ -5,6 +5,9 @@ import it.frafol.cleanss.bungee.enums.BungeeConfig;
 import it.frafol.cleanss.bungee.enums.BungeeMessages;
 import it.frafol.cleanss.bungee.objects.PlayerCache;
 import it.frafol.cleanss.bungee.objects.Utils;
+import net.luckperms.api.LuckPerms;
+import net.luckperms.api.LuckPermsProvider;
+import net.luckperms.api.model.user.User;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -29,6 +32,8 @@ public class ControlCommand extends Command implements TabExecutor {
 
 	@Override
 	public void execute(@NotNull CommandSender invocation, String[] args) {
+
+		boolean luckperms = instance.getProxy().getPluginManager().getPlugin("LuckPerms") != null;
 
 		if (!(invocation instanceof ProxiedPlayer)) {
 			invocation.sendMessage(TextComponent.fromLegacyText(BungeeMessages.ONLY_PLAYERS.color()
@@ -133,7 +138,30 @@ public class ControlCommand extends Command implements TabExecutor {
 						}
 
 						Utils.startControl(player.get(), sender, proxyServer);
-						Utils.sendDiscordMessage(player.get(), sender, BungeeMessages.DISCORD_STARTED.get(String.class));
+
+						String suspect_group = "";
+						String admin_group = "";
+
+						if (luckperms) {
+
+							final LuckPerms api = LuckPermsProvider.get();
+
+							final User admin = api.getUserManager().getUser(((ProxiedPlayer) invocation).getUniqueId());
+							final User suspect = api.getUserManager().getUser(player.get().getUniqueId());
+
+							if (admin == null || suspect == null) {
+								return;
+							}
+
+							final String admingroup = admin.getCachedData().getMetaData().getPrimaryGroup();
+							admin_group = admingroup == null ? "" : admingroup;
+
+							final String suspectgroup = suspect.getCachedData().getMetaData().getPrimaryGroup();
+							suspect_group = suspectgroup == null ? "" : suspectgroup;
+
+						}
+
+						Utils.sendDiscordMessage(player.get(), (ProxiedPlayer) invocation, BungeeMessages.DISCORD_STARTED.get(String.class).replace("%suspectgroup%", suspect_group).replace("%admingroup%", admin_group));
 					}
 
 				} else {
