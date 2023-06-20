@@ -125,7 +125,30 @@ public class ControlCommand extends Command implements TabExecutor {
 							}
 
 							Utils.startControl(player.get(), sender, proxyServer);
-							Utils.sendDiscordMessage(player.get(), sender, BungeeMessages.DISCORD_STARTED.get(String.class));
+
+							String suspect_group = "";
+							String admin_group = "";
+
+							if (luckperms) {
+
+								final LuckPerms api = LuckPermsProvider.get();
+
+								final User admin = api.getUserManager().getUser(((ProxiedPlayer) invocation).getUniqueId());
+								final User suspect = api.getUserManager().getUser(player.get().getUniqueId());
+
+								if (admin == null || suspect == null) {
+									return;
+								}
+
+								final String admingroup = admin.getCachedData().getMetaData().getPrimaryGroup();
+								admin_group = admingroup == null ? "" : admingroup;
+
+								final String suspectgroup = suspect.getCachedData().getMetaData().getPrimaryGroup();
+								suspect_group = suspectgroup == null ? "" : suspectgroup;
+
+							}
+
+							Utils.sendDiscordMessage(player.get(), (ProxiedPlayer) invocation, BungeeMessages.DISCORD_STARTED.get(String.class).replace("%suspectgroup%", suspect_group).replace("%admingroup%", admin_group));
 
 						});
 					} else {
