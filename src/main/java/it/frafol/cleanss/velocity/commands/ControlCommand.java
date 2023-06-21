@@ -166,6 +166,10 @@ public class ControlCommand implements SimpleCommand {
 	@Override
 	public List<String> suggest(@NotNull Invocation invocation) {
 
+		if (Utils.isConsole(invocation.source())) {
+			return Collections.emptyList();
+		}
+
 		final List<String> list = new ArrayList<>();
 		final String[] args = invocation.arguments();
 

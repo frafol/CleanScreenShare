@@ -15,6 +15,8 @@ import net.luckperms.api.LuckPermsProvider;
 import net.luckperms.api.model.user.User;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 public class FinishCommand implements SimpleCommand {
@@ -44,10 +46,8 @@ public class FinishCommand implements SimpleCommand {
         }
 
         if (invocation.arguments().length == 0) {
-
             source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.USAGE.color().replace("%prefix%", VelocityMessages.PREFIX.color())));
             return;
-
         }
 
         if (invocation.arguments().length == 1) {
@@ -120,5 +120,25 @@ public class FinishCommand implements SimpleCommand {
 
             }
         }
+    }
+
+    @Override
+    public List<String> suggest(@NotNull Invocation invocation) {
+
+        final String[] args = invocation.arguments();
+
+        if (Utils.isConsole(invocation.source())) {
+            return Collections.emptyList();
+        }
+
+        if (args.length == 1) {
+
+            if (instance.getValue(PlayerCache.getCouples(), (Player) invocation.source()) == null) {
+                return Collections.emptyList();
+            }
+
+            return Collections.singletonList(instance.getValue(PlayerCache.getCouples(), (Player) invocation.source()).getUsername());
+        }
+        return Collections.emptyList();
     }
 }

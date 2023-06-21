@@ -6,7 +6,7 @@
 
     <groupId>it.frafol</groupId>
     <artifactId>cleanscreenshare</artifactId>
-    <version>1.4.2</version>
+    <version>1.4.3</version>
     <packaging>jar</packaging>
 
     <name>CleanSS</name>
@@ -65,10 +65,6 @@
             <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
         </repository>
         <repository>
-            <id>bungeecord-repo</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-        </repository>
-        <repository>
             <id>AlessioDP</id>
             <url>https://repo.alessiodp.com/releases/</url>
         </repository>
@@ -125,17 +121,15 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>net.md-5</groupId>
-            <artifactId>bungeecord-api</artifactId>
-            <version>1.19-R0.1-SNAPSHOT</version>
-            <type>jar</type>
+            <groupId>io.github.waterfallmc</groupId>
+            <artifactId>waterfall-api</artifactId>
+            <version>1.20-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>net.md-5</groupId>
-            <artifactId>bungeecord-api</artifactId>
+            <groupId>io.github.waterfallmc</groupId>
+            <artifactId>waterfall-proxy</artifactId>
             <version>1.19-R0.1-SNAPSHOT</version>
-            <type>javadoc</type>
             <scope>provided</scope>
         </dependency>
         <dependency>

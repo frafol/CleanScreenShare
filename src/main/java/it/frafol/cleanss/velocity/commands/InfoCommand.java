@@ -8,6 +8,7 @@ import it.frafol.cleanss.velocity.enums.VelocityConfig;
 import it.frafol.cleanss.velocity.enums.VelocityMessages;
 import it.frafol.cleanss.velocity.objects.Placeholder;
 import it.frafol.cleanss.velocity.objects.PlayerCache;
+import it.frafol.cleanss.velocity.objects.Utils;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.jetbrains.annotations.NotNull;
 
@@ -86,6 +87,10 @@ public class InfoCommand implements SimpleCommand {
 
     @Override
     public List<String> suggest(@NotNull Invocation invocation) {
+
+        if (Utils.isConsole(invocation.source())) {
+            return Collections.emptyList();
+        }
 
         final List<String> list = new ArrayList<>();
         final String[] args = invocation.arguments();

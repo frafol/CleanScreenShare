@@ -13,9 +13,12 @@ import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Command;
+import net.md_5.bungee.api.plugin.TabExecutor;
 import org.jetbrains.annotations.NotNull;
 
-public class FinishCommand extends Command {
+import java.util.Collections;
+
+public class FinishCommand extends Command implements TabExecutor {
 
     public final CleanSS instance;
 
@@ -101,5 +104,23 @@ public class FinishCommand extends Command {
 
             }
         }
+    }
+
+    @Override
+    public Iterable<String> onTabComplete(CommandSender sender, String @NotNull [] args) {
+
+        if (!(sender instanceof ProxiedPlayer)) {
+            return Collections.emptyList();
+        }
+
+        if (args.length == 1) {
+
+            if (instance.getValue(PlayerCache.getCouples(), (ProxiedPlayer) sender) == null) {
+                return Collections.emptyList();
+            }
+
+            return Collections.singleton(instance.getValue(PlayerCache.getCouples(), (ProxiedPlayer) sender).getName());
+        }
+        return Collections.emptyList();
     }
 }

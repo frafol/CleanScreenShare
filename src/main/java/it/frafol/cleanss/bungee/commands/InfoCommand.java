@@ -12,6 +12,7 @@ import net.md_5.bungee.api.plugin.Command;
 import net.md_5.bungee.api.plugin.TabExecutor;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -79,6 +80,11 @@ public class InfoCommand extends Command implements TabExecutor {
 
     @Override
     public Iterable<String> onTabComplete(CommandSender sender, String @NotNull [] args) {
+
+        if (!(sender instanceof ProxiedPlayer)) {
+            return Collections.emptyList();
+        }
+
         Set<String> list = new HashSet<>();
 
         if (args.length == 1) {
