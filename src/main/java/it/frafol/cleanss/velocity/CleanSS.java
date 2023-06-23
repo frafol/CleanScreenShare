@@ -49,7 +49,7 @@ import java.util.concurrent.TimeUnit;
 @Plugin(
 		id = "cleanscreenshare",
 		name = "CleanScreenShare",
-		version = "1.4.3",
+		version = "1.4.4",
 		description = "Make control hacks on your players.",
 		dependencies = {@Dependency(id = "mysqlandconfigurateforvelocity", optional = true)},
 		authors = { "frafol" })
@@ -272,6 +272,19 @@ public class CleanSS {
 
 		velocityLibraryManager.addMavenCentral();
 		velocityLibraryManager.addJitPack();
+
+		try {
+			velocityLibraryManager.loadLibrary(yaml);
+		} catch (RuntimeException ignored) {
+			logger.error("Failed to load Simple-YAML library. Trying to download it from GitHub...");
+			yaml = Library.builder()
+					.groupId("me{}carleslc{}Simple-YAML")
+					.artifactId("Simple-Yaml")
+					.version("1.8.4")
+					.url("https://github.com/Carleslc/Simple-YAML/releases/download/1.8.4/Simple-Yaml-1.8.4.jar")
+					.build();
+		}
+
 		velocityLibraryManager.loadLibrary(yaml);
 		velocityLibraryManager.loadLibrary(updater);
 		velocityLibraryManager.loadLibrary(discord);

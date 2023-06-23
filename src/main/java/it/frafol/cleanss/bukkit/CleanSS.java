@@ -50,6 +50,18 @@ public class CleanSS extends JavaPlugin {
 				.version("1.8.4")
 				.build();
 
+		try {
+			bukkitLibraryManager.loadLibrary(yaml);
+		} catch (RuntimeException ignored) {
+			getLogger().severe("Failed to load Simple-YAML library. Trying to download it from GitHub...");
+			yaml = Library.builder()
+					.groupId("me{}carleslc{}Simple-YAML")
+					.artifactId("Simple-Yaml")
+					.version("1.8.4")
+					.url("https://github.com/Carleslc/Simple-YAML/releases/download/1.8.4/Simple-Yaml-1.8.4.jar")
+					.build();
+		}
+
 		bukkitLibraryManager.addJitPack();
 		bukkitLibraryManager.loadLibrary(yaml);
 
