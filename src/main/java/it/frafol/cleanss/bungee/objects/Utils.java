@@ -381,6 +381,15 @@ public class Utils {
             Utils.checkForErrors(suspicious, administrator, proxyServer);
         }
 
+        if (BungeeConfig.SEND_ADMIN_MESSAGE.get(Boolean.class)) {
+            instance.getProxy().getPlayers().stream()
+                    .filter(players -> players.hasPermission(BungeeConfig.CONTROL_PERMISSION.get(String.class)))
+                    .forEach(players -> players.sendMessage(TextComponent.fromLegacyText(BungeeMessages.ADMIN_NOTIFY.color()
+                            .replace("%prefix%", BungeeMessages.PREFIX.color())
+                            .replace("%admin%", administrator.getName())
+                            .replace("%suspect%", suspicious.getName()))));
+        }
+
         suspicious.sendMessage(TextComponent.fromLegacyText(BungeeMessages.MAINSUS.color()
                 .replace("%prefix%", BungeeMessages.PREFIX.color())));
 

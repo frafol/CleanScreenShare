@@ -23,6 +23,8 @@ public enum BungeeMessages {
     CONTROL_CLEAN_NAME("messages.staff_message.clean.name"),
     CONTROL_CLEAN_COMMAND("messages.staff_message.clean.command"),
 
+    ADMIN_NOTIFY("messages.control.admin_notification"),
+
     CONTROL_CHEATER_NAME("messages.staff_message.cheater.name"),
     CONTROL_CHEATER_COMMAND("messages.staff_message.cheater.command"),
 

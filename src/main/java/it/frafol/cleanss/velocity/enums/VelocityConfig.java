@@ -30,6 +30,7 @@ public enum VelocityConfig {
     MYSQL_DATABASE("mysql.database"),
     MYSQL_PASSWORD("mysql.password"),
     MYSQL_ARGUMENTS("mysql.arguments"),
+    SEND_ADMIN_MESSAGE("settings.start.send_admin_message"),
     STATS("settings.stats");
 
     private final String path;

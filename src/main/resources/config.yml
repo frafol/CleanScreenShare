@@ -40,6 +40,12 @@ settings:
   # Enables telemetry.
   stats: true
 
+  start:
+
+    # By activating this feature, the staffer(s) who have permission to control
+    # will receive a notification when another staffer brings in a player for control.
+    send_admin_message: true
+
   slog:
 
     # Enable this if you want to punish the player when it left during a control.

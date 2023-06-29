@@ -396,6 +396,15 @@ public class Utils {
             Utils.checkForErrors(suspicious, administrator, proxyServer);
         }
 
+        if (VelocityConfig.SEND_ADMIN_MESSAGE.get(Boolean.class)) {
+            instance.getServer().getAllPlayers().stream()
+                    .filter(players -> players.hasPermission(VelocityConfig.CONTROL_PERMISSION.get(String.class)))
+                    .forEach(players -> players.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.ADMIN_NOTIFY.color()
+                            .replace("%prefix%", VelocityMessages.PREFIX.color())
+                            .replace("%admin%", administrator.getUsername())
+                            .replace("%suspect%", suspicious.getUsername()))));
+        }
+
         suspicious.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.MAINSUS.color()
                 .replace("%prefix%", VelocityMessages.PREFIX.color())));
 
