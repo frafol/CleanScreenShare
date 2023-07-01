@@ -25,6 +25,9 @@ public class ServerListener {
         final Player player = event.getPlayer();
 
         if (!player.getCurrentServer().isPresent()) {
+            if (PlayerCache.getSuspicious().contains(player.getUniqueId()) || PlayerCache.getAdministrator().contains(player.getUniqueId())) {
+                instance.getLogger().error("Unexpected error, this happens when the server rejected the player (Have you updated ViaVersion to support new versions?).");
+            }
             return;
         }
 
@@ -33,21 +36,15 @@ public class ServerListener {
         }
 
         if (PlayerCache.getSuspicious().contains(player.getUniqueId())) {
-
             Utils.sendChannelMessage(player, "SUSPECT");
-
         }
 
         if (PlayerCache.getAdministrator().contains(player.getUniqueId())) {
-
             Utils.sendChannelMessage(player, "ADMIN");
-
         }
 
         if (player.getProtocolVersion().getProtocol() >= ProtocolVersion.getProtocolVersion(759).getProtocol()) {
-
             Utils.sendChannelMessage(player, "NO_CHAT");
-
         }
     }
 }

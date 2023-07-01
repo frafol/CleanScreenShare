@@ -21,20 +21,23 @@ public class ServerListener implements Listener {
 
         CleanSS.getInstance().getProxy().getScheduler().schedule(CleanSS.getInstance(), () -> {
 
+            if (player.getServer() == null) {
+                if (PlayerCache.getSuspicious().contains(player.getUniqueId()) || PlayerCache.getAdministrator().contains(player.getUniqueId())) {
+                    CleanSS.getInstance().getLogger().severe("Unexpected error, this happens when the server rejected the player (Have you updated ViaVersion to support new versions?).");
+                }
+                return;
+            }
+
             if (!player.getServer().getInfo().getName().equals(BungeeConfig.CONTROL.get(String.class))) {
                 return;
             }
 
             if (PlayerCache.getSuspicious().contains(player.getUniqueId())) {
-
                 Utils.sendChannelMessage(player, "SUSPECT");
-
             }
 
             if (PlayerCache.getAdministrator().contains(player.getUniqueId())) {
-
                 Utils.sendChannelMessage(player, "ADMIN");
-
             }
 
         }, 1L, TimeUnit.SECONDS);

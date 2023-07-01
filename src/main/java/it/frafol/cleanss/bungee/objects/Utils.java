@@ -432,6 +432,11 @@ public class Utils {
         buf.writeUTF(type);
         buf.writeUTF(player.getName());
 
+        if (player.getServer() == null) {
+            instance.getLogger().severe("The player " + player.getName() + " has no server, please check your control server if it's working correctly!");
+            return;
+        }
+
         player.getServer().sendData("cleanss:join", buf.toByteArray());
 
     }
