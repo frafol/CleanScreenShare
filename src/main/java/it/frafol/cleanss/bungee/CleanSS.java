@@ -230,11 +230,15 @@ public class CleanSS extends Plugin {
 
 	private void loadDiscord() {
 		jda = JDABuilder.createDefault(BungeeConfig.DISCORD_TOKEN.get(String.class)).enableIntents(GatewayIntent.MESSAGE_CONTENT).build();
-		updateJDA();
+		updateTaskJDA();
 	}
 
 	public JDA getJda() {
 		return jda;
+	}
+
+	public void updateTaskJDA() {
+		getProxy().getScheduler().schedule(this, this::updateJDA, 1L, 30L, TimeUnit.SECONDS);
 	}
 
 	public void updateJDA() {

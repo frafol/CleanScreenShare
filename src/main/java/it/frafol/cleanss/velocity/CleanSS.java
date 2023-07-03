@@ -372,7 +372,7 @@ public class CleanSS {
 	private void loadDiscord() {
 		if (VelocityConfig.DISCORD_ENABLED.get(Boolean.class)) {
 			jda.startJDA();
-			UpdateJDA();
+			updateTaskJDA();
 			getLogger().info("§7Hooked into Discord §dsuccessfully§7!");
 		}
 	}
@@ -450,6 +450,10 @@ public class CleanSS {
 			}
 
 		});
+	}
+
+	private void updateTaskJDA() {
+		getServer().getScheduler().buildTask(this, this::UpdateJDA).repeat(30, TimeUnit.SECONDS).schedule();
 	}
 
 	@SneakyThrows

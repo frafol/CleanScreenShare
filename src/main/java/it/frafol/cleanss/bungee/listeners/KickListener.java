@@ -34,9 +34,6 @@ public class KickListener implements Listener {
         if (instance.getData() != null) {
             instance.getData().setupPlayer(player.getUniqueId());
         }
-
-        instance.updateJDA();
-
     }
 
     @EventHandler
@@ -63,8 +60,6 @@ public class KickListener implements Listener {
 
         final ServerInfo proxyServer = instance.getProxy().getServers().get(BungeeConfig.CONTROL_FALLBACK.get(String.class));
         final ProxiedPlayer player = event.getPlayer();
-
-        instance.updateJDA();
 
         if (PlayerCache.getAdministrator().contains(player.getUniqueId())) {
             Utils.finishControl(instance.getValue(PlayerCache.getCouples(), player), player, proxyServer);

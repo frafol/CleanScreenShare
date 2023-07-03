@@ -44,8 +44,6 @@ public class KickListener {
             instance.UpdateChecker(player);
         }
 
-        instance.UpdateJDA();
-
         if (instance.getData() != null) {
             instance.getData().setupPlayer(player.getUniqueId());
         }
@@ -60,8 +58,6 @@ public class KickListener {
 
         final Optional<RegisteredServer> proxyServer = instance.getServer().getServer(VelocityConfig.CONTROL_FALLBACK.get(String.class));
         final Player player = event.getPlayer();
-
-        instance.UpdateJDA();
 
         if (!proxyServer.isPresent()) {
             return;
