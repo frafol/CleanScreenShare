@@ -18,6 +18,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 public class FinishCommand implements SimpleCommand {
 
@@ -123,22 +125,19 @@ public class FinishCommand implements SimpleCommand {
     }
 
     @Override
-    public List<String> suggest(@NotNull Invocation invocation) {
-
-        final String[] args = invocation.arguments();
+    public CompletableFuture<List<String>> suggestAsync(Invocation invocation) {
+        final String[] strings = invocation.arguments();
 
         if (Utils.isConsole(invocation.source())) {
-            return Collections.emptyList();
+            return CompletableFuture.completedFuture(Collections.emptyList());
         }
 
-        if (args.length == 1) {
+        final List<String> players = instance.getServer().getAllPlayers().stream()
+                .map(Player::getUsername)
+                .filter(player -> strings.length != 1 || strings[0].isEmpty()
+                        || player.toLowerCase().startsWith(strings[0].toLowerCase()))
+                .collect(Collectors.toList());
 
-            if (instance.getValue(PlayerCache.getCouples(), (Player) invocation.source()) == null) {
-                return Collections.emptyList();
-            }
-
-            return Collections.singletonList(instance.getValue(PlayerCache.getCouples(), (Player) invocation.source()).getUsername());
-        }
-        return Collections.emptyList();
+        return CompletableFuture.completedFuture(players);
     }
 }

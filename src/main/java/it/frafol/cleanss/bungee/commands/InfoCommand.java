@@ -12,9 +12,9 @@ import net.md_5.bungee.api.plugin.Command;
 import net.md_5.bungee.api.plugin.TabExecutor;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 public class InfoCommand extends Command implements TabExecutor {
 
@@ -81,17 +81,19 @@ public class InfoCommand extends Command implements TabExecutor {
     @Override
     public Iterable<String> onTabComplete(CommandSender sender, String @NotNull [] args) {
 
-        if (!(sender instanceof ProxiedPlayer)) {
+        if (args.length != 1) {
             return Collections.emptyList();
         }
 
-        Set<String> list = new HashSet<>();
+        String partialName = args[0].toLowerCase();
 
-        if (args.length == 1) {
-            for (ProxiedPlayer players : instance.getProxy().getPlayers()) {
-                list.add(players.getName());
+        List<String> completions = new ArrayList<>();
+        for (ProxiedPlayer player : instance.getProxy().getPlayers()) {
+            if (player.getName().toLowerCase().startsWith(partialName)) {
+                completions.add(player.getName());
             }
         }
-        return list;
+
+        return completions;
     }
 }

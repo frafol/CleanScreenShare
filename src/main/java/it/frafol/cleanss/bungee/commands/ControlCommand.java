@@ -2,7 +2,6 @@ package it.frafol.cleanss.bungee.commands;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
-import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.epoll.Epoll;
@@ -32,10 +31,10 @@ import org.jetbrains.annotations.NotNull;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.SocketAddress;
+import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 public class ControlCommand extends Command implements TabExecutor {
 
@@ -213,18 +212,20 @@ public class ControlCommand extends Command implements TabExecutor {
 	@Override
 	public Iterable<String> onTabComplete(CommandSender sender, String @NotNull [] args) {
 
-		if (!(sender instanceof ProxiedPlayer)) {
+		if (args.length != 1) {
 			return Collections.emptyList();
 		}
 
-		Set<String> list = new HashSet<>();
+		String partialName = args[0].toLowerCase();
 
-		if (args.length == 1) {
-			for (ProxiedPlayer players : instance.getProxy().getPlayers()) {
-				list.add(players.getName());
+		List<String> completions = new ArrayList<>();
+		for (ProxiedPlayer player : instance.getProxy().getPlayers()) {
+			if (player.getName().toLowerCase().startsWith(partialName)) {
+				completions.add(player.getName());
 			}
 		}
-		return list;
+
+		return completions;
 	}
 
 	private void ping(BungeeServerInfo target, Callback<Boolean> callback) {

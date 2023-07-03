@@ -15,10 +15,11 @@ import net.luckperms.api.LuckPermsProvider;
 import net.luckperms.api.model.user.User;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 public class ControlCommand implements SimpleCommand {
 
@@ -164,21 +165,19 @@ public class ControlCommand implements SimpleCommand {
 	}
 
 	@Override
-	public List<String> suggest(@NotNull Invocation invocation) {
+	public CompletableFuture<List<String>> suggestAsync(Invocation invocation) {
+		final String[] strings = invocation.arguments();
 
 		if (Utils.isConsole(invocation.source())) {
-			return Collections.emptyList();
+			return CompletableFuture.completedFuture(Collections.emptyList());
 		}
 
-		final List<String> list = new ArrayList<>();
-		final String[] args = invocation.arguments();
+		final List<String> players = instance.getServer().getAllPlayers().stream()
+				.map(Player::getUsername)
+				.filter(player -> strings.length != 1 || strings[0].isEmpty()
+						|| player.toLowerCase().startsWith(strings[0].toLowerCase()))
+				.collect(Collectors.toList());
 
-		if (args.length == 1)  {
-			for (Player players : instance.getServer().getAllPlayers()) {
-				list.add(players.getUsername());
-			}
-			return list;
-		}
-		return Collections.emptyList();
+		return CompletableFuture.completedFuture(players);
 	}
 }

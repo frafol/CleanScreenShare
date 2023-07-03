@@ -16,7 +16,9 @@ import net.md_5.bungee.api.plugin.Command;
 import net.md_5.bungee.api.plugin.TabExecutor;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 public class FinishCommand extends Command implements TabExecutor {
 
@@ -109,18 +111,19 @@ public class FinishCommand extends Command implements TabExecutor {
     @Override
     public Iterable<String> onTabComplete(CommandSender sender, String @NotNull [] args) {
 
-        if (!(sender instanceof ProxiedPlayer)) {
+        if (args.length != 1) {
             return Collections.emptyList();
         }
 
-        if (args.length == 1) {
+        String partialName = args[0].toLowerCase();
 
-            if (instance.getValue(PlayerCache.getCouples(), (ProxiedPlayer) sender) == null) {
-                return Collections.emptyList();
+        List<String> completions = new ArrayList<>();
+        for (ProxiedPlayer player : instance.getProxy().getPlayers()) {
+            if (player.getName().toLowerCase().startsWith(partialName)) {
+                completions.add(player.getName());
             }
-
-            return Collections.singleton(instance.getValue(PlayerCache.getCouples(), (ProxiedPlayer) sender).getName());
         }
-        return Collections.emptyList();
+
+        return completions;
     }
 }
