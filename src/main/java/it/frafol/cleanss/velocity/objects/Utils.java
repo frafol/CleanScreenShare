@@ -10,10 +10,12 @@ import com.velocitypowered.api.scheduler.ScheduledTask;
 import it.frafol.cleanss.velocity.CleanSS;
 import it.frafol.cleanss.velocity.enums.VelocityConfig;
 import it.frafol.cleanss.velocity.enums.VelocityMessages;
+import it.frafol.cleanss.velocity.handlers.LimboHandler;
 import lombok.Getter;
 import lombok.experimental.UtilityClass;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.elytrium.limboapi.api.player.LimboPlayer;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.kyori.adventure.title.Title;
@@ -221,13 +223,25 @@ public class Utils {
             }
 
             if (!suspicious.getCurrentServer().isPresent()) {
-                return;
+                if (!instance.useLimbo) {
+                    return;
+                }
             }
 
-            if (suspicious.getCurrentServer().get().getServer().getServerInfo().getName().equals(VelocityConfig.CONTROL.get(String.class))) {
+            if (instance.useLimbo || suspicious.getCurrentServer().get().getServer().getServerInfo().getName().equals(VelocityConfig.CONTROL.get(String.class))) {
 
-                if (!VelocityConfig.USE_DISCONNECT.get(Boolean.class)) {
-                    suspicious.createConnectionRequest(proxyServer).fireAndForget();
+                if (!VelocityConfig.USE_DISCONNECT.get(Boolean.class) || instance.useLimbo) {
+
+                    if (instance.useLimbo) {
+
+                        LimboPlayer limboPlayer = LimboHandler.limbo_players.get(suspicious);
+                        limboPlayer.disconnect(proxyServer);
+
+                    } else {
+                        suspicious.createConnectionRequest(proxyServer).fireAndForget();
+                    }
+
+
                 } else {
                     Utils.sendChannelMessage(suspicious, "DISCONNECT_NOW");
                 }
@@ -237,12 +251,23 @@ public class Utils {
                 suspicious.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.FINISHSUS.color().replace("%prefix%", VelocityMessages.PREFIX.color())));
 
                 if (!administrator.getCurrentServer().isPresent()) {
-                    return;
+                    if (!instance.useLimbo) {
+                        return;
+                    }
                 }
 
-                if (administrator.getCurrentServer().get().getServer().getServerInfo().getName().equals(VelocityConfig.CONTROL.get(String.class))) {
-                    if (!VelocityConfig.USE_DISCONNECT.get(Boolean.class)) {
-                        administrator.createConnectionRequest(proxyServer).fireAndForget();
+                if (instance.useLimbo || administrator.getCurrentServer().get().getServer().getServerInfo().getName().equals(VelocityConfig.CONTROL.get(String.class))) {
+                    if (!VelocityConfig.USE_DISCONNECT.get(Boolean.class) || instance.useLimbo) {
+
+                        if (instance.useLimbo) {
+
+                            LimboPlayer limboPlayer = LimboHandler.limbo_players.get(administrator);
+                            limboPlayer.disconnect(proxyServer);
+
+                        } else {
+                            administrator.createConnectionRequest(proxyServer).fireAndForget();
+                        }
+
                     } else {
                         Utils.sendChannelMessage(administrator, "DISCONNECT_NOW");
                     }
@@ -262,8 +287,17 @@ public class Utils {
                 PlayerCache.getIn_control().put(administrator.getUniqueId(), 0);
             }
 
-            if (!VelocityConfig.USE_DISCONNECT.get(Boolean.class)) {
-                suspicious.createConnectionRequest(proxyServer).fireAndForget();
+            if (!VelocityConfig.USE_DISCONNECT.get(Boolean.class) || instance.useLimbo) {
+
+                if (instance.useLimbo) {
+
+                    LimboPlayer limboPlayer = LimboHandler.limbo_players.get(suspicious);
+                    limboPlayer.disconnect(proxyServer);
+
+                } else {
+                    suspicious.createConnectionRequest(proxyServer).fireAndForget();
+                }
+
             } else {
                 Utils.sendChannelMessage(suspicious, "DISCONNECT_NOW");
             }
@@ -288,8 +322,17 @@ public class Utils {
                 PlayerCache.getIn_control().put(administrator.getUniqueId(), 0);
             }
 
-            if (!VelocityConfig.USE_DISCONNECT.get(Boolean.class)) {
-                administrator.createConnectionRequest(proxyServer).fireAndForget();
+            if (!VelocityConfig.USE_DISCONNECT.get(Boolean.class) || instance.useLimbo) {
+
+                if (instance.useLimbo) {
+
+                    LimboPlayer limboPlayer = LimboHandler.limbo_players.get(administrator);
+                    limboPlayer.disconnect(proxyServer);
+
+                } else {
+                    administrator.createConnectionRequest(proxyServer).fireAndForget();
+                }
+
             } else {
                 Utils.sendChannelMessage(administrator, "DISCONNECT_NOW");
             }
@@ -317,6 +360,75 @@ public class Utils {
     }
 
     public void startControl(@NotNull Player suspicious, @NotNull Player administrator, RegisteredServer proxyServer) {
+
+        if (instance.useLimbo) {
+
+            if (VelocityConfig.CHECK_FOR_PROBLEMS.get(Boolean.class)) {
+                PlayerCache.getNow_started_sus().add(suspicious.getUniqueId());
+            }
+
+            PlayerCache.getAdministrator().add(administrator.getUniqueId());
+            PlayerCache.getSuspicious().add(suspicious.getUniqueId());
+            PlayerCache.getCouples().put(administrator, suspicious);
+
+            if (VelocityConfig.MYSQL.get(Boolean.class)) {
+
+                instance.getData().setInControl(suspicious.getUniqueId(), 1);
+                instance.getData().setInControl(administrator.getUniqueId(), 1);
+
+                if (instance.getData().getStats(administrator.getUniqueId(), "controls") != -1) {
+                    instance.getData().setControls(administrator.getUniqueId(), instance.getData().getStats(administrator.getUniqueId(), "controls") + 1);
+                }
+
+                if (instance.getData().getStats(suspicious.getUniqueId(), "suffered") != -1) {
+                    instance.getData().setControlsSuffered(suspicious.getUniqueId(), instance.getData().getStats(suspicious.getUniqueId(), "suffered") + 1);
+                }
+
+            } else {
+
+                PlayerCache.getIn_control().put(suspicious.getUniqueId(), 1);
+                PlayerCache.getIn_control().put(administrator.getUniqueId(), 1);
+
+                if (PlayerCache.getControls().get(administrator.getUniqueId()) != null) {
+                    PlayerCache.getControls().put(administrator.getUniqueId(), PlayerCache.getControls().get(administrator.getUniqueId()) + 1);
+                } else {
+                    PlayerCache.getControls().put(administrator.getUniqueId(), 1);
+                }
+
+                if (PlayerCache.getControls_suffered().get(suspicious.getUniqueId()) != null) {
+                    PlayerCache.getControls_suffered().put(suspicious.getUniqueId(), PlayerCache.getControls_suffered().get(suspicious.getUniqueId()) + 1);
+                } else {
+                    PlayerCache.getControls_suffered().put(suspicious.getUniqueId(), 1);
+                }
+
+            }
+
+            Utils.sendStartTitle(suspicious);
+
+            if (VelocityConfig.CHECK_FOR_PROBLEMS.get(Boolean.class)) {
+                Utils.checkForErrors(suspicious, administrator, proxyServer);
+            }
+
+            if (VelocityConfig.SEND_ADMIN_MESSAGE.get(Boolean.class)) {
+                instance.getServer().getAllPlayers().stream()
+                        .filter(players -> players.hasPermission(VelocityConfig.CONTROL_PERMISSION.get(String.class)))
+                        .forEach(players -> players.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.ADMIN_NOTIFY.color()
+                                .replace("%prefix%", VelocityMessages.PREFIX.color())
+                                .replace("%admin%", administrator.getUsername())
+                                .replace("%suspect%", suspicious.getUsername()))));
+            }
+
+            suspicious.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.MAINSUS.color()
+                    .replace("%prefix%", VelocityMessages.PREFIX.color())));
+
+            VelocityMessages.CONTROL_FORMAT.sendList(administrator, suspicious,
+                    new Placeholder("cleanname", VelocityMessages.CONTROL_CLEAN_NAME.color()),
+                    new Placeholder("hackername", VelocityMessages.CONTROL_CHEATER_NAME.color()),
+                    new Placeholder("admitname", VelocityMessages.CONTROL_ADMIT_NAME.color()),
+                    new Placeholder("refusename", VelocityMessages.CONTROL_REFUSE_NAME.color()));
+
+            return;
+        }
 
         if (!administrator.getCurrentServer().isPresent()) {
             return;
@@ -432,16 +544,24 @@ public class Utils {
 
         instance.getServer().getScheduler().buildTask(instance, () -> {
 
+            if (instance.useLimbo) {
+                PlayerCache.getNow_started_sus().remove(suspicious.getUniqueId());
+            }
+
             if (!(PlayerCache.getSuspicious().contains(suspicious.getUniqueId()) && PlayerCache.getAdministrator().contains(administrator.getUniqueId()))) {
                 return;
             }
 
             if (!(suspicious.getCurrentServer().isPresent() || administrator.getCurrentServer().isPresent())) {
-                return;
+                if (instance.useLimbo) {
+                    return;
+                }
             }
 
-            if (suspicious.getCurrentServer().get().getServer().equals(proxyServer) || administrator.getCurrentServer().get().getServer().equals(proxyServer)) {
-                return;
+            if (instance.useLimbo || suspicious.getCurrentServer().get().getServer().equals(proxyServer) || administrator.getCurrentServer().get().getServer().equals(proxyServer)) {
+                if (instance.useLimbo) {
+                    return;
+                }
             }
 
             final Optional<RegisteredServer> fallbackServer = instance.getServer().getServer(VelocityConfig.CONTROL_FALLBACK.get(String.class));

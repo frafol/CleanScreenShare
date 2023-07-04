@@ -21,6 +21,9 @@ public class PlayerCache {
     private final HashSet<UUID> ban_execution = new HashSet<>();
 
     @Getter
+    private final HashSet<UUID> now_started_sus = new HashSet<>();
+
+    @Getter
     private final HashMap<Player, Player> couples = new HashMap<>();
 
     @Getter

@@ -1,0 +1,13 @@
+#   ___  __    ____    __    _  _   ___  ___
+#  / __)(  )  ( ___)  /__\  ( \( ) / __)/ __)
+# ( (__  )(__  )__)  /(__)\  )  (  \__ \\__ \
+#  \___)(____)(____)(__)(__)(_)\_) (___/(___/
+# Limbo Configuration file. Made with ❤ by frafol.
+# For support: discord.io/futuredevelopment
+
+limbo:
+
+  # This function enables connection to the server created by the LimboAPI plugin, instead of a physical server.
+  # It can be useful if you don't want to create a "Control" server and forgo having a map where you can perform controls.
+  # This doesn't impact performance that much since Velocity is completely asynchronous.
+  use_limbo_api: false

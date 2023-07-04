@@ -14,6 +14,7 @@ import com.velocitypowered.api.proxy.messages.ChannelIdentifier;
 import com.velocitypowered.api.proxy.messages.MinecraftChannelIdentifier;
 import it.frafol.cleanss.velocity.commands.*;
 import it.frafol.cleanss.velocity.enums.VelocityConfig;
+import it.frafol.cleanss.velocity.enums.VelocityLimbo;
 import it.frafol.cleanss.velocity.enums.VelocityMessages;
 import it.frafol.cleanss.velocity.enums.VelocityVersion;
 import it.frafol.cleanss.velocity.listeners.ChatListener;
@@ -29,6 +30,11 @@ import lombok.Getter;
 import lombok.SneakyThrows;
 import net.byteflux.libby.Library;
 import net.byteflux.libby.VelocityLibraryManager;
+import net.elytrium.limboapi.api.Limbo;
+import net.elytrium.limboapi.api.LimboFactory;
+import net.elytrium.limboapi.api.chunk.Dimension;
+import net.elytrium.limboapi.api.chunk.VirtualWorld;
+import net.elytrium.limboapi.api.player.GameMode;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
@@ -49,9 +55,9 @@ import java.util.concurrent.TimeUnit;
 @Plugin(
 		id = "cleanscreenshare",
 		name = "CleanScreenShare",
-		version = "1.4.5",
+		version = "1.5",
 		description = "Make control hacks on your players.",
-		dependencies = {@Dependency(id = "mysqlandconfigurateforvelocity", optional = true)},
+		dependencies = {@Dependency(id = "mysqlandconfigurateforvelocity", optional = true), @Dependency(id = "limboapi", optional = true)},
 		authors = { "frafol" })
 
 public class CleanSS {
@@ -68,9 +74,17 @@ public class CleanSS {
 
 	private final JdaBuilder jda = new JdaBuilder();
 
+	@Getter
+	private Limbo limbo;
+
+	private LimboFactory factory;
+
     private TextFile messagesTextFile;
 	private TextFile configTextFile;
+	private TextFile limboTextFile;
 	private TextFile versionTextFile;
+
+	public boolean useLimbo = false;
 
 	private static CleanSS instance;
 
@@ -117,6 +131,7 @@ public class CleanSS {
 		loadListeners();
 		loadCommands();
 		loadDiscord();
+		loadLimbo();
 
 		if (VelocityConfig.MYSQL.get(Boolean.class)) {
 
@@ -158,6 +173,34 @@ public class CleanSS {
 
 		UpdateChecker();
 		logger.info("§7Plugin §dsuccessfully §7loaded!");
+
+	}
+
+	private void loadLimbo() {
+
+		if (!VelocityLimbo.USE.get(Boolean.class)) {
+			return;
+		}
+
+		if (!server.getPluginManager().getPlugin("limboapi").isPresent()) {
+			logger.error("§7LimboAPI not §dfound§7! Please install it to use the §dLimbo feature§7.");
+			return;
+		}
+
+		if (!server.getPluginManager().getPlugin("limboapi").flatMap(PluginContainer::getInstance).isPresent()) {
+			logger.error("§7LimboAPI not §davailable§7, report this to §dLimboAPI§7.");
+			return;
+		}
+
+		useLimbo = true;
+		factory = (LimboFactory) server.getPluginManager().getPlugin("limboapi").flatMap(PluginContainer::getInstance).get();
+		VirtualWorld world = factory.createVirtualWorld(Dimension.OVERWORLD, 0, 100, 0, (float) 90, (float) 0.0);
+		limbo = factory.createLimbo(world)
+				.setName("CleanScreenShare")
+				.setShouldRejoin(true)
+				.setShouldRespawn(true)
+				.setGameMode(GameMode.ADVENTURE);
+		logger.info("§7LimboAPI hooked §dsuccessfully§7!");
 
 	}
 
@@ -308,6 +351,7 @@ public class CleanSS {
 	private void loadFiles() {
 		configTextFile = new TextFile(path, "config.yml");
 		messagesTextFile = new TextFile(path, "messages.yml");
+		limboTextFile = new TextFile(path, "limboapi.yml");
 		versionTextFile = new TextFile(path, "version.yml");
 	}
 
@@ -320,6 +364,9 @@ public class CleanSS {
 					.backup(true)
 					.update();
 			YamlUpdater.create(new File(path + "/messages.yml"), FileUtils.findFile("https://raw.githubusercontent.com/frafol/CleanScreenShare/main/src/main/resources/messages.yml"))
+					.backup(true)
+					.update();
+			YamlUpdater.create(new File(path + "/limboapi.yml"), FileUtils.findFile("https://raw.githubusercontent.com/frafol/CleanScreenShare/main/src/main/resources/limboapi.yml"))
 					.backup(true)
 					.update();
 			versionTextFile.getConfig().set("version", container.getDescription().getVersion().get());

@@ -59,6 +59,8 @@ public enum VelocityMessages {
     LEAVESUS("messages.control.suspicious_disconnect"),
     FINISHSUS("messages.control.suspicious_finish"),
 
+    NOT_IN_LIMBO("messages.chat.limbo_addon.command_blocked"),
+
     NOT_CONTROL("messages.not_under_control"),
     CONTROL_CHAT("messages.chat.enable"),
 

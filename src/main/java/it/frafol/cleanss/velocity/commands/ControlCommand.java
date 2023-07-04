@@ -7,6 +7,7 @@ import com.velocitypowered.api.proxy.server.RegisteredServer;
 import it.frafol.cleanss.velocity.CleanSS;
 import it.frafol.cleanss.velocity.enums.VelocityConfig;
 import it.frafol.cleanss.velocity.enums.VelocityMessages;
+import it.frafol.cleanss.velocity.handlers.LimboHandler;
 import it.frafol.cleanss.velocity.objects.PlayerCache;
 import it.frafol.cleanss.velocity.objects.Utils;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
@@ -72,11 +73,12 @@ public class ControlCommand implements SimpleCommand {
 					return;
 				}
 
-				if (instance.getServer().getAllServers().toString().contains(VelocityConfig.CONTROL.get(String.class))) {
+
+				if (instance.getServer().getAllServers().toString().contains(VelocityConfig.CONTROL.get(String.class)) || instance.useLimbo) {
 
 					final Optional<RegisteredServer> proxyServer = instance.getServer().getServer(VelocityConfig.CONTROL.get(String.class));
 
-					if (!proxyServer.isPresent()) {
+					if (!proxyServer.isPresent() && !instance.useLimbo) {
 						return;
 					}
 
@@ -98,6 +100,46 @@ public class ControlCommand implements SimpleCommand {
 						return;
 					}
 
+					String admin_group;
+					String suspect_group;
+
+					if (luckperms) {
+
+						final LuckPerms api = LuckPermsProvider.get();
+
+						final User admin = api.getUserManager().getUser(sender.getUniqueId());
+						final User suspect = api.getUserManager().getUser(player.get().getUniqueId());
+
+						if (admin == null || suspect == null) {
+							return;
+						}
+
+						final String admingroup = admin.getCachedData().getMetaData().getPrimaryGroup();
+						admin_group = admingroup == null ? "" : admingroup;
+
+						final String suspectgroup = suspect.getCachedData().getMetaData().getPrimaryGroup();
+						suspect_group = suspectgroup == null ? "" : suspectgroup;
+
+					} else {
+						admin_group = "";
+						suspect_group = "";
+					}
+
+					if (instance.useLimbo) {
+
+						instance.getLimbo().spawnPlayer(sender, new LimboHandler(sender, instance));
+						instance.getLimbo().spawnPlayer(player.get(), new LimboHandler(player.get(), instance));
+
+						Utils.startControl(player.get(), sender, null);
+						Utils.sendDiscordMessage(player.get(), sender, VelocityMessages.DISCORD_STARTED.get(String.class).replace("%suspectgroup%", suspect_group).replace("%admingroup%", admin_group));
+
+						return;
+					}
+
+					if (!proxyServer.isPresent()) {
+						return;
+					}
+
 					if (!VelocityConfig.DISABLE_PING.get(Boolean.class)) {
 						proxyServer.get().ping().whenComplete((result, throwable) -> {
 
@@ -114,29 +156,6 @@ public class ControlCommand implements SimpleCommand {
 							}
 
 							Utils.startControl(player.get(), sender, proxyServer.get());
-
-							String admin_group = "";
-							String suspect_group = "";
-
-							if (luckperms) {
-
-								final LuckPerms api = LuckPermsProvider.get();
-
-								final User admin = api.getUserManager().getUser(sender.getUniqueId());
-								final User suspect = api.getUserManager().getUser(player.get().getUniqueId());
-
-								if (admin == null || suspect == null) {
-									return;
-								}
-
-								final String admingroup = admin.getCachedData().getMetaData().getPrimaryGroup();
-								admin_group = admingroup == null ? "" : admingroup;
-
-								final String suspectgroup = suspect.getCachedData().getMetaData().getPrimaryGroup();
-								suspect_group = suspectgroup == null ? "" : suspectgroup;
-
-							}
-
 							Utils.sendDiscordMessage(player.get(), sender, VelocityMessages.DISCORD_STARTED.get(String.class).replace("%suspectgroup%", suspect_group).replace("%admingroup%", admin_group));
 
 						});
