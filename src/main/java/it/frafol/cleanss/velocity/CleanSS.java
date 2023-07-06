@@ -30,6 +30,7 @@ import lombok.Getter;
 import lombok.SneakyThrows;
 import net.byteflux.libby.Library;
 import net.byteflux.libby.VelocityLibraryManager;
+import net.byteflux.libby.relocation.Relocation;
 import net.elytrium.limboapi.api.Limbo;
 import net.elytrium.limboapi.api.LimboFactory;
 import net.elytrium.limboapi.api.chunk.Dimension;
@@ -55,7 +56,7 @@ import java.util.concurrent.TimeUnit;
 @Plugin(
 		id = "cleanscreenshare",
 		name = "CleanScreenShare",
-		version = "1.5.0",
+		version = "1.5.1",
 		description = "Make control hacks on your players.",
 		dependencies = {@Dependency(id = "mysqlandconfigurateforvelocity", optional = true), @Dependency(id = "limboapi", optional = true)},
 		authors = { "frafol" })
@@ -306,11 +307,13 @@ public class CleanSS {
 				.version("1.4.2")
 				.build();
 
+		final Relocation kotlin = new Relocation("kotlin", "it{}frafol{}libs{}kotlin");
 		Library discord = Library.builder()
 				.groupId("net{}dv8tion")
 				.artifactId("JDA")
-				.version("5.0.0-beta.10")
-				.url("https://github.com/DV8FromTheWorld/JDA/releases/download/v5.0.0-beta.10/JDA-5.0.0-beta.10-withDependencies-min.jar")
+				.version("5.0.0-beta.12")
+				.relocate(kotlin)
+				.url("https://github.com/DV8FromTheWorld/JDA/releases/download/v5.0.0-beta.12/JDA-5.0.0-beta.12-withDependencies-min.jar")
 				.build();
 
 		velocityLibraryManager.addMavenCentral();

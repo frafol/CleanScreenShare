@@ -14,6 +14,7 @@ import it.frafol.cleanss.bungee.objects.TextFile;
 import lombok.SneakyThrows;
 import net.byteflux.libby.BungeeLibraryManager;
 import net.byteflux.libby.Library;
+import net.byteflux.libby.relocation.Relocation;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
@@ -293,11 +294,13 @@ public class CleanSS extends Plugin {
 				.version("1.4.2")
 				.build();
 
+		final Relocation kotlin = new Relocation("kotlin", "it{}frafol{}libs{}kotlin");
 		Library discord = Library.builder()
 				.groupId("net{}dv8tion")
 				.artifactId("JDA")
-				.version("5.0.0-beta.10")
-				.url("https://github.com/DV8FromTheWorld/JDA/releases/download/v5.0.0-beta.10/JDA-5.0.0-beta.10-withDependencies-min.jar")
+				.version("5.0.0-beta.12")
+				.relocate(kotlin)
+				.url("https://github.com/DV8FromTheWorld/JDA/releases/download/v5.0.0-beta.12/JDA-5.0.0-beta.12-withDependencies-min.jar")
 				.build();
 
 		bungeeLibraryManager.addMavenCentral();

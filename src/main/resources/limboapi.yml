@@ -11,3 +11,14 @@ limbo:
   # It can be useful if you don't want to create a "Control" server and forgo having a map where you can perform controls.
   # This doesn't impact performance that much since Velocity is completely asynchronous.
   use_limbo_api: false
+
+  # You can modify World Settings here.
+  world_settings:
+
+    # Change player's gamemode on player's join.
+    # Supported values: survival, creative, adventure, spectator.
+    gamemode: "adventure"
+
+    # Change world's dimension.
+    # Supported values: overworld, nether, end.
+    dimension: "overworld"
