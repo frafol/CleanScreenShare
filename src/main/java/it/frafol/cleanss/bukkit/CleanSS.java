@@ -198,7 +198,18 @@ public class CleanSS extends JavaPlugin {
 		});
 	}
 
+	public boolean isWindows() {
+		String os = System.getProperty("os.name");
+		return os.startsWith("Windows");
+	}
+
 	public void autoUpdate() {
+
+		if (isWindows()) {
+			getLogger().warning("§eAuto update is not supported on Windows.");
+			return;
+		}
+
 		try {
 			String fileUrl = "https://github.com/frafol/CleanScreenShare/releases/download/release/CleanScreenShare.jar";
 			String destination = "./plugins/";

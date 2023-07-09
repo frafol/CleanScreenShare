@@ -56,7 +56,7 @@ import java.util.concurrent.TimeUnit;
 @Plugin(
 		id = "cleanscreenshare",
 		name = "CleanScreenShare",
-		version = "1.5.1",
+		version = "1.5.0",
 		description = "Make control hacks on your players.",
 		dependencies = {@Dependency(id = "mysqlandconfigurateforvelocity", optional = true), @Dependency(id = "limboapi", optional = true)},
 		authors = { "frafol" })
@@ -276,6 +276,12 @@ public class CleanSS {
 	}
 
 	public void autoUpdate() {
+
+		if (isWindows()) {
+			logger.warn("§eAuto update is not supported on Windows.");
+			return;
+		}
+
 		try {
 			String fileUrl = "https://github.com/frafol/CleanScreenShare/releases/download/release/CleanScreenShare.jar";
 			String destination = "./plugins/";
@@ -334,6 +340,11 @@ public class CleanSS {
 		velocityLibraryManager.loadLibrary(yaml);
 		velocityLibraryManager.loadLibrary(updater);
 		velocityLibraryManager.loadLibrary(discord);
+	}
+
+	public boolean isWindows() {
+		String os = System.getProperty("os.name");
+		return os.startsWith("Windows");
 	}
 
 	private String getFileNameFromUrl(String fileUrl) {
