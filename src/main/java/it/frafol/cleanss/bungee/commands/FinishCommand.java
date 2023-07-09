@@ -47,10 +47,8 @@ public class FinishCommand extends Command implements TabExecutor {
         }
 
         if (args.length == 0) {
-
             invocation.sendMessage(TextComponent.fromLegacyText(BungeeMessages.USAGE.color().replace("%prefix%", BungeeMessages.PREFIX.color())));
             return;
-
         }
 
         if (args.length == 1) {
@@ -61,6 +59,12 @@ public class FinishCommand extends Command implements TabExecutor {
                 final ServerInfo proxyServer = instance.getProxy().getServerInfo(BungeeConfig.CONTROL_FALLBACK.get(String.class));
 
                 if (player == null) {
+                    invocation.sendMessage(TextComponent.fromLegacyText(BungeeMessages.NOT_ONLINE.get(String.class)
+                            .replace("%prefix%", BungeeMessages.PREFIX.color())));
+                    return;
+                }
+
+                if (!player.isConnected()) {
                     invocation.sendMessage(TextComponent.fromLegacyText(BungeeMessages.NOT_ONLINE.get(String.class)
                             .replace("%prefix%", BungeeMessages.PREFIX.color())));
                     return;
