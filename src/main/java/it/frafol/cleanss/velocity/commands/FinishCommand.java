@@ -12,6 +12,7 @@ import it.frafol.cleanss.velocity.objects.Utils;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.LuckPermsProvider;
+import net.luckperms.api.model.group.Group;
 import net.luckperms.api.model.user.User;
 import org.jetbrains.annotations.NotNull;
 
@@ -104,11 +105,27 @@ public class FinishCommand implements SimpleCommand {
                         return;
                     }
 
-                    final String admingroup = admin.getCachedData().getMetaData().getPrimaryGroup();
-                    admin_group = admingroup == null ? "" : admingroup;
+                    final Group admingroup = api.getGroupManager().getGroup(admin.getPrimaryGroup());
 
-                    final String suspectgroup = suspect.getCachedData().getMetaData().getPrimaryGroup();
-                    suspect_group = suspectgroup == null ? "" : suspectgroup;
+                    String admingroup_displayname;
+                    if (admingroup != null) {
+                        admingroup_displayname = admingroup.getFriendlyName();
+                    } else {
+                        admingroup_displayname = "";
+                    }
+
+                    admin_group = admingroup == null ? "" : admingroup_displayname;
+
+                    final Group suspectgroup = api.getGroupManager().getGroup(suspect.getPrimaryGroup());
+
+                    String suspectroup_displayname;
+                    if (suspectgroup != null) {
+                        suspectroup_displayname = suspectgroup.getFriendlyName();
+                    } else {
+                        suspectroup_displayname = "";
+                    }
+
+                    suspect_group = suspectgroup == null ? "" : suspectroup_displayname;
 
                 }
 
