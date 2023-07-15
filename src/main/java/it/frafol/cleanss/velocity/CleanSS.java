@@ -56,7 +56,7 @@ import java.util.concurrent.TimeUnit;
 @Plugin(
 		id = "cleanscreenshare",
 		name = "CleanScreenShare",
-		version = "1.5.0",
+		version = "1.5.1",
 		description = "Make control hacks on your players.",
 		dependencies = {@Dependency(id = "mysqlandconfigurateforvelocity", optional = true), @Dependency(id = "limboapi", optional = true)},
 		authors = { "frafol" })

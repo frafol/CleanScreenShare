@@ -563,6 +563,7 @@ public class Utils {
 
             if (instance.useLimbo) {
                 PlayerCache.getNow_started_sus().remove(suspicious.getUniqueId());
+                return;
             }
 
             if (!(PlayerCache.getSuspicious().contains(suspicious.getUniqueId()) && PlayerCache.getAdministrator().contains(administrator.getUniqueId()))) {
@@ -570,20 +571,20 @@ public class Utils {
             }
 
             if (!(suspicious.getCurrentServer().isPresent() || administrator.getCurrentServer().isPresent())) {
-                if (instance.useLimbo) {
-                    return;
-                }
+                return;
             }
 
-            if (instance.useLimbo || suspicious.getCurrentServer().get().getServer().equals(proxyServer) || administrator.getCurrentServer().get().getServer().equals(proxyServer)) {
-                if (instance.useLimbo) {
-                    return;
-                }
+            if (suspicious.getCurrentServer().get().getServer().equals(proxyServer) && administrator.getCurrentServer().get().getServer().equals(proxyServer)) {
+                return;
             }
 
             final Optional<RegisteredServer> fallbackServer = instance.getServer().getServer(VelocityConfig.CONTROL_FALLBACK.get(String.class));
 
             if (!fallbackServer.isPresent()) {
+                suspicious.disconnect(LegacyComponentSerializer.legacy('§').deserialize("Your control server is not configured correctly or is crashed, please check the configuration file. " +
+                        "The Control cannot be handled!"));
+                administrator.disconnect(LegacyComponentSerializer.legacy('§').deserialize("Your control server is not configured correctly or is crashed, please check the configuration file. " +
+                        "The Control cannot be handled!"));
                 return;
             }
 
