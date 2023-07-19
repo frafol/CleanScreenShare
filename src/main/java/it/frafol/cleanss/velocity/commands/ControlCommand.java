@@ -180,7 +180,7 @@ public class ControlCommand implements SimpleCommand {
 					} else {
 
 						Utils.startControl(player.get(), sender, proxyServer.get());
-						Utils.sendDiscordMessage(player.get(), sender, VelocityMessages.DISCORD_STARTED.get(String.class));
+						Utils.sendDiscordMessage(player.get(), sender, VelocityMessages.DISCORD_STARTED.get(String.class).replace("%suspectgroup%", suspect_group).replace("%admingroup%", admin_group));
 
 					}
 

@@ -10,6 +10,7 @@ import net.md_5.bungee.api.connection.Server;
 import net.md_5.bungee.api.event.PlayerDisconnectEvent;
 import net.md_5.bungee.api.event.PostLoginEvent;
 import net.md_5.bungee.api.event.ServerConnectEvent;
+import net.md_5.bungee.api.event.ServerSwitchEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
 import org.jetbrains.annotations.NotNull;
@@ -40,18 +41,9 @@ public class KickListener implements Listener {
     public void onPlayerChange(@NotNull ServerConnectEvent event) {
 
         final ProxiedPlayer player = event.getPlayer();
-        final Server server = event.getPlayer().getServer();
 
-        if (server == null) {
-            return;
-        }
-
-        if (!server.getInfo().getName().equals(BungeeConfig.CONTROL.get(String.class)) &&
-                (PlayerCache.getAdministrator().contains(player.getUniqueId())
-                || PlayerCache.getSuspicious().contains(player.getUniqueId()))) {
-
+        if (PlayerCache.getAdministrator().contains(player.getUniqueId()) || PlayerCache.getSuspicious().contains(player.getUniqueId())) {
             event.setCancelled(true);
-
         }
     }
 
