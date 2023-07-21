@@ -193,6 +193,11 @@ public class Utils {
             String admingroup_displayname;
             if (admingroup != null) {
                 admingroup_displayname = admingroup.getFriendlyName();
+
+                if (admingroup_displayname.equalsIgnoreCase("default")) {
+                    admingroup_displayname = BungeeMessages.DISCORD_LUCKPERMS_FIX.get(String.class);
+                }
+
             } else {
                 admingroup_displayname = "";
             }
@@ -204,6 +209,11 @@ public class Utils {
             String suspectroup_displayname;
             if (suspectgroup != null) {
                 suspectroup_displayname = suspectgroup.getFriendlyName();
+
+                if (suspectroup_displayname.equalsIgnoreCase("default")) {
+                    suspectroup_displayname = BungeeMessages.DISCORD_LUCKPERMS_FIX.get(String.class);
+                }
+
             } else {
                 suspectroup_displayname = "";
             }
