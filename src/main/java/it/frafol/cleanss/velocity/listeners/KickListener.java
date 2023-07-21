@@ -25,8 +25,25 @@ public class KickListener {
     public void onPlayerConnect(ServerPreConnectEvent event) {
 
         final Player player = event.getPlayer();
+        final RegisteredServer server = event.getOriginalServer();
 
-        if (PlayerCache.getSuspicious().contains(player.getUniqueId()) || PlayerCache.getAdministrator().contains(player.getUniqueId())) {
+        if (server == null) {
+            return;
+        }
+
+        if (!instance.getServer().getServer(VelocityConfig.CONTROL.get(String.class)).isPresent()) {
+            return;
+        }
+
+        final RegisteredServer control = instance.getServer().getServer(VelocityConfig.CONTROL.get(String.class)).get();
+
+        if (PlayerCache.getSuspicious().contains(player.getUniqueId())
+                || PlayerCache.getAdministrator().contains(player.getUniqueId())) {
+
+            if (server.equals(control) || instance.useLimbo) {
+                return;
+            }
+
             event.setResult(ServerPreConnectEvent.ServerResult.denied());
         }
     }

@@ -6,11 +6,9 @@ import it.frafol.cleanss.bungee.objects.PlayerCache;
 import it.frafol.cleanss.bungee.objects.Utils;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
-import net.md_5.bungee.api.connection.Server;
 import net.md_5.bungee.api.event.PlayerDisconnectEvent;
 import net.md_5.bungee.api.event.PostLoginEvent;
 import net.md_5.bungee.api.event.ServerConnectEvent;
-import net.md_5.bungee.api.event.ServerSwitchEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
 import org.jetbrains.annotations.NotNull;
@@ -41,8 +39,15 @@ public class KickListener implements Listener {
     public void onPlayerChange(@NotNull ServerConnectEvent event) {
 
         final ProxiedPlayer player = event.getPlayer();
+        final ServerInfo server = event.getTarget();
 
-        if (PlayerCache.getAdministrator().contains(player.getUniqueId()) || PlayerCache.getSuspicious().contains(player.getUniqueId())) {
+        if (PlayerCache.getAdministrator().contains(player.getUniqueId()) ||
+                PlayerCache.getSuspicious().contains(player.getUniqueId())) {
+
+            if (server.getName().equals(BungeeConfig.CONTROL.get(String.class))) {
+                return;
+            }
+
             event.setCancelled(true);
         }
     }
