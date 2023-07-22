@@ -7,7 +7,6 @@ import com.velocitypowered.api.proxy.server.RegisteredServer;
 import it.frafol.cleanss.velocity.CleanSS;
 import it.frafol.cleanss.velocity.enums.VelocityConfig;
 import it.frafol.cleanss.velocity.enums.VelocityMessages;
-import it.frafol.cleanss.velocity.handlers.LimboHandler;
 import it.frafol.cleanss.velocity.objects.PlayerCache;
 import it.frafol.cleanss.velocity.objects.Utils;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
@@ -125,6 +124,10 @@ public class ControlCommand implements SimpleCommand {
 								admingroup_displayname = VelocityMessages.DISCORD_LUCKPERMS_FIX.get(String.class);
 							}
 
+							if (VelocityMessages.DISCORD_CAPITAL.get(Boolean.class)) {
+								admingroup_displayname = admingroup_displayname.substring(0, 1).toUpperCase() + admingroup_displayname.substring(1);
+							}
+
 						} else {
 							admingroup_displayname = "";
 						}
@@ -141,6 +144,10 @@ public class ControlCommand implements SimpleCommand {
 								suspectroup_displayname = VelocityMessages.DISCORD_LUCKPERMS_FIX.get(String.class);
 							}
 
+							if (VelocityMessages.DISCORD_CAPITAL.get(Boolean.class)) {
+								suspectroup_displayname = suspectroup_displayname.substring(0, 1).toUpperCase() + suspectroup_displayname.substring(1);
+							}
+
 						} else {
 							suspectroup_displayname = "";
 						}
@@ -154,8 +161,8 @@ public class ControlCommand implements SimpleCommand {
 
 					if (instance.useLimbo) {
 
-						instance.getLimbo().spawnPlayer(sender, new LimboHandler(sender, instance));
-						instance.getLimbo().spawnPlayer(player.get(), new LimboHandler(player.get(), instance));
+						Utils.spawnPlayerLimbo(sender);
+						Utils.spawnPlayerLimbo(player.get());
 
 						Utils.startControl(player.get(), sender, null);
 						Utils.sendDiscordMessage(player.get(), sender, VelocityMessages.DISCORD_STARTED.get(String.class).replace("%suspectgroup%", suspect_group).replace("%admingroup%", admin_group));

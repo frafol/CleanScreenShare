@@ -223,6 +223,10 @@ public class ControlCommand extends Command implements TabExecutor {
 									admingroup_displayname = BungeeMessages.DISCORD_LUCKPERMS_FIX.get(String.class);
 								}
 
+								if (BungeeMessages.DISCORD_CAPITAL.get(Boolean.class)) {
+									admingroup_displayname = admingroup_displayname.substring(0, 1).toUpperCase() + admingroup_displayname.substring(1);
+								}
+
 							} else {
 								admingroup_displayname = "";
 							}
@@ -238,6 +242,11 @@ public class ControlCommand extends Command implements TabExecutor {
 								if (suspectroup_displayname.equalsIgnoreCase("default")) {
 									suspectroup_displayname = BungeeMessages.DISCORD_LUCKPERMS_FIX.get(String.class);
 								}
+
+								if (BungeeMessages.DISCORD_CAPITAL.get(Boolean.class)) {
+									suspectroup_displayname = suspectroup_displayname.substring(0, 1).toUpperCase() + suspectroup_displayname.substring(1);
+								}
+
 
 							} else {
 								suspectroup_displayname = "";

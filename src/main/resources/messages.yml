@@ -140,6 +140,9 @@ messages:
 
     luckperms:
 
+      # This makes all groups with the first letter as capital. (Example: "owner" -> "Owner")
+      force_capital_letter: true
+
       # This fixes a problem that causes players without a specific rank
       # to display "default" instead of the correct displayname on LuckPerms.
       default_group_displayname: "User"

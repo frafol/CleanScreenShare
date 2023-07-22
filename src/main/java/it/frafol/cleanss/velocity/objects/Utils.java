@@ -4,6 +4,7 @@ import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 import com.velocitypowered.api.command.CommandSource;
 import com.velocitypowered.api.network.ProtocolVersion;
+import com.velocitypowered.api.plugin.PluginContainer;
 import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.server.RegisteredServer;
 import com.velocitypowered.api.scheduler.ScheduledTask;
@@ -15,6 +16,11 @@ import lombok.Getter;
 import lombok.experimental.UtilityClass;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.elytrium.limboapi.api.Limbo;
+import net.elytrium.limboapi.api.LimboFactory;
+import net.elytrium.limboapi.api.chunk.Dimension;
+import net.elytrium.limboapi.api.chunk.VirtualWorld;
+import net.elytrium.limboapi.api.player.GameMode;
 import net.elytrium.limboapi.api.player.LimboPlayer;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
@@ -38,6 +44,9 @@ import java.util.stream.Collectors;
 public class Utils {
 
     private static final CleanSS instance = CleanSS.getInstance();
+
+    @Getter
+    private Limbo limbo;
 
     public List<String> getStringList(@NotNull VelocityMessages velocityMessages) {
         return instance.getMessagesTextFile().getConfig().getStringList(velocityMessages.getPath());
@@ -190,6 +199,10 @@ public class Utils {
                     admingroup_displayname = VelocityMessages.DISCORD_LUCKPERMS_FIX.get(String.class);
                 }
 
+                if (VelocityMessages.DISCORD_CAPITAL.get(Boolean.class)) {
+                    admingroup_displayname = admingroup_displayname.substring(0, 1).toUpperCase() + admingroup_displayname.substring(1);
+                }
+
             } else {
                 admingroup_displayname = "";
             }
@@ -204,6 +217,10 @@ public class Utils {
 
                 if (suspectroup_displayname.equalsIgnoreCase("default")) {
                     suspectroup_displayname = VelocityMessages.DISCORD_LUCKPERMS_FIX.get(String.class);
+                }
+
+                if (VelocityMessages.DISCORD_CAPITAL.get(Boolean.class)) {
+                    suspectroup_displayname = suspectroup_displayname.substring(0, 1).toUpperCase() + suspectroup_displayname.substring(1);
                 }
 
             } else {
@@ -653,5 +670,26 @@ public class Utils {
                     .schedule();
 
         }
+    }
+
+    public void loadLimbo() {
+        instance.useLimbo = true;
+
+        if (!instance.getServer().getPluginManager().getPlugin("limboapi").flatMap(PluginContainer::getInstance).isPresent()) {
+            return;
+        }
+
+        LimboFactory factory = (LimboFactory) instance.getServer().getPluginManager().getPlugin("limboapi").flatMap(PluginContainer::getInstance).get();
+        VirtualWorld world = factory.createVirtualWorld(Dimension.OVERWORLD, 0, 100, 0, (float) 90, (float) 0.0);
+        limbo = factory.createLimbo(world)
+                .setName("CleanScreenShare")
+                .setShouldRejoin(true)
+                .setShouldRespawn(true)
+                .setGameMode(GameMode.ADVENTURE);
+        instance.getLogger().info("§7LimboAPI hooked §dsuccessfully§7!");
+    }
+
+    public void spawnPlayerLimbo(Player player) {
+        getLimbo().spawnPlayer(player, new LimboHandler(player, instance));
     }
 }

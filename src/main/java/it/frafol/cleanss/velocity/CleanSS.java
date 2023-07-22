@@ -25,17 +25,13 @@ import it.frafol.cleanss.velocity.mysql.MySQLWorker;
 import it.frafol.cleanss.velocity.objects.JdaBuilder;
 import it.frafol.cleanss.velocity.objects.PlayerCache;
 import it.frafol.cleanss.velocity.objects.TextFile;
+import it.frafol.cleanss.velocity.objects.Utils;
 import it.frafol.cleanss.velocity.objects.adapter.ReflectUtil;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import net.byteflux.libby.Library;
 import net.byteflux.libby.VelocityLibraryManager;
 import net.byteflux.libby.relocation.Relocation;
-import net.elytrium.limboapi.api.Limbo;
-import net.elytrium.limboapi.api.LimboFactory;
-import net.elytrium.limboapi.api.chunk.Dimension;
-import net.elytrium.limboapi.api.chunk.VirtualWorld;
-import net.elytrium.limboapi.api.player.GameMode;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
@@ -56,7 +52,7 @@ import java.util.concurrent.TimeUnit;
 @Plugin(
 		id = "cleanscreenshare",
 		name = "CleanScreenShare",
-		version = "1.5.3",
+		version = "1.5.4",
 		description = "Make control hacks on your players.",
 		dependencies = {@Dependency(id = "mysqlandconfigurateforvelocity", optional = true), @Dependency(id = "limboapi", optional = true)},
 		authors = { "frafol" })
@@ -74,11 +70,6 @@ public class CleanSS {
 	private final Metrics.Factory metricsFactory;
 
 	private final JdaBuilder jda = new JdaBuilder();
-
-	@Getter
-	private Limbo limbo;
-
-	private LimboFactory factory;
 
     private TextFile messagesTextFile;
 	private TextFile configTextFile;
@@ -132,7 +123,15 @@ public class CleanSS {
 		loadListeners();
 		loadCommands();
 		loadDiscord();
-		loadLimbo();
+
+		if (VelocityLimbo.USE.get(Boolean.class)) {
+			if (instance.getServer().getPluginManager().getPlugin("limboapi").isPresent() &&
+					instance.getServer().getPluginManager().getPlugin("limboapi").flatMap(PluginContainer::getInstance).isPresent()) {
+				Utils.loadLimbo();
+			} else {
+				logger.error("§7LimboAPI not §dfound§7! Please install it to use the §dLimbo feature§7.");
+			}
+		}
 
 		if (VelocityConfig.MYSQL.get(Boolean.class)) {
 
@@ -174,34 +173,6 @@ public class CleanSS {
 
 		UpdateChecker();
 		logger.info("§7Plugin §dsuccessfully §7loaded!");
-
-	}
-
-	private void loadLimbo() {
-
-		if (!VelocityLimbo.USE.get(Boolean.class)) {
-			return;
-		}
-
-		if (!server.getPluginManager().getPlugin("limboapi").isPresent()) {
-			logger.error("§7LimboAPI not §dfound§7! Please install it to use the §dLimbo feature§7.");
-			return;
-		}
-
-		if (!server.getPluginManager().getPlugin("limboapi").flatMap(PluginContainer::getInstance).isPresent()) {
-			logger.error("§7LimboAPI not §davailable§7, report this to §dLimboAPI§7.");
-			return;
-		}
-
-		useLimbo = true;
-		factory = (LimboFactory) server.getPluginManager().getPlugin("limboapi").flatMap(PluginContainer::getInstance).get();
-		VirtualWorld world = factory.createVirtualWorld(Dimension.OVERWORLD, 0, 100, 0, (float) 90, (float) 0.0);
-		limbo = factory.createLimbo(world)
-				.setName("CleanScreenShare")
-				.setShouldRejoin(true)
-				.setShouldRespawn(true)
-				.setGameMode(GameMode.ADVENTURE);
-		logger.info("§7LimboAPI hooked §dsuccessfully§7!");
 
 	}
 

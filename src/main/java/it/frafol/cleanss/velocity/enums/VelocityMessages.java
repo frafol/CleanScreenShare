@@ -73,6 +73,7 @@ public enum VelocityMessages {
     DISCORD_FINISHED("messages.discord.finished"),
     DISCORD_QUIT("messages.discord.suspect_left_during_control"),
     DISCORD_LUCKPERMS_FIX("messages.discord.luckperms.default_group_displayname"),
+    DISCORD_CAPITAL("messages.discord.luckperms.force_capital_letter"),
     INFO_MESSAGE("messages.info.main_message"),
     CLEAN("messages.discord.results.clean"),
     CHEATER("messages.discord.results.cheater"),
