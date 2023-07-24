@@ -124,10 +124,6 @@ public class ControlCommand implements SimpleCommand {
 								admingroup_displayname = VelocityMessages.DISCORD_LUCKPERMS_FIX.get(String.class);
 							}
 
-							if (VelocityMessages.DISCORD_CAPITAL.get(Boolean.class)) {
-								admingroup_displayname = admingroup_displayname.substring(0, 1).toUpperCase() + admingroup_displayname.substring(1);
-							}
-
 						} else {
 							admingroup_displayname = "";
 						}
@@ -142,10 +138,6 @@ public class ControlCommand implements SimpleCommand {
 
 							if (suspectroup_displayname.equalsIgnoreCase("default")) {
 								suspectroup_displayname = VelocityMessages.DISCORD_LUCKPERMS_FIX.get(String.class);
-							}
-
-							if (VelocityMessages.DISCORD_CAPITAL.get(Boolean.class)) {
-								suspectroup_displayname = suspectroup_displayname.substring(0, 1).toUpperCase() + suspectroup_displayname.substring(1);
 							}
 
 						} else {
@@ -165,7 +157,12 @@ public class ControlCommand implements SimpleCommand {
 						Utils.spawnPlayerLimbo(player.get());
 
 						Utils.startControl(player.get(), sender, null);
-						Utils.sendDiscordMessage(player.get(), sender, VelocityMessages.DISCORD_STARTED.get(String.class).replace("%suspectgroup%", suspect_group).replace("%admingroup%", admin_group));
+
+						if (VelocityMessages.DISCORD_CAPITAL.get(Boolean.class)) {
+							Utils.sendDiscordMessage(player.get(), sender, VelocityMessages.DISCORD_STARTED.get(String.class).replace("%suspectgroup%", addCapital(suspect_group)).replace("%admingroup%", addCapital(admin_group)));
+						} else {
+							Utils.sendDiscordMessage(player.get(), sender, VelocityMessages.DISCORD_STARTED.get(String.class).replace("%suspectgroup%", suspect_group).replace("%admingroup%", admin_group));
+						}
 
 						return;
 					}
@@ -190,15 +187,24 @@ public class ControlCommand implements SimpleCommand {
 							}
 
 							Utils.startControl(player.get(), sender, proxyServer.get());
-							Utils.sendDiscordMessage(player.get(), sender, VelocityMessages.DISCORD_STARTED.get(String.class).replace("%suspectgroup%", suspect_group).replace("%admingroup%", admin_group));
+
+							if (VelocityMessages.DISCORD_CAPITAL.get(Boolean.class)) {
+								Utils.sendDiscordMessage(player.get(), sender, VelocityMessages.DISCORD_STARTED.get(String.class).replace("%suspectgroup%", addCapital(suspect_group)).replace("%admingroup%", addCapital(admin_group)));
+							} else {
+								Utils.sendDiscordMessage(player.get(), sender, VelocityMessages.DISCORD_STARTED.get(String.class).replace("%suspectgroup%", suspect_group).replace("%admingroup%", admin_group));
+							}
 
 						});
 
 					} else {
 
 						Utils.startControl(player.get(), sender, proxyServer.get());
-						Utils.sendDiscordMessage(player.get(), sender, VelocityMessages.DISCORD_STARTED.get(String.class).replace("%suspectgroup%", suspect_group).replace("%admingroup%", admin_group));
 
+						if (VelocityMessages.DISCORD_CAPITAL.get(Boolean.class)) {
+							Utils.sendDiscordMessage(player.get(), sender, VelocityMessages.DISCORD_STARTED.get(String.class).replace("%suspectgroup%", addCapital(suspect_group)).replace("%admingroup%", addCapital(admin_group)));
+						} else {
+							Utils.sendDiscordMessage(player.get(), sender, VelocityMessages.DISCORD_STARTED.get(String.class).replace("%suspectgroup%", suspect_group).replace("%admingroup%", admin_group));
+						}
 					}
 
 				} else {
@@ -216,6 +222,10 @@ public class ControlCommand implements SimpleCommand {
 
 			}
 		}
+	}
+
+	private String addCapital(String string) {
+		return (string.substring(0, 1).toUpperCase() + string.substring(1));
 	}
 
 	@Override

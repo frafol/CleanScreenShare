@@ -223,10 +223,6 @@ public class ControlCommand extends Command implements TabExecutor {
 									admingroup_displayname = BungeeMessages.DISCORD_LUCKPERMS_FIX.get(String.class);
 								}
 
-								if (BungeeMessages.DISCORD_CAPITAL.get(Boolean.class)) {
-									admingroup_displayname = admingroup_displayname.substring(0, 1).toUpperCase() + admingroup_displayname.substring(1);
-								}
-
 							} else {
 								admingroup_displayname = "";
 							}
@@ -243,17 +239,17 @@ public class ControlCommand extends Command implements TabExecutor {
 									suspectroup_displayname = BungeeMessages.DISCORD_LUCKPERMS_FIX.get(String.class);
 								}
 
-								if (BungeeMessages.DISCORD_CAPITAL.get(Boolean.class)) {
-									suspectroup_displayname = suspectroup_displayname.substring(0, 1).toUpperCase() + suspectroup_displayname.substring(1);
-								}
-
-
 							} else {
 								suspectroup_displayname = "";
 							}
 
 							suspect_group = suspectgroup == null ? "" : suspectroup_displayname;
 
+						}
+
+						if (BungeeMessages.DISCORD_CAPITAL.get(Boolean.class)) {
+							Utils.sendDiscordMessage(player.get(), (ProxiedPlayer) invocation, BungeeMessages.DISCORD_STARTED.get(String.class).replace("%suspectgroup%", addCapital(suspect_group)).replace("%admingroup%", addCapital(admin_group)));
+							return;
 						}
 
 						Utils.sendDiscordMessage(player.get(), (ProxiedPlayer) invocation, BungeeMessages.DISCORD_STARTED.get(String.class).replace("%suspectgroup%", suspect_group).replace("%admingroup%", admin_group));
@@ -311,6 +307,10 @@ public class ControlCommand extends Command implements TabExecutor {
 		}
 
 		return null;
+	}
+
+	private String addCapital(String string) {
+		return (string.substring(0, 1).toUpperCase() + string.substring(1));
 	}
 
 	private EventLoopGroup getEventLoopGroup() {

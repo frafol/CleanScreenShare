@@ -148,6 +148,10 @@ public class Utils {
 
         if (BungeeConfig.DISCORD_ENABLED.get(Boolean.class)) {
 
+            if (instance.getJda() == null) {
+                return;
+            }
+
             final TextChannel channel = instance.getJda().getTextChannelById(BungeeConfig.DISCORD_CHANNEL_ID.get(String.class));
 
             if (channel == null) {
@@ -168,6 +172,10 @@ public class Utils {
             channel.sendMessageEmbeds(embed.build()).queue();
 
         }
+    }
+
+    private String addCapital(String string) {
+        return (string.substring(0, 1).toUpperCase() + string.substring(1));
     }
 
     public void punishPlayer(UUID administrator, String suspicious, ProxiedPlayer administrator_player, ProxiedPlayer suspect) {
@@ -198,10 +206,6 @@ public class Utils {
                     admingroup_displayname = BungeeMessages.DISCORD_LUCKPERMS_FIX.get(String.class);
                 }
 
-                if (BungeeMessages.DISCORD_CAPITAL.get(Boolean.class)) {
-                    admingroup_displayname = admingroup_displayname.substring(0, 1).toUpperCase() + admingroup_displayname.substring(1);
-                }
-
             } else {
                 admingroup_displayname = "";
             }
@@ -218,10 +222,6 @@ public class Utils {
                     suspectroup_displayname = BungeeMessages.DISCORD_LUCKPERMS_FIX.get(String.class);
                 }
 
-                if (BungeeMessages.DISCORD_CAPITAL.get(Boolean.class)) {
-                    suspectroup_displayname = suspectroup_displayname.substring(0, 1).toUpperCase() + suspectroup_displayname.substring(1);
-                }
-
             } else {
                 suspectroup_displayname = "";
             }
@@ -231,11 +231,21 @@ public class Utils {
         }
 
         if (PlayerCache.getBan_execution().contains(administrator)) {
+
+            if (BungeeMessages.DISCORD_CAPITAL.get(Boolean.class)) {
+                Utils.sendDiscordMessage(suspect, administrator_player, BungeeMessages.DISCORD_FINISHED.get(String.class).replace("%admingroup%", addCapital(admin_group)).replace("%suspectgroup%", addCapital(suspect_group)), BungeeMessages.CHEATER.get(String.class));
+                return;
+            }
+
             Utils.sendDiscordMessage(suspect, administrator_player, BungeeMessages.DISCORD_FINISHED.get(String.class).replace("%admingroup%", admin_group).replace("%suspectgroup%", suspect_group), BungeeMessages.CHEATER.get(String.class));
             return;
         }
 
-        Utils.sendDiscordMessage(suspect, administrator_player, BungeeMessages.DISCORD_QUIT.get(String.class).replace("%admingroup%", admin_group).replace("%suspectgroup%", suspect_group), BungeeMessages.LEFT.get(String.class));
+        if (BungeeMessages.DISCORD_CAPITAL.get(Boolean.class)) {
+            Utils.sendDiscordMessage(suspect, administrator_player, BungeeMessages.DISCORD_QUIT.get(String.class).replace("%admingroup%", addCapital(admin_group)).replace("%suspectgroup%", addCapital(suspect_group)), BungeeMessages.LEFT.get(String.class));
+        } else {
+            Utils.sendDiscordMessage(suspect, administrator_player, BungeeMessages.DISCORD_QUIT.get(String.class).replace("%admingroup%", admin_group).replace("%suspectgroup%", suspect_group), BungeeMessages.LEFT.get(String.class));
+        }
 
         if (!BungeeConfig.SLOG_PUNISH.get(Boolean.class)) {
             return;
@@ -295,8 +305,13 @@ public class Utils {
                 return;
             }
 
-            PlayerCache.getSuspicious().remove(suspicious.getUniqueId());
-            PlayerCache.getAdministrator().remove(administrator.getUniqueId());
+            if (suspicious.getUniqueId() != null) {
+                PlayerCache.getSuspicious().remove(suspicious.getUniqueId());
+            }
+
+            if (administrator.getUniqueId() != null) {
+                PlayerCache.getAdministrator().remove(administrator.getUniqueId());
+            }
 
             if (!BungeeConfig.USE_DISCONNECT.get(Boolean.class)) {
                 suspicious.connect(proxyServer);

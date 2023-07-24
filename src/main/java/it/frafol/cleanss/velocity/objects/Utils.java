@@ -123,6 +123,14 @@ public class Utils {
 
         if (VelocityConfig.DISCORD_ENABLED.get(Boolean.class)) {
 
+            if (instance.getJda() == null) {
+                return;
+            }
+
+            if (instance.getJda().getJda() == null) {
+                return;
+            }
+
             final TextChannel channel = instance.getJda().getJda().getTextChannelById(VelocityConfig.DISCORD_CHANNEL_ID.get(String.class));
 
             if (channel == null) {
@@ -172,6 +180,10 @@ public class Utils {
         }
     }
 
+    private String addCapital(String string) {
+        return (string.substring(0, 1).toUpperCase() + string.substring(1));
+    }
+
     public void punishPlayer(UUID administrator, String suspicious, Player administrator_user, Player suspect) {
 
         boolean luckperms = instance.getServer().getPluginManager().isLoaded("luckperms");
@@ -199,10 +211,6 @@ public class Utils {
                     admingroup_displayname = VelocityMessages.DISCORD_LUCKPERMS_FIX.get(String.class);
                 }
 
-                if (VelocityMessages.DISCORD_CAPITAL.get(Boolean.class)) {
-                    admingroup_displayname = admingroup_displayname.substring(0, 1).toUpperCase() + admingroup_displayname.substring(1);
-                }
-
             } else {
                 admingroup_displayname = "";
             }
@@ -219,10 +227,6 @@ public class Utils {
                     suspectroup_displayname = VelocityMessages.DISCORD_LUCKPERMS_FIX.get(String.class);
                 }
 
-                if (VelocityMessages.DISCORD_CAPITAL.get(Boolean.class)) {
-                    suspectroup_displayname = suspectroup_displayname.substring(0, 1).toUpperCase() + suspectroup_displayname.substring(1);
-                }
-
             } else {
                 suspectroup_displayname = "";
             }
@@ -232,11 +236,20 @@ public class Utils {
         }
 
         if (PlayerCache.getBan_execution().contains(administrator)) {
-            Utils.sendDiscordMessage(suspect, administrator_user, VelocityMessages.DISCORD_FINISHED.get(String.class).replace("%suspectgroup%", suspect_group).replace("%admingroup%", admin_group), VelocityMessages.CHEATER.get(String.class));
+
+            if (VelocityMessages.DISCORD_CAPITAL.get(Boolean.class)) {
+                Utils.sendDiscordMessage(suspect, administrator_user, VelocityMessages.DISCORD_FINISHED.get(String.class).replace("%suspectgroup%", addCapital(suspect_group)).replace("%admingroup%", addCapital(admin_group)), VelocityMessages.CHEATER.get(String.class));
+            } else {
+                Utils.sendDiscordMessage(suspect, administrator_user, VelocityMessages.DISCORD_FINISHED.get(String.class).replace("%suspectgroup%", suspect_group).replace("%admingroup%", admin_group), VelocityMessages.CHEATER.get(String.class));
+            }
             return;
         }
 
-        Utils.sendDiscordMessage(suspect, administrator_user, VelocityMessages.DISCORD_QUIT.get(String.class).replace("%suspectgroup%", suspect_group).replace("%admingroup%", admin_group), VelocityMessages.LEFT.get(String.class));
+        if (VelocityMessages.DISCORD_CAPITAL.get(Boolean.class)) {
+            Utils.sendDiscordMessage(suspect, administrator_user, VelocityMessages.DISCORD_QUIT.get(String.class).replace("%suspectgroup%", addCapital(suspect_group)).replace("%admingroup%", addCapital(admin_group)), VelocityMessages.LEFT.get(String.class));
+        } else {
+            Utils.sendDiscordMessage(suspect, administrator_user, VelocityMessages.DISCORD_QUIT.get(String.class).replace("%suspectgroup%", suspect_group).replace("%admingroup%", admin_group), VelocityMessages.LEFT.get(String.class));
+        }
 
         if (!VelocityConfig.SLOG_PUNISH.get(Boolean.class)) {
             return;
