@@ -82,13 +82,19 @@ public class ControlCommand implements SimpleCommand {
 						return;
 					}
 
-					if (sender.getUniqueId() == player.get().getUniqueId()) {
+					if (sender.getUniqueId().equals(player.get().getUniqueId())) {
 						source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.YOURSELF.color()
 								.replace("%prefix%", VelocityMessages.PREFIX.color())));
 						return;
 					}
 
 					if (PlayerCache.getSuspicious().contains(player.get().getUniqueId())) {
+						source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.CONTROL_ALREADY.color()
+								.replace("%prefix%", VelocityMessages.PREFIX.color())));
+						return;
+					}
+
+					if (PlayerCache.getAdministrator().contains(sender.getUniqueId())) {
 						source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.CONTROL_ALREADY.color()
 								.replace("%prefix%", VelocityMessages.PREFIX.color())));
 						return;

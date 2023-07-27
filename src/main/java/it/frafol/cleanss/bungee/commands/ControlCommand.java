@@ -99,13 +99,19 @@ public class ControlCommand extends Command implements TabExecutor {
 						return;
 					}
 
-					if (sender.getUniqueId() == player.get().getUniqueId()) {
+					if (sender.getUniqueId().equals(player.get().getUniqueId())) {
 						invocation.sendMessage(TextComponent.fromLegacyText(BungeeMessages.YOURSELF.color()
 								.replace("%prefix%", BungeeMessages.PREFIX.color())));
 						return;
 					}
 
 					if (PlayerCache.getSuspicious().contains(player.get().getUniqueId())) {
+						invocation.sendMessage(TextComponent.fromLegacyText(BungeeMessages.CONTROL_ALREADY.color()
+								.replace("%prefix%", BungeeMessages.PREFIX.color())));
+						return;
+					}
+
+					if (PlayerCache.getAdministrator().contains(sender.getUniqueId())) {
 						invocation.sendMessage(TextComponent.fromLegacyText(BungeeMessages.CONTROL_ALREADY.color()
 								.replace("%prefix%", BungeeMessages.PREFIX.color())));
 						return;

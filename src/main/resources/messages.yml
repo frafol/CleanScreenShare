@@ -29,7 +29,9 @@ messages:
 
     admin_notification: "%prefix% &7The player &d%admin% &7started a &dhack control &7to &d%suspect%&7."
 
+    # You can also use %administrator% and %suspect%.
     suspicious_main: "%prefix% &7You're now under &dhack control&7, please read the chat."
+
     suspicious_finish: "%prefix% &7Hack control &dfinished&7, thanks for your patience."
     suspicious_disconnect: "%prefix% &7Hack control &dfinished&7, %player% has just disconnected."
 
@@ -49,6 +51,7 @@ messages:
   staff_message:
 
     # Administration message sent to the staffer when sending in hack control server.
+    # You can use %cleanname%, %hackername%, %admitname%, %refusename%, %administrator% and %suspect%.
     format:
       - "&8&m------&5&m------&d&m------&5&m------&8&m------"
       - ""
@@ -59,7 +62,8 @@ messages:
       - ""
       - "&8&m------&5&m------&d&m------&5&m------&8&m------"
 
-    # Clickable messages to put in the Administration message. (%player% is the suspicious player name)
+    # Clickable messages to put in the Administration message. (%player% is the suspicious player's name)
+    # NOTE: You can't add new buttons, you can only change the name and the command.
     clean:
       name: "[Clean]"
       command: "/controlfinish %player%"

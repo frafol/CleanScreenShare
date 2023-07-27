@@ -57,7 +57,7 @@ public class KickListener implements Listener {
     @EventHandler
     public void onPlayerDisconnect(@NotNull PlayerDisconnectEvent event) {
 
-        final ServerInfo proxyServer = instance.getProxy().getServersCopy().get(BungeeConfig.CONTROL_FALLBACK.get(String.class));
+        final ServerInfo proxyServer = instance.getProxy().getServerInfo(BungeeConfig.CONTROL_FALLBACK.get(String.class));
         final ProxiedPlayer player = event.getPlayer();
 
         if (proxyServer == null) {

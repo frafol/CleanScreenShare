@@ -58,9 +58,7 @@ public class Utils {
     }
 
     public String color(@NotNull String s) {
-
         return s.replace("&", "§");
-
     }
 
     public List<String> color(@NotNull List<String> list) {
@@ -445,13 +443,18 @@ public class Utils {
         }
 
         suspicious.sendMessage(TextComponent.fromLegacyText(BungeeMessages.MAINSUS.color()
-                .replace("%prefix%", BungeeMessages.PREFIX.color())));
+                .replace("%prefix%", BungeeMessages.PREFIX.color())
+                .replace("%administrator%", administrator.getName())
+                .replace("%suspect%", suspicious.getName())));
 
         BungeeMessages.CONTROL_FORMAT.sendList(administrator, suspicious,
                 new Placeholder("cleanname", BungeeMessages.CONTROL_CLEAN_NAME.color()),
                 new Placeholder("hackername", BungeeMessages.CONTROL_CHEATER_NAME.color()),
                 new Placeholder("admitname", BungeeMessages.CONTROL_ADMIT_NAME.color()),
-                new Placeholder("refusename", BungeeMessages.CONTROL_REFUSE_NAME.color()));
+                new Placeholder("refusename", BungeeMessages.CONTROL_REFUSE_NAME.color()),
+                new Placeholder("prefix", BungeeMessages.PREFIX.color()),
+                new Placeholder("suspect", suspicious.getName()),
+                new Placeholder("administrator", administrator.getName()));
 
     }
 
