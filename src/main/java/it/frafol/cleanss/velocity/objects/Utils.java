@@ -181,8 +181,12 @@ public class Utils {
     }
 
     private String addCapital(String string) {
-        return (string.substring(0, 1).toUpperCase() + string.substring(1));
-    }
+		if (string == null || string.isEmpty()) {
+			return string;
+		}
+
+		return Character.toUpperCase(string.charAt(0)) + string.substring(1);
+	}
 
     public void punishPlayer(UUID administrator, String suspicious, Player administrator_user, Player suspect) {
 

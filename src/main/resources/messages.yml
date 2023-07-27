@@ -145,6 +145,7 @@ messages:
 
       # This fixes a problem that causes players without a specific rank
       # to display "default" instead of the correct displayname on LuckPerms.
+      # That's not always needed.
       default_group_displayname: "User"
 
 # Enjoy.

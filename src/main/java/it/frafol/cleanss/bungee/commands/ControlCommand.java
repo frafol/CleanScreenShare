@@ -310,7 +310,11 @@ public class ControlCommand extends Command implements TabExecutor {
 	}
 
 	private String addCapital(String string) {
-		return (string.substring(0, 1).toUpperCase() + string.substring(1));
+		if (string == null || string.isEmpty()) {
+			return string;
+		}
+
+		return Character.toUpperCase(string.charAt(0)) + string.substring(1);
 	}
 
 	private EventLoopGroup getEventLoopGroup() {

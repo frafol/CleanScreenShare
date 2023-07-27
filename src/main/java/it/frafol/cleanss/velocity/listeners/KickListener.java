@@ -8,8 +8,10 @@ import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.server.RegisteredServer;
 import it.frafol.cleanss.velocity.CleanSS;
 import it.frafol.cleanss.velocity.enums.VelocityConfig;
+import it.frafol.cleanss.velocity.enums.VelocityMessages;
 import it.frafol.cleanss.velocity.objects.PlayerCache;
 import it.frafol.cleanss.velocity.objects.Utils;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 
 import java.util.Optional;
 
@@ -73,6 +75,31 @@ public class KickListener {
         final Player player = event.getPlayer();
 
         if (!proxyServer.isPresent()) {
+            instance.getLogger().error("Fallback server was not found in your Velocity configuration or is offline, players will not be able to reconnect to the server.");
+
+            if (PlayerCache.getAdministrator().contains(player.getUniqueId())) {
+                instance.getValue(PlayerCache.getCouples(), player).disconnect(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.FINISHSUS.color()));
+            }
+
+            if (PlayerCache.getSuspicious().contains(player.getUniqueId())) {
+                instance.getKey(PlayerCache.getCouples(), player).disconnect(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.FINISHSUS.color()));
+            }
+
+            if (PlayerCache.getAdministrator().contains(player.getUniqueId())) {
+                Utils.finishControl(instance.getValue(PlayerCache.getCouples(), player), player, null);
+
+            } else if (PlayerCache.getSuspicious().contains(player.getUniqueId())) {
+
+                if (instance.useLimbo && PlayerCache.getNow_started_sus().contains(player.getUniqueId())) {
+                    Utils.finishControl(instance.getValue(PlayerCache.getCouples(), player), player, null);
+                    return;
+                }
+
+                Utils.punishPlayer(instance.getKey(PlayerCache.getCouples(), player).getUniqueId(), player.getUsername(), instance.getKey(PlayerCache.getCouples(), player), player);
+                Utils.finishControl(player, instance.getKey(PlayerCache.getCouples(), player), null);
+
+            }
+
             return;
         }
 

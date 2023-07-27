@@ -2,8 +2,10 @@ package it.frafol.cleanss.bungee.listeners;
 
 import it.frafol.cleanss.bungee.CleanSS;
 import it.frafol.cleanss.bungee.enums.BungeeConfig;
+import it.frafol.cleanss.bungee.enums.BungeeMessages;
 import it.frafol.cleanss.bungee.objects.PlayerCache;
 import it.frafol.cleanss.bungee.objects.Utils;
+import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.PlayerDisconnectEvent;
@@ -57,6 +59,18 @@ public class KickListener implements Listener {
 
         final ServerInfo proxyServer = instance.getProxy().getServersCopy().get(BungeeConfig.CONTROL_FALLBACK.get(String.class));
         final ProxiedPlayer player = event.getPlayer();
+
+        if (proxyServer == null) {
+            instance.getLogger().severe("Fallback server was not found in your BungeeCord configuration or is offline, players will not be able to reconnect to the server.");
+
+            if (PlayerCache.getAdministrator().contains(player.getUniqueId())) {
+                instance.getValue(PlayerCache.getCouples(), player).disconnect(TextComponent.fromLegacyText(BungeeMessages.FINISHSUS.color()));
+            }
+
+            if (PlayerCache.getSuspicious().contains(player.getUniqueId())) {
+                instance.getKey(PlayerCache.getCouples(), player).disconnect(TextComponent.fromLegacyText(BungeeMessages.FINISHSUS.color()));
+            }
+        }
 
         if (PlayerCache.getAdministrator().contains(player.getUniqueId())) {
             Utils.finishControl(instance.getValue(PlayerCache.getCouples(), player), player, proxyServer);
