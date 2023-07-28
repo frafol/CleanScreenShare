@@ -246,6 +246,59 @@ public class Utils {
             } else {
                 Utils.sendDiscordMessage(suspect, administrator_user, VelocityMessages.DISCORD_FINISHED.get(String.class).replace("%suspectgroup%", suspect_group).replace("%admingroup%", admin_group), VelocityMessages.CHEATER.get(String.class));
             }
+
+            String admin_prefix;
+            String admin_suffix;
+            String sus_prefix;
+            String sus_suffix;
+
+            if (luckperms) {
+
+                final LuckPerms api = LuckPermsProvider.get();
+
+                final User admin = api.getUserManager().getUser(administrator_user.getUniqueId());
+                final User suspect1 = api.getUserManager().getUser(suspect.getUniqueId());
+
+                if (admin == null) {
+                    return;
+                }
+
+                if (suspect1 == null) {
+                    return;
+                }
+
+                final String prefix1 = admin.getCachedData().getMetaData().getPrefix();
+                final String suffix1 = admin.getCachedData().getMetaData().getSuffix();
+
+                final String prefix2 = suspect1.getCachedData().getMetaData().getPrefix();
+                final String suffix2 = suspect1.getCachedData().getMetaData().getSuffix();
+
+                admin_prefix = prefix1 == null ? "" : prefix1;
+                admin_suffix = suffix1 == null ? "" : suffix1;
+
+                sus_prefix = prefix2 == null ? "" : prefix2;
+                sus_suffix = suffix2 == null ? "" : suffix2;
+
+            } else {
+                admin_prefix = "";
+                admin_suffix = "";
+                sus_prefix = "";
+                sus_suffix = "";
+            }
+
+            if (VelocityConfig.SEND_ADMIN_MESSAGE.get(Boolean.class)) {
+                instance.getServer().getAllPlayers().stream()
+                        .filter(players -> players.hasPermission(VelocityConfig.CONTROL_PERMISSION.get(String.class)))
+                        .forEach(players -> players.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.ADMIN_NOTIFY.color()
+                                .replace("%prefix%", VelocityMessages.PREFIX.color())
+                                .replace("%admin%", administrator_user.getUsername())
+                                .replace("%suspect%", suspect.getUsername())
+                                .replace("%adminprefix%", Utils.color(admin_prefix))
+                                .replace("%adminsuffix%", Utils.color(admin_suffix))
+                                .replace("%suspectprefix%", Utils.color(sus_prefix))
+                                .replace("%suspectsuffix%", Utils.color(sus_suffix))
+                                .replace("%result%", VelocityMessages.CHEATER.color()))));
+            }
             return;
         }
 
@@ -253,6 +306,59 @@ public class Utils {
             Utils.sendDiscordMessage(suspect, administrator_user, VelocityMessages.DISCORD_QUIT.get(String.class).replace("%suspectgroup%", addCapital(suspect_group)).replace("%admingroup%", addCapital(admin_group)), VelocityMessages.LEFT.get(String.class));
         } else {
             Utils.sendDiscordMessage(suspect, administrator_user, VelocityMessages.DISCORD_QUIT.get(String.class).replace("%suspectgroup%", suspect_group).replace("%admingroup%", admin_group), VelocityMessages.LEFT.get(String.class));
+        }
+
+        String admin_prefix;
+        String admin_suffix;
+        String sus_prefix;
+        String sus_suffix;
+
+        if (luckperms) {
+
+            final LuckPerms api = LuckPermsProvider.get();
+
+            final User admin = api.getUserManager().getUser(administrator_user.getUniqueId());
+            final User suspect1 = api.getUserManager().getUser(suspect.getUniqueId());
+
+            if (admin == null) {
+                return;
+            }
+
+            if (suspect1 == null) {
+                return;
+            }
+
+            final String prefix1 = admin.getCachedData().getMetaData().getPrefix();
+            final String suffix1 = admin.getCachedData().getMetaData().getSuffix();
+
+            final String prefix2 = suspect1.getCachedData().getMetaData().getPrefix();
+            final String suffix2 = suspect1.getCachedData().getMetaData().getSuffix();
+
+            admin_prefix = prefix1 == null ? "" : prefix1;
+            admin_suffix = suffix1 == null ? "" : suffix1;
+
+            sus_prefix = prefix2 == null ? "" : prefix2;
+            sus_suffix = suffix2 == null ? "" : suffix2;
+
+        } else {
+            admin_prefix = "";
+            admin_suffix = "";
+            sus_prefix = "";
+            sus_suffix = "";
+        }
+
+        if (VelocityConfig.SEND_ADMIN_MESSAGE.get(Boolean.class)) {
+            instance.getServer().getAllPlayers().stream()
+                    .filter(players -> players.hasPermission(VelocityConfig.CONTROL_PERMISSION.get(String.class)))
+                    .forEach(players -> players.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.ADMIN_NOTIFY.color()
+                            .replace("%prefix%", VelocityMessages.PREFIX.color())
+                            .replace("%admin%", administrator_user.getUsername())
+                            .replace("%suspect%", suspect.getUsername())
+                            .replace("%adminprefix%", Utils.color(admin_prefix))
+                            .replace("%adminsuffix%", Utils.color(admin_suffix))
+                            .replace("%suspectprefix%", Utils.color(sus_prefix))
+                            .replace("%suspectsuffix%", Utils.color(sus_suffix))
+                            .replace("%result%", VelocityMessages.LEFT.color()))));
         }
 
         if (!VelocityConfig.SLOG_PUNISH.get(Boolean.class)) {
@@ -422,10 +528,10 @@ public class Utils {
 
     public void startControl(@NotNull Player suspicious, @NotNull Player administrator, RegisteredServer proxyServer) {
 
-        String admin_prefix = "";
-        String admin_suffix = "";
-        String sus_prefix = "";
-        String sus_suffix = "";
+        String admin_prefix;
+        String admin_suffix;
+        String sus_prefix;
+        String sus_suffix;
 
         boolean luckperms = instance.getServer().getPluginManager().getPlugin("luckperms").isPresent();
         if (luckperms) {
@@ -455,6 +561,11 @@ public class Utils {
             sus_prefix = prefix2 == null ? "" : prefix2;
             sus_suffix = suffix2 == null ? "" : suffix2;
 
+        } else {
+            admin_prefix = "";
+            admin_suffix = "";
+            sus_prefix = "";
+            sus_suffix = "";
         }
 
         if (instance.useLimbo) {
@@ -511,7 +622,11 @@ public class Utils {
                         .forEach(players -> players.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.ADMIN_NOTIFY.color()
                                 .replace("%prefix%", VelocityMessages.PREFIX.color())
                                 .replace("%admin%", administrator.getUsername())
-                                .replace("%suspect%", suspicious.getUsername()))));
+                                .replace("%suspect%", suspicious.getUsername())
+                                .replace("%adminprefix%", color(admin_prefix))
+                                .replace("%adminsuffix%", color(admin_suffix))
+                                .replace("%suspectprefix%", color(sus_prefix))
+                                .replace("%suspectsuffix%", color(sus_suffix)))));
             }
 
             suspicious.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.MAINSUS.color()
@@ -623,17 +738,21 @@ public class Utils {
                     .forEach(players -> players.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.ADMIN_NOTIFY.color()
                             .replace("%prefix%", VelocityMessages.PREFIX.color())
                             .replace("%admin%", administrator.getUsername())
-                            .replace("%suspect%", suspicious.getUsername()))));
+                            .replace("%suspect%", suspicious.getUsername())
+                            .replace("%adminprefix%", color(admin_prefix))
+                            .replace("%adminsuffix%", color(admin_suffix))
+                            .replace("%suspectprefix%", color(sus_prefix))
+                            .replace("%suspectsuffix%", color(sus_suffix)))));
         }
 
         suspicious.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.MAINSUS.color()
                 .replace("%prefix%", VelocityMessages.PREFIX.color())
                 .replace("%administrator%", administrator.getUsername())
                 .replace("%suspect%", suspicious.getUsername())
-                .replace("%adminprefix%", admin_prefix)
-                .replace("%adminsuffix%", admin_suffix)
-                .replace("%suspectprefix%", sus_prefix)
-                .replace("%suspectsuffix%", sus_suffix)));
+                .replace("%adminprefix%", color(admin_prefix))
+                .replace("%adminsuffix%", color(admin_suffix))
+                .replace("%suspectprefix%", color(sus_prefix))
+                .replace("%suspectsuffix%", color(sus_suffix))));
 
         VelocityMessages.CONTROL_FORMAT.sendList(administrator, suspicious,
                 new Placeholder("cleanname", VelocityMessages.CONTROL_CLEAN_NAME.color()),
@@ -643,10 +762,10 @@ public class Utils {
                 new Placeholder("prefix", VelocityMessages.PREFIX.color()),
                 new Placeholder("suspect", suspicious.getUsername()),
                 new Placeholder("administrator", administrator.getUsername()),
-                new Placeholder("adminprefix", admin_prefix),
-                new Placeholder("adminsuffix", admin_suffix),
-                new Placeholder("suspectprefix", sus_prefix),
-                new Placeholder("suspectsuffix", sus_suffix));
+                new Placeholder("adminprefix", color(admin_prefix)),
+                new Placeholder("adminsuffix", color(admin_suffix)),
+                new Placeholder("suspectprefix", color(sus_prefix)),
+                new Placeholder("suspectsuffix", color(sus_suffix)));
 
     }
 

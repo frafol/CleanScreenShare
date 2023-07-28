@@ -240,6 +240,60 @@ public class Utils {
             }
 
             Utils.sendDiscordMessage(suspect, administrator_player, BungeeMessages.DISCORD_FINISHED.get(String.class).replace("%admingroup%", admin_group).replace("%suspectgroup%", suspect_group), BungeeMessages.CHEATER.get(String.class));
+
+            String admin_prefix;
+            String admin_suffix;
+            String sus_prefix;
+            String sus_suffix;
+
+            if (luckperms) {
+
+                final LuckPerms api = LuckPermsProvider.get();
+
+                final User admin = api.getUserManager().getUser(administrator_player.getUniqueId());
+                final User suspect1 = api.getUserManager().getUser(suspect.getUniqueId());
+
+                if (admin == null) {
+                    return;
+                }
+
+                if (suspect1 == null) {
+                    return;
+                }
+
+                final String prefix1 = admin.getCachedData().getMetaData().getPrefix();
+                final String suffix1 = admin.getCachedData().getMetaData().getSuffix();
+
+                final String prefix2 = suspect1.getCachedData().getMetaData().getPrefix();
+                final String suffix2 = suspect1.getCachedData().getMetaData().getSuffix();
+
+                admin_prefix = prefix1 == null ? "" : prefix1;
+                admin_suffix = suffix1 == null ? "" : suffix1;
+
+                sus_prefix = prefix2 == null ? "" : prefix2;
+                sus_suffix = suffix2 == null ? "" : suffix2;
+
+            } else {
+                sus_suffix = "";
+                sus_prefix = "";
+                admin_suffix = "";
+                admin_prefix = "";
+            }
+
+            if (BungeeConfig.SEND_ADMIN_MESSAGE.get(Boolean.class)) {
+                instance.getProxy().getPlayers().stream()
+                        .filter(players -> players.hasPermission(BungeeConfig.CONTROL_PERMISSION.get(String.class)))
+                        .forEach(players -> players.sendMessage(TextComponent.fromLegacyText(BungeeMessages.ADMIN_NOTIFY_FINISH.color()
+                                .replace("%prefix%", BungeeMessages.PREFIX.color())
+                                .replace("%admin%", administrator_player.getName())
+                                .replace("%suspect%", suspect.getName())
+                                .replace("%adminprefix%", Utils.color(admin_prefix))
+                                .replace("%adminsuffix%", Utils.color(admin_suffix))
+                                .replace("%suspectprefix%", Utils.color(sus_prefix))
+                                .replace("%suspectsuffix%", Utils.color(sus_suffix))
+                                .replace("%result%", BungeeMessages.CHEATER.color()))));
+            }
+
             return;
         }
 
@@ -247,6 +301,59 @@ public class Utils {
             Utils.sendDiscordMessage(suspect, administrator_player, BungeeMessages.DISCORD_QUIT.get(String.class).replace("%admingroup%", addCapital(admin_group)).replace("%suspectgroup%", addCapital(suspect_group)), BungeeMessages.LEFT.get(String.class));
         } else {
             Utils.sendDiscordMessage(suspect, administrator_player, BungeeMessages.DISCORD_QUIT.get(String.class).replace("%admingroup%", admin_group).replace("%suspectgroup%", suspect_group), BungeeMessages.LEFT.get(String.class));
+        }
+
+        String admin_prefix;
+        String admin_suffix;
+        String sus_prefix;
+        String sus_suffix;
+
+        if (luckperms) {
+
+            final LuckPerms api = LuckPermsProvider.get();
+
+            final User admin = api.getUserManager().getUser(administrator_player.getUniqueId());
+            final User suspect1 = api.getUserManager().getUser(suspect.getUniqueId());
+
+            if (admin == null) {
+                return;
+            }
+
+            if (suspect1 == null) {
+                return;
+            }
+
+            final String prefix1 = admin.getCachedData().getMetaData().getPrefix();
+            final String suffix1 = admin.getCachedData().getMetaData().getSuffix();
+
+            final String prefix2 = suspect1.getCachedData().getMetaData().getPrefix();
+            final String suffix2 = suspect1.getCachedData().getMetaData().getSuffix();
+
+            admin_prefix = prefix1 == null ? "" : prefix1;
+            admin_suffix = suffix1 == null ? "" : suffix1;
+
+            sus_prefix = prefix2 == null ? "" : prefix2;
+            sus_suffix = suffix2 == null ? "" : suffix2;
+
+        } else {
+            sus_suffix = "";
+            sus_prefix = "";
+            admin_suffix = "";
+            admin_prefix = "";
+        }
+
+        if (BungeeConfig.SEND_ADMIN_MESSAGE.get(Boolean.class)) {
+            instance.getProxy().getPlayers().stream()
+                    .filter(players -> players.hasPermission(BungeeConfig.CONTROL_PERMISSION.get(String.class)))
+                    .forEach(players -> players.sendMessage(TextComponent.fromLegacyText(BungeeMessages.ADMIN_NOTIFY_FINISH.color()
+                            .replace("%prefix%", BungeeMessages.PREFIX.color())
+                            .replace("%admin%", administrator_player.getName())
+                            .replace("%suspect%", suspect.getName())
+                            .replace("%adminprefix%", Utils.color(admin_prefix))
+                            .replace("%adminsuffix%", Utils.color(admin_suffix))
+                            .replace("%suspectprefix%", Utils.color(sus_prefix))
+                            .replace("%suspectsuffix%", Utils.color(sus_suffix))
+                            .replace("%result%", BungeeMessages.LEFT.color()))));
         }
 
         if (!BungeeConfig.SLOG_PUNISH.get(Boolean.class)) {
@@ -433,19 +540,10 @@ public class Utils {
             Utils.checkForErrors(suspicious, administrator, proxyServer);
         }
 
-        if (BungeeConfig.SEND_ADMIN_MESSAGE.get(Boolean.class)) {
-            instance.getProxy().getPlayers().stream()
-                    .filter(players -> players.hasPermission(BungeeConfig.CONTROL_PERMISSION.get(String.class)))
-                    .forEach(players -> players.sendMessage(TextComponent.fromLegacyText(BungeeMessages.ADMIN_NOTIFY.color()
-                            .replace("%prefix%", BungeeMessages.PREFIX.color())
-                            .replace("%admin%", administrator.getName())
-                            .replace("%suspect%", suspicious.getName()))));
-        }
-
-        String admin_prefix = "";
-        String admin_suffix = "";
-        String sus_prefix = "";
-        String sus_suffix = "";
+        String admin_prefix;
+        String admin_suffix;
+        String sus_prefix;
+        String sus_suffix;
 
         boolean luckperms = instance.getProxy().getPluginManager().getPlugin("LuckPerms") != null;
         if (luckperms) {
@@ -475,16 +573,34 @@ public class Utils {
             sus_prefix = prefix2 == null ? "" : prefix2;
             sus_suffix = suffix2 == null ? "" : suffix2;
 
+        } else {
+            sus_suffix = "";
+            sus_prefix = "";
+            admin_suffix = "";
+            admin_prefix = "";
+        }
+
+        if (BungeeConfig.SEND_ADMIN_MESSAGE.get(Boolean.class)) {
+            instance.getProxy().getPlayers().stream()
+                    .filter(players -> players.hasPermission(BungeeConfig.CONTROL_PERMISSION.get(String.class)))
+                    .forEach(players -> players.sendMessage(TextComponent.fromLegacyText(BungeeMessages.ADMIN_NOTIFY.color()
+                            .replace("%prefix%", BungeeMessages.PREFIX.color())
+                            .replace("%admin%", administrator.getName())
+                            .replace("%suspect%", suspicious.getName())
+                            .replace("%adminprefix%", color(admin_prefix))
+                            .replace("%adminsuffix%", color(admin_suffix))
+                            .replace("%suspectprefix%", color(sus_prefix))
+                            .replace("%suspectsuffix%", color(sus_suffix)))));
         }
 
         suspicious.sendMessage(TextComponent.fromLegacyText(BungeeMessages.MAINSUS.color()
                 .replace("%prefix%", BungeeMessages.PREFIX.color())
                 .replace("%administrator%", administrator.getName())
                 .replace("%suspect%", suspicious.getName())
-                .replace("%adminprefix%", admin_prefix)
-                .replace("%adminsuffix%", admin_suffix)
-                .replace("%suspectprefix%", sus_prefix)
-                .replace("%suspectsuffix%", sus_suffix)));
+                .replace("%adminprefix%", color(admin_prefix))
+                .replace("%adminsuffix%", color(admin_suffix))
+                .replace("%suspectprefix%", color(sus_prefix))
+                .replace("%suspectsuffix%", color(sus_suffix))));
 
         BungeeMessages.CONTROL_FORMAT.sendList(administrator, suspicious,
                 new Placeholder("cleanname", BungeeMessages.CONTROL_CLEAN_NAME.color()),
@@ -494,10 +610,10 @@ public class Utils {
                 new Placeholder("prefix", BungeeMessages.PREFIX.color()),
                 new Placeholder("suspect", suspicious.getName()),
                 new Placeholder("administrator", administrator.getName()),
-                new Placeholder("adminprefix", admin_prefix),
-                new Placeholder("adminsuffix", admin_suffix),
-                new Placeholder("suspectprefix", sus_prefix),
-                new Placeholder("suspectsuffix", sus_suffix));
+                new Placeholder("adminprefix", color(admin_prefix)),
+                new Placeholder("adminsuffix", color(admin_suffix)),
+                new Placeholder("suspectprefix", color(sus_prefix)),
+                new Placeholder("suspectsuffix", color(sus_suffix)));
 
     }
 

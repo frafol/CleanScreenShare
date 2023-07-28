@@ -85,6 +85,59 @@ public class FinishCommand extends Command implements TabExecutor {
 
                 Utils.finishControl(player, (ProxiedPlayer) invocation, proxyServer);
 
+                String admin_prefix;
+                String admin_suffix;
+                String sus_prefix;
+                String sus_suffix;
+
+                if (luckperms) {
+
+                    final LuckPerms api = LuckPermsProvider.get();
+
+                    final User admin = api.getUserManager().getUser(((ProxiedPlayer) invocation).getUniqueId());
+                    final User suspect = api.getUserManager().getUser(player.getUniqueId());
+
+                    if (admin == null) {
+                        return;
+                    }
+
+                    if (suspect == null) {
+                        return;
+                    }
+
+                    final String prefix1 = admin.getCachedData().getMetaData().getPrefix();
+                    final String suffix1 = admin.getCachedData().getMetaData().getSuffix();
+
+                    final String prefix2 = suspect.getCachedData().getMetaData().getPrefix();
+                    final String suffix2 = suspect.getCachedData().getMetaData().getSuffix();
+
+                    admin_prefix = prefix1 == null ? "" : prefix1;
+                    admin_suffix = suffix1 == null ? "" : suffix1;
+
+                    sus_prefix = prefix2 == null ? "" : prefix2;
+                    sus_suffix = suffix2 == null ? "" : suffix2;
+
+                } else {
+                    sus_suffix = "";
+                    sus_prefix = "";
+                    admin_suffix = "";
+                    admin_prefix = "";
+                }
+
+                if (BungeeConfig.SEND_ADMIN_MESSAGE.get(Boolean.class)) {
+                    instance.getProxy().getPlayers().stream()
+                            .filter(players -> players.hasPermission(BungeeConfig.CONTROL_PERMISSION.get(String.class)))
+                            .forEach(players -> players.sendMessage(TextComponent.fromLegacyText(BungeeMessages.ADMIN_NOTIFY_FINISH.color()
+                                    .replace("%prefix%", BungeeMessages.PREFIX.color())
+                                    .replace("%admin%", invocation.getName())
+                                    .replace("%suspect%", player.getName())
+                                    .replace("%adminprefix%", Utils.color(admin_prefix))
+                                    .replace("%adminsuffix%", Utils.color(admin_suffix))
+                                    .replace("%suspectprefix%", Utils.color(sus_prefix))
+                                    .replace("%suspectsuffix%", Utils.color(sus_suffix))
+                                    .replace("%result%", BungeeMessages.CLEAN.color()))));
+                }
+
                 String admin_group = "";
                 String suspect_group = "";
 

@@ -139,6 +139,59 @@ public class FinishCommand implements SimpleCommand {
 
                 }
 
+                String admin_prefix;
+                String admin_suffix;
+                String sus_prefix;
+                String sus_suffix;
+
+                if (luckperms) {
+
+                    final LuckPerms api = LuckPermsProvider.get();
+
+                    final User admin = api.getUserManager().getUser(((Player) invocation.source()).getUniqueId());
+                    final User suspect = api.getUserManager().getUser(player.get().getUniqueId());
+
+                    if (admin == null) {
+                        return;
+                    }
+
+                    if (suspect == null) {
+                        return;
+                    }
+
+                    final String prefix1 = admin.getCachedData().getMetaData().getPrefix();
+                    final String suffix1 = admin.getCachedData().getMetaData().getSuffix();
+
+                    final String prefix2 = suspect.getCachedData().getMetaData().getPrefix();
+                    final String suffix2 = suspect.getCachedData().getMetaData().getSuffix();
+
+                    admin_prefix = prefix1 == null ? "" : prefix1;
+                    admin_suffix = suffix1 == null ? "" : suffix1;
+
+                    sus_prefix = prefix2 == null ? "" : prefix2;
+                    sus_suffix = suffix2 == null ? "" : suffix2;
+
+                } else {
+                    admin_prefix = "";
+                    admin_suffix = "";
+                    sus_prefix = "";
+                    sus_suffix = "";
+                }
+
+                if (VelocityConfig.SEND_ADMIN_MESSAGE.get(Boolean.class)) {
+                    instance.getServer().getAllPlayers().stream()
+                            .filter(players -> players.hasPermission(VelocityConfig.CONTROL_PERMISSION.get(String.class)))
+                            .forEach(players -> players.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.ADMIN_NOTIFY.color()
+                                    .replace("%prefix%", VelocityMessages.PREFIX.color())
+                                    .replace("%admin%", ((Player) invocation.source()).getUsername())
+                                    .replace("%suspect%", player.get().getUsername())
+                                    .replace("%adminprefix%", Utils.color(admin_prefix))
+                                    .replace("%adminsuffix%", Utils.color(admin_suffix))
+                                    .replace("%suspectprefix%", Utils.color(sus_prefix))
+                                    .replace("%suspectsuffix%", Utils.color(sus_suffix))
+                                    .replace("%result%", VelocityMessages.CLEAN.color()))));
+                }
+
                 if (VelocityMessages.DISCORD_CAPITAL.get(Boolean.class)) {
                     Utils.sendDiscordMessage(player.get(), sender, VelocityMessages.DISCORD_FINISHED.get(String.class).replace("%suspectgroup%", addCapital(suspect_group)).replace("%admingroup%", addCapital(admin_group)), VelocityMessages.CLEAN.get(String.class));
                 } else {

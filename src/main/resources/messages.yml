@@ -27,7 +27,12 @@ messages:
 
   control:
 
+    # If you are using LuckPerms, you can also use %adminprefix%, %adminsuffix% and %suspectprefix%, %suspectsuffix%.
     admin_notification: "%prefix% &7The player &d%admin% &7started a &dhack control &7to &d%suspect%&7."
+
+    # You can also use %result%.
+    # If you are using LuckPerms, you can also use %adminprefix%, %adminsuffix% and %suspectprefix%, %suspectsuffix%.
+    admin_notification_finish: "%prefix% &7The player &d%admin% &7finished a &dhack control &7to &d%suspect%&7."
 
     # You can also use %administrator% and %suspect%.
     # If you are using LuckPerms, you can also use %adminprefix%, %adminsuffix% and %suspectprefix%, %suspectsuffix%.

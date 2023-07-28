@@ -34,48 +34,46 @@ public class InfoCommand extends Command implements TabExecutor {
             return;
         }
 
-        if (args.length == 0) {
-
+        if (args.length != 1) {
             invocation.sendMessage(TextComponent.fromLegacyText(BungeeMessages.USAGE.color()
                     .replace("%prefix%", BungeeMessages.PREFIX.color())));
             return;
-
         }
 
-        if (args.length == 1) {
-
-            if (instance.getProxy().getPlayers().toString().contains(args[0])) {
-
-                final ProxiedPlayer player = instance.getProxy().getPlayer(args[0]);
-
-                if (player == null) {
-                    invocation.sendMessage(TextComponent.fromLegacyText(BungeeMessages.NOT_ONLINE.get(String.class)
-                            .replace("%prefix%", BungeeMessages.PREFIX.color())));
-                    return;
-                }
-
-                if (BungeeConfig.MYSQL.get(Boolean.class)) {
-                    BungeeMessages.INFO_MESSAGE.sendList(invocation, player,
-                            new Placeholder("player", args[0]),
-                            new Placeholder("prefix", BungeeMessages.PREFIX.color()),
-                            new Placeholder("is_in_control", String.valueOf(instance.getData().getStats(player.getUniqueId(), "incontrol"))),
-                            new Placeholder("controls_done", String.valueOf(instance.getData().getStats(player.getUniqueId(), "controls"))),
-                            new Placeholder("controls_suffered", String.valueOf(instance.getData().getStats(player.getUniqueId(), "suffered"))));
-                    return;
-                }
-
-                PlayerCache.getControls().putIfAbsent(player.getUniqueId(), 0);
-                PlayerCache.getControls_suffered().putIfAbsent(player.getUniqueId(), 0);
-
-                BungeeMessages.INFO_MESSAGE.sendList(invocation, player,
-                        new Placeholder("player", args[0]),
-                        new Placeholder("prefix", BungeeMessages.PREFIX.color()),
-                        new Placeholder("is_in_control", String.valueOf(PlayerCache.getSuspicious().contains(player.getUniqueId()))),
-                        new Placeholder("controls_done", String.valueOf(PlayerCache.getControls().get(player.getUniqueId()))),
-                        new Placeholder("controls_suffered", String.valueOf(PlayerCache.getControls_suffered().get(player.getUniqueId()))));
-
-            }
+        if (!instance.getProxy().getPlayers().toString().contains(args[0])) {
+            invocation.sendMessage(TextComponent.fromLegacyText(BungeeMessages.NOT_ONLINE.get(String.class)
+                    .replace("%prefix%", BungeeMessages.PREFIX.color())));
+            return;
         }
+
+        final ProxiedPlayer player = instance.getProxy().getPlayer(args[0]);
+
+        if (player == null) {
+            invocation.sendMessage(TextComponent.fromLegacyText(BungeeMessages.NOT_ONLINE.get(String.class)
+                    .replace("%prefix%", BungeeMessages.PREFIX.color())));
+            return;
+        }
+
+        if (BungeeConfig.MYSQL.get(Boolean.class)) {
+            BungeeMessages.INFO_MESSAGE.sendList(invocation, player,
+                    new Placeholder("player", args[0]),
+                    new Placeholder("prefix", BungeeMessages.PREFIX.color()),
+                    new Placeholder("is_in_control", String.valueOf(instance.getData().getStats(player.getUniqueId(), "incontrol"))),
+                    new Placeholder("controls_done", String.valueOf(instance.getData().getStats(player.getUniqueId(), "controls"))),
+                    new Placeholder("controls_suffered", String.valueOf(instance.getData().getStats(player.getUniqueId(), "suffered"))));
+            return;
+        }
+
+        PlayerCache.getControls().putIfAbsent(player.getUniqueId(), 0);
+        PlayerCache.getControls_suffered().putIfAbsent(player.getUniqueId(), 0);
+
+        BungeeMessages.INFO_MESSAGE.sendList(invocation, player,
+                new Placeholder("player", args[0]),
+                new Placeholder("prefix", BungeeMessages.PREFIX.color()),
+                new Placeholder("is_in_control", String.valueOf(PlayerCache.getSuspicious().contains(player.getUniqueId()))),
+                new Placeholder("controls_done", String.valueOf(PlayerCache.getControls().get(player.getUniqueId()))),
+                new Placeholder("controls_suffered", String.valueOf(PlayerCache.getControls_suffered().get(player.getUniqueId()))));
+
     }
 
     @Override
