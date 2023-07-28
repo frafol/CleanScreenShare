@@ -442,10 +442,49 @@ public class Utils {
                             .replace("%suspect%", suspicious.getName()))));
         }
 
+        String admin_prefix = "";
+        String admin_suffix = "";
+        String sus_prefix = "";
+        String sus_suffix = "";
+
+        boolean luckperms = instance.getProxy().getPluginManager().getPlugin("LuckPerms") != null;
+        if (luckperms) {
+
+            final LuckPerms api = LuckPermsProvider.get();
+
+            final User admin = api.getUserManager().getUser(administrator.getUniqueId());
+            final User suspect = api.getUserManager().getUser(suspicious.getUniqueId());
+
+            if (admin == null) {
+                return;
+            }
+
+            if (suspect == null) {
+                return;
+            }
+
+            final String prefix1 = admin.getCachedData().getMetaData().getPrefix();
+            final String suffix1 = admin.getCachedData().getMetaData().getSuffix();
+
+            final String prefix2 = suspect.getCachedData().getMetaData().getPrefix();
+            final String suffix2 = suspect.getCachedData().getMetaData().getSuffix();
+
+            admin_prefix = prefix1 == null ? "" : prefix1;
+            admin_suffix = suffix1 == null ? "" : suffix1;
+
+            sus_prefix = prefix2 == null ? "" : prefix2;
+            sus_suffix = suffix2 == null ? "" : suffix2;
+
+        }
+
         suspicious.sendMessage(TextComponent.fromLegacyText(BungeeMessages.MAINSUS.color()
                 .replace("%prefix%", BungeeMessages.PREFIX.color())
                 .replace("%administrator%", administrator.getName())
-                .replace("%suspect%", suspicious.getName())));
+                .replace("%suspect%", suspicious.getName())
+                .replace("%adminprefix%", admin_prefix)
+                .replace("%adminsuffix%", admin_suffix)
+                .replace("%suspectprefix%", sus_prefix)
+                .replace("%suspectsuffix%", sus_suffix)));
 
         BungeeMessages.CONTROL_FORMAT.sendList(administrator, suspicious,
                 new Placeholder("cleanname", BungeeMessages.CONTROL_CLEAN_NAME.color()),
@@ -454,7 +493,11 @@ public class Utils {
                 new Placeholder("refusename", BungeeMessages.CONTROL_REFUSE_NAME.color()),
                 new Placeholder("prefix", BungeeMessages.PREFIX.color()),
                 new Placeholder("suspect", suspicious.getName()),
-                new Placeholder("administrator", administrator.getName()));
+                new Placeholder("administrator", administrator.getName()),
+                new Placeholder("adminprefix", admin_prefix),
+                new Placeholder("adminsuffix", admin_suffix),
+                new Placeholder("suspectprefix", sus_prefix),
+                new Placeholder("suspectsuffix", sus_suffix));
 
     }
 

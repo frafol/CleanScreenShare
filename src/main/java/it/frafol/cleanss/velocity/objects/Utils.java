@@ -422,6 +422,41 @@ public class Utils {
 
     public void startControl(@NotNull Player suspicious, @NotNull Player administrator, RegisteredServer proxyServer) {
 
+        String admin_prefix = "";
+        String admin_suffix = "";
+        String sus_prefix = "";
+        String sus_suffix = "";
+
+        boolean luckperms = instance.getServer().getPluginManager().getPlugin("luckperms").isPresent();
+        if (luckperms) {
+
+            final LuckPerms api = LuckPermsProvider.get();
+
+            final User admin = api.getUserManager().getUser(administrator.getUniqueId());
+            final User suspect = api.getUserManager().getUser(suspicious.getUniqueId());
+
+            if (admin == null) {
+                return;
+            }
+
+            if (suspect == null) {
+                return;
+            }
+
+            final String prefix1 = admin.getCachedData().getMetaData().getPrefix();
+            final String suffix1 = admin.getCachedData().getMetaData().getSuffix();
+
+            final String prefix2 = suspect.getCachedData().getMetaData().getPrefix();
+            final String suffix2 = suspect.getCachedData().getMetaData().getSuffix();
+
+            admin_prefix = prefix1 == null ? "" : prefix1;
+            admin_suffix = suffix1 == null ? "" : suffix1;
+
+            sus_prefix = prefix2 == null ? "" : prefix2;
+            sus_suffix = suffix2 == null ? "" : suffix2;
+
+        }
+
         if (instance.useLimbo) {
 
             if (VelocityConfig.CHECK_FOR_PROBLEMS.get(Boolean.class)) {
@@ -482,7 +517,11 @@ public class Utils {
             suspicious.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.MAINSUS.color()
                     .replace("%prefix%", VelocityMessages.PREFIX.color())
                     .replace("%administrator%", administrator.getUsername())
-                    .replace("%suspect%", suspicious.getUsername())));
+                    .replace("%suspect%", suspicious.getUsername())
+                    .replace("%adminprefix%", admin_prefix)
+                    .replace("%adminsuffix%", admin_suffix)
+                    .replace("%suspectprefix%", sus_prefix)
+                    .replace("%suspectsuffix%", sus_suffix)));
 
             VelocityMessages.CONTROL_FORMAT.sendList(administrator, suspicious,
                     new Placeholder("cleanname", VelocityMessages.CONTROL_CLEAN_NAME.color()),
@@ -491,7 +530,11 @@ public class Utils {
                     new Placeholder("refusename", VelocityMessages.CONTROL_REFUSE_NAME.color()),
                     new Placeholder("prefix", VelocityMessages.PREFIX.color()),
                     new Placeholder("suspect", suspicious.getUsername()),
-                    new Placeholder("administrator", administrator.getUsername()));
+                    new Placeholder("administrator", administrator.getUsername()),
+                    new Placeholder("adminprefix", admin_prefix),
+                    new Placeholder("adminsuffix", admin_suffix),
+                    new Placeholder("suspectprefix", sus_prefix),
+                    new Placeholder("suspectsuffix", sus_suffix));
 
             return;
         }
@@ -586,7 +629,11 @@ public class Utils {
         suspicious.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.MAINSUS.color()
                 .replace("%prefix%", VelocityMessages.PREFIX.color())
                 .replace("%administrator%", administrator.getUsername())
-                .replace("%suspect%", suspicious.getUsername())));
+                .replace("%suspect%", suspicious.getUsername())
+                .replace("%adminprefix%", admin_prefix)
+                .replace("%adminsuffix%", admin_suffix)
+                .replace("%suspectprefix%", sus_prefix)
+                .replace("%suspectsuffix%", sus_suffix)));
 
         VelocityMessages.CONTROL_FORMAT.sendList(administrator, suspicious,
                 new Placeholder("cleanname", VelocityMessages.CONTROL_CLEAN_NAME.color()),
@@ -595,7 +642,11 @@ public class Utils {
                 new Placeholder("refusename", VelocityMessages.CONTROL_REFUSE_NAME.color()),
                 new Placeholder("prefix", VelocityMessages.PREFIX.color()),
                 new Placeholder("suspect", suspicious.getUsername()),
-                new Placeholder("administrator", administrator.getUsername()));
+                new Placeholder("administrator", administrator.getUsername()),
+                new Placeholder("adminprefix", admin_prefix),
+                new Placeholder("adminsuffix", admin_suffix),
+                new Placeholder("suspectprefix", sus_prefix),
+                new Placeholder("suspectsuffix", sus_suffix));
 
     }
 
