@@ -38,6 +38,7 @@ public class CleanSS extends JavaPlugin {
 
 	@SneakyThrows
 	@Override
+	@SuppressWarnings("deprecation")
 	public void onEnable() {
 
 		instance = this;
@@ -78,10 +79,6 @@ public class CleanSS extends JavaPlugin {
 			return;
 		}
 
-		if (isFolia()) {
-			getLogger().warning("Support for Folia has not been tested and is only for experimental purposes.");
-		}
-
 		getLogger().info("Loading configuration...");
 		configTextFile = new TextFile(getDataFolder().toPath(), "settings.yml");
 		versionTextFile = new TextFile(getDataFolder().toPath(), "version.yml");
@@ -109,23 +106,21 @@ public class CleanSS extends JavaPlugin {
 		getServer().getMessenger().registerIncomingPluginChannel(this, "cleanss:join", new PluginMessageReceiver());
 
 		getLogger().info("Loading listeners...");
-		Bukkit.getServer().getPluginManager().registerEvents(new MainCommand(), this);
-		Bukkit.getServer().getPluginManager().registerEvents(new PlayerListener(), this);
-		Bukkit.getServer().getPluginManager().registerEvents(new WorldListener(), this);
+		getServer().getPluginManager().registerEvents(new MainCommand(), this);
+		getServer().getPluginManager().registerEvents(new PlayerListener(), this);
+		getServer().getPluginManager().registerEvents(new WorldListener(), this);
 
 		UpdateChecker();
 		getLogger().info("Successfully loaded!");
 
 		if (SpigotConfig.DAY_CYCLE.get(Boolean.class)) {
-
 			if (!isFolia()) {
 				for (World worlds : getServer().getWorlds()) {
 					worlds.setGameRuleValue("doDaylightCycle", "false");
 				}
 			} else {
-				getLogger().severe("Cannot set 'doDaylightCycle' to 'false' in Folia.");
+				getLogger().severe("The gamerule doDaylightCycle is not supported by Folia.");
 			}
-
 		}
 	}
 
@@ -142,7 +137,7 @@ public class CleanSS extends JavaPlugin {
 	public static boolean isFolia() {
 		try {
 			Class.forName("io.papermc.paper.threadedregions.RegionizedServerInitEvent");
-		} catch (ClassNotFoundException e) {
+		} catch (ClassNotFoundException ignored) {
 			return false;
 		}
 		return true;
