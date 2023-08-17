@@ -496,7 +496,7 @@ public class CleanSS {
 		}
 
 		if (jda.getJda() == null) {
-			logger.error("Fatal error while updating JDA, please report this error on discord.io/futuredevelopment.");
+			logger.error("Fatal error while updating JDA, please report this error on https://discord.com/invite/sTSwaGBCdC.");
 			return;
 		}
 

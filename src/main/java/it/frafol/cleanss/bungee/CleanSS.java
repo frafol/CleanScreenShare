@@ -241,7 +241,13 @@ public class CleanSS extends Plugin {
 	}
 
 	private void loadDiscord() {
-		jda = JDABuilder.createDefault(BungeeConfig.DISCORD_TOKEN.get(String.class)).enableIntents(GatewayIntent.MESSAGE_CONTENT).build();
+		try {
+			jda = JDABuilder.createDefault(BungeeConfig.DISCORD_TOKEN.get(String.class)).enableIntents(GatewayIntent.MESSAGE_CONTENT).build();
+		} catch (ExceptionInInitializerError e) {
+			getLogger().severe("Invalid Discord configuration, please check your config.yml file.");
+			getLogger().severe("Make sure you are not using any strange forks (like Aegis).");
+		}
+
 		updateTaskJDA();
 	}
 
@@ -260,7 +266,7 @@ public class CleanSS extends Plugin {
 		}
 
 		if (jda == null) {
-			getLogger().severe("Fatal error while updating JDA. Please report this error to discord.io/futurevelopment.");
+			getLogger().severe("Fatal error while updating JDA. Please report this error to https://discord.com/invite/sTSwaGBCdC.");
 			return;
 		}
 
