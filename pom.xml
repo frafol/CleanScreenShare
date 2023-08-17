@@ -6,7 +6,7 @@
 
     <groupId>it.frafol</groupId>
     <artifactId>cleanscreenshare</artifactId>
-    <version>1.5.6</version>
+    <version>1.5.7</version>
     <packaging>jar</packaging>
 
     <name>CleanSS</name>
@@ -135,7 +135,7 @@
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
-            <version>1.8.8-R0.1-SNAPSHOT</version>
+            <version>1.13.1-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
