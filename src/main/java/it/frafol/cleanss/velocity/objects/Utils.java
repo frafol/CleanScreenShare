@@ -4,24 +4,16 @@ import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 import com.velocitypowered.api.command.CommandSource;
 import com.velocitypowered.api.network.ProtocolVersion;
-import com.velocitypowered.api.plugin.PluginContainer;
 import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.server.RegisteredServer;
 import com.velocitypowered.api.scheduler.ScheduledTask;
 import it.frafol.cleanss.velocity.CleanSS;
 import it.frafol.cleanss.velocity.enums.VelocityConfig;
 import it.frafol.cleanss.velocity.enums.VelocityMessages;
-import it.frafol.cleanss.velocity.handlers.LimboHandler;
 import lombok.Getter;
 import lombok.experimental.UtilityClass;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
-import net.elytrium.limboapi.api.Limbo;
-import net.elytrium.limboapi.api.LimboFactory;
-import net.elytrium.limboapi.api.chunk.Dimension;
-import net.elytrium.limboapi.api.chunk.VirtualWorld;
-import net.elytrium.limboapi.api.player.GameMode;
-import net.elytrium.limboapi.api.player.LimboPlayer;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.kyori.adventure.title.Title;
@@ -44,9 +36,6 @@ import java.util.stream.Collectors;
 public class Utils {
 
     private static final CleanSS instance = CleanSS.getInstance();
-
-    @Getter
-    private Limbo limbo;
 
     public List<String> getStringList(@NotNull VelocityMessages velocityMessages) {
         return instance.getMessagesTextFile().getConfig().getStringList(velocityMessages.getPath());
@@ -400,10 +389,7 @@ public class Utils {
                 if (!VelocityConfig.USE_DISCONNECT.get(Boolean.class) || instance.useLimbo) {
 
                     if (instance.useLimbo) {
-
-                        LimboPlayer limboPlayer = LimboHandler.limbo_players.get(suspicious);
-                        limboPlayer.disconnect(proxyServer);
-
+                        LimboUtils.disconnect(suspicious, proxyServer);
                     } else {
                         suspicious.createConnectionRequest(proxyServer).fireAndForget();
                     }
@@ -427,10 +413,7 @@ public class Utils {
                     if (!VelocityConfig.USE_DISCONNECT.get(Boolean.class) || instance.useLimbo) {
 
                         if (instance.useLimbo) {
-
-                            LimboPlayer limboPlayer = LimboHandler.limbo_players.get(administrator);
-                            limboPlayer.disconnect(proxyServer);
-
+                            LimboUtils.disconnect(administrator, proxyServer);
                         } else {
                             administrator.createConnectionRequest(proxyServer).fireAndForget();
                         }
@@ -457,9 +440,7 @@ public class Utils {
             if (!VelocityConfig.USE_DISCONNECT.get(Boolean.class) || instance.useLimbo) {
 
                 if (instance.useLimbo) {
-
-                    LimboPlayer limboPlayer = LimboHandler.limbo_players.get(suspicious);
-                    limboPlayer.disconnect(proxyServer);
+                    LimboUtils.disconnect(suspicious, proxyServer);
 
                 } else {
                     suspicious.createConnectionRequest(proxyServer).fireAndForget();
@@ -492,9 +473,7 @@ public class Utils {
             if (!VelocityConfig.USE_DISCONNECT.get(Boolean.class) || instance.useLimbo) {
 
                 if (instance.useLimbo) {
-
-                    LimboPlayer limboPlayer = LimboHandler.limbo_players.get(administrator);
-                    limboPlayer.disconnect(proxyServer);
+                    LimboUtils.disconnect(administrator, proxyServer);
 
                 } else {
                     administrator.createConnectionRequest(proxyServer).fireAndForget();
@@ -867,26 +846,5 @@ public class Utils {
                     .schedule();
 
         }
-    }
-
-    public void loadLimbo() {
-        instance.useLimbo = true;
-
-        if (!instance.getServer().getPluginManager().getPlugin("limboapi").flatMap(PluginContainer::getInstance).isPresent()) {
-            return;
-        }
-
-        LimboFactory factory = (LimboFactory) instance.getServer().getPluginManager().getPlugin("limboapi").flatMap(PluginContainer::getInstance).get();
-        VirtualWorld world = factory.createVirtualWorld(Dimension.OVERWORLD, 0, 100, 0, (float) 90, (float) 0.0);
-        limbo = factory.createLimbo(world)
-                .setName("CleanScreenShare")
-                .setShouldRejoin(true)
-                .setShouldRespawn(true)
-                .setGameMode(GameMode.ADVENTURE);
-        instance.getLogger().info("§7LimboAPI hooked §dsuccessfully§7!");
-    }
-
-    public void spawnPlayerLimbo(Player player) {
-        getLimbo().spawnPlayer(player, new LimboHandler(player, instance));
     }
 }

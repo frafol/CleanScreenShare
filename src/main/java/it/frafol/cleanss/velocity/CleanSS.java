@@ -23,9 +23,9 @@ import it.frafol.cleanss.velocity.listeners.KickListener;
 import it.frafol.cleanss.velocity.listeners.ServerListener;
 import it.frafol.cleanss.velocity.mysql.MySQLWorker;
 import it.frafol.cleanss.velocity.objects.JdaBuilder;
+import it.frafol.cleanss.velocity.objects.LimboUtils;
 import it.frafol.cleanss.velocity.objects.PlayerCache;
 import it.frafol.cleanss.velocity.objects.TextFile;
-import it.frafol.cleanss.velocity.objects.Utils;
 import it.frafol.cleanss.velocity.objects.adapter.ReflectUtil;
 import lombok.Getter;
 import lombok.SneakyThrows;
@@ -78,13 +78,11 @@ public class CleanSS {
 
 	public boolean useLimbo = false;
 
+	@Getter
 	private static CleanSS instance;
 
+	@Getter
 	private MySQLWorker data;
-
-	public static CleanSS getInstance() {
-		return instance;
-	}
 
 	@Inject
 	public CleanSS(Logger logger, ProxyServer server, @DataDirectory Path path, Metrics.Factory metricsFactory) {
@@ -127,7 +125,7 @@ public class CleanSS {
 		if (VelocityLimbo.USE.get(Boolean.class)) {
 			if (instance.getServer().getPluginManager().getPlugin("limboapi").isPresent() &&
 					instance.getServer().getPluginManager().getPlugin("limboapi").flatMap(PluginContainer::getInstance).isPresent()) {
-				Utils.loadLimbo();
+				LimboUtils.loadLimbo();
 			} else {
 				logger.error("§7LimboAPI not §dfound§7! Please install it to use the §dLimbo feature§7.");
 			}
@@ -200,10 +198,6 @@ public class CleanSS {
 		instance = null;
 
 		logger.info("§7Plugin successfully §ddisabled§7!");
-	}
-
-	public MySQLWorker getData() {
-		return data;
 	}
 
 	public void setData() {

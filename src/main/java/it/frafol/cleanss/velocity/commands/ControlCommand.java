@@ -7,6 +7,7 @@ import com.velocitypowered.api.proxy.server.RegisteredServer;
 import it.frafol.cleanss.velocity.CleanSS;
 import it.frafol.cleanss.velocity.enums.VelocityConfig;
 import it.frafol.cleanss.velocity.enums.VelocityMessages;
+import it.frafol.cleanss.velocity.objects.LimboUtils;
 import it.frafol.cleanss.velocity.objects.PlayerCache;
 import it.frafol.cleanss.velocity.objects.Utils;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
@@ -159,8 +160,8 @@ public class ControlCommand implements SimpleCommand {
 
 					if (instance.useLimbo) {
 
-						Utils.spawnPlayerLimbo(sender);
-						Utils.spawnPlayerLimbo(player.get());
+						LimboUtils.spawnPlayerLimbo(sender);
+						LimboUtils.spawnPlayerLimbo(player.get());
 
 						Utils.startControl(player.get(), sender, null);
 
@@ -237,6 +238,7 @@ public class ControlCommand implements SimpleCommand {
 
 		return Character.toUpperCase(string.charAt(0)) + string.substring(1);
 	}
+
 
 	@Override
 	public CompletableFuture<List<String>> suggestAsync(Invocation invocation) {
