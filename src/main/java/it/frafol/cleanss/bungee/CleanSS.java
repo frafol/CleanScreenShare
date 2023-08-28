@@ -11,6 +11,7 @@ import it.frafol.cleanss.bungee.listeners.ServerListener;
 import it.frafol.cleanss.bungee.mysql.MySQLWorker;
 import it.frafol.cleanss.bungee.objects.PlayerCache;
 import it.frafol.cleanss.bungee.objects.TextFile;
+import lombok.Getter;
 import lombok.SneakyThrows;
 import net.byteflux.libby.BungeeLibraryManager;
 import net.byteflux.libby.Library;
@@ -41,16 +42,17 @@ public class CleanSS extends Plugin {
     private TextFile messagesTextFile;
 	private TextFile configTextFile;
 	private TextFile versionTextFile;
+
+	@Getter
 	private JDA jda;
+
+	@Getter
+	private MySQLWorker data;
+
+	@Getter
 	private static CleanSS instance;
 
 	public boolean updated = false;
-
-	private MySQLWorker data;
-
-	public static CleanSS getInstance() {
-		return instance;
-	}
 
 	@Override
 	public void onEnable() {
@@ -184,8 +186,8 @@ public class CleanSS extends Plugin {
 			updated = true;
 			getLogger().warning("§eCleanScreenShare successfully updated, a restart is required.");
 
-		} catch (IOException e) {
-			e.printStackTrace();
+		} catch (IOException ignored) {
+			getLogger().severe("An error occurred while updating CleanScreenShare.");
 		}
 	}
 
@@ -249,10 +251,6 @@ public class CleanSS extends Plugin {
 		}
 
 		updateTaskJDA();
-	}
-
-	public JDA getJda() {
-		return jda;
 	}
 
 	public void updateTaskJDA() {
@@ -390,10 +388,6 @@ public class CleanSS extends Plugin {
 
 		}
 		return null;
-	}
-
-	public MySQLWorker getData() {
-		return data;
 	}
 
 	public void setData() {

@@ -396,6 +396,7 @@ public class Utils {
                 }
 
                 Utils.sendEndTitle(suspicious);
+                Utils.sendAdminEndTitle(administrator, suspicious);
 
                 administrator.sendMessage(TextComponent.fromLegacyText(BungeeMessages.FINISHSUS.color().replace("%prefix%", BungeeMessages.PREFIX.color())));
 
@@ -429,6 +430,7 @@ public class Utils {
             }
 
             Utils.sendEndTitle(suspicious);
+            Utils.sendAdminEndTitle(administrator, suspicious);
 
             suspicious.sendMessage(TextComponent.fromLegacyText(BungeeMessages.FINISHSUS.color()
                     .replace("%prefix%", BungeeMessages.PREFIX.color())));
@@ -535,6 +537,7 @@ public class Utils {
         }
 
         Utils.sendStartTitle(suspicious);
+        Utils.sendAdminStartTitle(administrator, suspicious);
 
         if (BungeeConfig.CHECK_FOR_PROBLEMS.get(Boolean.class)) {
             Utils.checkForErrors(suspicious, administrator, proxyServer);
@@ -677,6 +680,26 @@ public class Utils {
 
     }
 
+    private void sendAdminStartTitle(ProxiedPlayer administrator, ProxiedPlayer suspicious) {
+
+        if (!BungeeMessages.ADMINCONTROL_USETITLE.get(Boolean.class)) {
+            return;
+        }
+
+        final Title title = ProxyServer.getInstance().createTitle();
+
+        title.fadeIn(BungeeMessages.ADMINCONTROL_FADEIN.get(Integer.class) * 20);
+        title.stay(BungeeMessages.ADMINCONTROL_STAY.get(Integer.class) * 20);
+        title.fadeOut(BungeeMessages.ADMINCONTROL_FADEOUT.get(Integer.class) * 20);
+
+        title.title(new TextComponent(BungeeMessages.ADMINCONTROL_TITLE.color().replace("%suspect%", suspicious.getName())));
+        title.subTitle(new TextComponent(BungeeMessages.ADMINCONTROL_SUBTITLE.color().replace("%suspect%", suspicious.getName())));
+
+        ProxyServer.getInstance().getScheduler().schedule(instance, () ->
+                title.send(administrator), BungeeMessages.ADMINCONTROL_DELAY.get(Integer.class), TimeUnit.SECONDS);
+
+    }
+
     private void sendEndTitle(ProxiedPlayer suspicious) {
 
         if (!BungeeMessages.CONTROLFINISH_USETITLE.get(Boolean.class)) {
@@ -694,6 +717,26 @@ public class Utils {
 
         ProxyServer.getInstance().getScheduler().schedule(instance, () ->
                 title.send(suspicious), BungeeMessages.CONTROLFINISH_DELAY.get(Integer.class), TimeUnit.SECONDS);
+
+    }
+
+    private void sendAdminEndTitle(ProxiedPlayer administrator, ProxiedPlayer suspicious) {
+
+        if (!BungeeMessages.ADMINCONTROLFINISH_USETITLE.get(Boolean.class)) {
+            return;
+        }
+
+        final Title title = ProxyServer.getInstance().createTitle();
+
+        title.fadeIn(BungeeMessages.ADMINCONTROLFINISH_FADEIN.get(Integer.class) * 20);
+        title.stay(BungeeMessages.ADMINCONTROLFINISH_STAY.get(Integer.class) * 20);
+        title.fadeOut(BungeeMessages.ADMINCONTROLFINISH_FADEOUT.get(Integer.class) * 20);
+
+        title.title(new TextComponent(BungeeMessages.ADMINCONTROLFINISH_TITLE.color().replace("%suspect%", suspicious.getName())));
+        title.subTitle(new TextComponent(BungeeMessages.ADMINCONTROLFINISH_SUBTITLE.color().replace("%suspect%", suspicious.getName())));
+
+        ProxyServer.getInstance().getScheduler().schedule(instance, () ->
+                title.send(administrator), BungeeMessages.ADMINCONTROLFINISH_DELAY.get(Integer.class), TimeUnit.SECONDS);
 
     }
 }

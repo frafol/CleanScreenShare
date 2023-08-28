@@ -100,6 +100,20 @@ messages:
       stay: 3
       fade_out: 1
 
+    admin_start:
+
+      # Here you can set a title that will be sent to the admin when it is put into hack control.
+      enable: true
+
+      delay: 2 # In seconds
+
+      title: "&c&lHACK CONTROL"
+      subtitle: "&7You putted %suspect% in hack control!"
+
+      fade_in: 1
+      stay: 3
+      fade_out: 1
+
     finish:
 
       # Here you can set a title that will be sent to the user when it is leaving the hack control.
@@ -108,7 +122,21 @@ messages:
       delay: 2 # In seconds
 
       title: "&a&lHACK CONTROL"
-      subtitle: "&7You've finished the control!"
+      subtitle: "&7Thanks for your patience!"
+
+      fade_in: 1
+      stay: 3
+      fade_out: 1
+
+    admin_finish:
+
+      # Here you can set a title that will be sent to the admin when the control ends.
+      enable: true
+
+      delay: 2 # In seconds
+
+      title: "&a&lHACK CONTROL"
+      subtitle: "&7You've finished the control to %suspect%!"
 
       fade_in: 1
       stay: 3

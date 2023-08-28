@@ -52,7 +52,7 @@ import java.util.concurrent.TimeUnit;
 @Plugin(
 		id = "cleanscreenshare",
 		name = "CleanScreenShare",
-		version = "1.5.8",
+		version = "1.6.0",
 		description = "Make control hacks on your players.",
 		dependencies = {@Dependency(id = "mysqlandconfigurateforvelocity", optional = true), @Dependency(id = "limboapi", optional = true)},
 		authors = { "frafol" })
@@ -235,8 +235,8 @@ public class CleanSS {
 				logger.warn("MySQL drivers (" + fileName + ") are now successfully installed. A restart is required.");
 			}
 
-		} catch (IOException e) {
-			e.printStackTrace();
+		} catch (IOException ignored) {
+			logger.error("An error occurred while downloading MySQL drivers, plugin may not work properly.");
 		}
 	}
 
@@ -258,8 +258,8 @@ public class CleanSS {
 			updated = true;
 			logger.warn("CleanScreenShare successfully updated, a restart is required.");
 
-		} catch (IOException e) {
-			e.printStackTrace();
+		} catch (IOException ignored) {
+			logger.error("An error occurred while updating CleanScreenShare.");
 		}
 	}
 

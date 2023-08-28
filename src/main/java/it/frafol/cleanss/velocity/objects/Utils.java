@@ -44,6 +44,9 @@ public class Utils {
     @Getter
     private ScheduledTask titleTask;
 
+    @Getter
+    private ScheduledTask titleTaskAdmin;
+
     public List<String> getStringList(VelocityMessages velocityMessages, Placeholder... placeholders) {
         List<String> newList = new ArrayList<>();
 
@@ -400,6 +403,7 @@ public class Utils {
                 }
 
                 Utils.sendEndTitle(suspicious);
+                Utils.sendAdminEndTitle(administrator, suspicious);
 
                 suspicious.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.FINISHSUS.color().replace("%prefix%", VelocityMessages.PREFIX.color())));
 
@@ -451,6 +455,7 @@ public class Utils {
             }
 
             Utils.sendEndTitle(suspicious);
+            Utils.sendAdminEndTitle(administrator, suspicious);
 
             suspicious.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.FINISHSUS.color()
                     .replace("%prefix%", VelocityMessages.PREFIX.color())));
@@ -590,6 +595,7 @@ public class Utils {
             }
 
             Utils.sendStartTitle(suspicious);
+            Utils.sendAdminStartTitle(administrator, suspicious);
 
             if (VelocityConfig.CHECK_FOR_PROBLEMS.get(Boolean.class)) {
                 Utils.checkForErrors(suspicious, administrator, proxyServer);
@@ -706,6 +712,7 @@ public class Utils {
         }
 
         Utils.sendStartTitle(suspicious);
+        Utils.sendAdminStartTitle(administrator, suspicious);
 
         if (VelocityConfig.CHECK_FOR_PROBLEMS.get(Boolean.class)) {
             Utils.checkForErrors(suspicious, administrator, proxyServer);
@@ -806,45 +813,89 @@ public class Utils {
 
     private void sendStartTitle(Player suspicious) {
 
-        if (VelocityMessages.CONTROL_USETITLE.get(Boolean.class)) {
-
-            Title controlTitle = Title.title(
-
-                    LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.CONTROL_TITLE.color()),
-                    LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.CONTROL_SUBTITLE.color()),
-
-                    Title.Times.times(
-                            Duration.ofSeconds(VelocityMessages.CONTROL_FADEIN.get(Integer.class)),
-                            Duration.ofSeconds(VelocityMessages.CONTROL_STAY.get(Integer.class)),
-                            Duration.ofSeconds(VelocityMessages.CONTROL_FADEOUT.get(Integer.class))));
-
-            titleTask = instance.getServer().getScheduler().buildTask(
-                            instance, () -> suspicious.showTitle(controlTitle))
-                    .delay(VelocityMessages.CONTROL_DELAY.get(Integer.class), TimeUnit.SECONDS)
-                    .schedule();
-
+        if (!VelocityMessages.CONTROL_USETITLE.get(Boolean.class)) {
+            return;
         }
+
+        Title controlTitle = Title.title(
+
+                LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.CONTROL_TITLE.color()),
+                LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.CONTROL_SUBTITLE.color()),
+
+                Title.Times.times(
+                        Duration.ofSeconds(VelocityMessages.CONTROL_FADEIN.get(Integer.class)),
+                        Duration.ofSeconds(VelocityMessages.CONTROL_STAY.get(Integer.class)),
+                        Duration.ofSeconds(VelocityMessages.CONTROL_FADEOUT.get(Integer.class))));
+
+        titleTask = instance.getServer().getScheduler().buildTask(
+                        instance, () -> suspicious.showTitle(controlTitle))
+                .delay(VelocityMessages.CONTROL_DELAY.get(Integer.class), TimeUnit.SECONDS)
+                .schedule();
+    }
+
+    private void sendAdminStartTitle(Player administrator, Player suspicious) {
+
+        if (!VelocityMessages.ADMINCONTROL_USETITLE.get(Boolean.class)) {
+            return;
+        }
+
+        Title controlTitle = Title.title(
+
+                LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.ADMINCONTROL_TITLE.color().replace("%player%", suspicious.getUsername())),
+                LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.ADMINCONTROL_SUBTITLE.color().replace("%player%", suspicious.getUsername())),
+
+                Title.Times.times(
+                        Duration.ofSeconds(VelocityMessages.ADMINCONTROL_FADEIN.get(Integer.class)),
+                        Duration.ofSeconds(VelocityMessages.ADMINCONTROL_STAY.get(Integer.class)),
+                        Duration.ofSeconds(VelocityMessages.ADMINCONTROL_FADEOUT.get(Integer.class))));
+
+        titleTaskAdmin = instance.getServer().getScheduler().buildTask(
+                        instance, () -> administrator.showTitle(controlTitle))
+                .delay(VelocityMessages.ADMINCONTROL_DELAY.get(Integer.class), TimeUnit.SECONDS)
+                .schedule();
     }
 
     private void sendEndTitle(Player suspicious) {
 
-        if (VelocityMessages.CONTROLFINISH_USETITLE.get(Boolean.class)) {
-
-            Title controlTitle = Title.title(
-
-                    LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.CONTROLFINISH_TITLE.color()),
-                    LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.CONTROLFINISH_SUBTITLE.color()),
-
-                    Title.Times.times(
-                            Duration.ofSeconds(VelocityMessages.CONTROLFINISH_FADEIN.get(Integer.class)),
-                            Duration.ofSeconds(VelocityMessages.CONTROLFINISH_STAY.get(Integer.class)),
-                            Duration.ofSeconds(VelocityMessages.CONTROLFINISH_FADEOUT.get(Integer.class))));
-
-            titleTask = instance.getServer().getScheduler().buildTask(
-                            instance, () -> suspicious.showTitle(controlTitle))
-                    .delay(VelocityMessages.CONTROLFINISH_DELAY.get(Integer.class), TimeUnit.SECONDS)
-                    .schedule();
-
+        if (!VelocityMessages.CONTROLFINISH_USETITLE.get(Boolean.class)) {
+            return;
         }
+
+        Title controlTitle = Title.title(
+
+                LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.CONTROLFINISH_TITLE.color()),
+                LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.CONTROLFINISH_SUBTITLE.color()),
+
+                Title.Times.times(
+                        Duration.ofSeconds(VelocityMessages.CONTROLFINISH_FADEIN.get(Integer.class)),
+                        Duration.ofSeconds(VelocityMessages.CONTROLFINISH_STAY.get(Integer.class)),
+                        Duration.ofSeconds(VelocityMessages.CONTROLFINISH_FADEOUT.get(Integer.class))));
+
+        titleTask = instance.getServer().getScheduler().buildTask(
+                        instance, () -> suspicious.showTitle(controlTitle))
+                .delay(VelocityMessages.CONTROLFINISH_DELAY.get(Integer.class), TimeUnit.SECONDS)
+                .schedule();
+    }
+
+    private void sendAdminEndTitle(Player administrator, Player suspicious) {
+
+        if (!VelocityMessages.ADMINCONTROLFINISH_USETITLE.get(Boolean.class)) {
+            return;
+        }
+
+        Title controlTitle = Title.title(
+
+                LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.ADMINCONTROLFINISH_TITLE.color().replace("%player%", suspicious.getUsername())),
+                LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.ADMINCONTROLFINISH_SUBTITLE.color().replace("%player%", suspicious.getUsername())),
+
+                Title.Times.times(
+                        Duration.ofSeconds(VelocityMessages.ADMINCONTROLFINISH_FADEIN.get(Integer.class)),
+                        Duration.ofSeconds(VelocityMessages.ADMINCONTROLFINISH_STAY.get(Integer.class)),
+                        Duration.ofSeconds(VelocityMessages.ADMINCONTROLFINISH_FADEOUT.get(Integer.class))));
+
+        titleTaskAdmin = instance.getServer().getScheduler().buildTask(
+                        instance, () -> administrator.showTitle(controlTitle))
+                .delay(VelocityMessages.ADMINCONTROLFINISH_DELAY.get(Integer.class), TimeUnit.SECONDS)
+                .schedule();
     }
 }

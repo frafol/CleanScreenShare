@@ -45,6 +45,14 @@ public enum BungeeMessages {
     CONTROL_STAY("messages.title.start.stay"),
     CONTROL_DELAY("messages.title.start.delay"),
 
+    ADMINCONTROL_USETITLE("messages.title.admin_start.enable"),
+    ADMINCONTROL_TITLE("messages.title.admin_start.title"),
+    ADMINCONTROL_SUBTITLE("messages.title.admin_start.subtitle"),
+    ADMINCONTROL_FADEIN("messages.title.admin_start.fade_in"),
+    ADMINCONTROL_FADEOUT("messages.title.admin_start.fade_out"),
+    ADMINCONTROL_STAY("messages.title.admin_start.stay"),
+    ADMINCONTROL_DELAY("messages.title.admin_start.delay"),
+
     CONTROLFINISH_USETITLE("messages.title.finish.enable"),
     CONTROLFINISH_TITLE("messages.title.finish.title"),
     CONTROLFINISH_SUBTITLE("messages.title.finish.subtitle"),
@@ -52,6 +60,14 @@ public enum BungeeMessages {
     CONTROLFINISH_FADEOUT("messages.title.finish.fade_out"),
     CONTROLFINISH_STAY("messages.title.finish.stay"),
     CONTROLFINISH_DELAY("messages.title.finish.delay"),
+
+    ADMINCONTROLFINISH_USETITLE("messages.title.admin_finish.enable"),
+    ADMINCONTROLFINISH_TITLE("messages.title.admin_finish.title"),
+    ADMINCONTROLFINISH_SUBTITLE("messages.title.admin_finish.subtitle"),
+    ADMINCONTROLFINISH_FADEIN("messages.title.admin_finish.fade_in"),
+    ADMINCONTROLFINISH_FADEOUT("messages.title.admin_finish.fade_out"),
+    ADMINCONTROLFINISH_STAY("messages.title.admin_finish.stay"),
+    ADMINCONTROLFINISH_DELAY("messages.title.admin_finish.delay"),
 
     YOURSELF("messages.yourself"),
     PLAYER_BYPASS("messages.player_bypass"),
