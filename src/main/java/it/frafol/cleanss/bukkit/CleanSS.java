@@ -4,16 +4,21 @@ import com.tchristofferson.configupdater.ConfigUpdater;
 import it.frafol.cleanss.bukkit.commands.MainCommand;
 import it.frafol.cleanss.bukkit.enums.SpigotConfig;
 import it.frafol.cleanss.bukkit.enums.SpigotVersion;
+import it.frafol.cleanss.bukkit.hooks.PlaceholderHook;
 import it.frafol.cleanss.bukkit.listeners.PlayerListener;
 import it.frafol.cleanss.bukkit.listeners.PluginMessageReceiver;
 import it.frafol.cleanss.bukkit.listeners.WorldListener;
+import it.frafol.cleanss.bukkit.objects.PlayerCache;
 import it.frafol.cleanss.bukkit.objects.TextFile;
+import lombok.Getter;
 import lombok.SneakyThrows;
 import net.byteflux.libby.BukkitLibraryManager;
 import net.byteflux.libby.Library;
+import org.apache.commons.lang.time.DurationFormatUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.io.File;
 import java.io.IOException;
@@ -22,19 +27,27 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.UUID;
 
 public class CleanSS extends JavaPlugin {
 
 	public boolean updated = false;
 
-	private TextFile configTextFile;
-	private TextFile cacheTextFile;
-	private TextFile versionTextFile;
-	public static CleanSS instance;
+	private final HashMap<UUID, BukkitTask> timerTask = new HashMap<>();
+	private final HashMap<UUID, Integer> seconds = new HashMap<>();
 
-	public static CleanSS getInstance() {
-		return instance;
-	}
+	@Getter
+	private TextFile configTextFile;
+
+	@Getter
+	private TextFile cacheTextFile;
+
+	@Getter
+	private TextFile versionTextFile;
+
+	@Getter
+	public static CleanSS instance;
 
 	@SneakyThrows
 	@Override
@@ -51,6 +64,13 @@ public class CleanSS extends JavaPlugin {
 				.version("1.8.4")
 				.build();
 
+		Library scoreboard = Library.builder()
+				.groupId("me{}Stijn{}ScoreboardAPI")
+				.artifactId("ScoreboardAPI")
+				.version("0.0.1")
+				.url("https://github.com/frafol/CleanScreenShare/raw/main/libs/ScoreboardAPI.jar")
+				.build();
+
 		try {
 			bukkitLibraryManager.loadLibrary(yaml);
 		} catch (RuntimeException ignored) {
@@ -65,6 +85,7 @@ public class CleanSS extends JavaPlugin {
 
 		bukkitLibraryManager.addJitPack();
 		bukkitLibraryManager.loadLibrary(yaml);
+		bukkitLibraryManager.loadLibrary(scoreboard);
 
 		getLogger().info("\n   ___  __    ____    __    _  _   ___  ___\n" +
 				"  / __)(  )  ( ___)  /__\\  ( \\( ) / __)/ __)\n" +
@@ -89,9 +110,8 @@ public class CleanSS extends JavaPlugin {
 			getLogger().info("Creating new configurations...");
 			try {
 				ConfigUpdater.update(this, "settings.yml", configFile, Collections.emptyList());
-			} catch (IOException exception) {
-				getLogger().severe("Unable to update configuration file, see the error below:");
-				exception.printStackTrace();
+			} catch (IOException ignored) {
+				getLogger().severe("Unable to update configuration file, please remove the settings.yml!");
 			}
 
 			versionTextFile.getConfig().set("version", getDescription().getVersion());
@@ -110,8 +130,12 @@ public class CleanSS extends JavaPlugin {
 		getServer().getPluginManager().registerEvents(new PlayerListener(), this);
 		getServer().getPluginManager().registerEvents(new WorldListener(), this);
 
+		if (isPAPI()) {
+			new PlaceholderHook(this).register();
+			getLogger().info("PlaceholderAPI found, placeholders enabled.");
+		}
+
 		UpdateChecker();
-		getLogger().info("Successfully loaded!");
 
 		if (SpigotConfig.DAY_CYCLE.get(Boolean.class)) {
 			if (!isFolia()) {
@@ -119,9 +143,19 @@ public class CleanSS extends JavaPlugin {
 					worlds.setGameRuleValue("doDaylightCycle", "false");
 				}
 			} else {
-				getLogger().severe("The gamerule doDaylightCycle is not supported by Folia.");
+				getLogger().severe("Cannot disable daylight cycle on Folia, please disable it manually.");
 			}
 		}
+
+		if (SpigotConfig.SB_STAFF.get(Boolean.class) || SpigotConfig.SB_SUSPECT.get(Boolean.class)) {
+			PlayerCache.updateScoreboardTask();
+		}
+
+		if (SpigotConfig.TABLIST_STAFF.get(Boolean.class) || SpigotConfig.TABLIST_SUSPECT.get(Boolean.class)) {
+			PlayerCache.updateTabListTask();
+		}
+
+		getLogger().info("Successfully loaded!");
 	}
 
 	public void onDisable() {
@@ -131,7 +165,6 @@ public class CleanSS extends JavaPlugin {
 		getServer().getMessenger().unregisterIncomingPluginChannel(this, "cleanss:reload");
 
 		getLogger().info("Successfully disabled!");
-
 	}
 
 	public static boolean isFolia() {
@@ -143,18 +176,6 @@ public class CleanSS extends JavaPlugin {
 		return true;
 	}
 
-
-	public TextFile getConfigTextFile() {
-		return configTextFile;
-	}
-
-	public TextFile getCacheTextFile() {
-		return cacheTextFile;
-	}
-
-	public TextFile getVersionTextFile() {
-		return versionTextFile;
-	}
 
 	public boolean isSuperLegacy() {
 		return Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3].contains("1_6_R")
@@ -182,12 +203,12 @@ public class CleanSS extends JavaPlugin {
 				}
 
 				if (!updated) {
-					getLogger().warning("§eThere is a new update available, download it on SpigotMC!");
+					getLogger().warning("There is a new update available, download it on SpigotMC!");
 				}
 			}
 
 			if (Integer.parseInt(getDescription().getVersion().replace(".", "")) > Integer.parseInt(version.replace(".", ""))) {
-				getLogger().warning("§eYou are using a development version, please report any bugs!");
+				getLogger().warning("You are using a development version, please report any bugs!");
 			}
 
 		});
@@ -201,7 +222,7 @@ public class CleanSS extends JavaPlugin {
 	public void autoUpdate() {
 
 		if (isWindows()) {
-			getLogger().warning("§eAuto update is not supported on Windows.");
+			getLogger().warning("Auto update is not supported on Windows.");
 			return;
 		}
 
@@ -216,8 +237,8 @@ public class CleanSS extends JavaPlugin {
 			updated = true;
 			getLogger().warning("CleanScreenShare successfully updated, a restart is required.");
 
-		} catch (IOException e) {
-			e.printStackTrace();
+		} catch (IOException ignored) {
+			getLogger().severe("Unable to update CleanScreenShare, please download it manually from SpigotMC.");
 		}
 	}
 
@@ -236,4 +257,42 @@ public class CleanSS extends JavaPlugin {
 		}
 	}
 
+	public boolean isPAPI() {
+		return getServer().getPluginManager().getPlugin("PlaceholderAPI") != null && SpigotConfig.PAPI_HOOK.get(Boolean.class);
+	}
+
+	public void startTimer(UUID uuid) {
+		timerTask.put(uuid, instance.getServer().getScheduler().runTaskTimer(instance, () -> {
+			seconds.putIfAbsent(uuid, 1);
+			seconds.put(uuid, seconds.get(uuid) + 1);
+		}, 20L, 20L));
+	}
+
+	public void stopTimer(UUID uuid) {
+		if (timerTask.get(uuid) != null) {
+			timerTask.get(uuid).cancel();
+			seconds.remove(uuid);
+			timerTask.remove(uuid);
+		}
+	}
+
+	public Integer getSeconds(UUID uuid) {
+		return seconds.get(uuid);
+	}
+
+	public String getFormattedSeconds(UUID uuid) {
+		if (seconds.get(uuid) == null) {
+			return "00:00";
+		}
+
+		if (seconds.get(uuid) > 86400) {
+			return DurationFormatUtils.formatDuration(seconds.get(uuid) * 1000L, "dd:HH:mm:ss");
+		}
+
+		if (seconds.get(uuid) > 3600) {
+			return DurationFormatUtils.formatDuration(seconds.get(uuid) * 1000L, "HH:mm:ss");
+		}
+
+		return DurationFormatUtils.formatDuration(seconds.get(uuid) * 1000L, "mm:ss");
+	}
 }

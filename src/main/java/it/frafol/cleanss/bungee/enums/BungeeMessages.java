@@ -7,6 +7,9 @@ import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public enum BungeeMessages {
 
     PREFIX("messages.prefix"),
@@ -106,8 +109,38 @@ public enum BungeeMessages {
         return clazz.cast(instance.getMessagesTextFile().get(path));
     }
 
-    public @NotNull String color() {
-        return get(String.class).replace("&", "§");
+    public String color() {
+        String hex = convertHexColors(get(String.class));
+        return hex.replace("&", "§");
+    }
+
+    private String convertHexColors(String message) {
+
+        if (!containsHexColor(message)) {
+            return message;
+        }
+
+        Pattern pattern = Pattern.compile("#[a-fA-F0-9]{6}");
+        Matcher matcher = pattern.matcher(message);
+        while (matcher.find()) {
+            String hexCode = message.substring(matcher.start(), matcher.end());
+            String replaceSharp = hexCode.replace('#', 'x');
+
+            char[] ch = replaceSharp.toCharArray();
+            StringBuilder builder = new StringBuilder();
+            for (char c : ch) {
+                builder.append("&").append(c);
+            }
+
+            message = message.replace(hexCode, builder.toString());
+            matcher = pattern.matcher(message);
+        }
+        return message;
+    }
+
+    private boolean containsHexColor(String message) {
+        String hexColorPattern = "(?i)&#[a-f0-9]{6}";
+        return message.matches(".*" + hexColorPattern + ".*");
     }
 
     public String getPath() {
@@ -117,5 +150,4 @@ public enum BungeeMessages {
     public void sendList(CommandSender commandSource, ProxiedPlayer player_name, Placeholder... placeHolder) {
         Utils.sendFormattedList(this, commandSource, player_name, placeHolder);
     }
-
 }

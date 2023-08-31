@@ -653,7 +653,7 @@ public class Utils {
 
         } else {
 
-            Utils.sendChannelMessage(administrator, "ADMIN");
+            Utils.sendChannelAdvancedMessage(administrator, suspicious, "ADMIN");
 
             if (administrator.getProtocolVersion().getProtocol() >= ProtocolVersion.getProtocolVersion(759).getProtocol()) {
                 Utils.sendChannelMessage(administrator, "NO_CHAT");
@@ -763,6 +763,19 @@ public class Utils {
         buf.writeUTF(type);
         buf.writeUTF(player.getUsername());
         player.getCurrentServer().ifPresent(sv ->
+                sv.sendPluginMessage(CleanSS.channel_join, buf.toByteArray()));
+
+    }
+
+    @SuppressWarnings("UnstableApiUsage")
+    public void sendChannelAdvancedMessage(@NotNull Player administrator, Player suspicious, String type) {
+
+        final ByteArrayDataOutput buf = ByteStreams.newDataOutput();
+
+        buf.writeUTF(type);
+        buf.writeUTF(administrator.getUsername());
+        buf.writeUTF(suspicious.getUsername());
+        administrator.getCurrentServer().ifPresent(sv ->
                 sv.sendPluginMessage(CleanSS.channel_join, buf.toByteArray()));
 
     }

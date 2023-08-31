@@ -40,7 +40,7 @@ public class ServerListener {
         }
 
         if (PlayerCache.getAdministrator().contains(player.getUniqueId())) {
-            Utils.sendChannelMessage(player, "ADMIN");
+            Utils.sendChannelAdvancedMessage(player, PlayerCache.getCouples().get(player), "ADMIN");
         }
 
         if (player.getProtocolVersion().getProtocol() >= ProtocolVersion.getProtocolVersion(759).getProtocol()) {

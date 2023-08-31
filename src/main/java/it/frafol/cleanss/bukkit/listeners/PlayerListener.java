@@ -1,5 +1,6 @@
 package it.frafol.cleanss.bukkit.listeners;
 
+import it.frafol.cleanss.bukkit.CleanSS;
 import it.frafol.cleanss.bukkit.enums.SpigotConfig;
 import it.frafol.cleanss.bukkit.objects.PlayerCache;
 import org.bukkit.GameMode;
@@ -18,6 +19,8 @@ import org.bukkit.event.player.*;
 import org.jetbrains.annotations.NotNull;
 
 public class PlayerListener implements Listener {
+
+    private final CleanSS instance = CleanSS.getInstance();
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerChat(@NotNull AsyncPlayerChatEvent event) {
@@ -75,7 +78,6 @@ public class PlayerListener implements Listener {
             event.setCancelled(true);
             player.teleport(player.getWorld().getSpawnLocation());
         }
-
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -122,12 +124,19 @@ public class PlayerListener implements Listener {
         if (SpigotConfig.HUNGER.get(Boolean.class)) {
             player.setFoodLevel(20);
         }
-
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onQuit(@NotNull PlayerQuitEvent event) {
         PlayerCache.getNo_chat().remove(event.getPlayer().getUniqueId());
+        PlayerCache.getSuspicious().remove(event.getPlayer().getUniqueId());
+        PlayerCache.getAdministrator().remove(event.getPlayer().getUniqueId());
+
+        instance.stopTimer(event.getPlayer().getUniqueId());
+
+        if (PlayerCache.getCouples().get(event.getPlayer().getUniqueId()) != null) {
+            PlayerCache.getCouples().remove(event.getPlayer().getUniqueId());
+        }
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -142,7 +151,6 @@ public class PlayerListener implements Listener {
         if (SpigotConfig.MOVE.get(Boolean.class)) {
             event.setCancelled(true);
         }
-
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)

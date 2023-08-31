@@ -37,7 +37,7 @@ public class ServerListener implements Listener {
             }
 
             if (PlayerCache.getAdministrator().contains(player.getUniqueId())) {
-                Utils.sendChannelMessage(player, "ADMIN");
+                Utils.sendChannelAdvancedMessage(player, PlayerCache.getCouples().get(player),"ADMIN");
             }
 
         }, 1L, TimeUnit.SECONDS);

@@ -3,6 +3,10 @@ package it.frafol.cleanss.bukkit.enums;
 import it.frafol.cleanss.bukkit.CleanSS;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public enum SpigotConfig {
 
     UPDATE_CHECK("options.update_check"),
@@ -28,6 +32,37 @@ public enum SpigotConfig {
     DAY_CYCLE("options.prevent.world.daylight_cycle"),
     MOB_SPAWNING("options.prevent.world.mob_spawning"),
 
+    SUSPECTPREFIX("options.messages.suspect_prefix"),
+    STAFFPREFIX("options.messages.staff_prefix"),
+
+    SB_UPDATE("options.scoreboard.update_task"),
+
+    SB_STAFF("options.scoreboard.staff_board.enabled"),
+    SB_STAFFTITLE("options.scoreboard.staff_board.title"),
+    SB_STAFFLINES("options.scoreboard.staff_board.lines"),
+
+    SB_SUSPECT("options.scoreboard.suspect_board.enabled"),
+    SB_SUSPECTTITLE("options.scoreboard.suspect_board.title"),
+    SB_SUSPECTLINES("options.scoreboard.suspect_board.lines"),
+
+    TABLIST_UPDATE("options.tablist.update_task"),
+
+    TABLIST_STAFF("options.tablist.staff_tablist.enabled"),
+    TABLIST_STAFFHEADER("options.tablist.staff_tablist.header"),
+    TABLIST_STAFFFOOTER("options.tablist.staff_tablist.footer"),
+
+    TABLIST_STAFFPREFIX("options.tablist.staff_tablist.prefix"),
+    TABLIST_STAFFSUFFIX("options.tablist.staff_tablist.suffix"),
+
+    TABLIST_SUSPECT("options.tablist.suspect_tablist.enabled"),
+    TABLIST_SUSPECTHEADER("options.tablist.suspect_tablist.header"),
+    TABLIST_SUSPECTFOOTER("options.tablist.suspect_tablist.footer"),
+
+    TABLIST_SUSPECTPREFIX("options.tablist.suspect_tablist.prefix"),
+    TABLIST_SUSPECTSUFFIX("options.tablist.suspect_tablist.suffix"),
+
+    PAPI_HOOK("options.placeholderapi_hook"),
+
     INVINCIBLE("options.invincible");
 
     private final String path;
@@ -41,8 +76,42 @@ public enum SpigotConfig {
         return clazz.cast(instance.getConfigTextFile().getConfig().get(path));
     }
 
-    public @NotNull String color() {
-        return get(String.class).replace("&", "§");
+    public List<String> getStringList() {
+        return instance.getConfigTextFile().getConfig().getStringList(path);
+    }
+
+    public String color() {
+        String hex = convertHexColors(get(String.class));
+        return hex.replace("&", "§");
+    }
+
+    private String convertHexColors(String message) {
+
+        if (!containsHexColor(message)) {
+            return message;
+        }
+
+        Pattern pattern = Pattern.compile("#[a-fA-F0-9]{6}");
+        Matcher matcher = pattern.matcher(message);
+        while (matcher.find()) {
+            String hexCode = message.substring(matcher.start(), matcher.end());
+            String replaceSharp = hexCode.replace('#', 'x');
+
+            char[] ch = replaceSharp.toCharArray();
+            StringBuilder builder = new StringBuilder();
+            for (char c : ch) {
+                builder.append("&").append(c);
+            }
+
+            message = message.replace(hexCode, builder.toString());
+            matcher = pattern.matcher(message);
+        }
+        return message;
+    }
+
+    private boolean containsHexColor(String message) {
+        String hexColorPattern = "(?i)&#[a-f0-9]{6}";
+        return message.matches(".*" + hexColorPattern + ".*");
     }
 
 }

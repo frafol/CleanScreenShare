@@ -491,7 +491,7 @@ public class Utils {
         if (!Objects.equals(administrator.getServer().getInfo(), proxyServer)) {
             administrator.connect(proxyServer);
         } else {
-            Utils.sendChannelMessage(administrator, "ADMIN");
+            Utils.sendChannelAdvancedMessage(administrator, suspicious,"ADMIN");
         }
 
         if (!Objects.equals(suspicious.getServer().getInfo(), proxyServer)) {
@@ -658,6 +658,23 @@ public class Utils {
 
         player.getServer().sendData("cleanss:join", buf.toByteArray());
 
+    }
+
+    @SuppressWarnings("UnstableApiUsage")
+    public void sendChannelAdvancedMessage(@NotNull ProxiedPlayer administrator, ProxiedPlayer suspicious, String type) {
+
+        final ByteArrayDataOutput buf = ByteStreams.newDataOutput();
+
+        buf.writeUTF(type);
+        buf.writeUTF(administrator.getName());
+        buf.writeUTF(suspicious.getName());
+
+        if (administrator.getServer() == null) {
+            instance.getLogger().severe("The player " + administrator.getName() + " has no server, please check your control server if it's working correctly!");
+            return;
+        }
+
+        administrator.getServer().sendData("cleanss:join", buf.toByteArray());
     }
 
     private void sendStartTitle(ProxiedPlayer suspicious) {

@@ -10,6 +10,9 @@ options:
   update_check: true
   auto_update: true
 
+  # Hook with PlaceholderAPI.
+  placeholderapi_hook: true
+
   # Bypass command and move prevention.
   staff_permission: "screenshare.control"
   admin_permission: "screenshare.admin"
@@ -45,6 +48,73 @@ options:
       mob_spawning: true
 
   messages:
+
+    # Messages sent to the player when he sets a player spawn in the server.
     spawn_set: "&aSpawn has been set in your position."
+
+    # Prefixes of the players, you can use it in all plugins that support PlaceholderAPI.
+    # Placeholders: %screenshare_prefix%
+    staff_prefix: "&7[&cStaff&7] &r"
+    suspect_prefix: "&7[&eSuspicious&7] &r"
+
+  scoreboard:
+
+    # The time in ticks after which the scoreboard will be updated.
+    # Lower values may cause performance issues.
+    update_task: 20
+
+    # NOTE: In this section, you can use ALL placeholderapi placeholders, if you have it installed.
+    staff_board:
+      enabled: true
+
+      # Title of the scoreboard.
+      title: "&c&lSCREENSHARE"
+
+      # Lines of the scoreboard.
+      lines:
+        - "&7Suspect: &e%screenshare_suspicious%"
+        - "&7Time: &e%screenshare_seconds_formatted%"
+
+    suspect_board:
+      enabled: true
+
+      # Title of the scoreboard.
+      title: "&c&lSCREENSHARE"
+
+      # Lines of the scoreboard.
+      lines:
+        - "&7Staff: &c%screenshare_administrator%"
+        - "&7Time: &e%screenshare_seconds_formatted%"
+
+  tablist:
+
+    # The time in ticks after which the tablist will be updated.
+    # Lower values may cause performance issues.
+    update_task: 100
+
+    # NOTE: In this section, you can use ALL placeholderapi placeholders, if you have it installed.
+    staff_tablist:
+      enabled: true
+
+      # Header and footer of the tablist.
+      header:
+        - "&c&lSCREENSHARE"
+        - "&f"
+
+      footer:
+        - "&f"
+        - "&7Suspect: &e%screenshare_suspicious%"
+
+    suspect_tablist:
+      enabled: true
+
+      # Header and footer of the tablist.
+      header:
+        - "&c&lSCREENSHARE"
+        - "&f"
+
+      footer:
+        - "&f"
+        - "&7Administrator: &e%screenshare_administrator%"
 
 # Enjoy.

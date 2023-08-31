@@ -12,11 +12,9 @@ public class WorldListener  implements Listener {
 
     @EventHandler
     public void onWorldWeatherChange(WeatherChangeEvent event) {
-
         if (SpigotConfig.WEATHER.get(Boolean.class)) {
             event.setCancelled(true);
         }
-
     }
 
     @EventHandler
@@ -29,7 +27,5 @@ public class WorldListener  implements Listener {
         if (SpigotConfig.MOB_SPAWNING.get(Boolean.class)) {
             event.setCancelled(true);
         }
-
     }
-
 }

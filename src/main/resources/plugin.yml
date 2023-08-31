@@ -5,3 +5,6 @@ authors: [ frafol ]
 api-version: 1.13
 folia-supported: true
 description: "Addition for CleanSS (Bungee/Velocity)"
+softdepend:
+  - PlaceholderAPI
+  - LuckPerms

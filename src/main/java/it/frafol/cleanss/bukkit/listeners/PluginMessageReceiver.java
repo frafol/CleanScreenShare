@@ -14,7 +14,9 @@ import org.jetbrains.annotations.NotNull;
 
 public class PluginMessageReceiver implements PluginMessageListener {
 
-    @SuppressWarnings("UnstableApiUsage")
+    private final CleanSS instance = CleanSS.getInstance();
+
+    @SuppressWarnings({"UnstableApiUsage"})
     @Override
     public void onPluginMessageReceived(@NotNull String channel, Player player, byte[] message) {
 
@@ -67,17 +69,52 @@ public class PluginMessageReceiver implements PluginMessageListener {
 
             final Player final_player = Bukkit.getPlayer(player_found);
             Bukkit.getScheduler().runTaskLater(CleanSS.getInstance(), () -> final_player.teleport(PlayerCache.StringToLocation(SpigotCache.SUSPECT_SPAWN.get(String.class))), 5L);
-            return;
+            PlayerCache.getSuspicious().add(final_player.getUniqueId());
+            instance.startTimer(final_player.getUniqueId());
 
+            if (SpigotConfig.SB_SUSPECT.get(Boolean.class)) {
+                PlayerCache.createSuspectScoreboard(final_player);
+            }
+
+            if (SpigotConfig.TABLIST_SUSPECT.get(Boolean.class)) {
+                instance.getServer().getScheduler().runTaskLater(instance, () -> PlayerCache.setSuspectTabList(player), 10);
+            }
+
+            return;
         }
 
         if (subChannel.equals("ADMIN")) {
 
             String player_found = dataInput.readUTF();
+            String suspicious_found = dataInput.readUTF();
 
             final Player final_player = Bukkit.getPlayer(player_found);
-            Bukkit.getScheduler().runTaskLater(CleanSS.getInstance(), () -> final_player.teleport(PlayerCache.StringToLocation(SpigotCache.ADMIN_SPAWN.get(String.class))), 5L);
 
+            Bukkit.getScheduler().runTaskLater(instance, () -> final_player.teleport(PlayerCache.StringToLocation(SpigotCache.ADMIN_SPAWN.get(String.class))), 5L);
+            PlayerCache.getAdministrator().add(final_player.getUniqueId());
+            instance.startTimer(final_player.getUniqueId());
+
+            if (SpigotConfig.SB_STAFF.get(Boolean.class)) {
+                PlayerCache.createAdminScoreboard(final_player);
+            }
+
+            if (SpigotConfig.TABLIST_STAFF.get(Boolean.class)) {
+                instance.getServer().getScheduler().runTaskLater(instance, () -> PlayerCache.setStaffTabList(player), 10);
+            }
+
+            instance.getServer().getScheduler().runTaskLaterAsynchronously(instance, () -> {
+
+                final Player final_suspicious = Bukkit.getPlayer(suspicious_found).getPlayer();
+                if (final_suspicious == null) {
+                    return;
+                }
+
+                if (final_suspicious.getUniqueId() == null) {
+                    return;
+                }
+
+                PlayerCache.getCouples().put(final_player.getUniqueId(), final_suspicious.getUniqueId());
+            }, 4 * 20L);
         }
     }
 }
