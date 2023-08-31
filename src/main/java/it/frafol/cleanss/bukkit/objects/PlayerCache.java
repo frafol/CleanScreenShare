@@ -190,7 +190,7 @@ public class PlayerCache {
         header = Strings.isNullOrEmpty(header) ? "" : color(header);
         footer = Strings.isNullOrEmpty(footer) ? "" : color(footer);
 
-        if (hasHeaderFooterMetod()) {
+        if (hasHeaderFooterMethod()) {
             player.setPlayerListHeaderFooter(header, footer);
             return;
         }
@@ -224,7 +224,8 @@ public class PlayerCache {
         }
     }
 
-    private boolean hasHeaderFooterMetod() {
+    @SuppressWarnings("ALL")
+    private boolean hasHeaderFooterMethod() {
         try {
             Player.class.getDeclaredMethod("setPlayerListHeaderFooter");
             return true;

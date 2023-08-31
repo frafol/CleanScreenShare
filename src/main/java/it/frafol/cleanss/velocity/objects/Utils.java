@@ -854,8 +854,8 @@ public class Utils {
 
         Title controlTitle = Title.title(
 
-                LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.ADMINCONTROL_TITLE.color().replace("%player%", suspicious.getUsername())),
-                LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.ADMINCONTROL_SUBTITLE.color().replace("%player%", suspicious.getUsername())),
+                LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.ADMINCONTROL_TITLE.color().replace("%suspect%", suspicious.getUsername())),
+                LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.ADMINCONTROL_SUBTITLE.color().replace("%suspect%", suspicious.getUsername())),
 
                 Title.Times.times(
                         Duration.ofSeconds(VelocityMessages.ADMINCONTROL_FADEIN.get(Integer.class)),
