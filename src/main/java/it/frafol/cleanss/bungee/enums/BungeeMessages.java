@@ -3,6 +3,8 @@ package it.frafol.cleanss.bungee.enums;
 import it.frafol.cleanss.bungee.CleanSS;
 import it.frafol.cleanss.bungee.objects.Placeholder;
 import it.frafol.cleanss.bungee.objects.Utils;
+import lombok.Getter;
+import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import org.jetbrains.annotations.NotNull;
@@ -98,7 +100,9 @@ public enum BungeeMessages {
     LEFT("messages.discord.results.left"),
     RELOADED("messages.reloaded");
 
+    @Getter
     private final String path;
+
     public static final CleanSS instance = CleanSS.getInstance();
 
     BungeeMessages(String path) {
@@ -114,37 +118,22 @@ public enum BungeeMessages {
         return hex.replace("&", "§");
     }
 
-    private String convertHexColors(String message) {
-
-        if (!containsHexColor(message)) {
-            return message;
+    public static String convertHexColors(String str) {
+        Pattern unicode = Pattern.compile("\\\\u\\+[a-fA-F0-9]{4}");
+        Matcher match = unicode.matcher(str);
+        while (match.find()) {
+            String code = str.substring(match.start(),match.end());
+            str = str.replace(code,Character.toString((char) Integer.parseInt(code.replace("\\u+",""),16)));
+            match = unicode.matcher(str);
         }
-
-        Pattern pattern = Pattern.compile("#[a-fA-F0-9]{6}");
-        Matcher matcher = pattern.matcher(message);
-        while (matcher.find()) {
-            String hexCode = message.substring(matcher.start(), matcher.end());
-            String replaceSharp = hexCode.replace('#', 'x');
-
-            char[] ch = replaceSharp.toCharArray();
-            StringBuilder builder = new StringBuilder();
-            for (char c : ch) {
-                builder.append("&").append(c);
-            }
-
-            message = message.replace(hexCode, builder.toString());
-            matcher = pattern.matcher(message);
+        Pattern pattern = Pattern.compile("&#[a-fA-F0-9]{6}");
+        match = pattern.matcher(str);
+        while (match.find()) {
+            String color = str.substring(match.start(),match.end());
+            str = str.replace(color,ChatColor.of(color.replace("&","")) + "");
+            match = pattern.matcher(str);
         }
-        return message;
-    }
-
-    private boolean containsHexColor(String message) {
-        String hexColorPattern = "(?i)&#[a-f0-9]{6}";
-        return message.matches(".*" + hexColorPattern + ".*");
-    }
-
-    public String getPath() {
-        return path;
+        return ChatColor.translateAlternateColorCodes('&',str);
     }
 
     public void sendList(CommandSender commandSource, ProxiedPlayer player_name, Placeholder... placeHolder) {

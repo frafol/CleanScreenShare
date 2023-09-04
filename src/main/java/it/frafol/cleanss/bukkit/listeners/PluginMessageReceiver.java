@@ -67,12 +67,15 @@ public class PluginMessageReceiver implements PluginMessageListener {
 
             String player_found = dataInput.readUTF();
 
+            instance.getLogger().warning("Received data (suspect) from the proxy. [" + player_found + "]");
+
             final Player final_player = Bukkit.getPlayer(player_found);
             Bukkit.getScheduler().runTaskLater(CleanSS.getInstance(), () -> final_player.teleport(PlayerCache.StringToLocation(SpigotCache.SUSPECT_SPAWN.get(String.class))), 5L);
             PlayerCache.getSuspicious().add(final_player.getUniqueId());
             instance.startTimer(final_player.getUniqueId());
 
             if (SpigotConfig.SB_SUSPECT.get(Boolean.class)) {
+                PlayerCache.deleteSuspectScoreboard(final_player);
                 PlayerCache.createSuspectScoreboard(final_player);
             }
 
@@ -88,6 +91,7 @@ public class PluginMessageReceiver implements PluginMessageListener {
             String player_found = dataInput.readUTF();
             String suspicious_found = dataInput.readUTF();
 
+            instance.getLogger().warning("Received data (administrator) from the proxy. [" + player_found + "]");
             final Player final_player = Bukkit.getPlayer(player_found);
 
             Bukkit.getScheduler().runTaskLater(instance, () -> final_player.teleport(PlayerCache.StringToLocation(SpigotCache.ADMIN_SPAWN.get(String.class))), 5L);
@@ -95,6 +99,7 @@ public class PluginMessageReceiver implements PluginMessageListener {
             instance.startTimer(final_player.getUniqueId());
 
             if (SpigotConfig.SB_STAFF.get(Boolean.class)) {
+                PlayerCache.deleteAdminScoreboard(final_player);
                 PlayerCache.createAdminScoreboard(final_player);
             }
 

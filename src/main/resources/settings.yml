@@ -28,6 +28,12 @@ options:
   # If you want to disable this feature, set this value to "none".
   change_gamemode_on_join: "adventure"
 
+
+  # If you want to disable this feature, set this value to "none".
+  # If you want to remove completely the message, set this value to "disabled".
+  custom_join_message: "&7[&a+&7] &e%player%"
+  custom_leave_message: "&7[&c-&7] &e%player%"
+
   # Action preventions.
   prevent:
 
@@ -61,7 +67,7 @@ options:
 
     # The time in ticks after which the scoreboard will be updated.
     # Lower values may cause performance issues.
-    update_task: 20
+    update_task: 40
 
     # NOTE: In this section, you can use ALL placeholderapi placeholders, if you have it installed.
     staff_board:
@@ -72,8 +78,11 @@ options:
 
       # Lines of the scoreboard.
       lines:
+        - "&c"
         - "&7Suspect: &e%screenshare_suspicious%"
-        - "&7Time: &e%screenshare_seconds_formatted%"
+        - "&7Time: &e%screenshare_time%"
+        - "&f"
+        - "&emc.yourserver.com"
 
     suspect_board:
       enabled: true
@@ -83,14 +92,22 @@ options:
 
       # Lines of the scoreboard.
       lines:
+        - "&c"
         - "&7Staff: &c%screenshare_administrator%"
-        - "&7Time: &e%screenshare_seconds_formatted%"
+        - "&7Time: &e%screenshare_time%"
+        - "&f"
+        - "&emc.yourserver.com"
 
   tablist:
 
     # The time in ticks after which the tablist will be updated.
     # Lower values may cause performance issues.
     update_task: 100
+
+    # NOTE: This wll work only if your spigot version is not legacy (1.13.2 - Latest).
+    # The format of the players in the tablist.
+    # PlaceholderAPI placeholders are supported.
+    format: "%screenshare_prefix%%player%"
 
     # NOTE: In this section, you can use ALL placeholderapi placeholders, if you have it installed.
     staff_tablist:

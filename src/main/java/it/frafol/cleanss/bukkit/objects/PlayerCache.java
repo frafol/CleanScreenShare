@@ -8,21 +8,16 @@ import lombok.Getter;
 import lombok.experimental.UtilityClass;
 import me.Stijn.ScoreboardAPI.ScoreboardAPI;
 import me.clip.placeholderapi.PlaceholderAPI;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.World;
-import org.bukkit.WorldCreator;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.DisplaySlot;
+import org.bukkit.scoreboard.Team;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -68,21 +63,59 @@ public class PlayerCache {
         return world + ";" + x + ";" + y + ";" + z + ";" + yaw + ";" + pitch;
     }
 
+    private String genEntry(int slot) {
+        return ChatColor.values()[slot].toString();
+    }
+
+    private String getFirstSplit(String s) {
+        return s.length() > 16 ? s.substring(0, 16) : s;
+    }
+
+    private String getSecondSplit(String s) {
+        if (s.length() > 32) {
+            s = s.substring(0, 32);
+        }
+        return s.length() > 16 ? s.substring(16) : "";
+    }
+
     public void createSuspectScoreboard(Player player) {
 
         ScoreboardAPI scoreboard = new ScoreboardAPI(player.getName(), SpigotConfig.SB_SUSPECTTITLE.color(), DisplaySlot.SIDEBAR);
 
-        int scoreValue = 0;
+        int scoreValue = 15;
+
         for (String line : SpigotConfig.SB_SUSPECTLINES.getStringList()) {
 
-            scoreValue++;
+            Team team = scoreboard.getScoreboard(player).registerNewTeam("SLOT_" + scoreValue);
+            team.addEntry(genEntry(scoreValue));
 
             String final_line = line;
             if (instance.isPAPI()) {
                 final_line = PlaceholderAPI.setPlaceholders(player, line);
             }
 
-            scoreboard.setScore(final_line, scoreValue);
+            try {
+
+                if (scoreValue == 0) {
+                    return;
+                }
+
+                if (!scoreboard.getScoreboard(player).getEntries().contains(final_line)) {
+                    scoreboard.setScore(final_line, scoreValue);
+                }
+
+                String pre = getFirstSplit(final_line);
+                String suf = getFirstSplit(ChatColor.getLastColors(pre) + getSecondSplit(final_line));
+                team.setPrefix(pre);
+                team.setSuffix(suf);
+                scoreValue--;
+                continue;
+
+            } catch (IllegalArgumentException ignored) {
+                instance.getLogger().severe("Cannot set score for " + player.getName() + " (suspect), too many characters. (is PlaceholderAPI installed?)");
+            }
+
+            scoreValue--;
         }
 
         scoreboard.setScoreboard(player);
@@ -92,20 +125,68 @@ public class PlayerCache {
 
         ScoreboardAPI scoreboard = new ScoreboardAPI(player.getName(), SpigotConfig.SB_STAFFTITLE.color(), DisplaySlot.SIDEBAR);
 
-        int scoreValue = 0;
+        int scoreValue = 15;
         for (String line : SpigotConfig.SB_STAFFLINES.getStringList()) {
 
-            scoreValue++;
+            Team team = scoreboard.getScoreboard(player).registerNewTeam("SLOT_" + scoreValue);
+            team.addEntry(genEntry(scoreValue));
 
             String final_line = line;
             if (instance.isPAPI()) {
                 final_line = PlaceholderAPI.setPlaceholders(player, line);
             }
 
-            scoreboard.setScore(final_line, scoreValue);
+            try {
+
+                if (scoreValue == 0) {
+                    return;
+                }
+
+                if (!scoreboard.getScoreboard(player).getEntries().contains(final_line)) {
+                    scoreboard.setScore(final_line, scoreValue);
+                }
+
+                String pre = getFirstSplit(final_line);
+                String suf = getFirstSplit(ChatColor.getLastColors(pre) + getSecondSplit(final_line));
+                team.setPrefix(pre);
+                team.setSuffix(suf);
+                scoreValue--;
+                continue;
+
+            } catch (IllegalArgumentException ignored) {
+                instance.getLogger().severe("Cannot set score for " + player.getName() + " (administrator), too many characters. (is PlaceholderAPI installed?)");
+            }
+
+            scoreValue--;
         }
 
         scoreboard.setScoreboard(player);
+    }
+
+    public void deleteSuspectScoreboard(Player player) {
+
+        if (!SpigotConfig.SB_SUSPECT.get(Boolean.class)) {
+            return;
+        }
+
+        ScoreboardAPI scoreboard = new ScoreboardAPI(player.getName(), SpigotConfig.SB_SUSPECTTITLE.color(), DisplaySlot.SIDEBAR);
+
+        for (Team team : scoreboard.getScoreboard(player).getTeams()) {
+            team.unregister();
+        }
+    }
+
+    public void deleteAdminScoreboard(Player player) {
+
+        if (!SpigotConfig.SB_STAFF.get(Boolean.class)) {
+            return;
+        }
+
+        ScoreboardAPI scoreboard = new ScoreboardAPI(player.getName(), SpigotConfig.SB_STAFFTITLE.color(), DisplaySlot.SIDEBAR);
+
+        for (Team team : scoreboard.getScoreboard(player).getTeams()) {
+            team.unregister();
+        }
     }
 
     public void updateScoreboardTask() {
@@ -123,6 +204,7 @@ public class PlayerCache {
                 continue;
             }
 
+            deleteSuspectScoreboard(instance.getServer().getPlayer(uuid));
             createSuspectScoreboard(instance.getServer().getPlayer(uuid));
         }
 
@@ -132,6 +214,7 @@ public class PlayerCache {
                 continue;
             }
 
+            deleteAdminScoreboard(instance.getServer().getPlayer(uuid));
             createAdminScoreboard(instance.getServer().getPlayer(uuid));
         }
     }
@@ -190,8 +273,15 @@ public class PlayerCache {
         header = Strings.isNullOrEmpty(header) ? "" : color(header);
         footer = Strings.isNullOrEmpty(footer) ? "" : color(footer);
 
-        if (hasHeaderFooterMethod()) {
+        if (!isVersionLessThanOrEqual("1.12.2")) {
             player.setPlayerListHeaderFooter(header, footer);
+
+            if (!instance.isPAPI()) {
+                player.setPlayerListName(SpigotConfig.TABLIST_FORMAT.color().replace("%player%", player.getName()));
+                return;
+            }
+
+            player.setPlayerListName(PlaceholderAPI.setPlaceholders(player, SpigotConfig.TABLIST_FORMAT.color().replace("%player%", player.getName())));
             return;
         }
 
@@ -224,14 +314,32 @@ public class PlayerCache {
         }
     }
 
-    @SuppressWarnings("ALL")
-    private boolean hasHeaderFooterMethod() {
-        try {
-            Player.class.getDeclaredMethod("setPlayerListHeaderFooter");
+    public static boolean isVersionLessThanOrEqual(String version) {
+        String serverVersion = Bukkit.getVersion();
+
+        Pattern pattern = Pattern.compile(".*(\\d+\\.\\d+\\.\\d+).*");
+        Matcher matcher = pattern.matcher(serverVersion);
+
+        if (matcher.matches()) {
+            String serverVersionNumber = matcher.group(1);
+            String[] serverVersionParts = serverVersionNumber.split("\\.");
+            String[] targetVersionParts = version.split("\\.");
+
+            for (int i = 0; i < Math.min(serverVersionParts.length, targetVersionParts.length); i++) {
+                int serverPart = Integer.parseInt(serverVersionParts[i]);
+                int targetPart = Integer.parseInt(targetVersionParts[i]);
+
+                if (serverPart < targetPart) {
+                    return true;
+                } else if (serverPart > targetPart) {
+                    return false;
+                }
+            }
+
             return true;
-        } catch (NoSuchMethodException e) {
-            return false;
         }
+
+        return false;
     }
 
     public String color(String string) {

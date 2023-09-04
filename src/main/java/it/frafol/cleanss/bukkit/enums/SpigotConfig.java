@@ -46,20 +46,18 @@ public enum SpigotConfig {
     SB_SUSPECTLINES("options.scoreboard.suspect_board.lines"),
 
     TABLIST_UPDATE("options.tablist.update_task"),
+    TABLIST_FORMAT("options.tablist.format"),
 
     TABLIST_STAFF("options.tablist.staff_tablist.enabled"),
     TABLIST_STAFFHEADER("options.tablist.staff_tablist.header"),
     TABLIST_STAFFFOOTER("options.tablist.staff_tablist.footer"),
 
-    TABLIST_STAFFPREFIX("options.tablist.staff_tablist.prefix"),
-    TABLIST_STAFFSUFFIX("options.tablist.staff_tablist.suffix"),
-
     TABLIST_SUSPECT("options.tablist.suspect_tablist.enabled"),
     TABLIST_SUSPECTHEADER("options.tablist.suspect_tablist.header"),
     TABLIST_SUSPECTFOOTER("options.tablist.suspect_tablist.footer"),
 
-    TABLIST_SUSPECTPREFIX("options.tablist.suspect_tablist.prefix"),
-    TABLIST_SUSPECTSUFFIX("options.tablist.suspect_tablist.suffix"),
+    CUSTOM_JOIN_MESSAGE("options.custom_join_message"),
+    CUSTOM_LEAVE_MESSAGE("options.custom_leave_message"),
 
     PAPI_HOOK("options.placeholderapi_hook"),
 
@@ -113,5 +111,4 @@ public enum SpigotConfig {
         String hexColorPattern = "(?i)&#[a-f0-9]{6}";
         return message.matches(".*" + hexColorPattern + ".*");
     }
-
 }

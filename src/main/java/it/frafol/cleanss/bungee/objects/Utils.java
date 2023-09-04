@@ -12,6 +12,7 @@ import net.luckperms.api.LuckPerms;
 import net.luckperms.api.LuckPermsProvider;
 import net.luckperms.api.model.group.Group;
 import net.luckperms.api.model.user.User;
+import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.Title;
@@ -27,6 +28,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @UtilityClass
@@ -57,8 +60,27 @@ public class Utils {
         return s;
     }
 
-    public String color(@NotNull String s) {
-        return s.replace("&", "§");
+    public String color(String string) {
+        String hex = convertHexColors(string);
+        return hex.replace("&", "§");
+    }
+
+    public static String convertHexColors(String str) {
+        Pattern unicode = Pattern.compile("\\\\u\\+[a-fA-F0-9]{4}");
+        Matcher match = unicode.matcher(str);
+        while (match.find()) {
+            String code = str.substring(match.start(),match.end());
+            str = str.replace(code,Character.toString((char) Integer.parseInt(code.replace("\\u+",""),16)));
+            match = unicode.matcher(str);
+        }
+        Pattern pattern = Pattern.compile("&#[a-fA-F0-9]{6}");
+        match = pattern.matcher(str);
+        while (match.find()) {
+            String color = str.substring(match.start(),match.end());
+            str = str.replace(color,ChatColor.of(color.replace("&","")) + "");
+            match = pattern.matcher(str);
+        }
+        return ChatColor.translateAlternateColorCodes('&',str);
     }
 
     public List<String> color(@NotNull List<String> list) {
@@ -398,7 +420,7 @@ public class Utils {
                 Utils.sendEndTitle(suspicious);
                 Utils.sendAdminEndTitle(administrator, suspicious);
 
-                administrator.sendMessage(TextComponent.fromLegacyText(BungeeMessages.FINISHSUS.color().replace("%prefix%", BungeeMessages.PREFIX.color())));
+                suspicious.sendMessage(TextComponent.fromLegacyText(BungeeMessages.FINISHSUS.color().replace("%prefix%", BungeeMessages.PREFIX.color())));
 
                 if (suspicious.getServer() == null) {
                     return;

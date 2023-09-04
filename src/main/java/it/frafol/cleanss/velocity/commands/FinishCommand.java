@@ -181,7 +181,7 @@ public class FinishCommand implements SimpleCommand {
                 if (VelocityConfig.SEND_ADMIN_MESSAGE.get(Boolean.class)) {
                     instance.getServer().getAllPlayers().stream()
                             .filter(players -> players.hasPermission(VelocityConfig.CONTROL_PERMISSION.get(String.class)))
-                            .forEach(players -> players.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.ADMIN_NOTIFY.color()
+                            .forEach(players -> players.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.ADMIN_NOTIFY_FINISH.color()
                                     .replace("%prefix%", VelocityMessages.PREFIX.color())
                                     .replace("%admin%", ((Player) invocation.source()).getUsername())
                                     .replace("%suspect%", player.get().getUsername())

@@ -50,7 +50,7 @@ public class PlaceholderHook extends PlaceholderExpansion {
             }
         }
 
-        if (placeholder.equalsIgnoreCase("seconds_formatted")) {
+        if (placeholder.equalsIgnoreCase("time")) {
             if (plugin.getFormattedSeconds(player.getUniqueId()) != null) {
                 return plugin.getFormattedSeconds(player.getUniqueId());
             } else {

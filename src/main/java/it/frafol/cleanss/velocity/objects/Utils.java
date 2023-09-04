@@ -30,6 +30,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @UtilityClass
@@ -66,10 +68,38 @@ public class Utils {
         return s;
     }
 
-    public String color(@NotNull String s) {
+    public String color(String string) {
+        String hex = convertHexColors(string);
+        return hex.replace("&", "§");
+    }
 
-        return s.replace("&", "§");
+    private String convertHexColors(String message) {
 
+        if (!containsHexColor(message)) {
+            return message;
+        }
+
+        Pattern pattern = Pattern.compile("#[a-fA-F0-9]{6}");
+        Matcher matcher = pattern.matcher(message);
+        while (matcher.find()) {
+            String hexCode = message.substring(matcher.start(), matcher.end());
+            String replaceSharp = hexCode.replace('#', 'x');
+
+            char[] ch = replaceSharp.toCharArray();
+            StringBuilder builder = new StringBuilder();
+            for (char c : ch) {
+                builder.append("&").append(c);
+            }
+
+            message = message.replace(hexCode, builder.toString());
+            matcher = pattern.matcher(message);
+        }
+        return message;
+    }
+
+    private boolean containsHexColor(String message) {
+        String hexColorPattern = "(?i)&#[a-f0-9]{6}";
+        return message.matches(".*" + hexColorPattern + ".*");
     }
 
     public List<String> color(@NotNull List<String> list) {
@@ -405,7 +435,8 @@ public class Utils {
                 Utils.sendEndTitle(suspicious);
                 Utils.sendAdminEndTitle(administrator, suspicious);
 
-                suspicious.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.FINISHSUS.color().replace("%prefix%", VelocityMessages.PREFIX.color())));
+                suspicious.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.FINISHSUS.color()
+                        .replace("%prefix%", VelocityMessages.PREFIX.color())));
 
                 if (!administrator.getCurrentServer().isPresent()) {
                     if (!instance.useLimbo) {

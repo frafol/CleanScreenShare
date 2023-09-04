@@ -18,6 +18,8 @@ import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.player.*;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Objects;
+
 public class PlayerListener implements Listener {
 
     private final CleanSS instance = CleanSS.getInstance();
@@ -52,11 +54,9 @@ public class PlayerListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerPvP(EntityDamageByEntityEvent event) {
-
         if (SpigotConfig.PVP.get(Boolean.class)) {
             event.setCancelled(true);
         }
-
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -98,7 +98,7 @@ public class PlayerListener implements Listener {
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
-    public void onPlayerJoin(@NotNull PlayerJoinEvent event) {
+    public void changeGameMode(@NotNull PlayerJoinEvent event) {
 
         final Player player = event.getPlayer();
 
@@ -118,7 +118,7 @@ public class PlayerListener implements Listener {
                 player.setGameMode(GameMode.SPECTATOR);
                 break;
             default:
-                System.out.println(SpigotConfig.GAMEMODE.get(String.class) + " is an invalid gamemode!");
+                instance.getLogger().severe(SpigotConfig.GAMEMODE.get(String.class) + " is an invalid gamemode!");
         }
 
         if (SpigotConfig.HUNGER.get(Boolean.class)) {
@@ -127,15 +127,57 @@ public class PlayerListener implements Listener {
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
+    public void joinMessage(PlayerJoinEvent event) {
+
+        if (Objects.equals(SpigotConfig.CUSTOM_JOIN_MESSAGE.get(String.class), "none")) {
+            return;
+        }
+
+        if (Objects.equals(SpigotConfig.CUSTOM_JOIN_MESSAGE.get(String.class), "disabled")) {
+            event.setJoinMessage(null);
+            return;
+        }
+
+        event.setJoinMessage(SpigotConfig.CUSTOM_JOIN_MESSAGE.color().replace("%player%", event.getPlayer().getName()));
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void quitMessage(PlayerQuitEvent event) {
+
+        if (Objects.equals(SpigotConfig.CUSTOM_LEAVE_MESSAGE.get(String.class), "none")) {
+            return;
+        }
+
+        if (Objects.equals(SpigotConfig.CUSTOM_LEAVE_MESSAGE.get(String.class), "disabled")) {
+            event.setQuitMessage(null);
+            return;
+        }
+
+        event.setQuitMessage(SpigotConfig.CUSTOM_LEAVE_MESSAGE.color().replace("%player%", event.getPlayer().getName()));
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onQuit(@NotNull PlayerQuitEvent event) {
-        PlayerCache.getNo_chat().remove(event.getPlayer().getUniqueId());
-        PlayerCache.getSuspicious().remove(event.getPlayer().getUniqueId());
-        PlayerCache.getAdministrator().remove(event.getPlayer().getUniqueId());
 
-        instance.stopTimer(event.getPlayer().getUniqueId());
+        Player player = event.getPlayer();
 
-        if (PlayerCache.getCouples().get(event.getPlayer().getUniqueId()) != null) {
-            PlayerCache.getCouples().remove(event.getPlayer().getUniqueId());
+        PlayerCache.getNo_chat().remove(player.getUniqueId());
+
+        if (PlayerCache.getSuspicious().contains(player.getUniqueId())) {
+            PlayerCache.deleteSuspectScoreboard(player);
+        }
+
+        if (PlayerCache.getAdministrator().contains(player.getUniqueId())) {
+            PlayerCache.deleteAdminScoreboard(player);
+        }
+
+        PlayerCache.getSuspicious().remove(player.getUniqueId());
+        PlayerCache.getAdministrator().remove(player.getUniqueId());
+
+        instance.stopTimer(player.getUniqueId());
+
+        if (PlayerCache.getCouples().get(player.getUniqueId()) != null) {
+            PlayerCache.getCouples().remove(player.getUniqueId());
         }
     }
 
@@ -165,7 +207,6 @@ public class PlayerListener implements Listener {
         if (SpigotConfig.BREAK.get(Boolean.class)) {
             event.setCancelled(true);
         }
-
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -180,6 +221,5 @@ public class PlayerListener implements Listener {
         if (SpigotConfig.PLACE.get(Boolean.class)) {
             event.setCancelled(true);
         }
-
     }
 }
