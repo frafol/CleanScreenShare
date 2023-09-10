@@ -7,17 +7,28 @@
 
 settings:
 
-  # Name of the ScreenShare server where CleanScreenShare have to send players on control.
-  server_name: "Control"
+  # Name of the ScreenShare servers where CleanScreenShare have to send players on control.
+  # You can add multiple servers.
+  control_servers:
+    - "hackcontrol_1"
+    # - "hackcontrol_2"
+
+  # The server name that will be used to send the players at the end of a control.
+  # You can add multiple servers.
+  # NOTE: if the value use_disconnect_instead_of_fallback is true, this setting will be ignored.
+  fallback_servers:
+    - "hub1"
+    # - "hub2"
+
+  # The strategy used to sort the servers (when there are multiple servers in the list).
+  # VALUES: RANDOM, LEAST_PLAYERS, MOST_PLAYERS.
+  # WARNING: Only MOST_PLAYERS will check if the server is full.
+  sort_strategy: "LEAST_PLAYERS"
 
   # Disconnect the player from the control server instead of taking it to a fallback server.
   # It can be useful if you use plugins that allow multi lobby fallback (e.g., FallbackServer).
   # NOTE: This function will break CleanScreenShare if you haven't also put it on the server control!
   use_disconnect_instead_of_fallback: false
-
-  # The server name that will be used to send the players at the end of a control.
-  # NOTE: if the value use_disconnect_instead_of_fallback is true, this setting will be ignored.
-  fallback_server_name: "Hub"
 
   # This will check if you have been properly connected to the control server,
   # and if not, it will exit the control. If you encounter an error in the console
@@ -63,11 +74,21 @@ settings:
     # Enter the command to be executed by the console when the player disconnects from the server.
     punish_command: "ban %player% Slog under hack control -s"
 
+  spectate:
+
+    # Enable this if you want to enable the spectator mode.
+    enable: true
+
+    # Enable this if you want to disable the chat for spectators.
+    # If this is false, the chat for spectators WON'T be handled by CleanScreenShare.
+    block_chat: true
+
 permissions:
 
   # You can personalize permissions.
   control: screenshare.control
   info: screenshare.info
+  spectate: screenshare.spectate
   bypass: screenshare.bypass
   reload: screenshare.reload
 
@@ -93,6 +114,9 @@ discord-webhook: # The Discord Integration is an experimental feature, report al
 
   # The 'title' of the embed message sent on Discord.
   embed_title: "ScreenShare handler"
+
+  # The 'footer' of the embed message sent on Discord.
+  embed_footer: "Powered by CleanScreenShare"
 
 mysql:
 

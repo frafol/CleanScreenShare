@@ -9,7 +9,7 @@ messages:
 
   prefix: "&d&lSS &7»"
 
-  usage: "%prefix% &7Use: &d/ss [player] &7- &d/ssfinish [player] &7- &d/ssinfo [player]"
+  usage: "%prefix% &7Use: &d/ss [player] &7- &d/ssfinish [player] &7- &d/ssinfo [player] &7- &d/sspec [player]"
 
   only_players: "%prefix% &7This command is only for &dplayers&7."
 
@@ -48,6 +48,7 @@ messages:
       - "&d%player% &7informations:"
       - "&f"
       - "&7Is in control: &d%is_in_control%"
+      - "&7Is spectating: &d%is_spectating%"
       - "&f"
       - "&7Controls done: &d%controls_done%"
       - "&7Controls suffered: &d%controls_suffered%"
@@ -84,6 +85,26 @@ messages:
       name: "[Refuse]"
       command: "/tempban %player% 30d Refusal to SS -s"
 
+  spectate:
+
+    # General messages.
+    spectating: "%prefix% &7You're now spectating controls in server: &d%server%&7."
+    not_spectating: "%prefix% &7You're no longer spectating &dcontrols&7."
+    chat_disabled: "%prefix% &7You can't use the chat while spectating."
+
+    # If you are using LuckPerms, you can also use %adminprefix% and %adminsuffix%.
+    admin_notification: "%prefix% &7The player &d%admin% &7started spectating &dcontrols&7."
+
+    # If you are using LuckPerms, you can also use %adminprefix% and %adminsuffix%.
+    admin_notification_finish: "%prefix% &7The player &d%admin% &7finished spectating &dcontrols&7."
+
+    # Players cannot be spectated if you're using LimboAPI.
+    limbo_error: "%prefix% &7You can't spectate a player in &dLimbo&7."
+
+    # Errors messages.
+    invalid_server: "%prefix% &7The server &d%server% &7is not &dvalid&7."
+    in_control_error: "%prefix% &7You can't spectate a player when you are in &dhack control&7."
+
   title:
 
     start:
@@ -107,6 +128,7 @@ messages:
 
       delay: 2 # In seconds
 
+      # Placeholders: %suspect%, %suspectprefix% and %suspectsuffix%.
       title: "&c&lHACK CONTROL"
       subtitle: "&7You putted %suspect% in hack control!"
 
@@ -135,6 +157,7 @@ messages:
 
       delay: 2 # In seconds
 
+      # Placeholders: %suspect%, %suspectprefix% and %suspectsuffix%.
       title: "&a&lHACK CONTROL"
       subtitle: "&7You've finished the control to %suspect%!"
 
@@ -169,6 +192,10 @@ messages:
     finished: "The staffer %staffer% finished the control to %suspect%."
 
     # You can use %staffer%, %suspect% and %result%. If you are using LuckPerms, you can also use %admingroup% and %suspectgroup%.
+    spectator: "The staffer %staffer% started spectating controls."
+    spectator_end: "The staffer %staffer% stopped spectating controls."
+
+    # You can use %staffer%, %suspect% and %result%. If you are using LuckPerms, you can also use %admingroup% and %suspectgroup%.
     suspect_left_during_control: "The suspect %suspect%, left the server during a control."
 
     # Output of placeholder %result%.
@@ -178,9 +205,6 @@ messages:
       left: "Left"
 
     luckperms:
-
-      # This makes all groups with the first letter as capital. (Example: "owner" -> "Owner")
-      force_capital_letter: true
 
       # This fixes a problem that causes players without a specific rank
       # to display "default" instead of the correct displayname on LuckPerms.

@@ -62,6 +62,7 @@ options:
     # Placeholders: %screenshare_prefix%
     staff_prefix: "&7[&cStaff&7] &r"
     suspect_prefix: "&7[&eSuspicious&7] &r"
+    other_prefix: "&7[&bDebug&7] &r"
 
   scoreboard:
 
