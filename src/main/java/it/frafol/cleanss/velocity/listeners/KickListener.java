@@ -12,7 +12,11 @@ import it.frafol.cleanss.velocity.enums.VelocityMessages;
 import it.frafol.cleanss.velocity.objects.PlayerCache;
 import it.frafol.cleanss.velocity.objects.Utils;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import net.luckperms.api.LuckPerms;
+import net.luckperms.api.LuckPermsProvider;
+import net.luckperms.api.model.user.User;
 
+import java.util.List;
 import java.util.Optional;
 
 public class KickListener {
@@ -28,21 +32,69 @@ public class KickListener {
 
         final Player player = event.getPlayer();
         final RegisteredServer server = event.getOriginalServer();
+        boolean luckperms = instance.getServer().getPluginManager().getPlugin("luckperms").isPresent();
 
         if (server == null) {
             return;
         }
 
-        if (!instance.getServer().getServer(VelocityConfig.CONTROL.get(String.class)).isPresent()) {
+        if (PlayerCache.getSpectators().contains(player.getUniqueId())) {
+
+            if (instance.useLimbo) {
+                return;
+            }
+
+            if (Utils.isInControlServer(server)) {
+                return;
+            }
+
+            player.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.NOT_SPECTATING.color()
+                    .replace("%prefix%", VelocityMessages.PREFIX.color())));
+            PlayerCache.getSpectators().remove(player.getUniqueId());
+
+            Utils.sendDiscordSpectatorMessage(player, VelocityMessages.DISCORD_SPECTATOR_END.color()
+                    .replace("%player%", player.getUsername()));
+
+            String admin_prefix;
+            String admin_suffix;
+
+            if (luckperms) {
+
+                final LuckPerms api = LuckPermsProvider.get();
+
+                final User admin = api.getUserManager().getUser(player.getUniqueId());
+
+                if (admin == null) {
+                    return;
+                }
+
+                final String prefix = admin.getCachedData().getMetaData().getPrefix();
+                final String suffix = admin.getCachedData().getMetaData().getSuffix();
+
+                admin_prefix = prefix == null ? "" : prefix;
+                admin_suffix = suffix == null ? "" : suffix;
+
+            } else {
+                admin_prefix = "";
+                admin_suffix = "";
+            }
+
+            if (VelocityConfig.SEND_ADMIN_MESSAGE.get(Boolean.class)) {
+                instance.getServer().getAllPlayers().stream()
+                        .filter(players -> players.hasPermission(VelocityConfig.CONTROL_PERMISSION.get(String.class)))
+                        .forEach(players -> players.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.SPECT_ADMIN_NOTIFY_FINISH.color()
+                                .replace("%prefix%", VelocityMessages.PREFIX.color())
+                                .replace("%admin%", player.getUsername())
+                                .replace("%adminprefix%", Utils.color(admin_prefix))
+                                .replace("%adminsuffix%", Utils.color(admin_suffix)))));
+            }
             return;
         }
-
-        final RegisteredServer control = instance.getServer().getServer(VelocityConfig.CONTROL.get(String.class)).get();
 
         if (PlayerCache.getSuspicious().contains(player.getUniqueId())
                 || PlayerCache.getAdministrator().contains(player.getUniqueId())) {
 
-            if (server.equals(control) || instance.useLimbo) {
+            if (Utils.isInControlServer(server) || instance.useLimbo) {
                 return;
             }
 
@@ -65,14 +117,24 @@ public class KickListener {
 
         PlayerCache.getControls().putIfAbsent(player.getUniqueId(), 0);
         PlayerCache.getControls_suffered().putIfAbsent(player.getUniqueId(), 0);
-
     }
 
     @Subscribe
     public void onPlayerDisconnect(DisconnectEvent event) {
 
-        final Optional<RegisteredServer> proxyServer = instance.getServer().getServer(VelocityConfig.CONTROL_FALLBACK.get(String.class));
+        List<Optional<RegisteredServer>> servers = Utils.getServerList(VelocityConfig.CONTROL_FALLBACK.getStringList());
+
+        if (!VelocityConfig.DISABLE_PING.get(Boolean.class)) {
+            servers = Utils.getOnlineServers(servers);
+        }
+
+        Optional<RegisteredServer> proxyServer = Utils.getBestServer(servers);
         final Player player = event.getPlayer();
+
+        if (PlayerCache.getSpectators().contains(player.getUniqueId())) {
+            PlayerCache.getSpectators().remove(player.getUniqueId());
+            return;
+        }
 
         if (!proxyServer.isPresent()) {
             instance.getLogger().error("Fallback server was not found in your Velocity configuration or is offline, players will not be able to reconnect to the server.");
@@ -97,7 +159,6 @@ public class KickListener {
 
                 Utils.punishPlayer(instance.getKey(PlayerCache.getCouples(), player).getUniqueId(), player.getUsername(), instance.getKey(PlayerCache.getCouples(), player), player);
                 Utils.finishControl(player, instance.getKey(PlayerCache.getCouples(), player), null);
-
             }
 
             return;

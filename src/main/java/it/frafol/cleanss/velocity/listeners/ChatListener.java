@@ -33,73 +33,112 @@ public class ChatListener {
             return;
         }
 
-        if (player.getCurrentServer().get().getServerInfo().getName().equals(VelocityConfig.CONTROL.get(String.class))) {
+        if (!Utils.isInControlServer(player.getCurrentServer().get().getServer())) {
+            return;
+        }
+
+        if (PlayerCache.getSpectators().contains(player.getUniqueId()) && !VelocityConfig.CHAT_DISABLED.get(Boolean.class)) {
+            return;
+        }
+
+        if (PlayerCache.getSpectators().contains(player.getUniqueId())) {
+            player.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.CHAT_DISABLED.color()
+                    .replace("%prefix%", VelocityMessages.PREFIX.color())));
 
             if (!(player.getProtocolVersion().getProtocol() >= ProtocolVersion.getProtocolVersion(759).getProtocol() && !instance.getUnsignedVelocityAddon())) {
                 event.setResult(PlayerChatEvent.ChatResult.denied());
             }
 
-            String user_prefix = "";
-            String user_suffix = "";
+            return;
+        }
 
-            if (luckperms) {
+        if (!(player.getProtocolVersion().getProtocol() >= ProtocolVersion.getProtocolVersion(759).getProtocol() && !instance.getUnsignedVelocityAddon())) {
+            event.setResult(PlayerChatEvent.ChatResult.denied());
+        }
 
-                final LuckPerms api = LuckPermsProvider.get();
+        String user_prefix;
+        String user_suffix;
 
-                final User user = api.getUserManager().getUser(player.getUniqueId());
+        if (luckperms) {
 
-                if (user == null) {
-                    return;
-                }
+            final LuckPerms api = LuckPermsProvider.get();
 
-                final String prefix = user.getCachedData().getMetaData().getPrefix();
-                final String suffix = user.getCachedData().getMetaData().getSuffix();
-                user_prefix = prefix == null ? "" : prefix;
-                user_suffix = suffix == null ? "" : suffix;
+            final User user = api.getUserManager().getUser(player.getUniqueId());
 
-            }
-
-            if (PlayerCache.getCouples().containsKey(player)) {
-
-                instance.getValue(PlayerCache.getCouples(), player).sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.CONTROL_CHAT_FORMAT.color()
-                        .replace("%prefix%", VelocityMessages.PREFIX.color())
-                        .replace("%player%", player.getUsername())
-                        .replace("%message%", event.getMessage())
-                        .replace("%userprefix%", Utils.color(user_prefix))
-                        .replace("%usersuffix%", Utils.color(user_suffix))
-                        .replace("%state%", VelocityMessages.CONTROL_CHAT_STAFF.color())));
-
-                player.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.CONTROL_CHAT_FORMAT.color()
-                        .replace("%prefix%", VelocityMessages.PREFIX.color())
-                        .replace("%player%", player.getUsername())
-                        .replace("%message%", event.getMessage())
-                        .replace("%userprefix%", Utils.color(user_prefix))
-                        .replace("%usersuffix%", Utils.color(user_suffix))
-                        .replace("%state%", VelocityMessages.CONTROL_CHAT_STAFF.color())));
-
+            if (user == null) {
                 return;
-
             }
 
-            if (PlayerCache.getCouples().containsValue(player)) {
+            final String prefix = user.getCachedData().getMetaData().getPrefix();
+            final String suffix = user.getCachedData().getMetaData().getSuffix();
+            user_prefix = prefix == null ? "" : prefix;
+            user_suffix = suffix == null ? "" : suffix;
 
-                instance.getKey(PlayerCache.getCouples(), player).sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.CONTROL_CHAT_FORMAT.color()
-                        .replace("%prefix%", VelocityMessages.PREFIX.color())
-                        .replace("%player%", player.getUsername())
-                        .replace("%message%", event.getMessage())
-                        .replace("%userprefix%", Utils.color(user_prefix))
-                        .replace("%usersuffix%", Utils.color(user_suffix))
-                        .replace("%state%", VelocityMessages.CONTROL_CHAT_SUS.color())));
+        } else {
+            user_suffix = "";
+            user_prefix = "";
+        }
 
-                player.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.CONTROL_CHAT_FORMAT.color()
-                        .replace("%prefix%", VelocityMessages.PREFIX.color())
-                        .replace("%player%", player.getUsername())
-                        .replace("%message%", event.getMessage())
-                        .replace("%userprefix%", Utils.color(user_prefix))
-                        .replace("%usersuffix%", Utils.color(user_suffix))
-                        .replace("%state%", VelocityMessages.CONTROL_CHAT_SUS.color())));
+        if (PlayerCache.getCouples().containsKey(player)) {
 
-            }
+            instance.getValue(PlayerCache.getCouples(), player).sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.CONTROL_CHAT_FORMAT.color()
+                    .replace("%prefix%", VelocityMessages.PREFIX.color())
+                    .replace("%player%", player.getUsername())
+                    .replace("%message%", event.getMessage())
+                    .replace("%userprefix%", Utils.color(user_prefix))
+                    .replace("%usersuffix%", Utils.color(user_suffix))
+                    .replace("%state%", VelocityMessages.CONTROL_CHAT_STAFF.color())));
+
+            player.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.CONTROL_CHAT_FORMAT.color()
+                    .replace("%prefix%", VelocityMessages.PREFIX.color())
+                    .replace("%player%", player.getUsername())
+                    .replace("%message%", event.getMessage())
+                    .replace("%userprefix%", Utils.color(user_prefix))
+                    .replace("%usersuffix%", Utils.color(user_suffix))
+                    .replace("%state%", VelocityMessages.CONTROL_CHAT_STAFF.color())));
+
+            instance.getServer().getAllPlayers().stream().filter
+                            (players -> PlayerCache.getSpectators().contains(players.getUniqueId()))
+                    .forEach(players -> players.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.CONTROL_CHAT_FORMAT.color()
+                            .replace("%prefix%", VelocityMessages.PREFIX.color())
+                            .replace("%player%", player.getUsername())
+                            .replace("%message%", event.getMessage())
+                            .replace("%userprefix%", Utils.color(user_prefix))
+                            .replace("%usersuffix%", Utils.color(user_suffix))
+                            .replace("%state%", VelocityMessages.CONTROL_CHAT_STAFF.color()))));
+
+            return;
+
+        }
+
+        if (PlayerCache.getCouples().containsValue(player)) {
+
+            instance.getKey(PlayerCache.getCouples(), player).sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.CONTROL_CHAT_FORMAT.color()
+                    .replace("%prefix%", VelocityMessages.PREFIX.color())
+                    .replace("%player%", player.getUsername())
+                    .replace("%message%", event.getMessage())
+                    .replace("%userprefix%", Utils.color(user_prefix))
+                    .replace("%usersuffix%", Utils.color(user_suffix))
+                    .replace("%state%", VelocityMessages.CONTROL_CHAT_SUS.color())));
+
+            player.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.CONTROL_CHAT_FORMAT.color()
+                    .replace("%prefix%", VelocityMessages.PREFIX.color())
+                    .replace("%player%", player.getUsername())
+                    .replace("%message%", event.getMessage())
+                    .replace("%userprefix%", Utils.color(user_prefix))
+                    .replace("%usersuffix%", Utils.color(user_suffix))
+                    .replace("%state%", VelocityMessages.CONTROL_CHAT_SUS.color())));
+
+            instance.getServer().getAllPlayers().stream().filter
+                            (players -> PlayerCache.getSpectators().contains(players.getUniqueId()))
+                    .forEach(players -> players.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.CONTROL_CHAT_FORMAT.color()
+                            .replace("%prefix%", VelocityMessages.PREFIX.color())
+                            .replace("%player%", player.getUsername())
+                            .replace("%message%", event.getMessage())
+                            .replace("%userprefix%", Utils.color(user_prefix))
+                            .replace("%usersuffix%", Utils.color(user_suffix))
+                            .replace("%state%", VelocityMessages.CONTROL_CHAT_SUS.color()))));
+
         }
     }
 }

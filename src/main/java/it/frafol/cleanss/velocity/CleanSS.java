@@ -12,6 +12,7 @@ import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
 import com.velocitypowered.api.proxy.messages.ChannelIdentifier;
 import com.velocitypowered.api.proxy.messages.MinecraftChannelIdentifier;
+import com.velocitypowered.api.proxy.server.RegisteredServer;
 import it.frafol.cleanss.velocity.commands.*;
 import it.frafol.cleanss.velocity.enums.VelocityConfig;
 import it.frafol.cleanss.velocity.enums.VelocityLimbo;
@@ -22,10 +23,7 @@ import it.frafol.cleanss.velocity.listeners.CommandListener;
 import it.frafol.cleanss.velocity.listeners.KickListener;
 import it.frafol.cleanss.velocity.listeners.ServerListener;
 import it.frafol.cleanss.velocity.mysql.MySQLWorker;
-import it.frafol.cleanss.velocity.objects.JdaBuilder;
-import it.frafol.cleanss.velocity.objects.LimboUtils;
-import it.frafol.cleanss.velocity.objects.PlayerCache;
-import it.frafol.cleanss.velocity.objects.TextFile;
+import it.frafol.cleanss.velocity.objects.*;
 import it.frafol.cleanss.velocity.objects.adapter.ReflectUtil;
 import lombok.Getter;
 import lombok.SneakyThrows;
@@ -45,14 +43,16 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 @Getter
 @Plugin(
 		id = "cleanscreenshare",
 		name = "CleanScreenShare",
-		version = "1.6.0",
+		version = "2.0.0",
 		description = "Make control hacks on your players.",
 		dependencies = {@Dependency(id = "mysqlandconfigurateforvelocity", optional = true), @Dependency(id = "limboapi", optional = true)},
 		authors = { "frafol" })
@@ -152,30 +152,22 @@ public class CleanSS {
 			}
 
 			ControlTask();
-
 		}
 
 		if (VelocityConfig.STATS.get(Boolean.class)) {
-
 			metricsFactory.make(this, 16951);
 			logger.info("§7Metrics loaded §dsuccessfully§7!");
-
-		}
-
-		if (!getUnsignedVelocityAddon()) {
-			logger.warn("To get the full functionality of CleanScreenShare for versions 1.19.1 and later on Velocity, " +
-					"consider downloading https://github.com/4drian3d/UnSignedVelocity/releases/latest");
-		} else {
-			logger.info("§7UnsignedVelocity hooked §dsuccessfully§7!");
 		}
 
 		UpdateChecker();
+		startTasks();
 		logger.info("§7Plugin §dsuccessfully §7loaded!");
-
 	}
 
 	@Subscribe
 	public void onProxyShutdown(ProxyShutdownEvent event) {
+
+		stopTasks();
 
 		if (getConfigTextFile() == null || VelocityConfig.MYSQL.get(Boolean.class)) {
 
@@ -198,6 +190,32 @@ public class CleanSS {
 		instance = null;
 
 		logger.info("§7Plugin successfully §ddisabled§7!");
+	}
+
+	private void startTasks() {
+		List<Optional<RegisteredServer>> servers = Utils.getServerList(VelocityConfig.CONTROL.getStringList());
+		List<Optional<RegisteredServer>> fallbacks = Utils.getServerList(VelocityConfig.CONTROL_FALLBACK.getStringList());
+
+		for (Optional<RegisteredServer> server : servers) {
+            server.ifPresent(Utils::startTask);
+		}
+
+		for (Optional<RegisteredServer> fallback : fallbacks) {
+			fallback.ifPresent(Utils::startTask);
+		}
+	}
+
+	private void stopTasks() {
+		List<Optional<RegisteredServer>> servers = Utils.getServerList(VelocityConfig.CONTROL.getStringList());
+		List<Optional<RegisteredServer>> fallbacks = Utils.getServerList(VelocityConfig.CONTROL_FALLBACK.getStringList());
+
+		for (Optional<RegisteredServer> server : servers) {
+			server.ifPresent(Utils::stopTask);
+		}
+
+		for (Optional<RegisteredServer> fallback : fallbacks) {
+			fallback.ifPresent(Utils::stopTask);
+		}
 	}
 
 	public void setData() {
@@ -248,7 +266,7 @@ public class CleanSS {
 		}
 
 		try {
-			String fileUrl = "https://github.com/frafol/CleanScreenShare/releases/download/release/CleanScreenShare.jar";
+			String fileUrl = "https://github.com/frafol/CleanScreenShare/releases/download/release/cleanscreenshare-2.0.0.jar";
 			String destination = "./plugins/";
 
 			String fileName = getFileNameFromUrl(fileUrl);
@@ -323,7 +341,31 @@ public class CleanSS {
 	private void downloadFile(String fileUrl, File outputFile) throws IOException {
 		URL url = new URL(fileUrl);
 		try (InputStream inputStream = url.openStream()) {
+			deleteFile(outputFile.getParent(), "cleanscreenshare-");
 			Files.copy(inputStream, outputFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+		}
+	}
+
+	@SneakyThrows
+	public void deleteFile(String directoryPath, String file_start) {
+		File directory = new File(directoryPath);
+
+		if (!directory.isDirectory()) {
+			throw new IllegalArgumentException();
+		}
+
+		File[] files = directory.listFiles();
+		if (files == null) {
+			throw new IOException();
+		}
+
+		for (File file : files) {
+			if (file.isFile() && file.getName().startsWith(file_start)) {
+				logger.warn("Found an old plugin file: " + file.getName());
+				if (file.delete()) {
+					logger.warn("Deleted old file: " + file.getName());
+				}
+			}
 		}
 	}
 
@@ -336,6 +378,11 @@ public class CleanSS {
 
 	@SneakyThrows
 	private void updateConfig() {
+
+		if (!VelocityVersion.VERSION.get(String.class).startsWith("2.0")) {
+			logger.error("§cThe configurations are really outdated and there may be duplicate values. To make sure you don't miss them, reset them!");
+		}
+
 		if (container.getDescription().getVersion().isPresent() && (!container.getDescription().getVersion().get().equals(VelocityVersion.VERSION.get(String.class)))) {
 
 			logger.info("§7Creating new §dconfigurations§7...");
@@ -367,6 +414,12 @@ public class CleanSS {
 		getInstance().getServer().getCommandManager().register
 				(server.getCommandManager().metaBuilder("ssfinish").aliases("cleanssfinish", "controlfinish")
 						.build(), new FinishCommand(this));
+
+		if (VelocityConfig.ENABLE_SPECTATING.get(Boolean.class)) {
+			getInstance().getServer().getCommandManager().register
+					(server.getCommandManager().metaBuilder("ssspectate").aliases("sspectate", "sspec", "ssspec", "cleanssspec", "controlspectate", "cleansspec", "cleanssspectate", "cleansspectate", "controlspec")
+							.build(), new SpectateCommand(this));
+		}
 
 		getInstance().getServer().getCommandManager().register
 				(server.getCommandManager().metaBuilder("ssinfo").aliases("cleanssinfo", "controlinfo")
@@ -530,5 +583,4 @@ public class CleanSS {
 	public boolean getUnsignedVelocityAddon() {
 		return getServer().getPluginManager().isLoaded("unsignedvelocity");
 	}
-
 }

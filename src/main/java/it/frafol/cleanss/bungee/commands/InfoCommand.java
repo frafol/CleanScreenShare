@@ -60,7 +60,8 @@ public class InfoCommand extends Command implements TabExecutor {
                     new Placeholder("prefix", BungeeMessages.PREFIX.color()),
                     new Placeholder("is_in_control", String.valueOf(instance.getData().getStats(player.getUniqueId(), "incontrol"))),
                     new Placeholder("controls_done", String.valueOf(instance.getData().getStats(player.getUniqueId(), "controls"))),
-                    new Placeholder("controls_suffered", String.valueOf(instance.getData().getStats(player.getUniqueId(), "suffered"))));
+                    new Placeholder("controls_suffered", String.valueOf(instance.getData().getStats(player.getUniqueId(), "suffered"))),
+                    new Placeholder("is_spectating", PlayerCache.getSpectators().contains(player.getUniqueId()) ? "true" : "false"));
             return;
         }
 
@@ -72,7 +73,8 @@ public class InfoCommand extends Command implements TabExecutor {
                 new Placeholder("prefix", BungeeMessages.PREFIX.color()),
                 new Placeholder("is_in_control", String.valueOf(PlayerCache.getSuspicious().contains(player.getUniqueId()))),
                 new Placeholder("controls_done", String.valueOf(PlayerCache.getControls().get(player.getUniqueId()))),
-                new Placeholder("controls_suffered", String.valueOf(PlayerCache.getControls_suffered().get(player.getUniqueId()))));
+                new Placeholder("controls_suffered", String.valueOf(PlayerCache.getControls_suffered().get(player.getUniqueId()))),
+                new Placeholder("is_spectating", PlayerCache.getSpectators().contains(player.getUniqueId()) ? "true" : "false"));
 
     }
 

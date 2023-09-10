@@ -32,10 +32,13 @@ public class PluginMessageReceiver implements PluginMessageListener {
             String player_found = dataInput.readUTF();
 
             final Player final_player = Bukkit.getPlayer(player_found);
+
+            if (final_player == null) {
+                return;
+            }
+
             PlayerCache.getNo_chat().add(final_player.getUniqueId());
-
             return;
-
         }
 
         if (subChannel.equals("DISCONNECT_NOW")) {
@@ -44,13 +47,16 @@ public class PluginMessageReceiver implements PluginMessageListener {
 
             final Player final_player = Bukkit.getPlayer(player_found);
 
+            if (final_player == null) {
+                return;
+            }
+
             if (!final_player.isOnline()) {
                 return;
             }
 
             final_player.kickPlayer(null);
             return;
-
         }
 
         if (subChannel.equals("RELOAD")) {
@@ -70,7 +76,16 @@ public class PluginMessageReceiver implements PluginMessageListener {
             instance.getLogger().warning("Received data (suspect) from the proxy. [" + player_found + "]");
 
             final Player final_player = Bukkit.getPlayer(player_found);
-            Bukkit.getScheduler().runTaskLater(CleanSS.getInstance(), () -> final_player.teleport(PlayerCache.StringToLocation(SpigotCache.SUSPECT_SPAWN.get(String.class))), 5L);
+
+            Bukkit.getScheduler().runTaskLater(instance, () -> {
+
+                if (final_player == null || !final_player.isOnline()) {
+                    return;
+                }
+
+                final_player.teleport(PlayerCache.StringToLocation(SpigotCache.SUSPECT_SPAWN.get(String.class)));
+            }, 5L);
+
             PlayerCache.getSuspicious().add(final_player.getUniqueId());
             instance.startTimer(final_player.getUniqueId());
 
@@ -109,7 +124,12 @@ public class PluginMessageReceiver implements PluginMessageListener {
 
             instance.getServer().getScheduler().runTaskLaterAsynchronously(instance, () -> {
 
+                if (Bukkit.getPlayer(suspicious_found) == null) {
+                    return;
+                }
+
                 final Player final_suspicious = Bukkit.getPlayer(suspicious_found).getPlayer();
+
                 if (final_suspicious == null) {
                     return;
                 }

@@ -2,9 +2,18 @@ package it.frafol.cleanss.bungee.objects;
 
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
+import io.netty.bootstrap.Bootstrap;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelOption;
+import io.netty.channel.EventLoopGroup;
+import io.netty.channel.epoll.Epoll;
+import io.netty.channel.epoll.EpollEventLoopGroup;
+import io.netty.channel.nio.NioEventLoopGroup;
 import it.frafol.cleanss.bungee.CleanSS;
 import it.frafol.cleanss.bungee.enums.BungeeConfig;
 import it.frafol.cleanss.bungee.enums.BungeeMessages;
+import it.frafol.cleanss.velocity.enums.VelocityConfig;
+import lombok.SneakyThrows;
 import lombok.experimental.UtilityClass;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
@@ -12,22 +21,24 @@ import net.luckperms.api.LuckPerms;
 import net.luckperms.api.LuckPermsProvider;
 import net.luckperms.api.model.group.Group;
 import net.luckperms.api.model.user.User;
-import net.md_5.bungee.api.ChatColor;
-import net.md_5.bungee.api.CommandSender;
-import net.md_5.bungee.api.ProxyServer;
-import net.md_5.bungee.api.Title;
+import net.md_5.bungee.BungeeServerInfo;
+import net.md_5.bungee.api.*;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
+import net.md_5.bungee.api.scheduler.ScheduledTask;
+import net.md_5.bungee.netty.PipelineUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
-import java.util.ArrayList;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.net.SocketAddress;
 import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -36,6 +47,7 @@ import java.util.stream.Collectors;
 public class Utils {
 
     private static final CleanSS instance = CleanSS.getInstance();
+    public HashMap<ServerInfo, ScheduledTask> task = new HashMap<>();
 
     public List<String> getStringList(@NotNull BungeeMessages velocityMessages) {
         return instance.getMessagesTextFile().getStringList(velocityMessages.getPath());
@@ -137,6 +149,34 @@ public class Utils {
         sendList(commandSender, color(getStringList(velocityMessages, placeholders)), player_name);
     }
 
+    public void sendDiscordSpectatorMessage(ProxiedPlayer player, String message) {
+
+        if (VelocityConfig.DISCORD_ENABLED.get(Boolean.class)) {
+
+            if (instance.getJda() == null) {
+                return;
+            }
+
+            final TextChannel channel = instance.getJda().getTextChannelById(BungeeConfig.DISCORD_CHANNEL_ID.get(String.class));
+
+            if (channel == null) {
+                return;
+            }
+
+            EmbedBuilder embed = new EmbedBuilder();
+
+            embed.setTitle(BungeeConfig.DISCORD_EMBED_TITLE.get(String.class), null);
+
+            embed.setDescription(message
+                    .replace("%staffer%", player.getName()));
+
+            embed.setColor(Color.RED);
+            embed.setFooter(BungeeConfig.DISCORD_EMBED_FOOTER.get(String.class));
+
+            channel.sendMessageEmbeds(embed.build()).queue();
+        }
+    }
+
     public void sendDiscordMessage(ProxiedPlayer suspect, ProxiedPlayer staffer, String message, String result) {
 
         if (BungeeConfig.DISCORD_ENABLED.get(Boolean.class)) {
@@ -157,7 +197,7 @@ public class Utils {
                     .replace("%result%", result));
 
             embed.setColor(Color.RED);
-            embed.setFooter("Powered by CleanStaffChat");
+            embed.setFooter(BungeeConfig.DISCORD_EMBED_FOOTER.get(String.class));
 
             channel.sendMessageEmbeds(embed.build()).queue();
 
@@ -187,20 +227,12 @@ public class Utils {
                     .replace("%staffer%", staffer.getName()));
 
             embed.setColor(Color.RED);
-            embed.setFooter("Powered by CleanStaffChat");
+            embed.setFooter(BungeeConfig.DISCORD_EMBED_FOOTER.get(String.class));
 
             channel.sendMessageEmbeds(embed.build()).queue();
 
         }
     }
-
-    private String addCapital(String string) {
-		if (string == null || string.isEmpty()) {
-			return string;
-		}
-
-		return Character.toUpperCase(string.charAt(0)) + string.substring(1);
-	}
 
     public void punishPlayer(UUID administrator, String suspicious, ProxiedPlayer administrator_player, ProxiedPlayer suspect) {
 
@@ -255,11 +287,6 @@ public class Utils {
         }
 
         if (PlayerCache.getBan_execution().contains(administrator)) {
-
-            if (BungeeMessages.DISCORD_CAPITAL.get(Boolean.class)) {
-                Utils.sendDiscordMessage(suspect, administrator_player, BungeeMessages.DISCORD_FINISHED.get(String.class).replace("%admingroup%", addCapital(admin_group)).replace("%suspectgroup%", addCapital(suspect_group)), BungeeMessages.CHEATER.get(String.class));
-                return;
-            }
 
             Utils.sendDiscordMessage(suspect, administrator_player, BungeeMessages.DISCORD_FINISHED.get(String.class).replace("%admingroup%", admin_group).replace("%suspectgroup%", suspect_group), BungeeMessages.CHEATER.get(String.class));
 
@@ -319,11 +346,7 @@ public class Utils {
             return;
         }
 
-        if (BungeeMessages.DISCORD_CAPITAL.get(Boolean.class)) {
-            Utils.sendDiscordMessage(suspect, administrator_player, BungeeMessages.DISCORD_QUIT.get(String.class).replace("%admingroup%", addCapital(admin_group)).replace("%suspectgroup%", addCapital(suspect_group)), BungeeMessages.LEFT.get(String.class));
-        } else {
-            Utils.sendDiscordMessage(suspect, administrator_player, BungeeMessages.DISCORD_QUIT.get(String.class).replace("%admingroup%", admin_group).replace("%suspectgroup%", suspect_group), BungeeMessages.LEFT.get(String.class));
-        }
+        Utils.sendDiscordMessage(suspect, administrator_player, BungeeMessages.DISCORD_QUIT.get(String.class).replace("%admingroup%", admin_group).replace("%suspectgroup%", suspect_group), BungeeMessages.LEFT.get(String.class));
 
         String admin_prefix;
         String admin_suffix;
@@ -405,7 +428,7 @@ public class Utils {
                 return;
             }
 
-            if (administrator.getServer().getInfo().getName().equals(BungeeConfig.CONTROL.get(String.class))) {
+            if (isInControlServer(administrator.getServer().getInfo())) {
 
                 if (proxyServer == null) {
                     return;
@@ -426,7 +449,7 @@ public class Utils {
                     return;
                 }
 
-                if (suspicious.getServer().getInfo().getName().equals(BungeeConfig.CONTROL.get(String.class))) {
+                if (isInControlServer(suspicious.getServer().getInfo())) {
                     suspicious.connect(proxyServer);
                 }
             }
@@ -506,6 +529,15 @@ public class Utils {
                 PlayerCache.getIn_control().put(administrator.getUniqueId(), 0);
             }
         }
+    }
+
+    public boolean isInControlServer(ServerInfo server) {
+        for (String string : BungeeConfig.CONTROL.getStringList()) {
+            if (string.equals(server.getName())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public void startControl(@NotNull ProxiedPlayer suspicious, @NotNull ProxiedPlayer administrator, ServerInfo proxyServer) {
@@ -731,8 +763,34 @@ public class Utils {
         title.stay(BungeeMessages.ADMINCONTROL_STAY.get(Integer.class) * 20);
         title.fadeOut(BungeeMessages.ADMINCONTROL_FADEOUT.get(Integer.class) * 20);
 
-        title.title(new TextComponent(BungeeMessages.ADMINCONTROL_TITLE.color().replace("%suspect%", suspicious.getName())));
-        title.subTitle(new TextComponent(BungeeMessages.ADMINCONTROL_SUBTITLE.color().replace("%suspect%", suspicious.getName())));
+        String user_prefix = "";
+        String user_suffix = "";
+
+        if (isLuckPerms) {
+
+            final LuckPerms api = LuckPermsProvider.get();
+            final User user = api.getUserManager().getUser(suspicious.getUniqueId());
+
+            if (user == null) {
+                return;
+            }
+
+            final String prefix = user.getCachedData().getMetaData().getPrefix();
+            final String suffix = user.getCachedData().getMetaData().getSuffix();
+            user_prefix = prefix == null ? "" : prefix;
+            user_suffix = suffix == null ? "" : suffix;
+
+        }
+
+        title.title(new TextComponent(BungeeMessages.ADMINCONTROL_TITLE.color()
+                .replace("%suspect%", suspicious.getName())
+                .replace("%suspectprefix%", user_prefix)
+                .replace("%suspectsuffix%", user_suffix)));
+
+        title.subTitle(new TextComponent(BungeeMessages.ADMINCONTROL_SUBTITLE.color()
+                .replace("%suspect%", suspicious.getName())
+                .replace("%suspectprefix%", user_prefix)
+                .replace("%suspectsuffix%", user_suffix)));
 
         ProxyServer.getInstance().getScheduler().schedule(instance, () ->
                 title.send(administrator), BungeeMessages.ADMINCONTROL_DELAY.get(Integer.class), TimeUnit.SECONDS);
@@ -771,11 +829,185 @@ public class Utils {
         title.stay(BungeeMessages.ADMINCONTROLFINISH_STAY.get(Integer.class) * 20);
         title.fadeOut(BungeeMessages.ADMINCONTROLFINISH_FADEOUT.get(Integer.class) * 20);
 
-        title.title(new TextComponent(BungeeMessages.ADMINCONTROLFINISH_TITLE.color().replace("%suspect%", suspicious.getName())));
-        title.subTitle(new TextComponent(BungeeMessages.ADMINCONTROLFINISH_SUBTITLE.color().replace("%suspect%", suspicious.getName())));
+        String user_prefix = "";
+        String user_suffix = "";
+
+        if (isLuckPerms) {
+
+            final LuckPerms api = LuckPermsProvider.get();
+            final User user = api.getUserManager().getUser(suspicious.getUniqueId());
+
+            if (user == null) {
+                return;
+            }
+
+            final String prefix = user.getCachedData().getMetaData().getPrefix();
+            final String suffix = user.getCachedData().getMetaData().getSuffix();
+            user_prefix = prefix == null ? "" : prefix;
+            user_suffix = suffix == null ? "" : suffix;
+
+        }
+
+        title.title(new TextComponent(BungeeMessages.ADMINCONTROLFINISH_TITLE.color()
+                .replace("%suspect%", suspicious.getName())
+                .replace("%suspectprefix%", user_prefix)
+                .replace("%suspectsuffix%", user_suffix)));
+
+        title.subTitle(new TextComponent(BungeeMessages.ADMINCONTROLFINISH_SUBTITLE.color()
+                .replace("%suspect%", suspicious.getName())
+                .replace("%suspectprefix%", user_prefix)
+                .replace("%suspectsuffix%", user_suffix)));
 
         ProxyServer.getInstance().getScheduler().schedule(instance, () ->
                 title.send(administrator), BungeeMessages.ADMINCONTROLFINISH_DELAY.get(Integer.class), TimeUnit.SECONDS);
 
     }
+
+    public List<ServerInfo> getServerList(List<String> stringList) {
+        List<ServerInfo> servers = new ArrayList<>();
+        for (String server : stringList) {
+
+            if (!instance.getProxy().getServersCopy().containsKey(server)) {
+                instance.getLogger().severe("The server " + server + " is not configured correctly, please check the configuration file.");
+                continue;
+            }
+
+            servers.add(instance.getProxy().getServerInfo(server));
+        }
+        return servers;
+    }
+
+    public ServerInfo getBestServer(List<ServerInfo> list) {
+
+        if (list.isEmpty()) {
+            System.out.println("list is empty");
+            return null;
+        }
+
+        switch (BungeeConfig.STRATEGY.get(String.class)) {
+            case "RANDOM":
+                return getRandomServer(list);
+            case "LEAST_PLAYERS":
+                return getLeastPlayersServer(list);
+            case "MOST_PLAYERS":
+                return getMostPlayersServer(list);
+            default:
+                instance.getLogger().severe("The strategy '" + BungeeConfig.STRATEGY.get(String.class) + "' is not valid, using 'RANDOM' instead.");
+                return getRandomServer(list);
+        }
+    }
+
+    public List<ServerInfo> getOnlineServers(List<ServerInfo> list) {
+        List<ServerInfo> servers = new ArrayList<>();
+        for (ServerInfo server : list) {
+            if (PlayerCache.getOnlineServers().contains(server)) {
+                servers.add(server);
+            }
+        }
+        return servers;
+    }
+
+    public void startTask(ServerInfo serverInfo) {
+        taskServer(serverInfo);
+    }
+
+    public void stopTask(ServerInfo serverInfo) {
+        if (task.get(serverInfo) != null) {
+            task.get(serverInfo).cancel();
+        }
+
+        task.remove(serverInfo);
+    }
+
+    private void taskServer(ServerInfo server) {
+        task.put(server, instance.getProxy().getScheduler().schedule(instance, () -> ping((BungeeServerInfo) server, (result, error) -> {
+            if (error == null && result) {
+                PlayerCache.getOnlineServers().add(server);
+                return;
+            }
+
+            PlayerCache.getOnlineServers().remove(server);
+        }), 0L, 3L, TimeUnit.SECONDS));
+    }
+
+    private ServerInfo getLeastPlayersServer(List<ServerInfo> list) {
+        ServerInfo server = null;
+        for (ServerInfo serverInfo : list) {
+            if (server == null) {
+                server = serverInfo;
+            } else if (server.getPlayers().size() > serverInfo.getPlayers().size()) {
+                server = serverInfo;
+            }
+        }
+        return server;
+    }
+
+    private ServerInfo getMostPlayersServer(List<ServerInfo> list) {
+        AtomicReference<ServerInfo> server = new AtomicReference<>(null);
+        for (ServerInfo serverInfo : list) {
+            if (server.get() == null) {
+                server.set(serverInfo);
+            } else if (server.get().getPlayers().size() < serverInfo.getPlayers().size()) {
+                serverInfo.ping((result, error) -> {
+                    if (error == null && result != null) {
+
+                        if (result.getPlayers().getMax() == result.getPlayers().getOnline()) {
+                            return;
+                        }
+
+                        server.set(serverInfo);
+                    }
+                });
+            }
+        }
+        return server.get();
+    }
+
+    private ServerInfo getRandomServer(List<ServerInfo> list) {
+        return list.get(new Random().nextInt(list.size()));
+    }
+
+    public void ping(BungeeServerInfo target, Callback<Boolean> callback) {
+        Bootstrap b = new Bootstrap().channel(getChannel(target.getAddress())).group(getEventLoopGroup()).handler(PipelineUtils.BASE).option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 4000).remoteAddress(target.getAddress());
+        b.connect().addListener(future -> callback.done(future.isSuccess(), future.cause()));
+    }
+
+    @SuppressWarnings("ALL")
+    private Class<? extends Channel> getChannel(SocketAddress addr) {
+
+        if (!oldPipelineUtils()) {
+            return PipelineUtils.getChannel(addr);
+        }
+
+        try {
+            getPipelineUtils().setAccessible(true);
+            return (Class<? extends Channel>) getPipelineUtils().invoke(null);
+        } catch (ClassCastException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    private EventLoopGroup getEventLoopGroup() {
+        boolean useEpoll = Epoll.isAvailable();
+        return useEpoll ? new EpollEventLoopGroup() : new NioEventLoopGroup();
+    }
+
+    @SuppressWarnings("ALL")
+    @SneakyThrows
+    private Method getPipelineUtils() {
+        return PipelineUtils.class.getMethod("getChannel");
+    }
+
+    private boolean oldPipelineUtils() {
+        try {
+            PipelineUtils.class.getMethod("getChannel", SocketAddress.class);
+        } catch (NoSuchMethodException | SecurityException e) {
+            return true;
+        }
+        return false;
+    }
+
+    private final boolean isLuckPerms = instance.getProxy().getPluginManager().getPlugin("LuckPerms") != null;
 }

@@ -59,15 +59,18 @@ public class FinishCommand implements SimpleCommand {
 
                 final Optional<Player> player = instance.getServer().getPlayer(invocation.arguments()[0]);
 
-                final Optional<RegisteredServer> proxyServer;
+                List<Optional<RegisteredServer>> servers = Utils.getServerList(VelocityConfig.CONTROL_FALLBACK.getStringList());
 
-                if (VelocityConfig.USE_DISCONNECT.get(Boolean.class)) {
-                    proxyServer = instance.getServer().getServer(VelocityConfig.CONTROL.get(String.class));
-                } else {
-                    proxyServer = instance.getServer().getServer(VelocityConfig.CONTROL_FALLBACK.get(String.class));
+                if (!VelocityConfig.DISABLE_PING.get(Boolean.class)) {
+                    servers = Utils.getOnlineServers(servers);
                 }
 
+                Optional<RegisteredServer> proxyServer = Utils.getBestServer(servers);
                 final Player sender = (Player) invocation.source();
+
+                if (VelocityConfig.USE_DISCONNECT.get(Boolean.class)) {
+                    proxyServer = Optional.empty();
+                }
 
                 if (!player.isPresent()) {
                     source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.NOT_ONLINE.get(String.class)
@@ -192,11 +195,7 @@ public class FinishCommand implements SimpleCommand {
                                     .replace("%result%", VelocityMessages.CLEAN.color()))));
                 }
 
-                if (VelocityMessages.DISCORD_CAPITAL.get(Boolean.class)) {
-                    Utils.sendDiscordMessage(player.get(), sender, VelocityMessages.DISCORD_FINISHED.get(String.class).replace("%suspectgroup%", addCapital(suspect_group)).replace("%admingroup%", addCapital(admin_group)), VelocityMessages.CLEAN.get(String.class));
-                } else {
-                    Utils.sendDiscordMessage(player.get(), sender, VelocityMessages.DISCORD_FINISHED.get(String.class).replace("%suspectgroup%", suspect_group).replace("%admingroup%", admin_group), VelocityMessages.CLEAN.get(String.class));
-                }
+                Utils.sendDiscordMessage(player.get(), sender, VelocityMessages.DISCORD_FINISHED.get(String.class).replace("%suspectgroup%", suspect_group).replace("%admingroup%", admin_group), VelocityMessages.CLEAN.get(String.class));
 
             } else {
 
@@ -207,14 +206,6 @@ public class FinishCommand implements SimpleCommand {
             }
         }
     }
-
-    private String addCapital(String string) {
-		if (string == null || string.isEmpty()) {
-			return string;
-		}
-
-		return Character.toUpperCase(string.charAt(0)) + string.substring(1);
-	}
 
     @Override
     public CompletableFuture<List<String>> suggestAsync(Invocation invocation) {

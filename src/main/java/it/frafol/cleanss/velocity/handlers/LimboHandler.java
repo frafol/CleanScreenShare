@@ -1,6 +1,5 @@
 package it.frafol.cleanss.velocity.handlers;
 
-import com.velocitypowered.api.network.ProtocolVersion;
 import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.server.RegisteredServer;
 import it.frafol.cleanss.velocity.CleanSS;
@@ -17,6 +16,7 @@ import net.luckperms.api.LuckPermsProvider;
 import net.luckperms.api.model.user.User;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Optional;
 
 public class LimboHandler implements LimboSessionHandler {
@@ -64,10 +64,6 @@ public class LimboHandler implements LimboSessionHandler {
         }
 
         boolean luckperms = instance.getServer().getPluginManager().getPlugin("luckperms").isPresent();
-
-        if (player.getProxyPlayer().getProtocolVersion().getProtocol() >= ProtocolVersion.getProtocolVersion(759).getProtocol() && !instance.getUnsignedVelocityAddon()) {
-            return;
-        }
 
         String user_prefix = "";
         String user_suffix = "";
@@ -162,7 +158,13 @@ public class LimboHandler implements LimboSessionHandler {
         if (instance.getServer().getAllPlayers().toString().contains(secondWord)) {
 
             final Optional<Player> player = instance.getServer().getPlayer(secondWord);
-            final Optional<RegisteredServer> proxyServer = instance.getServer().getServer(VelocityConfig.CONTROL_FALLBACK.get(String.class));
+            List<Optional<RegisteredServer>> servers = Utils.getServerList(VelocityConfig.CONTROL_FALLBACK.getStringList());
+
+            if (!VelocityConfig.DISABLE_PING.get(Boolean.class)) {
+                servers = Utils.getOnlineServers(servers);
+            }
+
+            Optional<RegisteredServer> proxyServer = Utils.getBestServer(servers);
 
             if (!player.isPresent()) {
                 source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.NOT_ONLINE.get(String.class)

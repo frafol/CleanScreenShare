@@ -34,6 +34,7 @@ public enum SpigotConfig {
 
     SUSPECTPREFIX("options.messages.suspect_prefix"),
     STAFFPREFIX("options.messages.staff_prefix"),
+    OTHERPREFIX("options.messages.other_prefix"),
 
     SB_UPDATE("options.scoreboard.update_task"),
 

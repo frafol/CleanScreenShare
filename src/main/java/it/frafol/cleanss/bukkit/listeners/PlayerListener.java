@@ -1,6 +1,7 @@
 package it.frafol.cleanss.bukkit.listeners;
 
 import it.frafol.cleanss.bukkit.CleanSS;
+import it.frafol.cleanss.bukkit.enums.SpigotCache;
 import it.frafol.cleanss.bukkit.enums.SpigotConfig;
 import it.frafol.cleanss.bukkit.objects.PlayerCache;
 import org.bukkit.GameMode;
@@ -128,6 +129,16 @@ public class PlayerListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void joinMessage(PlayerJoinEvent event) {
+
+        Player player = event.getPlayer();
+
+        instance.getServer().getScheduler().runTaskLater(instance, () -> {
+            if (PlayerCache.getSuspicious().contains(player.getUniqueId()) || PlayerCache.getAdministrator().contains(player.getUniqueId())) {
+                return;
+            }
+
+            player.teleport(PlayerCache.StringToLocation(SpigotCache.OTHER_SPAWN.get(String.class)));
+        }, 20L);
 
         if (Objects.equals(SpigotConfig.CUSTOM_JOIN_MESSAGE.get(String.class), "none")) {
             return;

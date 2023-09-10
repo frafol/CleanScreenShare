@@ -43,6 +43,5 @@ public class CommandListener implements Listener {
                 CleanSS.getInstance().getProxy().getScheduler().schedule(CleanSS.getInstance(), () -> PlayerCache.getBan_execution().remove(player.getUniqueId()), 2L, TimeUnit.SECONDS);
             }
         }
-
     }
 }

@@ -11,6 +11,7 @@ import it.frafol.cleanss.bungee.listeners.ServerListener;
 import it.frafol.cleanss.bungee.mysql.MySQLWorker;
 import it.frafol.cleanss.bungee.objects.PlayerCache;
 import it.frafol.cleanss.bungee.objects.TextFile;
+import it.frafol.cleanss.bungee.objects.Utils;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import net.byteflux.libby.BungeeLibraryManager;
@@ -21,6 +22,7 @@ import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
@@ -34,6 +36,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -91,6 +94,7 @@ public class CleanSS extends Plugin {
 		}
 
 		UpdateChecker();
+		startTasks();
 		getLogger().info("§7Plugin §dsuccessfully §7loaded!");
 	}
 
@@ -106,14 +110,43 @@ public class CleanSS extends Plugin {
 		return getInstance().messagesTextFile.getConfig();
 	}
 
-	private void registerCommands() {
+	private void startTasks() {
+		List<ServerInfo> servers = Utils.getServerList(BungeeConfig.CONTROL.getStringList());
+		List<ServerInfo> fallbacks = Utils.getServerList(BungeeConfig.CONTROL_FALLBACK.getStringList());
 
+		for (ServerInfo server : servers) {
+			Utils.startTask(server);
+		}
+
+		for (ServerInfo server : fallbacks) {
+			Utils.startTask(server);
+		}
+	}
+
+	private void stopTasks() {
+		List<ServerInfo> servers = Utils.getServerList(BungeeConfig.CONTROL.getStringList());
+		List<ServerInfo> fallbacks = Utils.getServerList(BungeeConfig.CONTROL_FALLBACK.getStringList());
+
+		for (ServerInfo server : servers) {
+			Utils.stopTask(server);
+		}
+
+		for (ServerInfo server : fallbacks) {
+			Utils.stopTask(server);
+		}
+	}
+
+	private void registerCommands() {
 		getProxy().getPluginManager().registerCommand(this, new DebugCommand(this));
 		getProxy().getPluginManager().registerCommand(this, new ControlCommand(this));
 		getProxy().getPluginManager().registerCommand(this, new FinishCommand(this));
+
+		if (BungeeConfig.ENABLE_SPECTATING.get(Boolean.class)) {
+			getProxy().getPluginManager().registerCommand(this, new SpectateCommand(this));
+		}
+
 		getProxy().getPluginManager().registerCommand(this, new InfoCommand(this));
 		getProxy().getPluginManager().registerCommand(this, new ReloadCommand());
-
 	}
 
 	private void loadFiles() {
@@ -176,7 +209,7 @@ public class CleanSS extends Plugin {
 		}
 
 		try {
-			String fileUrl = "https://github.com/frafol/CleanScreenShare/releases/download/release/CleanScreenShare.jar";
+			String fileUrl = "https://github.com/frafol/CleanScreenShare/releases/download/release/cleanscreenshare-2.0.0.jar";
 			String destination = "./plugins/";
 
 			String fileName = getFileNameFromUrl(fileUrl);
@@ -202,7 +235,31 @@ public class CleanSS extends Plugin {
 	private void downloadFile(String fileUrl, File outputFile) throws IOException {
 		URL url = new URL(fileUrl);
 		try (InputStream inputStream = url.openStream()) {
+			deleteFile(outputFile.getParent(), "cleanscreenshare-");
 			Files.copy(inputStream, outputFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+		}
+	}
+
+	@SneakyThrows
+	public void deleteFile(String directoryPath, String file_start) {
+		File directory = new File(directoryPath);
+
+		if (!directory.isDirectory()) {
+			throw new IllegalArgumentException();
+		}
+
+		File[] files = directory.listFiles();
+		if (files == null) {
+			throw new IOException();
+		}
+
+		for (File file : files) {
+			if (file.isFile() && file.getName().startsWith(file_start)) {
+				getLogger().warning("Found an old plugin file: " + file.getName());
+				if (file.delete()) {
+					getLogger().warning("Deleted old file: " + file.getName());
+				}
+			}
 		}
 	}
 
@@ -277,6 +334,11 @@ public class CleanSS extends Plugin {
 
 	@SneakyThrows
 	private void updateConfig() {
+
+		if (!BungeeVersion.VERSION.get(String.class).startsWith("2.0")) {
+			getLogger().severe("§cThe configurations are really outdated and there may be duplicate values. To make sure you don't miss them, reset them!");
+		}
+
 		if (!getDescription().getVersion().equals(BungeeVersion.VERSION.get(String.class))) {
 
 			getLogger().info("§7Creating new §dconfigurations§7...");
@@ -343,6 +405,7 @@ public class CleanSS extends Plugin {
 	public void onDisable() {
 
 		getProxy().unregisterChannel("cleanss:join");
+		stopTasks();
 
 		if (getConfigTextFile() == null || BungeeConfig.MYSQL.get(Boolean.class)) {
 

@@ -2,6 +2,7 @@ package it.frafol.cleanss.bungee.objects;
 
 import lombok.Getter;
 import lombok.experimental.UtilityClass;
+import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 import java.util.HashMap;
@@ -10,6 +11,12 @@ import java.util.UUID;
 
 @UtilityClass
 public class PlayerCache {
+
+    @Getter
+    private final HashSet<ServerInfo> onlineServers = new HashSet<>();
+
+    @Getter
+    private final HashSet<UUID> Spectators = new HashSet<>();
 
     @Getter
     private final HashSet<UUID> Suspicious = new HashSet<>();

@@ -1,7 +1,6 @@
 package it.frafol.cleanss.bungee.listeners;
 
 import it.frafol.cleanss.bungee.CleanSS;
-import it.frafol.cleanss.bungee.enums.BungeeConfig;
 import it.frafol.cleanss.bungee.objects.PlayerCache;
 import it.frafol.cleanss.bungee.objects.Utils;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -28,7 +27,7 @@ public class ServerListener implements Listener {
                 return;
             }
 
-            if (!player.getServer().getInfo().getName().equals(BungeeConfig.CONTROL.get(String.class))) {
+            if (!Utils.isInControlServer(player.getServer().getInfo())) {
                 return;
             }
 

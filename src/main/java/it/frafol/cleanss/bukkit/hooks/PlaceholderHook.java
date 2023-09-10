@@ -103,9 +103,8 @@ public class PlaceholderHook extends PlaceholderExpansion {
                 return SpigotConfig.STAFFPREFIX.color();
             }
 
-            return "";
+            return SpigotConfig.OTHERPREFIX.color();
         }
-
         return null;
     }
 

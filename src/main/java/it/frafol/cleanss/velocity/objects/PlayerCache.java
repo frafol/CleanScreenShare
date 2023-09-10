@@ -1,6 +1,7 @@
 package it.frafol.cleanss.velocity.objects;
 
 import com.velocitypowered.api.proxy.Player;
+import com.velocitypowered.api.proxy.server.RegisteredServer;
 import lombok.Getter;
 import lombok.experimental.UtilityClass;
 
@@ -10,6 +11,12 @@ import java.util.UUID;
 
 @UtilityClass
 public class PlayerCache {
+
+    @Getter
+    private final HashSet<RegisteredServer> onlineServers = new HashSet<>();
+
+    @Getter
+    private final HashSet<UUID> Spectators = new HashSet<>();
 
     @Getter
     private final HashSet<UUID> Suspicious = new HashSet<>();

@@ -5,6 +5,9 @@ import it.frafol.cleanss.bungee.enums.BungeeConfig;
 import it.frafol.cleanss.bungee.enums.BungeeMessages;
 import it.frafol.cleanss.bungee.objects.PlayerCache;
 import it.frafol.cleanss.bungee.objects.Utils;
+import net.luckperms.api.LuckPerms;
+import net.luckperms.api.LuckPermsProvider;
+import net.luckperms.api.model.user.User;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -14,6 +17,8 @@ import net.md_5.bungee.api.event.ServerConnectEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
 
 public class KickListener implements Listener {
 
@@ -42,11 +47,61 @@ public class KickListener implements Listener {
 
         final ProxiedPlayer player = event.getPlayer();
         final ServerInfo server = event.getTarget();
+        boolean luckperms = instance.getProxy().getPluginManager().getPlugin("LuckPerms") != null;
+
+        if (PlayerCache.getSpectators().contains(player.getUniqueId())) {
+
+            if (Utils.isInControlServer(server)) {
+                return;
+            }
+
+            player.sendMessage(TextComponent.fromLegacyText(BungeeMessages.NOT_SPECTATING.color()
+                    .replace("%prefix%", BungeeMessages.PREFIX.color())));
+            PlayerCache.getSpectators().remove(player.getUniqueId());
+
+            Utils.sendDiscordSpectatorMessage(player, BungeeMessages.DISCORD_SPECTATOR_END.color()
+                    .replace("%player%", player.getName()));
+
+            String admin_prefix;
+            String admin_suffix;
+
+            if (luckperms) {
+
+                final LuckPerms api = LuckPermsProvider.get();
+
+                final User admin = api.getUserManager().getUser(player.getUniqueId());
+
+                if (admin == null) {
+                    return;
+                }
+
+                final String prefix = admin.getCachedData().getMetaData().getPrefix();
+                final String suffix = admin.getCachedData().getMetaData().getSuffix();
+
+                admin_prefix = prefix == null ? "" : prefix;
+                admin_suffix = suffix == null ? "" : suffix;
+
+            } else {
+                admin_prefix = "";
+                admin_suffix = "";
+            }
+
+            if (BungeeConfig.SEND_ADMIN_MESSAGE.get(Boolean.class)) {
+                instance.getProxy().getPlayers().stream()
+                        .filter(players -> players.hasPermission(BungeeConfig.CONTROL_PERMISSION.get(String.class)))
+                        .forEach(players -> players.sendMessage(TextComponent.fromLegacyText(BungeeMessages.SPECT_ADMIN_NOTIFY_FINISH.color()
+                                .replace("%prefix%", BungeeMessages.PREFIX.color())
+                                .replace("%admin%", player.getName())
+                                .replace("%adminprefix%", Utils.color(admin_prefix))
+                                .replace("%adminsuffix%", Utils.color(admin_suffix)))));
+            }
+            return;
+        }
 
         if (PlayerCache.getAdministrator().contains(player.getUniqueId()) ||
                 PlayerCache.getSuspicious().contains(player.getUniqueId())) {
 
-            if (server.getName().equals(BungeeConfig.CONTROL.get(String.class))) {
+            if (!Utils.isInControlServer(server)) {
                 return;
             }
 
@@ -57,8 +112,16 @@ public class KickListener implements Listener {
     @EventHandler
     public void onPlayerDisconnect(@NotNull PlayerDisconnectEvent event) {
 
-        final ServerInfo proxyServer = instance.getProxy().getServerInfo(BungeeConfig.CONTROL_FALLBACK.get(String.class));
+        List<ServerInfo> servers = Utils.getServerList(BungeeConfig.CONTROL_FALLBACK.getStringList());
+
+        if (!BungeeConfig.DISABLE_PING.get(Boolean.class)) {
+            servers = Utils.getOnlineServers(servers);
+        }
+
+        final ServerInfo proxyServer = Utils.getBestServer(servers);
         final ProxiedPlayer player = event.getPlayer();
+
+        PlayerCache.getSpectators().remove(player.getUniqueId());
 
         if (proxyServer == null) {
             instance.getLogger().severe("Fallback server was not found in your BungeeCord configuration or is offline, players will not be able to reconnect to the server.");

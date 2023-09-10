@@ -57,7 +57,14 @@ public class FinishCommand extends Command implements TabExecutor {
             if (instance.getProxy().getPlayers().toString().contains(args[0])) {
 
                 final ProxiedPlayer player = instance.getProxy().getPlayer(args[0]);
-                final ServerInfo proxyServer = instance.getProxy().getServerInfo(BungeeConfig.CONTROL_FALLBACK.get(String.class));
+
+                List<ServerInfo> servers = Utils.getServerList(BungeeConfig.CONTROL_FALLBACK.getStringList());
+
+                if (!BungeeConfig.DISABLE_PING.get(Boolean.class)) {
+                    servers = Utils.getOnlineServers(servers);
+                }
+
+                final ServerInfo proxyServer = Utils.getBestServer(servers);
 
                 if (player == null) {
                     invocation.sendMessage(TextComponent.fromLegacyText(BungeeMessages.NOT_ONLINE.get(String.class)
@@ -186,13 +193,7 @@ public class FinishCommand extends Command implements TabExecutor {
 
                 }
 
-                if (BungeeMessages.DISCORD_CAPITAL.get(Boolean.class)) {
-                    Utils.sendDiscordMessage(player, (ProxiedPlayer) invocation, BungeeMessages.DISCORD_FINISHED.get(String.class).replace("%suspectgroup%", addCapital(suspect_group)).replace("%admingroup%", addCapital(admin_group)), BungeeMessages.CLEAN.get(String.class));
-                    return;
-                }
-
                 Utils.sendDiscordMessage(player, (ProxiedPlayer) invocation, BungeeMessages.DISCORD_FINISHED.get(String.class).replace("%suspectgroup%", suspect_group).replace("%admingroup%", admin_group), BungeeMessages.CLEAN.get(String.class));
-
             }
         }
     }
@@ -215,12 +216,4 @@ public class FinishCommand extends Command implements TabExecutor {
 
         return completions;
     }
-
-    private String addCapital(String string) {
-		if (string == null || string.isEmpty()) {
-			return string;
-		}
-
-		return Character.toUpperCase(string.charAt(0)) + string.substring(1);
-	}
 }

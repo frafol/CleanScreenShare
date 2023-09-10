@@ -65,7 +65,8 @@ public class InfoCommand implements SimpleCommand {
                     new Placeholder("prefix", VelocityMessages.PREFIX.color()),
                     new Placeholder("is_in_control", String.valueOf(instance.getData().getStats(player.get().getUniqueId(), "incontrol"))),
                     new Placeholder("controls_done", String.valueOf(instance.getData().getStats(player.get().getUniqueId(), "controls"))),
-                    new Placeholder("controls_suffered", String.valueOf(instance.getData().getStats(player.get().getUniqueId(), "suffered"))));
+                    new Placeholder("controls_suffered", String.valueOf(instance.getData().getStats(player.get().getUniqueId(), "suffered"))),
+                    new Placeholder("is_spectating", PlayerCache.getSpectators().contains(player.get().getUniqueId()) ? "true" : "false"));
             return;
         }
 
@@ -77,7 +78,8 @@ public class InfoCommand implements SimpleCommand {
                 new Placeholder("prefix", VelocityMessages.PREFIX.color()),
                 new Placeholder("is_in_control", String.valueOf(PlayerCache.getSuspicious().contains(player.get().getUniqueId()))),
                 new Placeholder("controls_done", String.valueOf(PlayerCache.getControls().get(player.get().getUniqueId()))),
-                new Placeholder("controls_suffered", String.valueOf(PlayerCache.getControls_suffered().get(player.get().getUniqueId()))));
+                new Placeholder("controls_suffered", String.valueOf(PlayerCache.getControls_suffered().get(player.get().getUniqueId()))),
+                new Placeholder("is_spectating", PlayerCache.getSpectators().contains(player.get().getUniqueId()) ? "true" : "false"));
 
     }
 

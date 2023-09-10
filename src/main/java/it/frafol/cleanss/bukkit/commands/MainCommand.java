@@ -44,5 +44,14 @@ public class MainCommand implements Listener {
             cache.save();
 
         }
+
+        if (message.equalsIgnoreCase("/setotherspawn")) {
+
+            event.setCancelled(true);
+
+            player.sendMessage(SpigotConfig.SPAWN_SET.color());
+            cache.set("spawns.other", PlayerCache.LocationToString(player.getLocation()));
+            cache.save();
+        }
     }
 }

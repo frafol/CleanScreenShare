@@ -5,7 +5,6 @@ import com.velocitypowered.api.event.player.ServerPostConnectEvent;
 import com.velocitypowered.api.network.ProtocolVersion;
 import com.velocitypowered.api.proxy.Player;
 import it.frafol.cleanss.velocity.CleanSS;
-import it.frafol.cleanss.velocity.enums.VelocityConfig;
 import it.frafol.cleanss.velocity.objects.PlayerCache;
 import it.frafol.cleanss.velocity.objects.Utils;
 import org.jetbrains.annotations.NotNull;
@@ -31,7 +30,7 @@ public class ServerListener {
             return;
         }
 
-        if (!player.getCurrentServer().get().getServerInfo().getName().equals(VelocityConfig.CONTROL.get(String.class))) {
+        if (!Utils.isInControlServer(player.getCurrentServer().get().getServer())) {
             return;
         }
 

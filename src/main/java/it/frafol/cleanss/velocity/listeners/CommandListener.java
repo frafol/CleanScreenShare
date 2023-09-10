@@ -35,13 +35,7 @@ public class CommandListener {
                 && !instance.getUnsignedVelocityAddon())) {
 
             event.setResult(CommandExecuteEvent.CommandResult.denied());
-            return;
         }
-
-        instance.getLogger().error("Unable to delete command for " + player.getUsername() + ". " +
-                "This is a Velocity issue affecting Minecraft 1.19.1+ clients. " +
-                "To fix this, please install https://github.com/4drian3d/UnSignedVelocity/releases/latest.");
-
     }
 
     @Subscribe

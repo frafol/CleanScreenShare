@@ -6,7 +6,8 @@ import org.jetbrains.annotations.NotNull;
 public enum SpigotCache {
 
     ADMIN_SPAWN("spawns.admin"),
-    SUSPECT_SPAWN("spawns.suspect");
+    SUSPECT_SPAWN("spawns.suspect"),
+    OTHER_SPAWN("spawns.other");
 
     private final String path;
     public static final CleanSS instance = CleanSS.getInstance();

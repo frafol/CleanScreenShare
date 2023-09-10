@@ -74,14 +74,7 @@ public class ControlCommand implements SimpleCommand {
 					return;
 				}
 
-
-				if (instance.getServer().getAllServers().toString().contains(VelocityConfig.CONTROL.get(String.class)) || instance.useLimbo) {
-
-					final Optional<RegisteredServer> proxyServer = instance.getServer().getServer(VelocityConfig.CONTROL.get(String.class));
-
-					if (!proxyServer.isPresent() && !instance.useLimbo) {
-						return;
-					}
+				if (instance.useLimbo) {
 
 					if (sender.getUniqueId().equals(player.get().getUniqueId())) {
 						source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.YOURSELF.color()
@@ -158,69 +151,130 @@ public class ControlCommand implements SimpleCommand {
 						suspect_group = "";
 					}
 
-					if (instance.useLimbo) {
 
-						LimboUtils.spawnPlayerLimbo(sender);
-						LimboUtils.spawnPlayerLimbo(player.get());
+					LimboUtils.spawnPlayerLimbo(sender);
+					LimboUtils.spawnPlayerLimbo(player.get());
 
-						Utils.startControl(player.get(), sender, null);
+					Utils.startControl(player.get(), sender, null);
+					Utils.sendDiscordMessage(player.get(), sender, VelocityMessages.DISCORD_STARTED.get(String.class).replace("%suspectgroup%", suspect_group).replace("%admingroup%", admin_group));
 
-						if (VelocityMessages.DISCORD_CAPITAL.get(Boolean.class)) {
-							Utils.sendDiscordMessage(player.get(), sender, VelocityMessages.DISCORD_STARTED.get(String.class).replace("%suspectgroup%", addCapital(suspect_group)).replace("%admingroup%", addCapital(admin_group)));
-						} else {
-							Utils.sendDiscordMessage(player.get(), sender, VelocityMessages.DISCORD_STARTED.get(String.class).replace("%suspectgroup%", suspect_group).replace("%admingroup%", admin_group));
+					return;
+				}
+
+				List<Optional<RegisteredServer>> servers = Utils.getServerList(VelocityConfig.CONTROL.getStringList());
+
+				if (!VelocityConfig.DISABLE_PING.get(Boolean.class)) {
+					servers = Utils.getOnlineServers(servers);
+				}
+
+				Optional<RegisteredServer> proxyServer = Utils.getBestServer(servers);
+
+				if (!proxyServer.isPresent()) {
+					source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.NO_EXIST.color()
+							.replace("%prefix%", VelocityMessages.PREFIX.color())));
+					return;
+				}
+
+				if (sender.getUniqueId().equals(player.get().getUniqueId())) {
+					source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.YOURSELF.color()
+							.replace("%prefix%", VelocityMessages.PREFIX.color())));
+					return;
+				}
+
+				if (PlayerCache.getSuspicious().contains(player.get().getUniqueId())) {
+					source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.CONTROL_ALREADY.color()
+							.replace("%prefix%", VelocityMessages.PREFIX.color())));
+					return;
+				}
+
+				if (PlayerCache.getAdministrator().contains(sender.getUniqueId())) {
+					source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.CONTROL_ALREADY.color()
+							.replace("%prefix%", VelocityMessages.PREFIX.color())));
+					return;
+				}
+
+				if (PlayerCache.getIn_control().get(player.get().getUniqueId()) != null && PlayerCache.getIn_control().get(player.get().getUniqueId()) == 1) {
+					source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.CONTROL_ALREADY.color()
+							.replace("%prefix%", VelocityMessages.PREFIX.color())));
+					return;
+				}
+
+				String admin_group;
+				String suspect_group;
+
+				if (luckperms) {
+
+					final LuckPerms api = LuckPermsProvider.get();
+
+					final User admin = api.getUserManager().getUser(sender.getUniqueId());
+					final User suspect = api.getUserManager().getUser(player.get().getUniqueId());
+
+					if (admin == null || suspect == null) {
+						return;
+					}
+
+					final Group admingroup = api.getGroupManager().getGroup(admin.getPrimaryGroup());
+
+					String admingroup_displayname;
+					if (admingroup != null) {
+						admingroup_displayname = admingroup.getFriendlyName();
+
+						if (admingroup_displayname.equalsIgnoreCase("default")) {
+							admingroup_displayname = VelocityMessages.DISCORD_LUCKPERMS_FIX.get(String.class);
 						}
-
-						return;
-					}
-
-					if (!proxyServer.isPresent()) {
-						return;
-					}
-
-					if (!VelocityConfig.DISABLE_PING.get(Boolean.class)) {
-						proxyServer.get().ping().whenComplete((result, throwable) -> {
-
-							if (throwable != null) {
-								source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.NO_EXIST.color()
-										.replace("%prefix%", VelocityMessages.PREFIX.color())));
-								return;
-							}
-
-							if (result == null) {
-								source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.NO_EXIST.color()
-										.replace("%prefix%", VelocityMessages.PREFIX.color())));
-								return;
-							}
-
-							Utils.startControl(player.get(), sender, proxyServer.get());
-
-							if (VelocityMessages.DISCORD_CAPITAL.get(Boolean.class)) {
-								Utils.sendDiscordMessage(player.get(), sender, VelocityMessages.DISCORD_STARTED.get(String.class).replace("%suspectgroup%", addCapital(suspect_group)).replace("%admingroup%", addCapital(admin_group)));
-							} else {
-								Utils.sendDiscordMessage(player.get(), sender, VelocityMessages.DISCORD_STARTED.get(String.class).replace("%suspectgroup%", suspect_group).replace("%admingroup%", admin_group));
-							}
-
-						});
 
 					} else {
+						admingroup_displayname = "";
+					}
+
+					admin_group = admingroup == null ? "" : admingroup_displayname;
+
+					final Group suspectgroup = api.getGroupManager().getGroup(suspect.getPrimaryGroup());
+
+					String suspectroup_displayname;
+					if (suspectgroup != null) {
+						suspectroup_displayname = suspectgroup.getFriendlyName();
+
+						if (suspectroup_displayname.equalsIgnoreCase("default")) {
+							suspectroup_displayname = VelocityMessages.DISCORD_LUCKPERMS_FIX.get(String.class);
+						}
+
+					} else {
+						suspectroup_displayname = "";
+					}
+
+					suspect_group = suspectgroup == null ? "" : suspectroup_displayname;
+
+				} else {
+					admin_group = "";
+					suspect_group = "";
+				}
+
+                if (!VelocityConfig.DISABLE_PING.get(Boolean.class)) {
+					proxyServer.get().ping().whenComplete((result, throwable) -> {
+
+						if (throwable != null) {
+							source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.NO_EXIST.color()
+									.replace("%prefix%", VelocityMessages.PREFIX.color())));
+							return;
+						}
+
+						if (result == null) {
+							source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.NO_EXIST.color()
+									.replace("%prefix%", VelocityMessages.PREFIX.color())));
+							return;
+						}
 
 						Utils.startControl(player.get(), sender, proxyServer.get());
+						Utils.sendDiscordMessage(player.get(), sender, VelocityMessages.DISCORD_STARTED.get(String.class).replace("%suspectgroup%", suspect_group).replace("%admingroup%", admin_group));
 
-						if (VelocityMessages.DISCORD_CAPITAL.get(Boolean.class)) {
-							Utils.sendDiscordMessage(player.get(), sender, VelocityMessages.DISCORD_STARTED.get(String.class).replace("%suspectgroup%", addCapital(suspect_group)).replace("%admingroup%", addCapital(admin_group)));
-						} else {
-							Utils.sendDiscordMessage(player.get(), sender, VelocityMessages.DISCORD_STARTED.get(String.class).replace("%suspectgroup%", suspect_group).replace("%admingroup%", admin_group));
-						}
-					}
+					});
 
 				} else {
 
-					source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.NO_EXIST.color()
-							.replace("%prefix%", VelocityMessages.PREFIX.color())));
-
+					Utils.startControl(player.get(), sender, proxyServer.get());
+					Utils.sendDiscordMessage(player.get(), sender, VelocityMessages.DISCORD_STARTED.get(String.class).replace("%suspectgroup%", suspect_group).replace("%admingroup%", admin_group));
 				}
-
 			} else {
 
 				source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.NOT_ONLINE.color()
@@ -230,15 +284,6 @@ public class ControlCommand implements SimpleCommand {
 			}
 		}
 	}
-
-	private String addCapital(String string) {
-		if (string == null || string.isEmpty()) {
-			return string;
-		}
-
-		return Character.toUpperCase(string.charAt(0)) + string.substring(1);
-	}
-
 
 	@Override
 	public CompletableFuture<List<String>> suggestAsync(Invocation invocation) {

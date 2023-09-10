@@ -17,7 +17,10 @@ import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -281,7 +284,7 @@ public class PlayerCache {
                 return;
             }
 
-            player.setPlayerListName(PlaceholderAPI.setPlaceholders(player, SpigotConfig.TABLIST_FORMAT.color().replace("%player%", player.getName())));
+            player.setPlayerListName(color(PlaceholderAPI.setPlaceholders(player, SpigotConfig.TABLIST_FORMAT.get(String.class).replace("%player%", player.getName()))));
             return;
         }
 

@@ -25,10 +25,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 import java.time.Duration;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -38,6 +36,7 @@ import java.util.stream.Collectors;
 public class Utils {
 
     private static final CleanSS instance = CleanSS.getInstance();
+    private final HashMap<RegisteredServer, ScheduledTask> task = new HashMap<>();
 
     public List<String> getStringList(@NotNull VelocityMessages velocityMessages) {
         return instance.getMessagesTextFile().getConfig().getStringList(velocityMessages.getPath());
@@ -141,6 +140,38 @@ public class Utils {
         }
     }
 
+    public void sendDiscordSpectatorMessage(Player player, String message) {
+
+        if (VelocityConfig.DISCORD_ENABLED.get(Boolean.class)) {
+
+            if (instance.getJda() == null) {
+                return;
+            }
+
+            if (instance.getJda().getJda() == null) {
+                return;
+            }
+
+            final TextChannel channel = instance.getJda().getJda().getTextChannelById(VelocityConfig.DISCORD_CHANNEL_ID.get(String.class));
+
+            if (channel == null) {
+                return;
+            }
+
+            EmbedBuilder embed = new EmbedBuilder();
+
+            embed.setTitle(VelocityConfig.DISCORD_EMBED_TITLE.get(String.class), null);
+
+            embed.setDescription(message
+                    .replace("%staffer%", player.getUsername()));
+
+            embed.setColor(Color.RED);
+            embed.setFooter(VelocityConfig.DISCORD_EMBED_FOOTER.get(String.class));
+
+            channel.sendMessageEmbeds(embed.build()).queue();
+        }
+    }
+
     public void sendDiscordMessage(Player suspect, Player staffer, String message) {
 
         if (VelocityConfig.DISCORD_ENABLED.get(Boolean.class)) {
@@ -168,10 +199,9 @@ public class Utils {
                     .replace("%staffer%", staffer.getUsername()));
 
             embed.setColor(Color.RED);
-            embed.setFooter("Powered by CleanScreenShare");
+            embed.setFooter(VelocityConfig.DISCORD_EMBED_FOOTER.get(String.class));
 
             channel.sendMessageEmbeds(embed.build()).queue();
-
         }
     }
 
@@ -195,20 +225,12 @@ public class Utils {
                     .replace("%result%", result));
 
             embed.setColor(Color.RED);
-            embed.setFooter("Powered by CleanScreenShare");
+            embed.setFooter(VelocityConfig.DISCORD_EMBED_FOOTER.get(String.class));
 
             channel.sendMessageEmbeds(embed.build()).queue();
 
         }
     }
-
-    private String addCapital(String string) {
-		if (string == null || string.isEmpty()) {
-			return string;
-		}
-
-		return Character.toUpperCase(string.charAt(0)) + string.substring(1);
-	}
 
     public void punishPlayer(UUID administrator, String suspicious, Player administrator_user, Player suspect) {
 
@@ -263,11 +285,7 @@ public class Utils {
 
         if (PlayerCache.getBan_execution().contains(administrator)) {
 
-            if (VelocityMessages.DISCORD_CAPITAL.get(Boolean.class)) {
-                Utils.sendDiscordMessage(suspect, administrator_user, VelocityMessages.DISCORD_FINISHED.get(String.class).replace("%suspectgroup%", addCapital(suspect_group)).replace("%admingroup%", addCapital(admin_group)), VelocityMessages.CHEATER.get(String.class));
-            } else {
-                Utils.sendDiscordMessage(suspect, administrator_user, VelocityMessages.DISCORD_FINISHED.get(String.class).replace("%suspectgroup%", suspect_group).replace("%admingroup%", admin_group), VelocityMessages.CHEATER.get(String.class));
-            }
+            Utils.sendDiscordMessage(suspect, administrator_user, VelocityMessages.DISCORD_FINISHED.get(String.class).replace("%suspectgroup%", suspect_group).replace("%admingroup%", admin_group), VelocityMessages.CHEATER.get(String.class));
 
             String admin_prefix;
             String admin_suffix;
@@ -324,11 +342,7 @@ public class Utils {
             return;
         }
 
-        if (VelocityMessages.DISCORD_CAPITAL.get(Boolean.class)) {
-            Utils.sendDiscordMessage(suspect, administrator_user, VelocityMessages.DISCORD_QUIT.get(String.class).replace("%suspectgroup%", addCapital(suspect_group)).replace("%admingroup%", addCapital(admin_group)), VelocityMessages.LEFT.get(String.class));
-        } else {
-            Utils.sendDiscordMessage(suspect, administrator_user, VelocityMessages.DISCORD_QUIT.get(String.class).replace("%suspectgroup%", suspect_group).replace("%admingroup%", admin_group), VelocityMessages.LEFT.get(String.class));
-        }
+        Utils.sendDiscordMessage(suspect, administrator_user, VelocityMessages.DISCORD_QUIT.get(String.class).replace("%suspectgroup%", suspect_group).replace("%admingroup%", admin_group), VelocityMessages.LEFT.get(String.class));
 
         String admin_prefix;
         String admin_suffix;
@@ -391,6 +405,15 @@ public class Utils {
 
     }
 
+    public boolean isInControlServer(RegisteredServer server) {
+        for (String string : VelocityConfig.CONTROL.getStringList()) {
+            if (string.equals(server.getServerInfo().getName())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public void sendFormattedList(VelocityMessages velocityMessages, CommandSource commandSource, Player player_name, Placeholder... placeholders) {
         sendList(commandSource, color(getStringList(velocityMessages, placeholders)), player_name);
     }
@@ -417,7 +440,7 @@ public class Utils {
                 }
             }
 
-            if (instance.useLimbo || suspicious.getCurrentServer().get().getServer().getServerInfo().getName().equals(VelocityConfig.CONTROL.get(String.class))) {
+            if (instance.useLimbo || isInControlServer(suspicious.getCurrentServer().get().getServer())) {
 
                 if (!VelocityConfig.USE_DISCONNECT.get(Boolean.class) || instance.useLimbo) {
 
@@ -426,7 +449,6 @@ public class Utils {
                     } else {
                         suspicious.createConnectionRequest(proxyServer).fireAndForget();
                     }
-
 
                 } else {
                     Utils.sendChannelMessage(suspicious, "DISCONNECT_NOW");
@@ -444,7 +466,7 @@ public class Utils {
                     }
                 }
 
-                if (instance.useLimbo || administrator.getCurrentServer().get().getServer().getServerInfo().getName().equals(VelocityConfig.CONTROL.get(String.class))) {
+                if (instance.useLimbo || isInControlServer(administrator.getCurrentServer().get().getServer())) {
                     if (!VelocityConfig.USE_DISCONNECT.get(Boolean.class) || instance.useLimbo) {
 
                         if (instance.useLimbo) {
@@ -832,7 +854,13 @@ public class Utils {
                 return;
             }
 
-            final Optional<RegisteredServer> fallbackServer = instance.getServer().getServer(VelocityConfig.CONTROL_FALLBACK.get(String.class));
+            List<Optional<RegisteredServer>> servers = Utils.getServerList(VelocityConfig.CONTROL_FALLBACK.getStringList());
+
+            if (!VelocityConfig.DISABLE_PING.get(Boolean.class)) {
+                servers = Utils.getOnlineServers(servers);
+            }
+
+            Optional<RegisteredServer> fallbackServer = Utils.getBestServer(servers);
 
             if (!fallbackServer.isPresent()) {
                 suspicious.disconnect(LegacyComponentSerializer.legacy('§').deserialize("Your control server is not configured correctly or is crashed, please check the configuration file. " +
@@ -883,10 +911,37 @@ public class Utils {
             return;
         }
 
+        boolean luckperms = instance.getServer().getPluginManager().getPlugin("luckperms").isPresent();
+        String user_prefix = "";
+        String user_suffix = "";
+
+        if (luckperms) {
+
+            final LuckPerms api = LuckPermsProvider.get();
+            final User user = api.getUserManager().getUser(suspicious.getUniqueId());
+
+            if (user == null) {
+                return;
+            }
+
+            final String prefix = user.getCachedData().getMetaData().getPrefix();
+            final String suffix = user.getCachedData().getMetaData().getSuffix();
+            user_prefix = prefix == null ? "" : prefix;
+            user_suffix = suffix == null ? "" : suffix;
+
+        }
+
         Title controlTitle = Title.title(
 
-                LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.ADMINCONTROL_TITLE.color().replace("%suspect%", suspicious.getUsername())),
-                LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.ADMINCONTROL_SUBTITLE.color().replace("%suspect%", suspicious.getUsername())),
+                LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.ADMINCONTROL_TITLE.color()
+                        .replace("%suspect%", suspicious.getUsername())
+                        .replace("%suspectprefix%", user_prefix)
+                        .replace("%suspectsuffix%", user_suffix)),
+
+                LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.ADMINCONTROL_SUBTITLE.color()
+                        .replace("%suspect%", suspicious.getUsername())
+                        .replace("%suspectprefix%", user_prefix)
+                        .replace("%suspectsuffix%", user_suffix)),
 
                 Title.Times.times(
                         Duration.ofSeconds(VelocityMessages.ADMINCONTROL_FADEIN.get(Integer.class)),
@@ -927,10 +982,37 @@ public class Utils {
             return;
         }
 
+        boolean luckperms = instance.getServer().getPluginManager().getPlugin("luckperms").isPresent();
+        String user_prefix = "";
+        String user_suffix = "";
+
+        if (luckperms) {
+
+            final LuckPerms api = LuckPermsProvider.get();
+            final User user = api.getUserManager().getUser(suspicious.getUniqueId());
+
+            if (user == null) {
+                return;
+            }
+
+            final String prefix = user.getCachedData().getMetaData().getPrefix();
+            final String suffix = user.getCachedData().getMetaData().getSuffix();
+            user_prefix = prefix == null ? "" : prefix;
+            user_suffix = suffix == null ? "" : suffix;
+
+        }
+
         Title controlTitle = Title.title(
 
-                LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.ADMINCONTROLFINISH_TITLE.color().replace("%player%", suspicious.getUsername())),
-                LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.ADMINCONTROLFINISH_SUBTITLE.color().replace("%player%", suspicious.getUsername())),
+                LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.ADMINCONTROLFINISH_TITLE.color()
+                        .replace("%suspect%", suspicious.getUsername())
+                        .replace("%suspectprefix%", user_prefix)
+                        .replace("%suspectsuffix%", user_suffix)),
+
+                LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.ADMINCONTROLFINISH_SUBTITLE.color()
+                        .replace("%suspect%", suspicious.getUsername())
+                        .replace("%suspectprefix%", user_prefix)
+                        .replace("%suspectsuffix%", user_suffix)),
 
                 Title.Times.times(
                         Duration.ofSeconds(VelocityMessages.ADMINCONTROLFINISH_FADEIN.get(Integer.class)),
@@ -941,5 +1023,119 @@ public class Utils {
                         instance, () -> administrator.showTitle(controlTitle))
                 .delay(VelocityMessages.ADMINCONTROLFINISH_DELAY.get(Integer.class), TimeUnit.SECONDS)
                 .schedule();
+    }
+
+    public List<Optional<RegisteredServer>> getServerList(List<String> stringList) {
+        List<Optional<RegisteredServer>> servers = new ArrayList<>();
+        for (String server : stringList) {
+
+            if (!instance.getServer().getServer(server).isPresent()) {
+                instance.getLogger().error("The server " + server + " is not configured correctly, please check the configuration file.");
+                continue;
+            }
+
+            servers.add(instance.getServer().getServer(server));
+        }
+        return servers;
+    }
+
+    public Optional<RegisteredServer> getBestServer(List<Optional<RegisteredServer>> list) {
+
+        if (list.isEmpty()) {
+            return Optional.empty();
+        }
+
+        switch (VelocityConfig.STRATEGY.get(String.class)) {
+            case "RANDOM":
+                return getRandomServer(list);
+            case "LEAST_PLAYERS":
+                return getLeastPlayersServer(list);
+            case "MOST_PLAYERS":
+                return getMostPlayersServer(list);
+            default:
+                instance.getLogger().error("The strategy '" + VelocityConfig.STRATEGY.get(String.class) + "' is not valid, using 'RANDOM' instead.");
+                return getRandomServer(list);
+        }
+    }
+
+    public List<Optional<RegisteredServer>> getOnlineServers(List<Optional<RegisteredServer>> list) {
+        List<Optional<RegisteredServer>> servers = new ArrayList<>();
+        for (Optional<RegisteredServer> server : list) {
+
+            if (!server.isPresent()) {
+                return null;
+            }
+
+            if (PlayerCache.getOnlineServers().contains(server.get())) {
+                servers.add(server);
+            }
+        }
+        return servers;
+    }
+
+    public void startTask(RegisteredServer server) {
+        taskServer(server);
+    }
+
+    public void stopTask(RegisteredServer server) {
+        if (task.get(server) != null) {
+            task.get(server).cancel();
+        }
+
+        task.remove(server);
+    }
+
+    private void taskServer(RegisteredServer server) {
+        task.put(server, instance.getServer().getScheduler().buildTask(instance, () ->
+                server.ping().whenComplete((result, throwable) -> {
+
+                    if (throwable == null && result != null) {
+                        PlayerCache.getOnlineServers().add(server);
+                        return;
+                    }
+
+                    PlayerCache.getOnlineServers().remove(server);
+                })
+        ).repeat(3, TimeUnit.SECONDS).schedule());
+    }
+
+    private Optional<RegisteredServer> getLeastPlayersServer(List<Optional<RegisteredServer>> list) {
+        Optional<RegisteredServer> server = Optional.empty();
+        for (Optional<RegisteredServer> serverInfo : list) {
+            if (!server.isPresent() || !serverInfo.isPresent()) {
+                server = serverInfo;
+            } else if (server.get().getPlayersConnected().size() > serverInfo.get().getPlayersConnected().size()) {
+                server = serverInfo;
+            }
+        }
+        return server;
+    }
+
+    private Optional<RegisteredServer> getMostPlayersServer(List<Optional<RegisteredServer>> list) {
+        Optional<RegisteredServer> server = Optional.empty();
+        for (Optional<RegisteredServer> serverInfo : list) {
+
+            if (!server.isPresent()) {
+                server = serverInfo;
+                continue;
+            }
+
+            if (serverInfo.isPresent() && (server.get().getPlayersConnected().size() < serverInfo.get().getPlayersConnected().size())) {
+
+                if (VelocityConfig.DISABLE_PING.get(Boolean.class)) {
+                    server = serverInfo;
+                    continue;
+                }
+
+                if (PlayerCache.getOnlineServers().contains(serverInfo.get())) {
+                    server = serverInfo;
+                }
+            }
+        }
+        return server;
+    }
+
+    private Optional<RegisteredServer> getRandomServer(List<Optional<RegisteredServer>> list) {
+        return list.get(new Random().nextInt(list.size()));
     }
 }
