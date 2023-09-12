@@ -208,20 +208,22 @@ public class CleanSS extends Plugin {
 			return;
 		}
 
-		try {
-			String fileUrl = "https://github.com/frafol/CleanScreenShare/releases/download/release/cleanscreenshare-2.0.0.jar";
+		new UpdateCheck(this).getVersion(version -> {
+			String fileUrl = "https://github.com/frafol/CleanScreenShare/releases/download/release/cleanscreenshare-"+ version + " .jar";
 			String destination = "./plugins/";
 
 			String fileName = getFileNameFromUrl(fileUrl);
 			File outputFile = new File(destination, fileName);
 
-			downloadFile(fileUrl, outputFile);
-			updated = true;
-			getLogger().warning("§eCleanScreenShare successfully updated, a restart is required.");
+			try {
+				downloadFile(fileUrl, outputFile);
+			} catch (IOException ignored) {
+				getLogger().warning("An error occurred while downloading the update, please download it manually from SpigotMC.");
+			}
 
-		} catch (IOException ignored) {
-			getLogger().severe("An error occurred while updating CleanScreenShare.");
-		}
+			updated = true;
+			getLogger().warning("CleanScreenShare successfully updated, a restart is required.");
+		});
 	}
 
 	private String getFileNameFromUrl(String fileUrl) {

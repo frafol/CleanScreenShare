@@ -222,24 +222,26 @@ public class CleanSS extends JavaPlugin {
 	public void autoUpdate() {
 
 		if (isWindows()) {
-			getLogger().warning("Auto update is not supported on Windows.");
+			getLogger().warning("§eAuto update is not supported on Windows.");
 			return;
 		}
 
-		try {
-			String fileUrl = "https://github.com/frafol/CleanScreenShare/releases/download/release/cleanscreenshare-2.0.0.jar";
+		new UpdateCheck(this).getVersion(version -> {
+			String fileUrl = "https://github.com/frafol/CleanScreenShare/releases/download/release/cleanscreenshare-"+ version + " .jar";
 			String destination = "./plugins/";
 
 			String fileName = getFileNameFromUrl(fileUrl);
 			File outputFile = new File(destination, fileName);
 
-			downloadFile(fileUrl, outputFile);
+			try {
+				downloadFile(fileUrl, outputFile);
+			} catch (IOException ignored) {
+				getLogger().warning("An error occurred while downloading the update, please download it manually from SpigotMC.");
+			}
+
 			updated = true;
 			getLogger().warning("CleanScreenShare successfully updated, a restart is required.");
-
-		} catch (IOException ignored) {
-			getLogger().severe("Unable to update CleanScreenShare, please download it manually from SpigotMC.");
-		}
+		});
 	}
 
 	private String getFileNameFromUrl(String fileUrl) {

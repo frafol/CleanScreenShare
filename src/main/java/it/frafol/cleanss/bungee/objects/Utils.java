@@ -863,13 +863,22 @@ public class Utils {
 
     }
 
+    @SuppressWarnings("deprecation")
     public List<ServerInfo> getServerList(List<String> stringList) {
         List<ServerInfo> servers = new ArrayList<>();
         for (String server : stringList) {
 
-            if (!instance.getProxy().getServersCopy().containsKey(server)) {
-                instance.getLogger().severe("The server " + server + " is not configured correctly, please check the configuration file.");
-                continue;
+            try {
+                if (!instance.getProxy().getServersCopy().containsKey(server)) {
+                    instance.getLogger().severe("The server " + server + " is not configured correctly, please check the configuration file.");
+                    continue;
+                }
+
+            } catch (Exception ignored) {
+                if (!instance.getProxy().getServers().containsKey(server)) {
+                    instance.getLogger().severe("The server " + server + " is not configured correctly, please check the configuration file.");
+                    continue;
+                }
             }
 
             servers.add(instance.getProxy().getServerInfo(server));

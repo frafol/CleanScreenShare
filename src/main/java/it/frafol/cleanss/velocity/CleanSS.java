@@ -52,7 +52,7 @@ import java.util.concurrent.TimeUnit;
 @Plugin(
 		id = "cleanscreenshare",
 		name = "CleanScreenShare",
-		version = "2.0.0",
+		version = "2.0.1",
 		description = "Make control hacks on your players.",
 		dependencies = {@Dependency(id = "mysqlandconfigurateforvelocity", optional = true), @Dependency(id = "limboapi", optional = true)},
 		authors = { "frafol" })
@@ -265,20 +265,22 @@ public class CleanSS {
 			return;
 		}
 
-		try {
-			String fileUrl = "https://github.com/frafol/CleanScreenShare/releases/download/release/cleanscreenshare-2.0.0.jar";
+		new UpdateCheck(this).getVersion(version -> {
+			String fileUrl = "https://github.com/frafol/CleanScreenShare/releases/download/release/cleanscreenshare-"+ version + " .jar";
 			String destination = "./plugins/";
 
 			String fileName = getFileNameFromUrl(fileUrl);
 			File outputFile = new File(destination, fileName);
 
-			downloadFile(fileUrl, outputFile);
+			try {
+				downloadFile(fileUrl, outputFile);
+			} catch (IOException ignored) {
+				logger.warn("An error occurred while downloading the update, please download it manually from SpigotMC.");
+			}
+
 			updated = true;
 			logger.warn("CleanScreenShare successfully updated, a restart is required.");
-
-		} catch (IOException ignored) {
-			logger.error("An error occurred while updating CleanScreenShare.");
-		}
+		});
 	}
 
 	private void loadLibraries() {
