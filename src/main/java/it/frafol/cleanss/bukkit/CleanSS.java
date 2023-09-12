@@ -222,7 +222,7 @@ public class CleanSS extends JavaPlugin {
 	public void autoUpdate() {
 
 		if (isWindows()) {
-			getLogger().warning("§eAuto update is not supported on Windows.");
+			getLogger().warning("Auto update is not supported on Windows.");
 			return;
 		}
 

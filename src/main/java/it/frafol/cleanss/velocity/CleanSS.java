@@ -112,6 +112,8 @@ public class CleanSS {
 				" ( (__  )(__  )__)  /(__)\\  )  (  \\__ \\\\__ \\\n" +
 				"  \\___)(____)(____)(__)(__)(_)\\_) (___/(___/\n");
 
+		logger.info("§7Server version: §d" + getServerBrand() + " - " + getServerVersion());
+
 		logger.info("§7Loading §dconfiguration§7...");
 		loadFiles();
 		updateConfig();
@@ -256,6 +258,14 @@ public class CleanSS {
 		} catch (IOException ignored) {
 			logger.error("An error occurred while downloading MySQL drivers, plugin may not work properly.");
 		}
+	}
+
+	private String getServerBrand() {
+		return server.getVersion().getName();
+	}
+
+	private String getServerVersion() {
+		return server.getVersion().getVersion();
 	}
 
 	public void autoUpdate() {

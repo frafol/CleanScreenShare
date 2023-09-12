@@ -69,6 +69,8 @@ public class CleanSS extends Plugin {
 				" ( (__  )(__  )__)  /(__)\\  )  (   \\__ \\\\__ \\\n" +
 				"  \\___)(____)(____)(__)(__)(_)\\_)  (___/(___/\n");
 
+		getLogger().info("§7Server version: §d" + getServerBrand() + " - " + getServerVersion());
+
 		getLogger().info("§7Loading §dconfiguration§7...");
 		loadFiles();
 		updateConfig();
@@ -429,6 +431,14 @@ public class CleanSS extends Plugin {
 		instance = null;
 
 		getLogger().info("§7Plugin successfully §ddisabled§7!");
+	}
+
+	private String getServerBrand() {
+		return getProxy().getName();
+	}
+
+	private String getServerVersion() {
+		return getProxy().getVersion();
 	}
 
 	public <K, V> K getKey(@NotNull Map<K, V> map, V value) {
