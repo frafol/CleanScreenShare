@@ -379,9 +379,9 @@ public class CleanSS extends Plugin {
 		Library discord = Library.builder()
 				.groupId("net{}dv8tion")
 				.artifactId("JDA")
-				.version("5.0.0-beta.12")
+				.version("5.0.0-beta.13")
 				.relocate(kotlin)
-				.url("https://github.com/DV8FromTheWorld/JDA/releases/download/v5.0.0-beta.12/JDA-5.0.0-beta.12-withDependencies-min.jar")
+				.url("https://github.com/DV8FromTheWorld/JDA/releases/download/v5.0.0-beta.13/JDA-5.0.0-beta.13-withDependencies-min.jar")
 				.build();
 
 		bungeeLibraryManager.addMavenCentral();
