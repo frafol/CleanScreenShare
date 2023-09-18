@@ -1030,6 +1030,11 @@ public class Utils {
         for (String server : stringList) {
 
             if (!instance.getServer().getServer(server).isPresent()) {
+
+                if (VelocityConfig.USE_DISCONNECT.get(Boolean.class)) {
+                    continue;
+                }
+
                 instance.getLogger().error("The server " + server + " is not configured correctly, please check the configuration file.");
                 continue;
             }
@@ -1088,6 +1093,12 @@ public class Utils {
     private void taskServer(RegisteredServer server) {
         task.put(server, instance.getServer().getScheduler().buildTask(instance, () ->
                 server.ping().whenComplete((result, throwable) -> {
+
+                    if (VelocityConfig.CONTROL_FALLBACK.getStringList().contains(server.getServerInfo().getName())
+                            && VelocityConfig.USE_DISCONNECT.get(Boolean.class)) {
+                        PlayerCache.getOnlineServers().add(server);
+                        return;
+                    }
 
                     if (throwable == null && result != null) {
                         PlayerCache.getOnlineServers().add(server);

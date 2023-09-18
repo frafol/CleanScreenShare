@@ -137,8 +137,8 @@ public class KickListener {
         }
 
         if (!proxyServer.isPresent()) {
-            instance.getLogger().error("Fallback server was not found in your Velocity configuration or is offline, players will not be able to reconnect to the server.");
 
+            instance.getLogger().error("Fallback server was not found in your Velocity configuration or is offline, players will not be able to reconnect to the server.");
             if (PlayerCache.getAdministrator().contains(player.getUniqueId())) {
                 instance.getValue(PlayerCache.getCouples(), player).disconnect(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.FINISHSUS.color()));
             }

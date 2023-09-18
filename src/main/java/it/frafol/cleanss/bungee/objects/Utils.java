@@ -860,12 +860,22 @@ public class Utils {
 
             try {
                 if (!instance.getProxy().getServersCopy().containsKey(server)) {
+
+                    if (BungeeConfig.USE_DISCONNECT.get(Boolean.class)) {
+                        continue;
+                    }
+
                     instance.getLogger().severe("The server " + server + " is not configured correctly, please check the configuration file.");
                     continue;
                 }
 
             } catch (Exception ignored) {
                 if (!instance.getProxy().getServers().containsKey(server)) {
+
+                    if (BungeeConfig.USE_DISCONNECT.get(Boolean.class)) {
+                        continue;
+                    }
+
                     instance.getLogger().severe("The server " + server + " is not configured correctly, please check the configuration file.");
                     continue;
                 }
@@ -921,6 +931,13 @@ public class Utils {
     private void taskServer(ServerInfo server) {
         task.put(server, instance.getProxy().getScheduler().schedule(instance, () -> {
             server.ping((result, error) -> {
+
+                if (BungeeConfig.CONTROL_FALLBACK.getStringList().contains(server.getName())
+                        && BungeeConfig.USE_DISCONNECT.get(Boolean.class)) {
+                    PlayerCache.getOnlineServers().add(server);
+                    return;
+                }
+
                 if (error == null && result != null) {
                     PlayerCache.getOnlineServers().add(server);
                     return;

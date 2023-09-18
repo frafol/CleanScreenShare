@@ -44,7 +44,6 @@ public class PluginMessageReceiver implements PluginMessageListener {
         if (subChannel.equals("DISCONNECT_NOW")) {
 
             String player_found = dataInput.readUTF();
-
             final Player final_player = Bukkit.getPlayer(player_found);
 
             if (final_player == null) {
