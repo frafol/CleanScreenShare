@@ -850,7 +850,6 @@ public class Utils {
 
         ProxyServer.getInstance().getScheduler().schedule(instance, () ->
                 title.send(administrator), BungeeMessages.ADMINCONTROLFINISH_DELAY.get(Integer.class), TimeUnit.SECONDS);
-
     }
 
     @SuppressWarnings("deprecation")
@@ -858,27 +857,12 @@ public class Utils {
         List<ServerInfo> servers = new ArrayList<>();
         for (String server : stringList) {
 
-            try {
-                if (!instance.getProxy().getServersCopy().containsKey(server)) {
-
-                    if (BungeeConfig.USE_DISCONNECT.get(Boolean.class)) {
-                        continue;
-                    }
-
-                    instance.getLogger().severe("The server " + server + " is not configured correctly, please check the configuration file.");
+            if (!instance.getProxy().getServers().containsKey(server)) {
+                if (BungeeConfig.USE_DISCONNECT.get(Boolean.class)) {
                     continue;
                 }
-
-            } catch (Exception ignored) {
-                if (!instance.getProxy().getServers().containsKey(server)) {
-
-                    if (BungeeConfig.USE_DISCONNECT.get(Boolean.class)) {
-                        continue;
-                    }
-
-                    instance.getLogger().severe("The server " + server + " is not configured correctly, please check the configuration file.");
-                    continue;
-                }
+                instance.getLogger().severe("The server " + server + " is not configured correctly, please check the configuration file.");
+                continue;
             }
 
             servers.add(instance.getProxy().getServerInfo(server));
