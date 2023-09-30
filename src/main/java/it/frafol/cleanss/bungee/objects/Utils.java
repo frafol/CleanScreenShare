@@ -852,7 +852,6 @@ public class Utils {
                 title.send(administrator), BungeeMessages.ADMINCONTROLFINISH_DELAY.get(Integer.class), TimeUnit.SECONDS);
     }
 
-    @SuppressWarnings("deprecation")
     public List<ServerInfo> getServerList(List<String> stringList) {
         List<ServerInfo> servers = new ArrayList<>();
         for (String server : stringList) {

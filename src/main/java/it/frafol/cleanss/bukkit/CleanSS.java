@@ -102,8 +102,10 @@ public class CleanSS extends JavaPlugin {
 
 		getLogger().info("Loading configuration...");
 		configTextFile = new TextFile(getDataFolder().toPath(), "settings.yml");
+		cacheTextFile = new TextFile(getDataFolder().toPath(), "cache_do_not_touch.yml");
 		versionTextFile = new TextFile(getDataFolder().toPath(), "version.yml");
 		File configFile = new File(getDataFolder(), "settings.yml");
+		File cacheFile = new File(getDataFolder(), "cache_do_not_touch.yml");
 
 		if (!getDescription().getVersion().equals(SpigotVersion.VERSION.get(String.class))) {
 
@@ -114,13 +116,17 @@ public class CleanSS extends JavaPlugin {
 				getLogger().severe("Unable to update configuration file, please remove the settings.yml!");
 			}
 
+			try {
+				ConfigUpdater.update(this, "cache_do_not_touch.yml", cacheFile, Collections.emptyList());
+			} catch (IOException ignored) {
+				getLogger().severe("Unable to update configuration file, please remove the settings.yml!");
+			}
+
 			versionTextFile.getConfig().set("version", getDescription().getVersion());
 			versionTextFile.getConfig().save();
 			configTextFile = new TextFile(getDataFolder().toPath(), "settings.yml");
-
+			cacheTextFile = new TextFile(getDataFolder().toPath(), "cache_do_not_touch.yml");
 		}
-
-		cacheTextFile = new TextFile(getDataFolder().toPath(), "cache_do_not_touch.yml");
 
 		getLogger().info("Loading channels...");
 		getServer().getMessenger().registerIncomingPluginChannel(this, "cleanss:join", new PluginMessageReceiver());
