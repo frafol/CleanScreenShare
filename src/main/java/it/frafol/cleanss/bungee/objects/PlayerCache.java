@@ -38,5 +38,4 @@ public class PlayerCache {
 
     @Getter
     private final HashMap<UUID, Integer> in_control = new HashMap<>();
-
 }

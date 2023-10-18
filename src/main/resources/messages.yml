@@ -42,6 +42,8 @@ messages:
     suspicious_disconnect: "%prefix% &7Hack control &dfinished&7, %player% has just disconnected."
 
   info:
+
+    # If you're using LuckPerms, you can also use %playerprefix% and %playersuffix% here.
     main_message:
       - "&8&m------&5&m------&d&m------&5&m------&8&m------"
       - "&f"

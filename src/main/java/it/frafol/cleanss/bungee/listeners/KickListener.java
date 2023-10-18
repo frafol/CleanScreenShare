@@ -112,6 +112,10 @@ public class KickListener implements Listener {
     @EventHandler
     public void onPlayerDisconnect(@NotNull PlayerDisconnectEvent event) {
 
+        if (!event.getPlayer().isConnected()) {
+            return;
+        }
+
         List<ServerInfo> servers = Utils.getServerList(BungeeConfig.CONTROL_FALLBACK.getStringList());
 
         if (!BungeeConfig.DISABLE_PING.get(Boolean.class)) {

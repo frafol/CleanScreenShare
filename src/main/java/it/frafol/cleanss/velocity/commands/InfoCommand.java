@@ -30,6 +30,7 @@ public class InfoCommand implements SimpleCommand {
     public void execute(@NotNull Invocation invocation) {
 
         final CommandSource source = invocation.source();
+        boolean luckperms = instance.getServer().getPluginManager().getPlugin("luckperms").isPresent();
 
         if (!source.hasPermission(VelocityConfig.INFO_PERMISSION.get(String.class))) {
             source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.NO_PERMISSION.color()
@@ -60,6 +61,20 @@ public class InfoCommand implements SimpleCommand {
         }
 
         if (VelocityConfig.MYSQL.get(Boolean.class)) {
+
+            if (luckperms) {
+                VelocityMessages.INFO_MESSAGE.sendList(source, player.get(),
+                        new Placeholder("player", invocation.arguments()[0]),
+                        new Placeholder("prefix", VelocityMessages.PREFIX.color()),
+                        new Placeholder("is_in_control", String.valueOf(instance.getData().getStats(player.get().getUniqueId(), "incontrol"))),
+                        new Placeholder("controls_done", String.valueOf(instance.getData().getStats(player.get().getUniqueId(), "controls"))),
+                        new Placeholder("playerprefix", Utils.getPrefix(player.get())),
+                        new Placeholder("playersuffix", Utils.getSuffix(player.get())),
+                        new Placeholder("controls_suffered", String.valueOf(instance.getData().getStats(player.get().getUniqueId(), "suffered"))),
+                        new Placeholder("is_spectating", PlayerCache.getSpectators().contains(player.get().getUniqueId()) ? "true" : "false"));
+                return;
+            }
+
             VelocityMessages.INFO_MESSAGE.sendList(source, player.get(),
                     new Placeholder("player", invocation.arguments()[0]),
                     new Placeholder("prefix", VelocityMessages.PREFIX.color()),
@@ -72,6 +87,19 @@ public class InfoCommand implements SimpleCommand {
 
         PlayerCache.getControls().putIfAbsent(player.get().getUniqueId(), 0);
         PlayerCache.getControls_suffered().putIfAbsent(player.get().getUniqueId(), 0);
+
+        if (luckperms) {
+            VelocityMessages.INFO_MESSAGE.sendList(source, player.get(),
+                    new Placeholder("player", invocation.arguments()[0]),
+                    new Placeholder("prefix", VelocityMessages.PREFIX.color()),
+                    new Placeholder("is_in_control", String.valueOf(PlayerCache.getSuspicious().contains(player.get().getUniqueId()))),
+                    new Placeholder("controls_done", String.valueOf(PlayerCache.getControls().get(player.get().getUniqueId()))),
+                    new Placeholder("playerprefix", Utils.getPrefix(player.get())),
+                    new Placeholder("playersuffix", Utils.getSuffix(player.get())),
+                    new Placeholder("controls_suffered", String.valueOf(PlayerCache.getControls_suffered().get(player.get().getUniqueId()))),
+                    new Placeholder("is_spectating", PlayerCache.getSpectators().contains(player.get().getUniqueId()) ? "true" : "false"));
+            return;
+        }
 
         VelocityMessages.INFO_MESSAGE.sendList(source, player.get(),
                 new Placeholder("player", invocation.arguments()[0]),

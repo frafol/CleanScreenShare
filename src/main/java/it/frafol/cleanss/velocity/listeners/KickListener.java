@@ -122,6 +122,12 @@ public class KickListener {
     @Subscribe
     public void onPlayerDisconnect(DisconnectEvent event) {
 
+        final Player player = event.getPlayer();
+
+        if (!player.isActive()) {
+            return;
+        }
+
         List<Optional<RegisteredServer>> servers = Utils.getServerList(VelocityConfig.CONTROL_FALLBACK.getStringList());
 
         if (!VelocityConfig.DISABLE_PING.get(Boolean.class)) {
@@ -129,7 +135,6 @@ public class KickListener {
         }
 
         Optional<RegisteredServer> proxyServer = Utils.getBestServer(servers);
-        final Player player = event.getPlayer();
 
         if (PlayerCache.getSpectators().contains(player.getUniqueId())) {
             PlayerCache.getSpectators().remove(player.getUniqueId());

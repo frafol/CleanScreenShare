@@ -37,6 +37,7 @@ import java.util.stream.Collectors;
 public class Utils {
 
     private static final CleanSS instance = CleanSS.getInstance();
+
     public HashMap<ServerInfo, ScheduledTask> task = new HashMap<>();
 
     public List<String> getStringList(@NotNull BungeeMessages velocityMessages) {
@@ -63,6 +64,11 @@ public class Utils {
     }
 
     public String color(String string) {
+
+        if (string == null) {
+            return null;
+        }
+
         String hex = convertHexColors(string);
         return hex.replace("&", "§");
     }
@@ -286,32 +292,10 @@ public class Utils {
             String sus_suffix;
 
             if (luckperms) {
-
-                final LuckPerms api = LuckPermsProvider.get();
-
-                final User admin = api.getUserManager().getUser(administrator_player.getUniqueId());
-                final User suspect1 = api.getUserManager().getUser(suspect.getUniqueId());
-
-                if (admin == null) {
-                    return;
-                }
-
-                if (suspect1 == null) {
-                    return;
-                }
-
-                final String prefix1 = admin.getCachedData().getMetaData().getPrefix();
-                final String suffix1 = admin.getCachedData().getMetaData().getSuffix();
-
-                final String prefix2 = suspect1.getCachedData().getMetaData().getPrefix();
-                final String suffix2 = suspect1.getCachedData().getMetaData().getSuffix();
-
-                admin_prefix = prefix1 == null ? "" : prefix1;
-                admin_suffix = suffix1 == null ? "" : suffix1;
-
-                sus_prefix = prefix2 == null ? "" : prefix2;
-                sus_suffix = suffix2 == null ? "" : suffix2;
-
+                sus_suffix = getSuffix(suspect);
+                sus_prefix = getPrefix(suspect);
+                admin_prefix = getPrefix(administrator_player);
+                admin_suffix = getSuffix(administrator_player);
             } else {
                 sus_suffix = "";
                 sus_prefix = "";
@@ -344,32 +328,10 @@ public class Utils {
         String sus_suffix;
 
         if (luckperms) {
-
-            final LuckPerms api = LuckPermsProvider.get();
-
-            final User admin = api.getUserManager().getUser(administrator_player.getUniqueId());
-            final User suspect1 = api.getUserManager().getUser(suspect.getUniqueId());
-
-            if (admin == null) {
-                return;
-            }
-
-            if (suspect1 == null) {
-                return;
-            }
-
-            final String prefix1 = admin.getCachedData().getMetaData().getPrefix();
-            final String suffix1 = admin.getCachedData().getMetaData().getSuffix();
-
-            final String prefix2 = suspect1.getCachedData().getMetaData().getPrefix();
-            final String suffix2 = suspect1.getCachedData().getMetaData().getSuffix();
-
-            admin_prefix = prefix1 == null ? "" : prefix1;
-            admin_suffix = suffix1 == null ? "" : suffix1;
-
-            sus_prefix = prefix2 == null ? "" : prefix2;
-            sus_suffix = suffix2 == null ? "" : suffix2;
-
+            sus_suffix = getSuffix(suspect);
+            sus_prefix = getPrefix(suspect);
+            admin_prefix = getPrefix(administrator_player);
+            admin_suffix = getSuffix(administrator_player);
         } else {
             sus_suffix = "";
             sus_prefix = "";
@@ -425,7 +387,7 @@ public class Utils {
                 }
 
                 if (!BungeeConfig.USE_DISCONNECT.get(Boolean.class)) {
-                    administrator.connect(proxyServer);
+                    connect(administrator, proxyServer);
                 } else {
                     Utils.sendChannelMessage(administrator, "DISCONNECT_NOW");
                 }
@@ -440,7 +402,7 @@ public class Utils {
                 }
 
                 if (isInControlServer(suspicious.getServer().getInfo())) {
-                    suspicious.connect(proxyServer);
+                    connect(suspicious, proxyServer);
                 }
             }
 
@@ -459,7 +421,7 @@ public class Utils {
             }
 
             if (!BungeeConfig.USE_DISCONNECT.get(Boolean.class)) {
-                suspicious.connect(proxyServer);
+                connect(suspicious, proxyServer);
             } else {
                 Utils.sendChannelMessage(suspicious, "DISCONNECT_NOW");
             }
@@ -486,7 +448,7 @@ public class Utils {
             PlayerCache.getSuspicious().remove(suspicious.getUniqueId());
 
             if (!BungeeConfig.USE_DISCONNECT.get(Boolean.class)) {
-                administrator.connect(proxyServer);
+                    connect(administrator, proxyServer);
             } else {
                 Utils.sendChannelMessage(administrator, "DISCONNECT_NOW");
             }
@@ -530,16 +492,61 @@ public class Utils {
         return false;
     }
 
+    public String getPrefix(ProxiedPlayer player) {
+
+        if (!isLuckPerms) {
+            return null;
+        }
+
+        final LuckPerms api = LuckPermsProvider.get();
+        final User user = api.getUserManager().getUser(player.getUniqueId());
+
+        if (user == null) {
+            return null;
+        }
+
+        String prefix = user.getCachedData().getMetaData().getPrefix();
+
+        if (prefix == null) {
+            prefix = "";
+        }
+
+        return prefix;
+    }
+
+    public String getSuffix(ProxiedPlayer player) {
+
+        if (!isLuckPerms) {
+            return null;
+        }
+
+        final LuckPerms api = LuckPermsProvider.get();
+        final User user = api.getUserManager().getUser(player.getUniqueId());
+
+        if (user == null) {
+            return null;
+        }
+
+        String suffix = user.getCachedData().getMetaData().getSuffix();
+
+        if (suffix == null) {
+            suffix = "";
+        }
+
+        return suffix;
+    }
+
     public void startControl(@NotNull ProxiedPlayer suspicious, @NotNull ProxiedPlayer administrator, ServerInfo proxyServer) {
 
         if (!Objects.equals(administrator.getServer().getInfo(), proxyServer)) {
-            administrator.connect(proxyServer);
+            connect(administrator, proxyServer);
         } else {
             Utils.sendChannelAdvancedMessage(administrator, suspicious,"ADMIN");
         }
 
         if (!Objects.equals(suspicious.getServer().getInfo(), proxyServer)) {
-            suspicious.connect(proxyServer);
+            connect(suspicious, proxyServer);
+
         } else {
             Utils.sendChannelMessage(suspicious, "SUSPECT");
         }
@@ -594,32 +601,10 @@ public class Utils {
 
         boolean luckperms = instance.getProxy().getPluginManager().getPlugin("LuckPerms") != null;
         if (luckperms) {
-
-            final LuckPerms api = LuckPermsProvider.get();
-
-            final User admin = api.getUserManager().getUser(administrator.getUniqueId());
-            final User suspect = api.getUserManager().getUser(suspicious.getUniqueId());
-
-            if (admin == null) {
-                return;
-            }
-
-            if (suspect == null) {
-                return;
-            }
-
-            final String prefix1 = admin.getCachedData().getMetaData().getPrefix();
-            final String suffix1 = admin.getCachedData().getMetaData().getSuffix();
-
-            final String prefix2 = suspect.getCachedData().getMetaData().getPrefix();
-            final String suffix2 = suspect.getCachedData().getMetaData().getSuffix();
-
-            admin_prefix = prefix1 == null ? "" : prefix1;
-            admin_suffix = suffix1 == null ? "" : suffix1;
-
-            sus_prefix = prefix2 == null ? "" : prefix2;
-            sus_suffix = suffix2 == null ? "" : suffix2;
-
+            sus_suffix = getSuffix(suspicious);
+            sus_prefix = getPrefix(suspicious);
+            admin_prefix = getPrefix(administrator);
+            admin_suffix = getSuffix(administrator);
         } else {
             sus_suffix = "";
             sus_prefix = "";
@@ -655,12 +640,12 @@ public class Utils {
                 new Placeholder("admitname", BungeeMessages.CONTROL_ADMIT_NAME.color()),
                 new Placeholder("refusename", BungeeMessages.CONTROL_REFUSE_NAME.color()),
                 new Placeholder("prefix", BungeeMessages.PREFIX.color()),
-                new Placeholder("suspect", suspicious.getName()),
-                new Placeholder("administrator", administrator.getName()),
                 new Placeholder("adminprefix", color(admin_prefix)),
                 new Placeholder("adminsuffix", color(admin_suffix)),
                 new Placeholder("suspectprefix", color(sus_prefix)),
-                new Placeholder("suspectsuffix", color(sus_suffix)));
+                new Placeholder("suspectsuffix", color(sus_suffix)),
+                new Placeholder("suspect", suspicious.getName()),
+                new Placeholder("administrator", administrator.getName()));
 
     }
 
@@ -676,7 +661,13 @@ public class Utils {
                 return;
             }
 
-            final ServerInfo fallbackServer = instance.getProxy().getServerInfo(BungeeConfig.CONTROL_FALLBACK.get(String.class));
+            List<ServerInfo> servers = Utils.getServerList(BungeeConfig.CONTROL_FALLBACK.getStringList());
+
+            if (!BungeeConfig.DISABLE_PING.get(Boolean.class)) {
+                servers = Utils.getOnlineServers(servers);
+            }
+
+            final ServerInfo fallbackServer = Utils.getBestServer(servers);
 
             Utils.finishControl(suspicious, administrator, fallbackServer);
             administrator.sendMessage(TextComponent.fromLegacyText(BungeeMessages.NO_EXIST.color()
@@ -872,7 +863,6 @@ public class Utils {
     public ServerInfo getBestServer(List<ServerInfo> list) {
 
         if (list.isEmpty()) {
-            System.out.println("list is empty");
             return null;
         }
 
@@ -890,12 +880,14 @@ public class Utils {
     }
 
     public List<ServerInfo> getOnlineServers(List<ServerInfo> list) {
+
         List<ServerInfo> servers = new ArrayList<>();
-        for (ServerInfo server : list) {
+        list.forEach(server -> {
             if (PlayerCache.getOnlineServers().contains(server)) {
                 servers.add(server);
             }
-        }
+        });
+
         return servers;
     }
 
@@ -912,23 +904,26 @@ public class Utils {
     }
 
     private void taskServer(ServerInfo server) {
-        task.put(server, instance.getProxy().getScheduler().schedule(instance, () -> {
-            server.ping((result, error) -> {
 
-                if (BungeeConfig.CONTROL_FALLBACK.getStringList().contains(server.getName())
-                        && BungeeConfig.USE_DISCONNECT.get(Boolean.class)) {
-                    PlayerCache.getOnlineServers().add(server);
-                    return;
-                }
+        if (BungeeConfig.DISABLE_PING.get(Boolean.class)) {
+            return;
+        }
 
-                if (error == null && result != null) {
-                    PlayerCache.getOnlineServers().add(server);
-                    return;
-                }
+        task.put(server, instance.getProxy().getScheduler().schedule(instance, () -> server.ping((result, error) -> {
 
-                PlayerCache.getOnlineServers().remove(server);
-            });
-        }, 0L, 3L, TimeUnit.SECONDS));
+            if (BungeeConfig.CONTROL_FALLBACK.getStringList().contains(server.getName())
+                    && BungeeConfig.USE_DISCONNECT.get(Boolean.class)) {
+                PlayerCache.getOnlineServers().add(server);
+                return;
+            }
+
+            if (error == null && result != null) {
+                PlayerCache.getOnlineServers().add(server);
+                return;
+            }
+
+            PlayerCache.getOnlineServers().remove(server);
+        }), 0L, (long) BungeeConfig.PING_DELAY.get(Integer.class), TimeUnit.SECONDS));
     }
 
     private ServerInfo getLeastPlayersServer(List<ServerInfo> list) {
@@ -968,5 +963,9 @@ public class Utils {
         return list.get(new Random().nextInt(list.size()));
     }
 
-    private final boolean isLuckPerms = instance.getProxy().getPluginManager().getPlugin("LuckPerms") != null;
+    private void connect(ProxiedPlayer player, ServerInfo server) {
+            player.connect(server);
+    }
+
+    public final boolean isLuckPerms = instance.getProxy().getPluginManager().getPlugin("LuckPerms") != null;
 }

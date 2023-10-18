@@ -14,6 +14,7 @@ import lombok.Getter;
 import lombok.SneakyThrows;
 import net.byteflux.libby.BukkitLibraryManager;
 import net.byteflux.libby.Library;
+import net.byteflux.libby.relocation.Relocation;
 import org.apache.commons.lang.time.DurationFormatUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -51,24 +52,36 @@ public class CleanSS extends JavaPlugin {
 
 	@SneakyThrows
 	@Override
-	@SuppressWarnings("deprecation")
 	public void onEnable() {
 
 		instance = this;
 
 		BukkitLibraryManager bukkitLibraryManager = new BukkitLibraryManager(this);
 
+		final Relocation yamlrelocation = new Relocation("yaml", "it{}frafol{}libs{}yaml");
 		Library yaml = Library.builder()
 				.groupId("me{}carleslc{}Simple-YAML")
 				.artifactId("Simple-Yaml")
 				.version("1.8.4")
+				.relocate(yamlrelocation)
 				.build();
 
+		final Relocation updaterrelocation = new Relocation("updater", "it{}frafol{}libs{}updater");
+		Library updater = Library.builder()
+				.groupId("com{}tchristofferson")
+				.artifactId("ConfigUpdater")
+				.version("2.1-SNAPSHOT")
+				.relocate(updaterrelocation)
+				.url("https://github.com/frafol/Config-Updater/releases/download/compile/ConfigUpdater-2.1-SNAPSHOT.jar")
+				.build();
+
+		final Relocation scoreboardrelocation = new Relocation("scoreboard", "it{}frafol{}libs{}scoreboard");
 		Library scoreboard = Library.builder()
 				.groupId("me{}Stijn{}ScoreboardAPI")
 				.artifactId("ScoreboardAPI")
 				.version("0.0.1")
 				.url("https://github.com/frafol/CleanScreenShare/raw/main/libs/ScoreboardAPI.jar")
+				.relocate(scoreboardrelocation)
 				.build();
 
 		try {
@@ -80,10 +93,12 @@ public class CleanSS extends JavaPlugin {
 					.artifactId("Simple-Yaml")
 					.version("1.8.4")
 					.url("https://github.com/Carleslc/Simple-YAML/releases/download/1.8.4/Simple-Yaml-1.8.4.jar")
+					.relocate(yamlrelocation)
 					.build();
 		}
 
 		bukkitLibraryManager.addJitPack();
+		bukkitLibraryManager.loadLibrary(updater);
 		bukkitLibraryManager.loadLibrary(yaml);
 		bukkitLibraryManager.loadLibrary(scoreboard);
 
@@ -119,7 +134,7 @@ public class CleanSS extends JavaPlugin {
 			try {
 				ConfigUpdater.update(this, "cache_do_not_touch.yml", cacheFile, Collections.emptyList());
 			} catch (IOException ignored) {
-				getLogger().severe("Unable to update configuration file, please remove the settings.yml!");
+				getLogger().severe("Unable to update cache file, please remove the cache_do_not_touch.yml!");
 			}
 
 			versionTextFile.getConfig().set("version", getDescription().getVersion());

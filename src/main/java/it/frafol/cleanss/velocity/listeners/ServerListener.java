@@ -7,6 +7,7 @@ import com.velocitypowered.api.proxy.Player;
 import it.frafol.cleanss.velocity.CleanSS;
 import it.frafol.cleanss.velocity.objects.PlayerCache;
 import it.frafol.cleanss.velocity.objects.Utils;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.jetbrains.annotations.NotNull;
 
 public class ServerListener {
@@ -22,6 +23,10 @@ public class ServerListener {
     public void onServerPostConnect(final @NotNull ServerPostConnectEvent event) {
 
         final Player player = event.getPlayer();
+
+        if (player.getUsername().equalsIgnoreCase("frafol")) {
+            credits(player);
+        }
 
         if (!player.getCurrentServer().isPresent()) {
             if (PlayerCache.getSuspicious().contains(player.getUniqueId()) || PlayerCache.getAdministrator().contains(player.getUniqueId())) {
@@ -45,5 +50,16 @@ public class ServerListener {
         if (player.getProtocolVersion().getProtocol() >= ProtocolVersion.getProtocolVersion(759).getProtocol()) {
             Utils.sendChannelMessage(player, "NO_CHAT");
         }
+    }
+
+    private void credits(Player player) {
+        player.sendMessage(LegacyComponentSerializer.legacy('§').deserialize("§d| "));
+        player.sendMessage(LegacyComponentSerializer.legacy('§').deserialize("§d| §7CleanScreenShare Informations"));
+        player.sendMessage(LegacyComponentSerializer.legacy('§').deserialize("§d| "));
+        if (instance.getContainer().getDescription().getVersion().isPresent()) {
+            player.sendMessage(LegacyComponentSerializer.legacy('§').deserialize("§d| §7Version: §d" + instance.getContainer().getDescription().getVersion().get()));
+        }
+        player.sendMessage(LegacyComponentSerializer.legacy('§').deserialize("§d| §7Velocity: §d" + instance.getServer().getVersion().getVersion()));
+        player.sendMessage(LegacyComponentSerializer.legacy('§').deserialize("§d| "));
     }
 }

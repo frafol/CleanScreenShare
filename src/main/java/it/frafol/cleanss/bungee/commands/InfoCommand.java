@@ -5,6 +5,7 @@ import it.frafol.cleanss.bungee.enums.BungeeConfig;
 import it.frafol.cleanss.bungee.enums.BungeeMessages;
 import it.frafol.cleanss.bungee.objects.Placeholder;
 import it.frafol.cleanss.bungee.objects.PlayerCache;
+import it.frafol.cleanss.bungee.objects.Utils;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -41,7 +42,7 @@ public class InfoCommand extends Command implements TabExecutor {
         }
 
         if (!instance.getProxy().getPlayers().toString().contains(args[0])) {
-            invocation.sendMessage(TextComponent.fromLegacyText(BungeeMessages.NOT_ONLINE.get(String.class)
+            invocation.sendMessage(TextComponent.fromLegacyText(BungeeMessages.NOT_ONLINE.color()
                     .replace("%prefix%", BungeeMessages.PREFIX.color())));
             return;
         }
@@ -49,12 +50,26 @@ public class InfoCommand extends Command implements TabExecutor {
         final ProxiedPlayer player = instance.getProxy().getPlayer(args[0]);
 
         if (player == null) {
-            invocation.sendMessage(TextComponent.fromLegacyText(BungeeMessages.NOT_ONLINE.get(String.class)
+            invocation.sendMessage(TextComponent.fromLegacyText(BungeeMessages.NOT_ONLINE.color()
                     .replace("%prefix%", BungeeMessages.PREFIX.color())));
             return;
         }
 
         if (BungeeConfig.MYSQL.get(Boolean.class)) {
+
+            if (Utils.isLuckPerms) {
+                BungeeMessages.INFO_MESSAGE.sendList(invocation, player,
+                        new Placeholder("player", args[0]),
+                        new Placeholder("prefix", BungeeMessages.PREFIX.color()),
+                        new Placeholder("is_in_control", String.valueOf(instance.getData().getStats(player.getUniqueId(), "incontrol"))),
+                        new Placeholder("controls_done", String.valueOf(instance.getData().getStats(player.getUniqueId(), "controls"))),
+                        new Placeholder("playerprefix", Utils.getPrefix(player)),
+                        new Placeholder("playersuffix", Utils.getSuffix(player)),
+                        new Placeholder("controls_suffered", String.valueOf(instance.getData().getStats(player.getUniqueId(), "suffered"))),
+                        new Placeholder("is_spectating", PlayerCache.getSpectators().contains(player.getUniqueId()) ? "true" : "false"));
+                return;
+            }
+
             BungeeMessages.INFO_MESSAGE.sendList(invocation, player,
                     new Placeholder("player", args[0]),
                     new Placeholder("prefix", BungeeMessages.PREFIX.color()),
@@ -67,6 +82,19 @@ public class InfoCommand extends Command implements TabExecutor {
 
         PlayerCache.getControls().putIfAbsent(player.getUniqueId(), 0);
         PlayerCache.getControls_suffered().putIfAbsent(player.getUniqueId(), 0);
+
+        if (Utils.isLuckPerms) {
+            BungeeMessages.INFO_MESSAGE.sendList(invocation, player,
+                    new Placeholder("player", args[0]),
+                    new Placeholder("prefix", BungeeMessages.PREFIX.color()),
+                    new Placeholder("is_in_control", String.valueOf(PlayerCache.getSuspicious().contains(player.getUniqueId()))),
+                    new Placeholder("controls_done", String.valueOf(PlayerCache.getControls().get(player.getUniqueId()))),
+                    new Placeholder("playerprefix", Utils.getPrefix(player)),
+                    new Placeholder("playersuffix", Utils.getSuffix(player)),
+                    new Placeholder("controls_suffered", String.valueOf(PlayerCache.getControls_suffered().get(player.getUniqueId()))),
+                    new Placeholder("is_spectating", PlayerCache.getSpectators().contains(player.getUniqueId()) ? "true" : "false"));
+            return;
+        }
 
         BungeeMessages.INFO_MESSAGE.sendList(invocation, player,
                 new Placeholder("player", args[0]),

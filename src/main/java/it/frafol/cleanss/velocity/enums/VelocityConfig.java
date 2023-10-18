@@ -12,6 +12,7 @@ public enum VelocityConfig {
     INFO_PERMISSION("permissions.info"),
     SPEC_PERMISSION("permissions.spectate"),
     RELOAD_PERMISSION("permissions.reload"),
+    PING_DELAY("settings.ping_delay"),
     CHECK_FOR_PROBLEMS("settings.check_for_problems"),
     UPDATE_CHECK("settings.update_check"),
     USE_DISCONNECT("settings.use_disconnect_instead_of_fallback"),

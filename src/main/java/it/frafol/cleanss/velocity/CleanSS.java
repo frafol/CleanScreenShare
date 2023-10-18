@@ -26,6 +26,7 @@ import it.frafol.cleanss.velocity.mysql.MySQLWorker;
 import it.frafol.cleanss.velocity.objects.*;
 import it.frafol.cleanss.velocity.objects.adapter.ReflectUtil;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.SneakyThrows;
 import net.byteflux.libby.Library;
 import net.byteflux.libby.VelocityLibraryManager;
@@ -54,7 +55,7 @@ import java.util.concurrent.TimeUnit;
 		name = "CleanScreenShare",
 		version = "2.0.3",
 		description = "Make control hacks on your players.",
-		dependencies = {@Dependency(id = "mysqlandconfigurateforvelocity", optional = true), @Dependency(id = "limboapi", optional = true)},
+		dependencies = {@Dependency(id = "luckperms", optional = true), @Dependency(id = "mysqlandconfigurateforvelocity", optional = true), @Dependency(id = "limboapi", optional = true), @Dependency(id = "ajqueue", optional = true)},
 		authors = { "frafol" })
 
 public class CleanSS {
@@ -77,6 +78,10 @@ public class CleanSS {
 	private TextFile versionTextFile;
 
 	public boolean useLimbo = false;
+
+	@Getter
+	@Setter
+	private boolean ajQueue = false;
 
 	@Getter
 	private static CleanSS instance;
@@ -131,6 +136,11 @@ public class CleanSS {
 			} else {
 				logger.error("§7LimboAPI not §dfound§7! Please install it to use the §dLimbo feature§7.");
 			}
+		}
+
+		if (instance.getServer().getPluginManager().getPlugin("ajqueue").isPresent() &&
+				instance.getServer().getPluginManager().getPlugin("ajqueue").flatMap(PluginContainer::getInstance).isPresent()) {
+			ajQueue = true;
 		}
 
 		if (VelocityConfig.MYSQL.get(Boolean.class)) {
@@ -296,16 +306,20 @@ public class CleanSS {
 	private void loadLibraries() {
 		VelocityLibraryManager<CleanSS> velocityLibraryManager = new VelocityLibraryManager<>(getLogger(), path, getServer().getPluginManager(), this);
 
+		final Relocation yamlrelocation = new Relocation("yaml", "it{}frafol{}libs{}yaml");
 		Library yaml = Library.builder()
 				.groupId("me{}carleslc{}Simple-YAML")
 				.artifactId("Simple-Yaml")
 				.version("1.8.4")
+				.relocate(yamlrelocation)
 				.build();
 
+		final Relocation updaterrelocation = new Relocation("updater", "it{}frafol{}libs{}updater");
 		Library updater = Library.builder()
 				.groupId("ru{}vyarus")
 				.artifactId("yaml-config-updater")
 				.version("1.4.2")
+				.relocate(updaterrelocation)
 				.build();
 
 		final Relocation kotlin = new Relocation("kotlin", "it{}frafol{}libs{}kotlin");
@@ -328,6 +342,7 @@ public class CleanSS {
 					.groupId("me{}carleslc{}Simple-YAML")
 					.artifactId("Simple-Yaml")
 					.version("1.8.4")
+					.relocate(yamlrelocation)
 					.url("https://github.com/Carleslc/Simple-YAML/releases/download/1.8.4/Simple-Yaml-1.8.4.jar")
 					.build();
 		}

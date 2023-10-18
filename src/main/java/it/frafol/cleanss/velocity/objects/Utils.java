@@ -7,6 +7,7 @@ import com.velocitypowered.api.network.ProtocolVersion;
 import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.server.RegisteredServer;
 import com.velocitypowered.api.scheduler.ScheduledTask;
+import it.frafol.cleanss.bungee.enums.BungeeConfig;
 import it.frafol.cleanss.velocity.CleanSS;
 import it.frafol.cleanss.velocity.enums.VelocityConfig;
 import it.frafol.cleanss.velocity.enums.VelocityMessages;
@@ -293,32 +294,10 @@ public class Utils {
             String sus_suffix;
 
             if (luckperms) {
-
-                final LuckPerms api = LuckPermsProvider.get();
-
-                final User admin = api.getUserManager().getUser(administrator_user.getUniqueId());
-                final User suspect1 = api.getUserManager().getUser(suspect.getUniqueId());
-
-                if (admin == null) {
-                    return;
-                }
-
-                if (suspect1 == null) {
-                    return;
-                }
-
-                final String prefix1 = admin.getCachedData().getMetaData().getPrefix();
-                final String suffix1 = admin.getCachedData().getMetaData().getSuffix();
-
-                final String prefix2 = suspect1.getCachedData().getMetaData().getPrefix();
-                final String suffix2 = suspect1.getCachedData().getMetaData().getSuffix();
-
-                admin_prefix = prefix1 == null ? "" : prefix1;
-                admin_suffix = suffix1 == null ? "" : suffix1;
-
-                sus_prefix = prefix2 == null ? "" : prefix2;
-                sus_suffix = suffix2 == null ? "" : suffix2;
-
+                admin_suffix = getSuffix(administrator_user);
+                admin_prefix = getPrefix(administrator_user);
+                sus_prefix = getPrefix(suspect);
+                sus_suffix = getSuffix(suspect);
             } else {
                 admin_prefix = "";
                 admin_suffix = "";
@@ -350,32 +329,10 @@ public class Utils {
         String sus_suffix;
 
         if (luckperms) {
-
-            final LuckPerms api = LuckPermsProvider.get();
-
-            final User admin = api.getUserManager().getUser(administrator_user.getUniqueId());
-            final User suspect1 = api.getUserManager().getUser(suspect.getUniqueId());
-
-            if (admin == null) {
-                return;
-            }
-
-            if (suspect1 == null) {
-                return;
-            }
-
-            final String prefix1 = admin.getCachedData().getMetaData().getPrefix();
-            final String suffix1 = admin.getCachedData().getMetaData().getSuffix();
-
-            final String prefix2 = suspect1.getCachedData().getMetaData().getPrefix();
-            final String suffix2 = suspect1.getCachedData().getMetaData().getSuffix();
-
-            admin_prefix = prefix1 == null ? "" : prefix1;
-            admin_suffix = suffix1 == null ? "" : suffix1;
-
-            sus_prefix = prefix2 == null ? "" : prefix2;
-            sus_suffix = suffix2 == null ? "" : suffix2;
-
+            admin_suffix = getSuffix(administrator_user);
+            admin_prefix = getPrefix(administrator_user);
+            sus_prefix = getPrefix(suspect);
+            sus_suffix = getSuffix(suspect);
         } else {
             admin_prefix = "";
             admin_suffix = "";
@@ -414,6 +371,30 @@ public class Utils {
         return false;
     }
 
+    public String getPrefix(Player player) {
+
+        final LuckPerms api = LuckPermsProvider.get();
+        final User user = api.getUserManager().getUser(player.getUniqueId());
+
+        if (user == null) {
+            return null;
+        }
+
+        return color(user.getCachedData().getMetaData().getPrefix());
+    }
+
+    public String getSuffix(Player player) {
+
+        final LuckPerms api = LuckPermsProvider.get();
+        final User user = api.getUserManager().getUser(player.getUniqueId());
+
+        if (user == null) {
+            return null;
+        }
+
+        return color(user.getCachedData().getMetaData().getSuffix());
+    }
+
     public void sendFormattedList(VelocityMessages velocityMessages, CommandSource commandSource, Player player_name, Placeholder... placeholders) {
         sendList(commandSource, color(getStringList(velocityMessages, placeholders)), player_name);
     }
@@ -447,7 +428,7 @@ public class Utils {
                     if (instance.useLimbo) {
                         LimboUtils.disconnect(suspicious, proxyServer);
                     } else {
-                        suspicious.createConnectionRequest(proxyServer).fireAndForget();
+                        ServerUtils.connect(suspicious, proxyServer);
                     }
 
                 } else {
@@ -472,7 +453,7 @@ public class Utils {
                         if (instance.useLimbo) {
                             LimboUtils.disconnect(administrator, proxyServer);
                         } else {
-                            administrator.createConnectionRequest(proxyServer).fireAndForget();
+                            ServerUtils.connect(administrator, proxyServer);
                         }
 
                     } else {
@@ -498,9 +479,8 @@ public class Utils {
 
                 if (instance.useLimbo) {
                     LimboUtils.disconnect(suspicious, proxyServer);
-
                 } else {
-                    suspicious.createConnectionRequest(proxyServer).fireAndForget();
+                    ServerUtils.connect(suspicious, proxyServer);
                 }
 
             } else {
@@ -532,9 +512,8 @@ public class Utils {
 
                 if (instance.useLimbo) {
                     LimboUtils.disconnect(administrator, proxyServer);
-
                 } else {
-                    administrator.createConnectionRequest(proxyServer).fireAndForget();
+                    ServerUtils.connect(administrator, proxyServer);
                 }
 
             } else {
@@ -572,36 +551,30 @@ public class Utils {
 
         boolean luckperms = instance.getServer().getPluginManager().getPlugin("luckperms").isPresent();
         if (luckperms) {
-
-            final LuckPerms api = LuckPermsProvider.get();
-
-            final User admin = api.getUserManager().getUser(administrator.getUniqueId());
-            final User suspect = api.getUserManager().getUser(suspicious.getUniqueId());
-
-            if (admin == null) {
-                return;
-            }
-
-            if (suspect == null) {
-                return;
-            }
-
-            final String prefix1 = admin.getCachedData().getMetaData().getPrefix();
-            final String suffix1 = admin.getCachedData().getMetaData().getSuffix();
-
-            final String prefix2 = suspect.getCachedData().getMetaData().getPrefix();
-            final String suffix2 = suspect.getCachedData().getMetaData().getSuffix();
-
-            admin_prefix = prefix1 == null ? "" : prefix1;
-            admin_suffix = suffix1 == null ? "" : suffix1;
-
-            sus_prefix = prefix2 == null ? "" : prefix2;
-            sus_suffix = suffix2 == null ? "" : suffix2;
-
+            admin_suffix = getSuffix(administrator);
+            admin_prefix = getPrefix(administrator);
+            sus_suffix = getSuffix(suspicious);
+            sus_prefix = getPrefix(suspicious);
         } else {
             admin_prefix = "";
             admin_suffix = "";
             sus_prefix = "";
+            sus_suffix = "";
+        }
+
+        if (admin_prefix == null) {
+            admin_prefix = "";
+        }
+
+        if (admin_suffix == null) {
+            admin_suffix = "";
+        }
+
+        if (sus_prefix == null) {
+            sus_prefix = "";
+        }
+
+        if (sus_suffix == null) {
             sus_suffix = "";
         }
 
@@ -655,16 +628,20 @@ public class Utils {
             }
 
             if (VelocityConfig.SEND_ADMIN_MESSAGE.get(Boolean.class)) {
+                String finalAdmin_prefix = admin_prefix;
+                String finalAdmin_suffix = admin_suffix;
+                String finalSus_prefix = sus_prefix;
+                String finalSus_suffix = sus_suffix;
                 instance.getServer().getAllPlayers().stream()
                         .filter(players -> players.hasPermission(VelocityConfig.CONTROL_PERMISSION.get(String.class)))
                         .forEach(players -> players.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.ADMIN_NOTIFY.color()
                                 .replace("%prefix%", VelocityMessages.PREFIX.color())
                                 .replace("%admin%", administrator.getUsername())
                                 .replace("%suspect%", suspicious.getUsername())
-                                .replace("%adminprefix%", color(admin_prefix))
-                                .replace("%adminsuffix%", color(admin_suffix))
-                                .replace("%suspectprefix%", color(sus_prefix))
-                                .replace("%suspectsuffix%", color(sus_suffix)))));
+                                .replace("%adminprefix%", color(finalAdmin_prefix))
+                                .replace("%adminsuffix%", color(finalAdmin_suffix))
+                                .replace("%suspectprefix%", color(finalSus_prefix))
+                                .replace("%suspectsuffix%", color(finalSus_suffix)))));
             }
 
             suspicious.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.MAINSUS.color()
@@ -701,31 +678,25 @@ public class Utils {
         }
 
         if (administrator.getCurrentServer().get().getServer() != proxyServer) {
-
-            administrator.createConnectionRequest(proxyServer).fireAndForget();
+            ServerUtils.connect(administrator, proxyServer);
 
         } else {
-
             Utils.sendChannelAdvancedMessage(administrator, suspicious, "ADMIN");
 
             if (administrator.getProtocolVersion().getProtocol() >= ProtocolVersion.getProtocolVersion(759).getProtocol()) {
                 Utils.sendChannelMessage(administrator, "NO_CHAT");
             }
-
         }
 
         if (suspicious.getCurrentServer().get().getServer() != proxyServer) {
-
-            suspicious.createConnectionRequest(proxyServer).fireAndForget();
+            ServerUtils.connect(suspicious, proxyServer);
 
         } else {
-
             Utils.sendChannelMessage(suspicious, "SUSPECT");
 
             if (suspicious.getProtocolVersion().getProtocol() >= ProtocolVersion.getProtocolVersion(759).getProtocol()) {
                 Utils.sendChannelMessage(suspicious, "NO_CHAT");
             }
-
         }
 
         PlayerCache.getAdministrator().add(administrator.getUniqueId());
@@ -772,16 +743,20 @@ public class Utils {
         }
 
         if (VelocityConfig.SEND_ADMIN_MESSAGE.get(Boolean.class)) {
+            String finalAdmin_prefix1 = admin_prefix;
+            String finalAdmin_suffix1 = admin_suffix;
+            String finalSus_prefix1 = sus_prefix;
+            String finalSus_suffix1 = sus_suffix;
             instance.getServer().getAllPlayers().stream()
                     .filter(players -> players.hasPermission(VelocityConfig.CONTROL_PERMISSION.get(String.class)))
                     .forEach(players -> players.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.ADMIN_NOTIFY.color()
                             .replace("%prefix%", VelocityMessages.PREFIX.color())
                             .replace("%admin%", administrator.getUsername())
                             .replace("%suspect%", suspicious.getUsername())
-                            .replace("%adminprefix%", color(admin_prefix))
-                            .replace("%adminsuffix%", color(admin_suffix))
-                            .replace("%suspectprefix%", color(sus_prefix))
-                            .replace("%suspectsuffix%", color(sus_suffix)))));
+                            .replace("%adminprefix%", color(finalAdmin_prefix1))
+                            .replace("%adminsuffix%", color(finalAdmin_suffix1))
+                            .replace("%suspectprefix%", color(finalSus_prefix1))
+                            .replace("%suspectsuffix%", color(finalSus_suffix1)))));
         }
 
         suspicious.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.MAINSUS.color()
@@ -916,19 +891,16 @@ public class Utils {
         String user_suffix = "";
 
         if (luckperms) {
+            user_suffix = getSuffix(suspicious);
+            user_prefix = getPrefix(suspicious);
+        }
 
-            final LuckPerms api = LuckPermsProvider.get();
-            final User user = api.getUserManager().getUser(suspicious.getUniqueId());
+        if (user_prefix == null) {
+            user_prefix = "";
+        }
 
-            if (user == null) {
-                return;
-            }
-
-            final String prefix = user.getCachedData().getMetaData().getPrefix();
-            final String suffix = user.getCachedData().getMetaData().getSuffix();
-            user_prefix = prefix == null ? "" : prefix;
-            user_suffix = suffix == null ? "" : suffix;
-
+        if (user_suffix == null) {
+            user_suffix = "";
         }
 
         Title controlTitle = Title.title(
@@ -987,19 +959,16 @@ public class Utils {
         String user_suffix = "";
 
         if (luckperms) {
+            user_suffix = getSuffix(suspicious);
+            user_prefix = getPrefix(suspicious);
+        }
 
-            final LuckPerms api = LuckPermsProvider.get();
-            final User user = api.getUserManager().getUser(suspicious.getUniqueId());
+        if (user_prefix == null) {
+            user_prefix = "";
+        }
 
-            if (user == null) {
-                return;
-            }
-
-            final String prefix = user.getCachedData().getMetaData().getPrefix();
-            final String suffix = user.getCachedData().getMetaData().getSuffix();
-            user_prefix = prefix == null ? "" : prefix;
-            user_suffix = suffix == null ? "" : suffix;
-
+        if (user_suffix == null) {
+            user_suffix = "";
         }
 
         Title controlTitle = Title.title(
@@ -1091,6 +1060,11 @@ public class Utils {
     }
 
     private void taskServer(RegisteredServer server) {
+
+        if (VelocityConfig.DISABLE_PING.get(Boolean.class)) {
+            return;
+        }
+
         task.put(server, instance.getServer().getScheduler().buildTask(instance, () ->
                 server.ping().whenComplete((result, throwable) -> {
 
@@ -1107,7 +1081,7 @@ public class Utils {
 
                     PlayerCache.getOnlineServers().remove(server);
                 })
-        ).repeat(3, TimeUnit.SECONDS).schedule());
+        ).repeat(BungeeConfig.PING_DELAY.get(Integer.class), TimeUnit.SECONDS).schedule());
     }
 
     private Optional<RegisteredServer> getLeastPlayersServer(List<Optional<RegisteredServer>> list) {

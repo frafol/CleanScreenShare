@@ -42,6 +42,9 @@ settings:
   # (velocity does not have this problem). NOTE: it is not recommended to disable ping.
   disable_ping_check: false
 
+  # This will set the delay between each ping check in seconds.
+  ping_delay: 5
+
   # Check for plugin updates.
   update_check: true
 

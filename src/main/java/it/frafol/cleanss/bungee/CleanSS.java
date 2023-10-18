@@ -115,27 +115,15 @@ public class CleanSS extends Plugin {
 	private void startTasks() {
 		List<ServerInfo> servers = Utils.getServerList(BungeeConfig.CONTROL.getStringList());
 		List<ServerInfo> fallbacks = Utils.getServerList(BungeeConfig.CONTROL_FALLBACK.getStringList());
-
-		for (ServerInfo server : servers) {
-			Utils.startTask(server);
-		}
-
-		for (ServerInfo server : fallbacks) {
-			Utils.startTask(server);
-		}
+		servers.forEach(Utils::startTask);
+		fallbacks.forEach(Utils::startTask);
 	}
 
 	private void stopTasks() {
 		List<ServerInfo> servers = Utils.getServerList(BungeeConfig.CONTROL.getStringList());
 		List<ServerInfo> fallbacks = Utils.getServerList(BungeeConfig.CONTROL_FALLBACK.getStringList());
-
-		for (ServerInfo server : servers) {
-			Utils.stopTask(server);
-		}
-
-		for (ServerInfo server : fallbacks) {
-			Utils.stopTask(server);
-		}
+		servers.forEach(Utils::stopTask);
+		fallbacks.forEach(Utils::stopTask);
 	}
 
 	private void registerCommands() {
@@ -152,11 +140,9 @@ public class CleanSS extends Plugin {
 	}
 
 	private void loadFiles() {
-
 		configTextFile = new TextFile(getDataFolder().toPath(), "config.yml");
 		messagesTextFile = new TextFile(getDataFolder().toPath(), "messages.yml");
 		versionTextFile = new TextFile(getDataFolder().toPath(), "version.yml");
-
 	}
 
 	private void registerListeners() {
@@ -363,16 +349,20 @@ public class CleanSS extends Plugin {
 
 		BungeeLibraryManager bungeeLibraryManager = new BungeeLibraryManager(this);
 
+		final Relocation yamlrelocation = new Relocation("yaml", "it{}frafol{}libs{}yaml");
 		Library yaml = Library.builder()
 				.groupId("me{}carleslc{}Simple-YAML")
 				.artifactId("Simple-Yaml")
 				.version("1.8.4")
+				.relocate(yamlrelocation)
 				.build();
 
+		final Relocation updaterrelocation = new Relocation("updater", "it{}frafol{}libs{}updater");
 		Library updater = Library.builder()
 				.groupId("ru{}vyarus")
 				.artifactId("yaml-config-updater")
 				.version("1.4.2")
+				.relocate(updaterrelocation)
 				.build();
 
 		final Relocation kotlin = new Relocation("kotlin", "it{}frafol{}libs{}kotlin");
@@ -396,13 +386,13 @@ public class CleanSS extends Plugin {
 					.artifactId("Simple-Yaml")
 					.version("1.8.4")
 					.url("https://github.com/Carleslc/Simple-YAML/releases/download/1.8.4/Simple-Yaml-1.8.4.jar")
+					.relocate(yamlrelocation)
 					.build();
 		}
 
 		bungeeLibraryManager.loadLibrary(yaml);
 		bungeeLibraryManager.loadLibrary(updater);
 		bungeeLibraryManager.loadLibrary(discord);
-
 	}
 
 	@Override

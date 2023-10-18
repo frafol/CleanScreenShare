@@ -50,7 +50,8 @@ public class ControlCommand extends Command implements TabExecutor {
 		}
 
 		if (args.length == 0) {
-			invocation.sendMessage(TextComponent.fromLegacyText(BungeeMessages.USAGE.color().replace("%prefix%", BungeeMessages.PREFIX.color())));
+			invocation.sendMessage(TextComponent.fromLegacyText(BungeeMessages.USAGE.color()
+					.replace("%prefix%", BungeeMessages.PREFIX.color())));
 			return;
 		}
 
@@ -85,6 +86,7 @@ public class ControlCommand extends Command implements TabExecutor {
 		List<ServerInfo> servers = Utils.getServerList(BungeeConfig.CONTROL.getStringList());
 
 		if (!BungeeConfig.DISABLE_PING.get(Boolean.class)) {
+			System.out.println("[CleanSS] Checking ping...");
 			servers = Utils.getOnlineServers(servers);
 		}
 
@@ -96,13 +98,7 @@ public class ControlCommand extends Command implements TabExecutor {
 
 		ServerInfo proxyServer = Utils.getBestServer(servers);
 
-		if (proxyServer == null) {
-			invocation.sendMessage(TextComponent.fromLegacyText(BungeeMessages.NO_EXIST.color()
-					.replace("%prefix%", BungeeMessages.PREFIX.color())));
-			return;
-		}
-
-		if (sender.getUniqueId().equals(player.get().getUniqueId())) {
+        if (sender.getUniqueId().equals(player.get().getUniqueId())) {
 			invocation.sendMessage(TextComponent.fromLegacyText(BungeeMessages.YOURSELF.color()
 					.replace("%prefix%", BungeeMessages.PREFIX.color())));
 			return;
@@ -132,50 +128,40 @@ public class ControlCommand extends Command implements TabExecutor {
 		String admin_group = "";
 
 		if (luckperms) {
+			admin_group = getDisplayName(sender);
+			suspect_group = getDisplayName(player.get());
+		}
 
-			final LuckPerms api = LuckPermsProvider.get();
+		if (admin_group == null) {
+			admin_group = "";
+		}
 
-			final User admin = api.getUserManager().getUser(((ProxiedPlayer) invocation).getUniqueId());
-			final User suspect = api.getUserManager().getUser(player.get().getUniqueId());
-
-			if (admin == null || suspect == null) {
-				return;
-			}
-
-			final Group admingroup = api.getGroupManager().getGroup(admin.getPrimaryGroup());
-
-			String admingroup_displayname;
-			if (admingroup != null) {
-				admingroup_displayname = admingroup.getFriendlyName();
-
-				if (admingroup_displayname.equalsIgnoreCase("default")) {
-					admingroup_displayname = BungeeMessages.DISCORD_LUCKPERMS_FIX.get(String.class);
-				}
-
-			} else {
-				admingroup_displayname = "";
-			}
-
-			admin_group = admingroup == null ? "" : admingroup_displayname;
-
-			final Group suspectgroup = api.getGroupManager().getGroup(suspect.getPrimaryGroup());
-
-			String suspectroup_displayname;
-			if (suspectgroup != null) {
-				suspectroup_displayname = suspectgroup.getFriendlyName();
-
-				if (suspectroup_displayname.equalsIgnoreCase("default")) {
-					suspectroup_displayname = BungeeMessages.DISCORD_LUCKPERMS_FIX.get(String.class);
-				}
-
-			} else {
-				suspectroup_displayname = "";
-			}
-
-			suspect_group = suspectgroup == null ? "" : suspectroup_displayname;
+		if (suspect_group == null) {
+			suspect_group = "";
 		}
 
 		Utils.sendDiscordMessage(player.get(), (ProxiedPlayer) invocation, BungeeMessages.DISCORD_STARTED.get(String.class).replace("%suspectgroup%", suspect_group).replace("%admingroup%", admin_group));
+	}
+
+	private String getDisplayName(ProxiedPlayer player) {
+		final LuckPerms api = LuckPermsProvider.get();
+
+		final User user = api.getUserManager().getUser(player.getUniqueId());
+
+		if (user == null) {
+			return null;
+		}
+
+		final Group usergroup = api.getGroupManager().getGroup(user.getPrimaryGroup());
+
+		if (usergroup != null) {
+			if (usergroup.getFriendlyName().equalsIgnoreCase("default")) {
+				return BungeeMessages.DISCORD_LUCKPERMS_FIX.get(String.class);
+			}
+			return usergroup.getFriendlyName();
+		} else {
+			return "";
+		}
 	}
 
 	@Override
