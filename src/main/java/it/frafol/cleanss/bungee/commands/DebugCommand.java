@@ -36,7 +36,7 @@ public class DebugCommand extends Command {
         Utils.getServerList(BungeeConfig.CONTROL.getStringList()).forEach(server -> {
 
             if (Utils.getOnlineServers(Utils.getServerList(BungeeConfig.CONTROL.getStringList())).contains(server)) {
-                invocation.sendMessage(TextComponent.fromLegacyText("§d| §7- §a" + server));
+                invocation.sendMessage(TextComponent.fromLegacyText("§d| §7- §a" + server.getName()));
                 return;
             }
 

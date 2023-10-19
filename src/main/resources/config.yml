@@ -43,6 +43,7 @@ settings:
   disable_ping_check: false
 
   # This will set the delay between each ping check in seconds.
+  # Decreasing this value may increase the lag on your server.
   ping_delay: 5
 
   # Check for plugin updates.
