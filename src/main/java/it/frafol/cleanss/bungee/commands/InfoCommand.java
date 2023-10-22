@@ -87,7 +87,7 @@ public class InfoCommand extends Command implements TabExecutor {
             BungeeMessages.INFO_MESSAGE.sendList(invocation, player,
                     new Placeholder("player", args[0]),
                     new Placeholder("prefix", BungeeMessages.PREFIX.color()),
-                    new Placeholder("is_in_control", String.valueOf(PlayerCache.getSuspicious().contains(player.getUniqueId()))),
+                    new Placeholder("is_in_control", String.valueOf(PlayerCache.getSuspicious().contains(player.getUniqueId()) || PlayerCache.getAdministrator().contains(player.getUniqueId()))),
                     new Placeholder("controls_done", String.valueOf(PlayerCache.getControls().get(player.getUniqueId()))),
                     new Placeholder("playerprefix", Utils.getPrefix(player)),
                     new Placeholder("playersuffix", Utils.getSuffix(player)),

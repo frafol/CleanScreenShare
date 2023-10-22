@@ -86,7 +86,6 @@ public class ControlCommand extends Command implements TabExecutor {
 		List<ServerInfo> servers = Utils.getServerList(BungeeConfig.CONTROL.getStringList());
 
 		if (!BungeeConfig.DISABLE_PING.get(Boolean.class)) {
-			System.out.println("[CleanSS] Checking ping...");
 			servers = Utils.getOnlineServers(servers);
 		}
 
@@ -116,10 +115,12 @@ public class ControlCommand extends Command implements TabExecutor {
 			return;
 		}
 
-		if (PlayerCache.getIn_control().get(player.get().getUniqueId()) != null && PlayerCache.getIn_control().get(player.get().getUniqueId()) == 1) {
-			invocation.sendMessage(TextComponent.fromLegacyText(BungeeMessages.CONTROL_ALREADY.color()
-					.replace("%prefix%", BungeeMessages.PREFIX.color())));
-			return;
+		if (getMySQL()) {
+			if (PlayerCache.getIn_control().get(player.get().getUniqueId()) != null && PlayerCache.getIn_control().get(player.get().getUniqueId()) == 1) {
+				invocation.sendMessage(TextComponent.fromLegacyText(BungeeMessages.CONTROL_ALREADY.color()
+						.replace("%prefix%", BungeeMessages.PREFIX.color())));
+				return;
+			}
 		}
 
 		Utils.startControl(player.get(), sender, proxyServer);
@@ -162,6 +163,10 @@ public class ControlCommand extends Command implements TabExecutor {
 		} else {
 			return "";
 		}
+	}
+
+	private boolean getMySQL() {
+        return instance.getData() != null;
 	}
 
 	@Override

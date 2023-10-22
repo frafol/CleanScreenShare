@@ -112,9 +112,7 @@ public class KickListener implements Listener {
     @EventHandler
     public void onPlayerDisconnect(@NotNull PlayerDisconnectEvent event) {
 
-        if (!event.getPlayer().isConnected()) {
-            return;
-        }
+        final ProxiedPlayer player = event.getPlayer();
 
         List<ServerInfo> servers = Utils.getServerList(BungeeConfig.CONTROL_FALLBACK.getStringList());
 
@@ -123,7 +121,6 @@ public class KickListener implements Listener {
         }
 
         final ServerInfo proxyServer = Utils.getBestServer(servers);
-        final ProxiedPlayer player = event.getPlayer();
 
         PlayerCache.getSpectators().remove(player.getUniqueId());
 

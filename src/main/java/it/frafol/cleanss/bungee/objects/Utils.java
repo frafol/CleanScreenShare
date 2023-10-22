@@ -5,7 +5,6 @@ import com.google.common.io.ByteStreams;
 import it.frafol.cleanss.bungee.CleanSS;
 import it.frafol.cleanss.bungee.enums.BungeeConfig;
 import it.frafol.cleanss.bungee.enums.BungeeMessages;
-import it.frafol.cleanss.velocity.enums.VelocityConfig;
 import lombok.experimental.UtilityClass;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
@@ -147,7 +146,7 @@ public class Utils {
 
     public void sendDiscordSpectatorMessage(ProxiedPlayer player, String message) {
 
-        if (VelocityConfig.DISCORD_ENABLED.get(Boolean.class)) {
+        if (BungeeConfig.DISCORD_ENABLED.get(Boolean.class)) {
 
             if (instance.getJda() == null) {
                 return;
@@ -412,13 +411,8 @@ public class Utils {
                 return;
             }
 
-            if (suspicious.getUniqueId() != null) {
-                PlayerCache.getSuspicious().remove(suspicious.getUniqueId());
-            }
-
-            if (administrator.getUniqueId() != null) {
-                PlayerCache.getAdministrator().remove(administrator.getUniqueId());
-            }
+            PlayerCache.getSuspicious().remove(suspicious.getUniqueId());
+            PlayerCache.getAdministrator().remove(administrator.getUniqueId());
 
             if (!BungeeConfig.USE_DISCONNECT.get(Boolean.class)) {
                 connect(suspicious, proxyServer);

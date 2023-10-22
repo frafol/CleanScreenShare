@@ -124,10 +124,6 @@ public class KickListener {
 
         final Player player = event.getPlayer();
 
-        if (!player.isActive()) {
-            return;
-        }
-
         List<Optional<RegisteredServer>> servers = Utils.getServerList(VelocityConfig.CONTROL_FALLBACK.getStringList());
 
         if (!VelocityConfig.DISABLE_PING.get(Boolean.class)) {
