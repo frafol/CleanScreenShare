@@ -157,7 +157,6 @@ public class ControlCommand implements SimpleCommand {
 
 					Utils.startControl(player.get(), sender, null);
 					Utils.sendDiscordMessage(player.get(), sender, VelocityMessages.DISCORD_STARTED.get(String.class).replace("%suspectgroup%", suspect_group).replace("%admingroup%", admin_group));
-
 					return;
 				}
 
@@ -250,37 +249,13 @@ public class ControlCommand implements SimpleCommand {
 					suspect_group = "";
 				}
 
-                if (!VelocityConfig.DISABLE_PING.get(Boolean.class)) {
-					proxyServer.get().ping().whenComplete((result, throwable) -> {
+				Utils.startControl(player.get(), sender, proxyServer.get());
+				Utils.sendDiscordMessage(player.get(), sender, VelocityMessages.DISCORD_STARTED.get(String.class).replace("%suspectgroup%", suspect_group).replace("%admingroup%", admin_group));
 
-						if (throwable != null) {
-							source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.NO_EXIST.color()
-									.replace("%prefix%", VelocityMessages.PREFIX.color())));
-							return;
-						}
-
-						if (result == null) {
-							source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.NO_EXIST.color()
-									.replace("%prefix%", VelocityMessages.PREFIX.color())));
-							return;
-						}
-
-						Utils.startControl(player.get(), sender, proxyServer.get());
-						Utils.sendDiscordMessage(player.get(), sender, VelocityMessages.DISCORD_STARTED.get(String.class).replace("%suspectgroup%", suspect_group).replace("%admingroup%", admin_group));
-
-					});
-
-				} else {
-
-					Utils.startControl(player.get(), sender, proxyServer.get());
-					Utils.sendDiscordMessage(player.get(), sender, VelocityMessages.DISCORD_STARTED.get(String.class).replace("%suspectgroup%", suspect_group).replace("%admingroup%", admin_group));
-				}
 			} else {
-
 				source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.NOT_ONLINE.color()
 						.replace("%prefix%", VelocityMessages.PREFIX.color())
 						.replace("%player%", invocation.arguments()[0])));
-
 			}
 		}
 	}

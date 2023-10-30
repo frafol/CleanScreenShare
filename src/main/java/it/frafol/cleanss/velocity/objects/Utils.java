@@ -379,6 +379,10 @@ public class Utils {
             return null;
         }
 
+        if (user.getCachedData().getMetaData().getPrefix() == null) {
+            return "";
+        }
+
         return color(user.getCachedData().getMetaData().getPrefix());
     }
 
@@ -389,6 +393,10 @@ public class Utils {
 
         if (user == null) {
             return null;
+        }
+
+        if (user.getCachedData().getMetaData().getSuffix() == null) {
+            return "";
         }
 
         return color(user.getCachedData().getMetaData().getSuffix());
