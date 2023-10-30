@@ -7,7 +7,6 @@ import com.velocitypowered.api.network.ProtocolVersion;
 import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.server.RegisteredServer;
 import com.velocitypowered.api.scheduler.ScheduledTask;
-import it.frafol.cleanss.bungee.enums.BungeeConfig;
 import it.frafol.cleanss.velocity.CleanSS;
 import it.frafol.cleanss.velocity.enums.VelocityConfig;
 import it.frafol.cleanss.velocity.enums.VelocityMessages;
@@ -1068,6 +1067,10 @@ public class Utils {
         task.put(server, instance.getServer().getScheduler().buildTask(instance, () ->
                 server.ping().whenComplete((result, throwable) -> {
 
+                    if (instance.getConfigTextFile() == null) {
+                        return;
+                    }
+
                     if (VelocityConfig.CONTROL_FALLBACK.getStringList().contains(server.getServerInfo().getName())
                             && VelocityConfig.USE_DISCONNECT.get(Boolean.class)) {
                         PlayerCache.getOnlineServers().add(server);
@@ -1081,7 +1084,7 @@ public class Utils {
 
                     PlayerCache.getOnlineServers().remove(server);
                 })
-        ).repeat(BungeeConfig.PING_DELAY.get(Integer.class), TimeUnit.SECONDS).schedule());
+        ).repeat(VelocityConfig.PING_DELAY.get(Integer.class), TimeUnit.SECONDS).schedule());
     }
 
     private Optional<RegisteredServer> getLeastPlayersServer(List<Optional<RegisteredServer>> list) {

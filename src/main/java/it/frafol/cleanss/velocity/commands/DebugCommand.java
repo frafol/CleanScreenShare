@@ -53,6 +53,23 @@ public class DebugCommand implements SimpleCommand {
         });
 
         source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize("§d| "));
+        source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize("§d| §7Fallback servers: "));
+
+        Utils.getServerList(VelocityConfig.CONTROL_FALLBACK.getStringList()).forEach(server -> {
+
+            if (!server.isPresent()) {
+                return;
+            }
+
+            if (Utils.getOnlineServers(Utils.getServerList(VelocityConfig.CONTROL_FALLBACK.getStringList())).contains(server)) {
+                source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize("§d| §7- §a" + server.get().getServerInfo().getName()));
+                return;
+            }
+
+            source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize("§d| §7- §c" + server.get().getServerInfo().getName()));
+        });
+
+        source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize("§d| "));
     }
 
     private String getMySQL() {

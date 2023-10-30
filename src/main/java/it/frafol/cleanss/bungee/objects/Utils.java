@@ -905,6 +905,10 @@ public class Utils {
 
         task.put(server, instance.getProxy().getScheduler().schedule(instance, () -> server.ping((result, error) -> {
 
+            if (instance.getConfigTextFile() == null) {
+                return;
+            }
+
             if (BungeeConfig.CONTROL_FALLBACK.getStringList().contains(server.getName())
                     && BungeeConfig.USE_DISCONNECT.get(Boolean.class)) {
                 PlayerCache.getOnlineServers().add(server);

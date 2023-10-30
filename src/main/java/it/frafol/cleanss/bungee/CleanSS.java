@@ -414,7 +414,6 @@ public class CleanSS extends Plugin {
 			if (data != null) {
 				data.close();
 			}
-
 		}
 
 		getLogger().info("§7Clearing §dinstances§7...");

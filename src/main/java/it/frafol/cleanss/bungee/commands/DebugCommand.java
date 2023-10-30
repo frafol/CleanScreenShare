@@ -44,6 +44,19 @@ public class DebugCommand extends Command {
         });
 
         invocation.sendMessage(TextComponent.fromLegacyText("§d| "));
+        invocation.sendMessage(TextComponent.fromLegacyText("§d| §7Fallback servers: "));
+
+        Utils.getServerList(BungeeConfig.CONTROL_FALLBACK.getStringList()).forEach(server -> {
+
+            if (Utils.getOnlineServers(Utils.getServerList(BungeeConfig.CONTROL_FALLBACK.getStringList())).contains(server)) {
+                invocation.sendMessage(TextComponent.fromLegacyText("§d| §7- §a" + server.getName()));
+                return;
+            }
+
+            invocation.sendMessage(TextComponent.fromLegacyText("§d| §7- §c" + server.getName()));
+        });
+
+        invocation.sendMessage(TextComponent.fromLegacyText("§d| "));
     }
 
     private String getMySQL() {
