@@ -134,7 +134,7 @@ public class FinishCommand extends Command implements TabExecutor {
                 if (BungeeConfig.SEND_ADMIN_MESSAGE.get(Boolean.class)) {
                     instance.getProxy().getPlayers().stream()
                             .filter(players -> players.hasPermission(BungeeConfig.CONTROL_PERMISSION.get(String.class)))
-                            .forEach(players -> players.sendMessage(TextComponent.fromLegacyText(BungeeMessages.ADMIN_NOTIFY_FINISH.color()
+                            invocation.sendMessage(TextComponent.fromLegacyText(BungeeMessages.ADMIN_NOTIFY_FINISH.color()
                                     .replace("%prefix%", BungeeMessages.PREFIX.color())
                                     .replace("%admin%", invocation.getName())
                                     .replace("%suspect%", player.getName())
