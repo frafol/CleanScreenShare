@@ -13,7 +13,6 @@ import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.LuckPermsProvider;
 import net.luckperms.api.model.user.User;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
 import java.util.List;
@@ -29,7 +28,7 @@ public class SpectateCommand implements SimpleCommand {
     }
 
     @Override
-    public void execute(@NotNull Invocation invocation) {
+    public void execute(Invocation invocation) {
 
         final CommandSource source = invocation.source();
         boolean luckperms = plugin.getServer().getPluginManager().getPlugin("luckperms").isPresent();

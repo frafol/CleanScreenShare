@@ -1,7 +1,6 @@
 package it.frafol.cleanss.bungee.enums;
 
 import it.frafol.cleanss.bungee.CleanSS;
-import org.jetbrains.annotations.NotNull;
 
 public enum BungeeVersion {
 
@@ -14,11 +13,11 @@ public enum BungeeVersion {
         this.path = path;
     }
 
-    public <T> T get(@NotNull Class<T> clazz) {
+    public <T> T get(Class<T> clazz) {
         return clazz.cast(instance.getVersionTextFile().get(path));
     }
 
-    public @NotNull String color() {
+    public String color() {
         return get(String.class).replace("&", "§");
     }
 }

@@ -7,7 +7,6 @@ import lombok.Getter;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -118,7 +117,7 @@ public enum BungeeMessages {
         this.path = path;
     }
 
-    public <T> T get(@NotNull Class<T> clazz) {
+    public <T> T get(Class<T> clazz) {
         return clazz.cast(instance.getMessagesTextFile().get(path));
     }
 

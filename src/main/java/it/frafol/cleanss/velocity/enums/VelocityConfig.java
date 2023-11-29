@@ -1,7 +1,6 @@
 package it.frafol.cleanss.velocity.enums;
 
 import it.frafol.cleanss.velocity.CleanSS;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -33,12 +32,15 @@ public enum VelocityConfig {
     AUTO_UPDATE("settings.auto_update"),
     MYSQL_HOST("mysql.host"),
     MYSQL_USER("mysql.user"),
+    PREMIUMVANISH("settings.premiumvanish_hook"),
+    VELOCITYVANISH("settings.velocityvanish_hook"),
     MYSQL_DATABASE("mysql.database"),
     MYSQL_PASSWORD("mysql.password"),
     MYSQL_ARGUMENTS("mysql.arguments"),
     SEND_ADMIN_MESSAGE("settings.start.send_admin_message"),
     ENABLE_SPECTATING("settings.spectate.enable"),
-    CHAT_DISABLED("messages.spectate.block_chat"),
+    CHAT_DISABLED("settings.spectate.block_chat"),
+    MESSAGE_DELAY("settings.start.message_to_control_delay"),
     STATS("settings.stats");
 
     private final String path;
@@ -48,7 +50,7 @@ public enum VelocityConfig {
         this.path = path;
     }
 
-    public <T> T get(@NotNull Class<T> clazz) {
+    public <T> T get(Class<T> clazz) {
         return clazz.cast(instance.getConfigTextFile().getConfig().get(path));
     }
 

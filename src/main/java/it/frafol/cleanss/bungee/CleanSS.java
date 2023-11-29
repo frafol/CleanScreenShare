@@ -1,5 +1,6 @@
 package it.frafol.cleanss.bungee;
 
+import de.myzelyam.api.vanish.BungeeVanishAPI;
 import it.frafol.cleanss.bungee.commands.*;
 import it.frafol.cleanss.bungee.enums.BungeeConfig;
 import it.frafol.cleanss.bungee.enums.BungeeMessages;
@@ -25,7 +26,6 @@ import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Plugin;
-import org.jetbrains.annotations.NotNull;
 import org.simpleyaml.configuration.file.YamlFile;
 import ru.vyarus.yaml.updater.YamlUpdater;
 import ru.vyarus.yaml.updater.util.FileUtils;
@@ -88,6 +88,10 @@ public class CleanSS extends Plugin {
 
 		if (BungeeConfig.DISCORD_ENABLED.get(Boolean.class)) {
 			loadDiscord();
+		}
+
+		if (getPremiumVanish() && BungeeConfig.PREMIUMVANISH.get(Boolean.class)) {
+			getLogger().info("§7PremiumVanish hooked §dsuccessfully§7!");
 		}
 
 		if (BungeeConfig.STATS.get(Boolean.class) && !getDescription().getVersion().contains("alpha")) {
@@ -315,6 +319,14 @@ public class CleanSS extends Plugin {
 			return;
 		}
 
+		if (getPremiumVanish() && BungeeConfig.PREMIUMVANISH.get(Boolean.class)) {
+			jda.getPresence().setActivity(Activity.of(Activity.ActivityType.valueOf
+							(BungeeConfig.DISCORD_ACTIVITY_TYPE.get(String.class).toUpperCase()), BungeeConfig.DISCORD_ACTIVITY.get(String.class)
+					.replace("%players%", String.valueOf(getProxy().getOnlineCount() - BungeeVanishAPI.getInvisiblePlayers().size()))
+					.replace("%suspiciouses%", String.valueOf(PlayerCache.getSuspicious().size()))));
+			return;
+		}
+
 		jda.getPresence().setActivity(Activity.of(Activity.ActivityType.valueOf
 						(BungeeConfig.DISCORD_ACTIVITY_TYPE.get(String.class).toUpperCase()), BungeeConfig.DISCORD_ACTIVITY.get(String.class)
 				.replace("%players%", String.valueOf(getProxy().getOnlineCount()))
@@ -430,7 +442,7 @@ public class CleanSS extends Plugin {
 		return getProxy().getVersion();
 	}
 
-	public <K, V> K getKey(@NotNull Map<K, V> map, V value) {
+	public <K, V> K getKey(Map<K, V> map, V value) {
 
 		for (Map.Entry<K, V> entry : map.entrySet()) {
 
@@ -442,7 +454,7 @@ public class CleanSS extends Plugin {
 		return null;
 	}
 
-	public <K, V> V getValue(@NotNull Map<K, V> map, K key) {
+	public <K, V> V getValue(Map<K, V> map, K key) {
 
 		for (Map.Entry<K, V> entry : map.entrySet()) {
 
@@ -458,4 +470,7 @@ public class CleanSS extends Plugin {
 		data = new MySQLWorker();
 	}
 
+	public boolean getPremiumVanish() {
+		return getProxy().getPluginManager().getPlugin("PremiumVanish") != null;
+	}
 }

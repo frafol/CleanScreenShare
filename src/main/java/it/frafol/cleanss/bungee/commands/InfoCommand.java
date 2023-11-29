@@ -11,7 +11,6 @@ import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Command;
 import net.md_5.bungee.api.plugin.TabExecutor;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -27,7 +26,7 @@ public class InfoCommand extends Command implements TabExecutor {
     }
 
     @Override
-    public void execute(@NotNull CommandSender invocation, String[] args) {
+    public void execute(CommandSender invocation, String[] args) {
 
         if (!invocation.hasPermission(BungeeConfig.INFO_PERMISSION.get(String.class))) {
             invocation.sendMessage(TextComponent.fromLegacyText(BungeeMessages.NO_PERMISSION.color()
@@ -107,7 +106,7 @@ public class InfoCommand extends Command implements TabExecutor {
     }
 
     @Override
-    public Iterable<String> onTabComplete(CommandSender sender, String @NotNull [] args) {
+    public Iterable<String> onTabComplete(CommandSender sender, String [] args) {
 
         if (args.length != 1) {
             return Collections.emptyList();

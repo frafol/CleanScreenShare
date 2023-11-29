@@ -6,7 +6,6 @@ import it.frafol.cleanss.velocity.CleanSS;
 import it.frafol.cleanss.velocity.enums.VelocityConfig;
 import it.frafol.cleanss.velocity.objects.Utils;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
-import org.jetbrains.annotations.NotNull;
 
 public class DebugCommand implements SimpleCommand {
 
@@ -17,7 +16,7 @@ public class DebugCommand implements SimpleCommand {
     }
 
     @Override
-    public void execute(@NotNull Invocation invocation) {
+    public void execute(Invocation invocation) {
 
         final CommandSource source = invocation.source();
 
@@ -35,6 +34,7 @@ public class DebugCommand implements SimpleCommand {
         source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize("§d| §7Version: §d" + instance.getContainer().getDescription().getVersion().get()));
         source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize("§d| §7Velocity: §d" + instance.getServer().getVersion().getVersion()));
         source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize("§d| §7MySQL: §d" + getMySQL()));
+        source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize("§d| §7Discord: §d" + getDiscord()));
         source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize("§d| "));
         source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize("§d| §7Control servers: "));
 
@@ -74,6 +74,14 @@ public class DebugCommand implements SimpleCommand {
 
     private String getMySQL() {
         if (instance.getData() == null) {
+            return "Not connected";
+        } else {
+            return "Connected";
+        }
+    }
+
+    private String getDiscord() {
+        if (instance.getJda().getJda() == null) {
             return "Not connected";
         } else {
             return "Connected";

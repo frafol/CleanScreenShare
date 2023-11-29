@@ -12,7 +12,6 @@ import it.frafol.cleanss.velocity.enums.VelocityMessages;
 import it.frafol.cleanss.velocity.objects.TextFile;
 import it.frafol.cleanss.velocity.objects.Utils;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.Optional;
@@ -27,7 +26,7 @@ public class ReloadCommand implements SimpleCommand {
 
     @SuppressWarnings("UnstableApiUsage")
     @Override
-    public void execute(@NotNull Invocation invocation) {
+    public void execute(Invocation invocation) {
 
         final CommandSource source = invocation.source();
 

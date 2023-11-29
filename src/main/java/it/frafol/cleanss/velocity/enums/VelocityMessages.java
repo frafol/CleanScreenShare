@@ -5,7 +5,6 @@ import com.velocitypowered.api.proxy.Player;
 import it.frafol.cleanss.velocity.CleanSS;
 import it.frafol.cleanss.velocity.objects.Placeholder;
 import it.frafol.cleanss.velocity.objects.Utils;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -117,7 +116,7 @@ public enum VelocityMessages {
         this.path = path;
     }
 
-    public <T> T get(@NotNull Class<T> clazz) {
+    public <T> T get(Class<T> clazz) {
         return clazz.cast(instance.getMessagesTextFile().getConfig().get(path));
     }
 

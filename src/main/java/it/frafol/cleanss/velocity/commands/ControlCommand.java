@@ -7,15 +7,12 @@ import com.velocitypowered.api.proxy.server.RegisteredServer;
 import it.frafol.cleanss.velocity.CleanSS;
 import it.frafol.cleanss.velocity.enums.VelocityConfig;
 import it.frafol.cleanss.velocity.enums.VelocityMessages;
-import it.frafol.cleanss.velocity.objects.LimboUtils;
-import it.frafol.cleanss.velocity.objects.PlayerCache;
-import it.frafol.cleanss.velocity.objects.Utils;
+import it.frafol.cleanss.velocity.objects.*;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.LuckPermsProvider;
 import net.luckperms.api.model.group.Group;
 import net.luckperms.api.model.user.User;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
 import java.util.List;
@@ -32,7 +29,7 @@ public class ControlCommand implements SimpleCommand {
 	}
 
 	@Override
-	public void execute(@NotNull Invocation invocation) {
+	public void execute(Invocation invocation) {
 
 		final CommandSource source = invocation.source();
 		boolean luckperms = instance.getServer().getPluginManager().getPlugin("luckperms").isPresent();
@@ -68,19 +65,31 @@ public class ControlCommand implements SimpleCommand {
 					return;
 				}
 
+				if (sender.getUniqueId().equals(player.get().getUniqueId())) {
+					source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.YOURSELF.color()
+							.replace("%prefix%", VelocityMessages.PREFIX.color())));
+					return;
+				}
+
 				if (player.get().hasPermission(VelocityConfig.BYPASS_PERMISSION.get(String.class))) {
 					source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.PLAYER_BYPASS.color()
 							.replace("%prefix%", VelocityMessages.PREFIX.color())));
 					return;
 				}
 
-				if (instance.useLimbo) {
+				if (instance.getVelocityVanish() && VelocityConfig.VELOCITYVANISH.get(Boolean.class) && VelocityVanishUtils.isVanished(player.get())) {
+					source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.PLAYER_BYPASS.color()
+							.replace("%prefix%", VelocityMessages.PREFIX.color())));
+					return;
+				}
 
-					if (sender.getUniqueId().equals(player.get().getUniqueId())) {
-						source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.YOURSELF.color()
-								.replace("%prefix%", VelocityMessages.PREFIX.color())));
-						return;
-					}
+				if (instance.getPremiumVanish() && VelocityConfig.PREMIUMVANISH.get(Boolean.class) && PremiumVanishUtils.isVanished(player.get())) {
+					source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.PLAYER_BYPASS.color()
+							.replace("%prefix%", VelocityMessages.PREFIX.color())));
+					return;
+				}
+
+				if (instance.useLimbo) {
 
 					if (PlayerCache.getSuspicious().contains(player.get().getUniqueId())) {
 						source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.CONTROL_ALREADY.color()
@@ -170,12 +179,6 @@ public class ControlCommand implements SimpleCommand {
 
 				if (!proxyServer.isPresent()) {
 					source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.NO_EXIST.color()
-							.replace("%prefix%", VelocityMessages.PREFIX.color())));
-					return;
-				}
-
-				if (sender.getUniqueId().equals(player.get().getUniqueId())) {
-					source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.YOURSELF.color()
 							.replace("%prefix%", VelocityMessages.PREFIX.color())));
 					return;
 				}

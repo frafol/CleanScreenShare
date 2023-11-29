@@ -1,7 +1,6 @@
 package it.frafol.cleanss.bukkit.enums;
 
 import it.frafol.cleanss.bukkit.CleanSS;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.regex.Matcher;
@@ -71,7 +70,7 @@ public enum SpigotConfig {
         this.path = path;
     }
 
-    public <T> T get(@NotNull Class<T> clazz) {
+    public <T> T get(Class<T> clazz) {
         return clazz.cast(instance.getConfigTextFile().getConfig().get(path));
     }
 

@@ -1,7 +1,6 @@
 package it.frafol.cleanss.bukkit.enums;
 
 import it.frafol.cleanss.bukkit.CleanSS;
-import org.jetbrains.annotations.NotNull;
 
 public enum SpigotVersion {
 
@@ -14,11 +13,11 @@ public enum SpigotVersion {
         this.path = path;
     }
 
-    public <T> T get(@NotNull Class<T> clazz) {
+    public <T> T get(Class<T> clazz) {
         return clazz.cast(instance.getVersionTextFile().getConfig().get(path));
     }
 
-    public @NotNull String color() {
+    public String color() {
         return get(String.class).replace("&", "§");
     }
 

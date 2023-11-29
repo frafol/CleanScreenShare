@@ -5,10 +5,12 @@ import com.velocitypowered.api.event.player.ServerPostConnectEvent;
 import com.velocitypowered.api.network.ProtocolVersion;
 import com.velocitypowered.api.proxy.Player;
 import it.frafol.cleanss.velocity.CleanSS;
+import it.frafol.cleanss.velocity.enums.VelocityConfig;
 import it.frafol.cleanss.velocity.objects.PlayerCache;
 import it.frafol.cleanss.velocity.objects.Utils;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
-import org.jetbrains.annotations.NotNull;
+
+import java.util.concurrent.TimeUnit;
 
 public class ServerListener {
 
@@ -20,7 +22,7 @@ public class ServerListener {
 
     @SuppressWarnings("UnstableApiUsage")
     @Subscribe
-    public void onServerPostConnect(final @NotNull ServerPostConnectEvent event) {
+    public void onServerPostConnect(final ServerPostConnectEvent event) {
 
         final Player player = event.getPlayer();
 
@@ -30,8 +32,31 @@ public class ServerListener {
 
         if (!player.getCurrentServer().isPresent()) {
             if (PlayerCache.getSuspicious().contains(player.getUniqueId()) || PlayerCache.getAdministrator().contains(player.getUniqueId())) {
-                instance.getLogger().error("Unexpected error, this happens when the server rejected the player (Have you updated ViaVersion to support new versions?).");
+                instance.getLogger().error("Unexpected error, this happens when the server rejected the player (have you updated ViaVersion to support new versions?).");
             }
+            return;
+        }
+
+        if (VelocityConfig.MESSAGE_DELAY.get(Integer.class) > 0) {
+
+            instance.getServer().getScheduler().buildTask(instance, () -> {
+                if (!Utils.isInControlServer(player.getCurrentServer().get().getServer())) {
+                    return;
+                }
+
+                if (PlayerCache.getSuspicious().contains(player.getUniqueId())) {
+                    Utils.sendChannelMessage(player, "SUSPECT");
+                }
+
+                if (PlayerCache.getAdministrator().contains(player.getUniqueId())) {
+                    Utils.sendChannelAdvancedMessage(player, PlayerCache.getCouples().get(player), "ADMIN");
+                }
+
+                if (player.getProtocolVersion().getProtocol() >= ProtocolVersion.getProtocolVersion(759).getProtocol()) {
+                    Utils.sendChannelMessage(player, "NO_CHAT");
+                }
+            }).delay(VelocityConfig.MESSAGE_DELAY.get(Integer.class), TimeUnit.SECONDS).schedule();
+
             return;
         }
 

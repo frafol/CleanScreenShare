@@ -13,7 +13,6 @@ import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.LuckPermsProvider;
 import net.luckperms.api.model.user.User;
-import org.jetbrains.annotations.NotNull;
 
 public class ChatListener {
 
@@ -24,7 +23,7 @@ public class ChatListener {
     }
 
     @Subscribe
-    public void onChat(@NotNull PlayerChatEvent event) {
+    public void onChat(PlayerChatEvent event) {
 
         final Player player = event.getPlayer();
         boolean luckperms = instance.getServer().getPluginManager().getPlugin("luckperms").isPresent();

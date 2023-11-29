@@ -1,7 +1,6 @@
 package it.frafol.cleanss.velocity.enums;
 
 import it.frafol.cleanss.velocity.CleanSS;
-import org.jetbrains.annotations.NotNull;
 
 public enum VelocityLimbo {
 
@@ -14,7 +13,7 @@ public enum VelocityLimbo {
         this.path = path;
     }
 
-    public <T> T get(@NotNull Class<T> clazz) {
+    public <T> T get(Class<T> clazz) {
         return clazz.cast(instance.getLimboTextFile().getConfig().get(path));
     }
 

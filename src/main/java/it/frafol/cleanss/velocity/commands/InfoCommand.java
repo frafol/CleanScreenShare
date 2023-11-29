@@ -10,7 +10,6 @@ import it.frafol.cleanss.velocity.objects.Placeholder;
 import it.frafol.cleanss.velocity.objects.PlayerCache;
 import it.frafol.cleanss.velocity.objects.Utils;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
 import java.util.List;
@@ -27,7 +26,7 @@ public class InfoCommand implements SimpleCommand {
     }
 
     @Override
-    public void execute(@NotNull Invocation invocation) {
+    public void execute(Invocation invocation) {
 
         final CommandSource source = invocation.source();
         boolean luckperms = instance.getServer().getPluginManager().getPlugin("luckperms").isPresent();

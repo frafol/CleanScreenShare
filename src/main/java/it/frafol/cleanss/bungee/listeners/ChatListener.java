@@ -13,7 +13,6 @@ import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.ChatEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
-import org.jetbrains.annotations.NotNull;
 
 public class ChatListener implements Listener {
 
@@ -24,7 +23,7 @@ public class ChatListener implements Listener {
     }
 
     @EventHandler
-    public void onChat(@NotNull ChatEvent event) {
+    public void onChat(ChatEvent event) {
 
         final String message = event.getMessage();
         boolean luckperms = instance.getProxy().getPluginManager().getPlugin("LuckPerms") != null;

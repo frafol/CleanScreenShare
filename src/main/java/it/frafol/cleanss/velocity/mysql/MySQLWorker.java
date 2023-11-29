@@ -13,6 +13,8 @@ import java.util.Optional;
 import java.util.UUID;
 
 public class MySQLWorker {
+
+    private final CleanSS instance = CleanSS.getInstance();
     private final SQLConnection connection = new SQLConnection(VelocityConfig.MYSQL_HOST.get(String.class), VelocityConfig.MYSQL_USER.get(String.class), VelocityConfig.MYSQL_PASSWORD.get(String.class), VelocityConfig.MYSQL_DATABASE.get(String.class));
 
     public MySQLWorker() {
@@ -35,7 +37,7 @@ public class MySQLWorker {
 
             if (!rs.next()) {
 
-                Optional<Player> player = CleanSS.getInstance().getServer().getPlayer(uuid);
+                Optional<Player> player = instance.getServer().getPlayer(uuid);
 
                 if (!player.isPresent()) {
                     return;
@@ -76,7 +78,7 @@ public class MySQLWorker {
                 suffered = rs.getInt("controls_suffered");
 
             } else {
-                Optional<Player> player = CleanSS.getInstance().getServer().getPlayer(uuid);
+                Optional<Player> player = instance.getServer().getPlayer(uuid);
 
                 if (!player.isPresent()) {
                     return 0;

@@ -6,7 +6,6 @@ import com.velocitypowered.api.network.ProtocolVersion;
 import com.velocitypowered.api.proxy.Player;
 import it.frafol.cleanss.velocity.CleanSS;
 import it.frafol.cleanss.velocity.objects.PlayerCache;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.TimeUnit;
 
@@ -19,7 +18,7 @@ public class CommandListener {
     }
 
     @Subscribe
-    public void onPlayerCommand(@NotNull CommandExecuteEvent event) {
+    public void onPlayerCommand(CommandExecuteEvent event) {
 
         if (!(event.getCommandSource() instanceof Player)) {
             return;

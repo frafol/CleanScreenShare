@@ -21,7 +21,6 @@ import net.luckperms.api.LuckPerms;
 import net.luckperms.api.LuckPermsProvider;
 import net.luckperms.api.model.group.Group;
 import net.luckperms.api.model.user.User;
-import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 import java.time.Duration;
@@ -38,7 +37,7 @@ public class Utils {
     private static final CleanSS instance = CleanSS.getInstance();
     private final HashMap<RegisteredServer, ScheduledTask> task = new HashMap<>();
 
-    public List<String> getStringList(@NotNull VelocityMessages velocityMessages) {
+    public List<String> getStringList(VelocityMessages velocityMessages) {
         return instance.getMessagesTextFile().getConfig().getStringList(velocityMessages.getPath());
     }
 
@@ -59,7 +58,7 @@ public class Utils {
         return newList;
     }
 
-    public String applyPlaceHolder(String s, Placeholder @NotNull ... placeholders) {
+    public String applyPlaceHolder(String s, Placeholder... placeholders) {
         for (Placeholder placeholder : placeholders) {
             s = s.replace(placeholder.getKey(), placeholder.getValue());
         }
@@ -101,11 +100,11 @@ public class Utils {
         return message.matches(".*" + hexColorPattern + ".*");
     }
 
-    public List<String> color(@NotNull List<String> list) {
+    public List<String> color(List<String> list) {
         return list.stream().map(Utils::color).collect(Collectors.toList());
     }
 
-    public void sendList(CommandSource commandSource, @NotNull List<String> stringList, Player player_name) {
+    public void sendList(CommandSource commandSource, List<String> stringList, Player player_name) {
 
         for (String message : stringList) {
 
@@ -406,7 +405,7 @@ public class Utils {
         sendList(commandSource, color(getStringList(velocityMessages, placeholders)), player_name);
     }
 
-    public void finishControl(@NotNull Player suspicious, @NotNull Player administrator, RegisteredServer proxyServer) {
+    public void finishControl(Player suspicious, Player administrator, RegisteredServer proxyServer) {
 
         if (suspicious.isActive() && administrator.isActive()) {
 
@@ -549,7 +548,7 @@ public class Utils {
         }
     }
 
-    public void startControl(@NotNull Player suspicious, @NotNull Player administrator, RegisteredServer proxyServer) {
+    public void startControl(Player suspicious, Player administrator, RegisteredServer proxyServer) {
 
         String admin_prefix;
         String admin_suffix;
@@ -791,7 +790,7 @@ public class Utils {
     }
 
     @SuppressWarnings("UnstableApiUsage")
-    public void sendChannelMessage(@NotNull Player player, String type) {
+    public void sendChannelMessage(Player player, String type) {
 
         final ByteArrayDataOutput buf = ByteStreams.newDataOutput();
 
@@ -803,7 +802,7 @@ public class Utils {
     }
 
     @SuppressWarnings("UnstableApiUsage")
-    public void sendChannelAdvancedMessage(@NotNull Player administrator, Player suspicious, String type) {
+    public void sendChannelAdvancedMessage(Player administrator, Player suspicious, String type) {
 
         final ByteArrayDataOutput buf = ByteStreams.newDataOutput();
 
@@ -815,7 +814,7 @@ public class Utils {
 
     }
 
-    private void checkForErrors(@NotNull Player suspicious, @NotNull Player administrator, RegisteredServer proxyServer) {
+    private void checkForErrors(Player suspicious, Player administrator, RegisteredServer proxyServer) {
 
         instance.getServer().getScheduler().buildTask(instance, () -> {
 

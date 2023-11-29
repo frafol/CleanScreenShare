@@ -6,7 +6,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntitySpawnEvent;
 import org.bukkit.event.weather.WeatherChangeEvent;
-import org.jetbrains.annotations.NotNull;
 
 public class WorldListener  implements Listener {
 
@@ -18,7 +17,7 @@ public class WorldListener  implements Listener {
     }
 
     @EventHandler
-    public void onMobSpawning(@NotNull EntitySpawnEvent event) {
+    public void onMobSpawning(EntitySpawnEvent event) {
 
         if (event.getEntity() instanceof Player) {
             return;

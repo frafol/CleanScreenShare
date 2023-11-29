@@ -14,6 +14,7 @@ import java.util.Objects;
 
 public class TextFile {
 
+    private final CleanSS instance = CleanSS.getInstance();
     private final YamlFile yamlFile;
 
     private static final List<TextFile> list = Lists.newArrayList();
@@ -50,8 +51,8 @@ public class TextFile {
 
         if (VelocityConfig.MYSQL.get(Boolean.class)) {
             if (!first) {
-                CleanSS.getInstance().setData();
-                CleanSS.getInstance().ControlTask();
+                instance.setData();
+                instance.ControlTask();
             }
         }
 

@@ -11,6 +11,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class SQLConnection {
+
+    private final CleanSS instance = CleanSS.getInstance();
+
     private Connection connection;
     private final ExecutorService executor;
     private final String host;
@@ -47,13 +50,13 @@ public class SQLConnection {
 
     private void connect() {
         try {
-            CleanSS.getInstance().getLogger().info("§7Connecting to §dMySQL database§7...");
+            instance.getLogger().info("§7Connecting to §dMySQL database§7...");
             connection = DriverManager.getConnection("JDBC:mysql://" + host + "/" + database + VelocityConfig.MYSQL_ARGUMENTS.get(String.class), user, password);
-            CleanSS.getInstance().getLogger().info("§7Connected to §dMySQL database§7.");
+            instance.getLogger().info("§7Connected to §dMySQL database§7.");
         } catch (SQLException sqlException) {
-            CleanSS.getInstance().getLogger().error("§cUnable to connect to the database, cannot start the plugin. Is password correct? Are drivers loaded?");
+            instance.getLogger().error("§cUnable to connect to the database, cannot start the plugin. Is password correct? Are drivers loaded?");
             sqlException.printStackTrace();
-            CleanSS.getInstance().mysql_installation = true;
+            instance.mysql_installation = true;
         }
     }
 

@@ -1,5 +1,6 @@
 package it.frafol.cleanss.bukkit.listeners;
 
+import com.github.Anon8281.universalScheduler.UniversalScheduler;
 import it.frafol.cleanss.bukkit.CleanSS;
 import it.frafol.cleanss.bukkit.enums.SpigotCache;
 import it.frafol.cleanss.bukkit.enums.SpigotConfig;
@@ -17,7 +18,6 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.player.*;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
@@ -26,7 +26,7 @@ public class PlayerListener implements Listener {
     private final CleanSS instance = CleanSS.getInstance();
 
     @EventHandler(priority = EventPriority.HIGHEST)
-    public void onPlayerChat(@NotNull AsyncPlayerChatEvent event) {
+    public void onPlayerChat(AsyncPlayerChatEvent event) {
         if (PlayerCache.getNo_chat().contains(event.getPlayer().getUniqueId())) {
             event.setCancelled(true);
         }
@@ -38,7 +38,7 @@ public class PlayerListener implements Listener {
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
-    public void onPlayerCommand(@NotNull PlayerCommandPreprocessEvent event) {
+    public void onPlayerCommand(PlayerCommandPreprocessEvent event) {
 
         final Player player = event.getPlayer();
 
@@ -61,7 +61,7 @@ public class PlayerListener implements Listener {
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
-    public void onPlayerDamage(@NotNull EntityDamageEvent event) {
+    public void onPlayerDamage(EntityDamageEvent event) {
 
         final Entity entity = event.getEntity();
 
@@ -82,7 +82,7 @@ public class PlayerListener implements Listener {
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
-    public void onHunger(@NotNull FoodLevelChangeEvent event) {
+    public void onHunger(FoodLevelChangeEvent event) {
 
         final HumanEntity entity = event.getEntity();
 
@@ -99,7 +99,7 @@ public class PlayerListener implements Listener {
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
-    public void changeGameMode(@NotNull PlayerJoinEvent event) {
+    public void changeGameMode(PlayerJoinEvent event) {
 
         final Player player = event.getPlayer();
 
@@ -132,11 +132,10 @@ public class PlayerListener implements Listener {
 
         Player player = event.getPlayer();
 
-        instance.getServer().getScheduler().runTaskLater(instance, () -> {
+        UniversalScheduler.getScheduler(instance).runTaskLater(() -> {
             if (PlayerCache.getSuspicious().contains(player.getUniqueId()) || PlayerCache.getAdministrator().contains(player.getUniqueId())) {
                 return;
             }
-
             player.teleport(PlayerCache.StringToLocation(SpigotCache.OTHER_SPAWN.get(String.class)));
         }, 20L);
 
@@ -168,7 +167,7 @@ public class PlayerListener implements Listener {
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
-    public void onQuit(@NotNull PlayerQuitEvent event) {
+    public void onQuit(PlayerQuitEvent event) {
 
         Player player = event.getPlayer();
 
@@ -193,7 +192,7 @@ public class PlayerListener implements Listener {
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
-    public void onPlayerMove(@NotNull PlayerMoveEvent event) {
+    public void onPlayerMove(PlayerMoveEvent event) {
 
         final Player player = event.getPlayer();
 

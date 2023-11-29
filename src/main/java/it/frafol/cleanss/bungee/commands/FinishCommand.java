@@ -15,7 +15,6 @@ import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Command;
 import net.md_5.bungee.api.plugin.TabExecutor;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -31,7 +30,7 @@ public class FinishCommand extends Command implements TabExecutor {
     }
 
     @Override
-    public void execute(@NotNull CommandSender invocation, String[] args) {
+    public void execute(CommandSender invocation, String[] args) {
 
         boolean luckperms = instance.getProxy().getPluginManager().getPlugin("LuckPerms") != null;
 
@@ -199,7 +198,7 @@ public class FinishCommand extends Command implements TabExecutor {
     }
 
     @Override
-    public Iterable<String> onTabComplete(CommandSender sender, String @NotNull [] args) {
+    public Iterable<String> onTabComplete(CommandSender sender, String [] args) {
 
         if (args.length != 1) {
             return Collections.emptyList();

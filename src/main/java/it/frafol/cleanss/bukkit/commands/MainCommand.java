@@ -7,7 +7,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
-import org.jetbrains.annotations.NotNull;
 import org.simpleyaml.configuration.file.YamlFile;
 
 import java.io.IOException;
@@ -15,7 +14,7 @@ import java.io.IOException;
 public class MainCommand implements Listener {
 
     @EventHandler
-    public void onCommand(@NotNull PlayerCommandPreprocessEvent event) throws IOException {
+    public void onCommand(PlayerCommandPreprocessEvent event) throws IOException {
 
         final Player player = event.getPlayer();
         final String message = event.getMessage();

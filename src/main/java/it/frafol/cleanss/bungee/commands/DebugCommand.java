@@ -6,7 +6,6 @@ import it.frafol.cleanss.bungee.objects.Utils;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.plugin.Command;
-import org.jetbrains.annotations.NotNull;
 
 public class DebugCommand extends Command {
 
@@ -18,7 +17,7 @@ public class DebugCommand extends Command {
     }
 
     @Override
-    public void execute(@NotNull CommandSender invocation, String[] args) {
+    public void execute(CommandSender invocation, String[] args) {
 
         if (args.length != 0) {
             return;
@@ -30,6 +29,7 @@ public class DebugCommand extends Command {
         invocation.sendMessage(TextComponent.fromLegacyText("§d| §7Version: §d" + instance.getDescription().getVersion()));
         invocation.sendMessage(TextComponent.fromLegacyText("§d| §7BungeeCord: §d" + instance.getProxy().getVersion()));
         invocation.sendMessage(TextComponent.fromLegacyText("§d| §7MySQL: §d" + getMySQL()));
+        invocation.sendMessage(TextComponent.fromLegacyText("§d| §7Discord: §d" + getDiscord()));
         invocation.sendMessage(TextComponent.fromLegacyText("§d| "));
         invocation.sendMessage(TextComponent.fromLegacyText("§d| §7Control servers: "));
 
@@ -61,6 +61,14 @@ public class DebugCommand extends Command {
 
     private String getMySQL() {
         if (instance.getData() == null) {
+            return "Not connected";
+        } else {
+            return "Connected";
+        }
+    }
+
+    private String getDiscord() {
+        if (instance.getJda() == null) {
             return "Not connected";
         } else {
             return "Connected";

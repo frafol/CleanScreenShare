@@ -32,7 +32,6 @@ import net.byteflux.libby.Library;
 import net.byteflux.libby.VelocityLibraryManager;
 import net.byteflux.libby.relocation.Relocation;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
-import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import ru.vyarus.yaml.updater.YamlUpdater;
 import ru.vyarus.yaml.updater.util.FileUtils;
@@ -53,9 +52,9 @@ import java.util.concurrent.TimeUnit;
 @Plugin(
 		id = "cleanscreenshare",
 		name = "CleanScreenShare",
-		version = "2.0.5",
+		version = "2.1.0",
 		description = "Make control hacks on your players.",
-		dependencies = {@Dependency(id = "luckperms", optional = true), @Dependency(id = "mysqlandconfigurateforvelocity", optional = true), @Dependency(id = "limboapi", optional = true), @Dependency(id = "ajqueue", optional = true)},
+		dependencies = {@Dependency(id = "luckperms", optional = true), @Dependency(id = "mysqlandconfigurateforvelocity", optional = true), @Dependency(id = "limboapi", optional = true), @Dependency(id = "ajqueue", optional = true), @Dependency(id = "premiumvanish", optional = true)},
 		authors = { "frafol" })
 
 public class CleanSS {
@@ -136,6 +135,10 @@ public class CleanSS {
 			} else {
 				logger.error("§7LimboAPI not §dfound§7! Please install it to use the §dLimbo feature§7.");
 			}
+		}
+
+		if (getPremiumVanish() && VelocityConfig.PREMIUMVANISH.get(Boolean.class)) {
+			logger.info("§7PremiumVanish hooked §dsuccessfully§7!");
 		}
 
 		if (instance.getServer().getPluginManager().getPlugin("ajqueue").isPresent() &&
@@ -430,15 +433,15 @@ public class CleanSS {
 
 	private void loadCommands() {
 
-		getInstance().getServer().getCommandManager().register
+		getServer().getCommandManager().register
 				(server.getCommandManager().metaBuilder("ssdebug").aliases("cleanssdebug", "controldebug")
 						.build(), new DebugCommand(this));
 
-		getInstance().getServer().getCommandManager().register
+		getServer().getCommandManager().register
 				(server.getCommandManager().metaBuilder("ss").aliases("cleanss", "control")
 						.build(), new ControlCommand(this));
 
-		getInstance().getServer().getCommandManager().register
+		getServer().getCommandManager().register
 				(server.getCommandManager().metaBuilder("ssfinish").aliases("cleanssfinish", "controlfinish")
 						.build(), new FinishCommand(this));
 
@@ -448,11 +451,11 @@ public class CleanSS {
 							.build(), new SpectateCommand(this));
 		}
 
-		getInstance().getServer().getCommandManager().register
+		getServer().getCommandManager().register
 				(server.getCommandManager().metaBuilder("ssinfo").aliases("cleanssinfo", "controlinfo")
 						.build(), new InfoCommand(this));
 
-		getInstance().getServer().getCommandManager().register
+		getServer().getCommandManager().register
 				(server.getCommandManager().metaBuilder("ssreload").aliases("cleanssreload", "controlreload")
 						.build(), new ReloadCommand(this));
 
@@ -574,6 +577,24 @@ public class CleanSS {
 			return;
 		}
 
+		if (getVelocityVanish() && VelocityConfig.VELOCITYVANISH.get(Boolean.class)) {
+			jda.getJda().getPresence().setActivity(net.dv8tion.jda.api.entities.Activity.of(net.dv8tion.jda.api.entities.Activity.ActivityType.valueOf
+							(VelocityConfig.DISCORD_ACTIVITY_TYPE.get(String.class).toUpperCase()),
+					VelocityConfig.DISCORD_ACTIVITY.get(String.class)
+							.replace("%players%", String.valueOf(VelocityVanishUtils.getOnlinePlayers(this)))
+							.replace("%suspiciouses%", String.valueOf(PlayerCache.getSuspicious().size()))));
+			return;
+		}
+
+		if (getPremiumVanish() && VelocityConfig.PREMIUMVANISH.get(Boolean.class)) {
+			jda.getJda().getPresence().setActivity(net.dv8tion.jda.api.entities.Activity.of(net.dv8tion.jda.api.entities.Activity.ActivityType.valueOf
+							(VelocityConfig.DISCORD_ACTIVITY_TYPE.get(String.class).toUpperCase()),
+					VelocityConfig.DISCORD_ACTIVITY.get(String.class)
+							.replace("%players%", String.valueOf(PremiumVanishUtils.getOnlinePlayers(this)))
+							.replace("%suspiciouses%", String.valueOf(PlayerCache.getSuspicious().size()))));
+			return;
+		}
+
 		jda.getJda().getPresence().setActivity(net.dv8tion.jda.api.entities.Activity.of(net.dv8tion.jda.api.entities.Activity.ActivityType.valueOf
 						(VelocityConfig.DISCORD_ACTIVITY_TYPE.get(String.class).toUpperCase()),
 				VelocityConfig.DISCORD_ACTIVITY.get(String.class)
@@ -582,7 +603,7 @@ public class CleanSS {
 
 	}
 
-	public <K, V> K getKey(@NotNull Map<K, V> map, V value) {
+	public <K, V> K getKey(Map<K, V> map, V value) {
 
 		for (Map.Entry<K, V> entry : map.entrySet()) {
 
@@ -594,7 +615,7 @@ public class CleanSS {
 		return null;
 	}
 
-	public <K, V> V getValue(@NotNull Map<K, V> map, K key) {
+	public <K, V> V getValue(Map<K, V> map, K key) {
 
 		for (Map.Entry<K, V> entry : map.entrySet()) {
 
@@ -609,5 +630,15 @@ public class CleanSS {
 	@SuppressWarnings("ALL")
 	public boolean getUnsignedVelocityAddon() {
 		return getServer().getPluginManager().isLoaded("unsignedvelocity");
+	}
+
+	@SuppressWarnings("ALL")
+	public boolean getPremiumVanish() {
+		return getServer().getPluginManager().isLoaded("premiumvanish");
+	}
+
+	@SuppressWarnings("ALL")
+	public boolean getVelocityVanish() {
+		return getServer().getPluginManager().isLoaded("velocityvanish");
 	}
 }

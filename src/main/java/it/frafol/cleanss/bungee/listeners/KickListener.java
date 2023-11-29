@@ -16,7 +16,6 @@ import net.md_5.bungee.api.event.PostLoginEvent;
 import net.md_5.bungee.api.event.ServerConnectEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -29,7 +28,7 @@ public class KickListener implements Listener {
     }
 
     @EventHandler
-    public void onPlayerJoin(@NotNull PostLoginEvent event) {
+    public void onPlayerJoin(PostLoginEvent event) {
 
         final ProxiedPlayer player = event.getPlayer();
 
@@ -43,7 +42,7 @@ public class KickListener implements Listener {
     }
 
     @EventHandler
-    public void onPlayerChange(@NotNull ServerConnectEvent event) {
+    public void onPlayerChange(ServerConnectEvent event) {
 
         final ProxiedPlayer player = event.getPlayer();
         final ServerInfo server = event.getTarget();
@@ -110,7 +109,7 @@ public class KickListener implements Listener {
     }
 
     @EventHandler
-    public void onPlayerDisconnect(@NotNull PlayerDisconnectEvent event) {
+    public void onPlayerDisconnect(PlayerDisconnectEvent event) {
 
         final ProxiedPlayer player = event.getPlayer();
 
@@ -125,14 +124,14 @@ public class KickListener implements Listener {
         PlayerCache.getSpectators().remove(player.getUniqueId());
 
         if (proxyServer == null) {
-            instance.getLogger().severe("Fallback server was not found in your BungeeCord configuration or is offline, players will not be able to reconnect to the server.");
-
             if (PlayerCache.getAdministrator().contains(player.getUniqueId())) {
                 instance.getValue(PlayerCache.getCouples(), player).disconnect(TextComponent.fromLegacyText(BungeeMessages.FINISHSUS.color()));
+                instance.getLogger().severe("Fallback server was not found in your BungeeCord configuration or is offline, " + player.getName() + " will not be able to reconnect to the server.");
             }
 
             if (PlayerCache.getSuspicious().contains(player.getUniqueId())) {
                 instance.getKey(PlayerCache.getCouples(), player).disconnect(TextComponent.fromLegacyText(BungeeMessages.FINISHSUS.color()));
+                instance.getLogger().severe("Fallback server was not found in your BungeeCord configuration or is offline, " + player.getName() + " will not be able to reconnect to the server.");
             }
         }
 

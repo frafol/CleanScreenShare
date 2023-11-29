@@ -1,5 +1,7 @@
 package it.frafol.cleanss.bukkit;
 
+import com.github.Anon8281.universalScheduler.UniversalScheduler;
+import com.github.Anon8281.universalScheduler.scheduling.tasks.MyScheduledTask;
 import com.tchristofferson.configupdater.ConfigUpdater;
 import it.frafol.cleanss.bukkit.commands.MainCommand;
 import it.frafol.cleanss.bukkit.enums.SpigotConfig;
@@ -16,10 +18,8 @@ import net.byteflux.libby.BukkitLibraryManager;
 import net.byteflux.libby.Library;
 import net.byteflux.libby.relocation.Relocation;
 import org.apache.commons.lang.time.DurationFormatUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitTask;
 
 import java.io.File;
 import java.io.IOException;
@@ -35,7 +35,7 @@ public class CleanSS extends JavaPlugin {
 
 	public boolean updated = false;
 
-	private final HashMap<UUID, BukkitTask> timerTask = new HashMap<>();
+	private final HashMap<UUID, MyScheduledTask> timerTask = new HashMap<>();
 	private final HashMap<UUID, Integer> seconds = new HashMap<>();
 
 	@Getter
@@ -84,6 +84,14 @@ public class CleanSS extends JavaPlugin {
 				.relocate(scoreboardrelocation)
 				.build();
 
+		final Relocation schedulerrelocation = new Relocation("scheduler", "it{}frafol{}libs{}scheduler");
+		Library scheduler = Library.builder()
+				.groupId("com{}github{}Anon8281")
+				.artifactId("UniversalScheduler")
+				.version("0.1.6")
+				.relocate(schedulerrelocation)
+				.build();
+
 		try {
 			bukkitLibraryManager.loadLibrary(yaml);
 		} catch (RuntimeException ignored) {
@@ -101,17 +109,18 @@ public class CleanSS extends JavaPlugin {
 		bukkitLibraryManager.loadLibrary(updater);
 		bukkitLibraryManager.loadLibrary(yaml);
 		bukkitLibraryManager.loadLibrary(scoreboard);
+		bukkitLibraryManager.loadLibrary(scheduler);
 
 		getLogger().info("\n   ___  __    ____    __    _  _   ___  ___\n" +
 				"  / __)(  )  ( ___)  /__\\  ( \\( ) / __)/ __)\n" +
 				" ( (__  )(__  )__)  /(__)\\  )  (  \\__ \\\\__ \\\n" +
 				"  \\___)(____)(____)(__)(__)(_)\\_) (___/(___/\n");
 
-		getLogger().info("Server version: " + Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3] + ".");
+		getLogger().info("Server version: " + getServer().getClass().getPackage().getName().split("\\.")[3] + ".");
 
 		if (isSuperLegacy()) {
 			getLogger().severe("Support for your version was declined.");
-			Bukkit.getPluginManager().disablePlugin(this);
+			getServer().getPluginManager().disablePlugin(this);
 			return;
 		}
 
@@ -197,15 +206,14 @@ public class CleanSS extends JavaPlugin {
 		return true;
 	}
 
-
 	public boolean isSuperLegacy() {
-		return Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3].contains("1_6_R")
-				|| Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3].contains("1_5_R")
-				|| Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3].contains("1_4_R")
-				|| Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3].contains("1_3_R")
-				|| Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3].contains("1_2_R")
-				|| Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3].contains("1_1_R")
-				|| Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3].contains("1_0_R");
+		return getServer().getClass().getPackage().getName().split("\\.")[3].contains("1_6_R")
+				|| getServer().getClass().getPackage().getName().split("\\.")[3].contains("1_5_R")
+				|| getServer().getClass().getPackage().getName().split("\\.")[3].contains("1_4_R")
+				|| getServer().getClass().getPackage().getName().split("\\.")[3].contains("1_3_R")
+				|| getServer().getClass().getPackage().getName().split("\\.")[3].contains("1_2_R")
+				|| getServer().getClass().getPackage().getName().split("\\.")[3].contains("1_1_R")
+				|| getServer().getClass().getPackage().getName().split("\\.")[3].contains("1_0_R");
 	}
 
 	private void UpdateChecker() {
@@ -285,7 +293,7 @@ public class CleanSS extends JavaPlugin {
 	}
 
 	public void startTimer(UUID uuid) {
-		timerTask.put(uuid, instance.getServer().getScheduler().runTaskTimer(instance, () -> {
+		timerTask.put(uuid, UniversalScheduler.getScheduler(instance).runTaskTimer(() -> {
 			seconds.putIfAbsent(uuid, 1);
 			seconds.put(uuid, seconds.get(uuid) + 1);
 		}, 20L, 20L));

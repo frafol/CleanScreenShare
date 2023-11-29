@@ -14,7 +14,6 @@ import net.luckperms.api.LuckPerms;
 import net.luckperms.api.LuckPermsProvider;
 import net.luckperms.api.model.group.Group;
 import net.luckperms.api.model.user.User;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
 import java.util.List;
@@ -31,7 +30,7 @@ public class FinishCommand implements SimpleCommand {
     }
 
     @Override
-    public void execute(SimpleCommand.@NotNull Invocation invocation) {
+    public void execute(SimpleCommand.Invocation invocation) {
 
         final CommandSource source = invocation.source();
         boolean luckperms = instance.getServer().getPluginManager().isLoaded("luckperms");

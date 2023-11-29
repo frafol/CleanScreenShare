@@ -6,7 +6,6 @@ import it.frafol.cleanss.bukkit.objects.PlayerCache;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 import java.util.Objects;
@@ -20,17 +19,17 @@ public class PlaceholderHook extends PlaceholderExpansion {
     }
 
     @Override
-    public @NotNull String getIdentifier() {
+    public String getIdentifier() {
         return "screenshare";
     }
 
     @Override
-    public @NotNull String getAuthor() {
+    public String getAuthor() {
         return "frafol";
     }
 
     @Override
-    public @NotNull String getVersion() {
+    public String getVersion() {
         return "1.0";
     }
 
@@ -40,7 +39,7 @@ public class PlaceholderHook extends PlaceholderExpansion {
     }
 
     @Override
-    public String onRequest(OfflinePlayer player, @NotNull String placeholder) {
+    public String onRequest(OfflinePlayer player, String placeholder) {
 
         if (placeholder.equalsIgnoreCase("seconds")) {
             if (plugin.getSeconds(player.getUniqueId()) != null) {

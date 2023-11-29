@@ -1,5 +1,6 @@
 package it.frafol.cleanss.bukkit.listeners;
 
+import com.github.Anon8281.universalScheduler.UniversalScheduler;
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteStreams;
 import it.frafol.cleanss.bukkit.CleanSS;
@@ -7,10 +8,8 @@ import it.frafol.cleanss.bukkit.enums.SpigotCache;
 import it.frafol.cleanss.bukkit.enums.SpigotConfig;
 import it.frafol.cleanss.bukkit.objects.PlayerCache;
 import it.frafol.cleanss.bukkit.objects.TextFile;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.messaging.PluginMessageListener;
-import org.jetbrains.annotations.NotNull;
 
 public class PluginMessageReceiver implements PluginMessageListener {
 
@@ -18,7 +17,7 @@ public class PluginMessageReceiver implements PluginMessageListener {
 
     @SuppressWarnings({"UnstableApiUsage"})
     @Override
-    public void onPluginMessageReceived(@NotNull String channel, Player player, byte[] message) {
+    public void onPluginMessageReceived(String channel, Player player, byte[] message) {
 
         if (!(channel.equals("cleanss:join"))) {
             return;
@@ -31,7 +30,7 @@ public class PluginMessageReceiver implements PluginMessageListener {
 
             String player_found = dataInput.readUTF();
 
-            final Player final_player = Bukkit.getPlayer(player_found);
+            final Player final_player = instance.getServer().getPlayer(player_found);
 
             if (final_player == null) {
                 return;
@@ -44,7 +43,7 @@ public class PluginMessageReceiver implements PluginMessageListener {
         if (subChannel.equals("DISCONNECT_NOW")) {
 
             String player_found = dataInput.readUTF();
-            final Player final_player = Bukkit.getPlayer(player_found);
+            final Player final_player = instance.getServer().getPlayer(player_found);
 
             if (final_player == null) {
                 return;
@@ -59,7 +58,7 @@ public class PluginMessageReceiver implements PluginMessageListener {
         }
 
         if (subChannel.equals("RELOAD")) {
-            CleanSS.getInstance().getLogger().warning("CleanScreenShare is reloading on your proxy, " +
+            instance.getLogger().warning("CleanScreenShare is reloading on your proxy, " +
                     "running a global reload on this server.");
             TextFile.reloadAll();
         }
@@ -74,9 +73,9 @@ public class PluginMessageReceiver implements PluginMessageListener {
 
             instance.getLogger().warning("Received data (suspect) from the proxy. [" + player_found + "]");
 
-            final Player final_player = Bukkit.getPlayer(player_found);
+            final Player final_player = instance.getServer().getPlayer(player_found);
 
-            Bukkit.getScheduler().runTaskLater(instance, () -> {
+            UniversalScheduler.getScheduler(instance).runTaskLater(() -> {
 
                 if (final_player == null || !final_player.isOnline()) {
                     return;
@@ -84,6 +83,11 @@ public class PluginMessageReceiver implements PluginMessageListener {
 
                 final_player.teleport(PlayerCache.StringToLocation(SpigotCache.SUSPECT_SPAWN.get(String.class)));
             }, 5L);
+
+            if (final_player == null) {
+                instance.getLogger().severe("The player " + player_found + " (Suspect) is not in the server. Is your server configured correctly?");
+                return;
+            }
 
             PlayerCache.getSuspicious().add(final_player.getUniqueId());
             instance.startTimer(final_player.getUniqueId());
@@ -94,9 +98,8 @@ public class PluginMessageReceiver implements PluginMessageListener {
             }
 
             if (SpigotConfig.TABLIST_SUSPECT.get(Boolean.class)) {
-                instance.getServer().getScheduler().runTaskLater(instance, () -> PlayerCache.setSuspectTabList(player), 10);
+                UniversalScheduler.getScheduler(instance).runTaskLater(() -> PlayerCache.setSuspectTabList(player), 10);
             }
-
             return;
         }
 
@@ -106,9 +109,14 @@ public class PluginMessageReceiver implements PluginMessageListener {
             String suspicious_found = dataInput.readUTF();
 
             instance.getLogger().warning("Received data (administrator) from the proxy. [" + player_found + "]");
-            final Player final_player = Bukkit.getPlayer(player_found);
+            final Player final_player = instance.getServer().getPlayer(player_found);
 
-            Bukkit.getScheduler().runTaskLater(instance, () -> final_player.teleport(PlayerCache.StringToLocation(SpigotCache.ADMIN_SPAWN.get(String.class))), 5L);
+            if (final_player == null) {
+                instance.getLogger().severe("The player " + player_found + " (Administrator) is not in the server. Is your server configured correctly?");
+                return;
+            }
+
+            UniversalScheduler.getScheduler(instance).runTaskLater(() -> final_player.teleport(PlayerCache.StringToLocation(SpigotCache.ADMIN_SPAWN.get(String.class))), 5L);
             PlayerCache.getAdministrator().add(final_player.getUniqueId());
             instance.startTimer(final_player.getUniqueId());
 
@@ -118,22 +126,18 @@ public class PluginMessageReceiver implements PluginMessageListener {
             }
 
             if (SpigotConfig.TABLIST_STAFF.get(Boolean.class)) {
-                instance.getServer().getScheduler().runTaskLater(instance, () -> PlayerCache.setStaffTabList(player), 10);
+                UniversalScheduler.getScheduler(instance).runTaskLater(() -> PlayerCache.setStaffTabList(player), 10);
             }
 
-            instance.getServer().getScheduler().runTaskLaterAsynchronously(instance, () -> {
+            UniversalScheduler.getScheduler(instance).runTaskLaterAsynchronously(() -> {
 
-                if (Bukkit.getPlayer(suspicious_found) == null) {
+                if (instance.getServer().getPlayer(suspicious_found) == null) {
                     return;
                 }
 
-                final Player final_suspicious = Bukkit.getPlayer(suspicious_found).getPlayer();
+                final Player final_suspicious = instance.getServer().getPlayer(suspicious_found).getPlayer();
 
                 if (final_suspicious == null) {
-                    return;
-                }
-
-                if (final_suspicious.getUniqueId() == null) {
                     return;
                 }
 

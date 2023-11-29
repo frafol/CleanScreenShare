@@ -6,14 +6,13 @@ import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.ChatEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.TimeUnit;
 
 public class CommandListener implements Listener {
 
     @EventHandler
-    public void onPlayerCommand(@NotNull ChatEvent event) {
+    public void onPlayerCommand(ChatEvent event) {
 
         if (!event.getMessage().startsWith("/")) {
             return;

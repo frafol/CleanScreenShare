@@ -1,7 +1,6 @@
 package it.frafol.cleanss.bungee.enums;
 
 import it.frafol.cleanss.bungee.CleanSS;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -30,6 +29,7 @@ public enum BungeeConfig {
     DISABLE_PING("settings.disable_ping_check"),
     AUTO_UPDATE("settings.auto_update"),
     MYSQL("mysql.enable"),
+    PREMIUMVANISH("settings.premiumvanish_hook"),
     MYSQL_HOST("mysql.host"),
     MYSQL_USER("mysql.user"),
     MYSQL_DATABASE("mysql.database"),
@@ -37,7 +37,8 @@ public enum BungeeConfig {
     MYSQL_ARGUMENTS("mysql.arguments"),
     SEND_ADMIN_MESSAGE("settings.start.send_admin_message"),
     ENABLE_SPECTATING("settings.spectate.enable"),
-    CHAT_DISABLED("messages.spectate.block_chat"),
+    CHAT_DISABLED("settings.spectate.block_chat"),
+    MESSAGE_DELAY("settings.start.message_to_control_delay"),
     STATS("settings.stats");
 
     private final String path;
@@ -47,7 +48,7 @@ public enum BungeeConfig {
         this.path = path;
     }
 
-    public <T> T get(@NotNull Class<T> clazz) {
+    public <T> T get(Class<T> clazz) {
         return clazz.cast(instance.getConfigTextFile().get(path));
     }
 
@@ -55,7 +56,7 @@ public enum BungeeConfig {
         return instance.getConfigTextFile().getStringList(path);
     }
 
-    public @NotNull String color() {
+    public String color() {
         return get(String.class).replace("&", "§");
     }
 }

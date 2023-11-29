@@ -14,14 +14,12 @@ import net.luckperms.api.model.group.Group;
 import net.luckperms.api.model.user.User;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
-import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.Title;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.scheduler.ScheduledTask;
-import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 import java.util.List;
@@ -39,7 +37,7 @@ public class Utils {
 
     public HashMap<ServerInfo, ScheduledTask> task = new HashMap<>();
 
-    public List<String> getStringList(@NotNull BungeeMessages velocityMessages) {
+    public List<String> getStringList(BungeeMessages velocityMessages) {
         return instance.getMessagesTextFile().getStringList(velocityMessages.getPath());
     }
 
@@ -54,7 +52,7 @@ public class Utils {
         return newList;
     }
 
-    public String applyPlaceHolder(String s, Placeholder @NotNull ... placeholders) {
+    public String applyPlaceHolder(String s, Placeholder ... placeholders) {
         for (Placeholder placeholder : placeholders) {
             s = s.replace(placeholder.getKey(), placeholder.getValue());
         }
@@ -90,11 +88,11 @@ public class Utils {
         return ChatColor.translateAlternateColorCodes('&',str);
     }
 
-    public List<String> color(@NotNull List<String> list) {
+    public List<String> color(List<String> list) {
         return list.stream().map(Utils::color).collect(Collectors.toList());
     }
 
-    public void sendList(CommandSender commandSource, @NotNull List<String> stringList, ProxiedPlayer player_name) {
+    public void sendList(CommandSender commandSource, List<String> stringList, ProxiedPlayer player_name) {
 
         for (String message : stringList) {
 
@@ -359,7 +357,7 @@ public class Utils {
         instance.getProxy().getPluginManager().dispatchCommand(instance.getProxy().getConsole(), BungeeConfig.SLOG_COMMAND.get(String.class).replace("%player%", suspicious));
     }
 
-    public void finishControl(@NotNull ProxiedPlayer suspicious, @NotNull ProxiedPlayer administrator, ServerInfo proxyServer) {
+    public void finishControl(ProxiedPlayer suspicious, ProxiedPlayer administrator, ServerInfo proxyServer) {
 
         if (administrator.isConnected() && suspicious.isConnected()) {
 
@@ -530,7 +528,7 @@ public class Utils {
         return suffix;
     }
 
-    public void startControl(@NotNull ProxiedPlayer suspicious, @NotNull ProxiedPlayer administrator, ServerInfo proxyServer) {
+    public void startControl(ProxiedPlayer suspicious, ProxiedPlayer administrator, ServerInfo proxyServer) {
 
         if (!Objects.equals(administrator.getServer().getInfo(), proxyServer)) {
             connect(administrator, proxyServer);
@@ -673,7 +671,7 @@ public class Utils {
     }
 
     @SuppressWarnings("UnstableApiUsage")
-    public void sendChannelMessage(@NotNull ProxiedPlayer player, String type) {
+    public void sendChannelMessage(ProxiedPlayer player, String type) {
 
         final ByteArrayDataOutput buf = ByteStreams.newDataOutput();
 
@@ -690,7 +688,7 @@ public class Utils {
     }
 
     @SuppressWarnings("UnstableApiUsage")
-    public void sendChannelAdvancedMessage(@NotNull ProxiedPlayer administrator, ProxiedPlayer suspicious, String type) {
+    public void sendChannelAdvancedMessage(ProxiedPlayer administrator, ProxiedPlayer suspicious, String type) {
 
         final ByteArrayDataOutput buf = ByteStreams.newDataOutput();
 
@@ -712,7 +710,7 @@ public class Utils {
             return;
         }
 
-        final Title title = ProxyServer.getInstance().createTitle();
+        final Title title = instance.getProxy().createTitle();
 
         title.fadeIn(BungeeMessages.CONTROL_FADEIN.get(Integer.class) * 20);
         title.stay(BungeeMessages.CONTROL_STAY.get(Integer.class) * 20);
@@ -721,7 +719,7 @@ public class Utils {
         title.title(new TextComponent(BungeeMessages.CONTROL_TITLE.color()));
         title.subTitle(new TextComponent(BungeeMessages.CONTROL_SUBTITLE.color()));
 
-        ProxyServer.getInstance().getScheduler().schedule(instance, () ->
+        instance.getProxy().getScheduler().schedule(instance, () ->
                 title.send(suspicious), BungeeMessages.CONTROL_DELAY.get(Integer.class), TimeUnit.SECONDS);
 
     }
@@ -732,7 +730,7 @@ public class Utils {
             return;
         }
 
-        final Title title = ProxyServer.getInstance().createTitle();
+        final Title title = instance.getProxy().createTitle();
 
         title.fadeIn(BungeeMessages.ADMINCONTROL_FADEIN.get(Integer.class) * 20);
         title.stay(BungeeMessages.ADMINCONTROL_STAY.get(Integer.class) * 20);
@@ -767,7 +765,7 @@ public class Utils {
                 .replace("%suspectprefix%", user_prefix)
                 .replace("%suspectsuffix%", user_suffix)));
 
-        ProxyServer.getInstance().getScheduler().schedule(instance, () ->
+        instance.getProxy().getScheduler().schedule(instance, () ->
                 title.send(administrator), BungeeMessages.ADMINCONTROL_DELAY.get(Integer.class), TimeUnit.SECONDS);
 
     }
@@ -778,7 +776,7 @@ public class Utils {
             return;
         }
 
-        final Title title = ProxyServer.getInstance().createTitle();
+        final Title title = instance.getProxy().createTitle();
 
         title.fadeIn(BungeeMessages.CONTROLFINISH_FADEIN.get(Integer.class) * 20);
         title.stay(BungeeMessages.CONTROLFINISH_STAY.get(Integer.class) * 20);
@@ -787,7 +785,7 @@ public class Utils {
         title.title(new TextComponent(BungeeMessages.CONTROLFINISH_TITLE.color()));
         title.subTitle(new TextComponent(BungeeMessages.CONTROLFINISH_SUBTITLE.color()));
 
-        ProxyServer.getInstance().getScheduler().schedule(instance, () ->
+        instance.getProxy().getScheduler().schedule(instance, () ->
                 title.send(suspicious), BungeeMessages.CONTROLFINISH_DELAY.get(Integer.class), TimeUnit.SECONDS);
 
     }
@@ -798,7 +796,7 @@ public class Utils {
             return;
         }
 
-        final Title title = ProxyServer.getInstance().createTitle();
+        final Title title = instance.getProxy().createTitle();
 
         title.fadeIn(BungeeMessages.ADMINCONTROLFINISH_FADEIN.get(Integer.class) * 20);
         title.stay(BungeeMessages.ADMINCONTROLFINISH_STAY.get(Integer.class) * 20);
@@ -833,7 +831,7 @@ public class Utils {
                 .replace("%suspectprefix%", user_prefix)
                 .replace("%suspectsuffix%", user_suffix)));
 
-        ProxyServer.getInstance().getScheduler().schedule(instance, () ->
+        instance.getProxy().getScheduler().schedule(instance, () ->
                 title.send(administrator), BungeeMessages.ADMINCONTROLFINISH_DELAY.get(Integer.class), TimeUnit.SECONDS);
     }
 
