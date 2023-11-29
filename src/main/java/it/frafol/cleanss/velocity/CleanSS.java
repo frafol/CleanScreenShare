@@ -54,7 +54,7 @@ import java.util.concurrent.TimeUnit;
 		name = "CleanScreenShare",
 		version = "2.1.0",
 		description = "Make control hacks on your players.",
-		dependencies = {@Dependency(id = "luckperms", optional = true), @Dependency(id = "mysqlandconfigurateforvelocity", optional = true), @Dependency(id = "limboapi", optional = true), @Dependency(id = "ajqueue", optional = true), @Dependency(id = "premiumvanish", optional = true)},
+		dependencies = {@Dependency(id = "luckperms", optional = true), @Dependency(id = "mysqlandconfigurateforvelocity", optional = true), @Dependency(id = "limboapi", optional = true), @Dependency(id = "ajqueue", optional = true), @Dependency(id = "premiumvanish", optional = true), @Dependency(id = "velocityvanish", optional = true)},
 		authors = { "frafol" })
 
 public class CleanSS {
