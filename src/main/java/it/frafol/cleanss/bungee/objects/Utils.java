@@ -903,7 +903,7 @@ public class Utils {
 
         task.put(server, instance.getProxy().getScheduler().schedule(instance, () -> server.ping((result, error) -> {
 
-            if (instance.getConfigTextFile() == null) {
+            if (CleanSS.getInstance() == null || instance.getConfigTextFile() == null) {
                 return;
             }
 
