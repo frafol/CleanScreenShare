@@ -38,10 +38,10 @@ public class ReloadCommand implements SimpleCommand {
 
         stopTasks();
         TextFile.reloadAll();
-        startTasks();
-
         source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.RELOADED.color()
                 .replace("%prefix%", VelocityMessages.PREFIX.color())));
+
+        startTasks();
 
         if (!(source instanceof Player)) {
             return;

@@ -24,35 +24,32 @@ public class ReloadCommand extends Command {
     @Override
     public void execute(CommandSender sender, String[] args) {
 
-        if (sender.hasPermission(BungeeConfig.RELOAD_PERMISSION.get(String.class))) {
-
-            stopTasks();
-            TextFile.reloadAll();
-            startTasks();
-            sender.sendMessage(TextComponent.fromLegacyText(BungeeMessages.RELOADED.color()
-                    .replace("%prefix%", BungeeMessages.PREFIX.color())));
-
-            if (!(sender instanceof ProxiedPlayer)) {
-                return;
-            }
-
-            final ProxiedPlayer player = (ProxiedPlayer) sender;
-
-            if (player.getServer() == null) {
-                return;
-            }
-
-            ByteArrayDataOutput buf = ByteStreams.newDataOutput();
-            buf.writeUTF("RELOAD");
-
-            player.getServer().sendData("cleanss:join", buf.toByteArray());
-
-        } else {
-
+        if (!sender.hasPermission(BungeeConfig.RELOAD_PERMISSION.get(String.class))) {
             sender.sendMessage(TextComponent.fromLegacyText(BungeeMessages.NO_PERMISSION.color()
                     .replace("%prefix%", BungeeMessages.PREFIX.color())));
-
+            return;
         }
+
+        stopTasks();
+        TextFile.reloadAll();
+        sender.sendMessage(TextComponent.fromLegacyText(BungeeMessages.RELOADED.color()
+                .replace("%prefix%", BungeeMessages.PREFIX.color())));
+
+        startTasks();
+
+        if (!(sender instanceof ProxiedPlayer)) {
+            return;
+        }
+
+        final ProxiedPlayer player = (ProxiedPlayer) sender;
+
+        if (player.getServer() == null) {
+            return;
+        }
+
+        ByteArrayDataOutput buf = ByteStreams.newDataOutput();
+        buf.writeUTF("RELOAD");
+        player.getServer().sendData("cleanss:join", buf.toByteArray());
     }
 
     private void startTasks() {

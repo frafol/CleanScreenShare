@@ -1063,6 +1063,7 @@ public class Utils {
         }
 
         task.remove(server);
+        PlayerCache.getOnlineServers().remove(server);
     }
 
     private void taskServer(RegisteredServer server) {

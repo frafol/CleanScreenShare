@@ -893,6 +893,7 @@ public class Utils {
         }
 
         task.remove(serverInfo);
+        PlayerCache.getOnlineServers().remove(serverInfo);
     }
 
     private void taskServer(ServerInfo server) {
