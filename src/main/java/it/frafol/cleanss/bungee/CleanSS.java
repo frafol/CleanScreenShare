@@ -336,11 +336,6 @@ public class CleanSS extends Plugin {
 
 	@SneakyThrows
 	private void updateConfig() {
-
-		if (!BungeeVersion.VERSION.get(String.class).startsWith("2.0")) {
-			getLogger().severe("§cThe configurations are really outdated and there may be duplicate values. To make sure you don't miss them, reset them!");
-		}
-
 		if (!getDescription().getVersion().equals(BungeeVersion.VERSION.get(String.class))) {
 
 			getLogger().info("§7Creating new §dconfigurations§7...");
@@ -353,7 +348,6 @@ public class CleanSS extends Plugin {
 			versionTextFile.getConfig().set("version", getDescription().getVersion());
 			versionTextFile.getConfig().save();
 			loadFiles();
-
 		}
 	}
 

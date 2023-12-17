@@ -409,10 +409,6 @@ public class CleanSS {
 	@SneakyThrows
 	private void updateConfig() {
 
-		if (!VelocityVersion.VERSION.get(String.class).startsWith("2.0")) {
-			logger.error("§cThe configurations are really outdated and there may be duplicate values. To make sure you don't miss them, reset them!");
-		}
-
 		if (container.getDescription().getVersion().isPresent() && (!container.getDescription().getVersion().get().equals(VelocityVersion.VERSION.get(String.class)))) {
 
 			logger.info("§7Creating new §dconfigurations§7...");
