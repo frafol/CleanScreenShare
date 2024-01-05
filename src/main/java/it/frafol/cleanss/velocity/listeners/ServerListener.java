@@ -40,6 +40,11 @@ public class ServerListener {
         if (VelocityConfig.MESSAGE_DELAY.get(Integer.class) > 0) {
 
             instance.getServer().getScheduler().buildTask(instance, () -> {
+
+                if (!player.getCurrentServer().isPresent()) {
+                    return;
+                }
+
                 if (!Utils.isInControlServer(player.getCurrentServer().get().getServer())) {
                     return;
                 }

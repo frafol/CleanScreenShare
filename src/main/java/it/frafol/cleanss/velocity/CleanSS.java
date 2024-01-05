@@ -52,7 +52,7 @@ import java.util.concurrent.TimeUnit;
 @Plugin(
 		id = "cleanscreenshare",
 		name = "CleanScreenShare",
-		version = "2.1.2",
+		version = "2.1.3",
 		description = "Make control hacks on your players.",
 		dependencies = {@Dependency(id = "luckperms", optional = true), @Dependency(id = "mysqlandconfigurateforvelocity", optional = true), @Dependency(id = "limboapi", optional = true), @Dependency(id = "ajqueue", optional = true), @Dependency(id = "premiumvanish", optional = true), @Dependency(id = "velocityvanish", optional = true)},
 		authors = { "frafol" })
@@ -111,18 +111,18 @@ public class CleanSS {
 			return;
 		}
 
-		logger.info("\n§d   ___  __    ____    __    _  _   ___  ___\n" +
+		logger.info("\n   ___  __    ____    __    _  _   ___  ___\n" +
 				"  / __)(  )  ( ___)  /__\\  ( \\( ) / __)/ __)\n" +
 				" ( (__  )(__  )__)  /(__)\\  )  (  \\__ \\\\__ \\\n" +
 				"  \\___)(____)(____)(__)(__)(_)\\_) (___/(___/\n");
 
-		logger.info("§7Server version: §d" + getServerBrand() + " - " + getServerVersion());
+		logger.info("Server version: " + getServerBrand() + " - " + getServerVersion());
 
-		logger.info("§7Loading §dconfiguration§7...");
+		logger.info("Loading configuration...");
 		loadFiles();
 		updateConfig();
 
-		logger.info("§7Loading §dplugin§7...");
+		logger.info("Loading plugin...");
 		loadChannelRegistrar();
 		loadListeners();
 		loadCommands();
@@ -133,12 +133,12 @@ public class CleanSS {
 					instance.getServer().getPluginManager().getPlugin("limboapi").flatMap(PluginContainer::getInstance).isPresent()) {
 				LimboUtils.loadLimbo();
 			} else {
-				logger.error("§7LimboAPI not §dfound§7! Please install it to use the §dLimbo feature§7.");
+				logger.error("LimboAPI not found! Please install it to use the Limbo feature.");
 			}
 		}
 
 		if (getPremiumVanish() && VelocityConfig.PREMIUMVANISH.get(Boolean.class)) {
-			logger.info("§7PremiumVanish hooked §dsuccessfully§7!");
+			logger.info("PremiumVanish hooked successfully!");
 		}
 
 		if (instance.getServer().getPluginManager().getPlugin("ajqueue").isPresent() &&
@@ -171,12 +171,12 @@ public class CleanSS {
 
 		if (VelocityConfig.STATS.get(Boolean.class)) {
 			metricsFactory.make(this, 16951);
-			logger.info("§7Metrics loaded §dsuccessfully§7!");
+			logger.info("Metrics loaded successfully!");
 		}
 
 		UpdateChecker();
 		startTasks();
-		logger.info("§7Plugin §dsuccessfully §7loaded!");
+		logger.info("Plugin successfully loaded!");
 	}
 
 	@Subscribe
@@ -186,7 +186,7 @@ public class CleanSS {
 
 		if (getConfigTextFile() == null || VelocityConfig.MYSQL.get(Boolean.class)) {
 
-			logger.info("§7Closing §ddatabase§7...");
+			logger.info("Closing database...");
 			for (Player players : server.getAllPlayers()) {
 				if (data != null) {
 					data.setInControl(players.getUniqueId(), 0);
@@ -256,7 +256,7 @@ public class CleanSS {
 
 	public void loadLibrariesSQL() {
 		try {
-			String fileUrl = "https://simonsator.de/repo/de/simonsator/MySQL-And-Configurate-For-Velocity/1.0.1-RELEASE/MySQL-And-Configurate-For-Velocity-1.0.1-RELEASE.jar";
+			String fileUrl = "https://github.com/frafol/CleanScreenShare/releases/download/release/MySQL-And-Configurate-For-Velocity-1.0.1-RELEASE.jar";
 			String destination = "./plugins/";
 
 			String fileName = getFileNameFromUrl(fileUrl);
@@ -284,7 +284,7 @@ public class CleanSS {
 	public void autoUpdate() {
 
 		if (isWindows()) {
-			logger.warn("§eAuto update is not supported on Windows.");
+			logger.warn("Auto update is not supported on Windows.");
 			return;
 		}
 
@@ -411,7 +411,7 @@ public class CleanSS {
 
 		if (container.getDescription().getVersion().isPresent() && (!container.getDescription().getVersion().get().equals(VelocityVersion.VERSION.get(String.class)))) {
 
-			logger.info("§7Creating new §dconfigurations§7...");
+			logger.info("Creating new configurations...");
 			YamlUpdater.create(new File(path + "/config.yml"), FileUtils.findFile("https://raw.githubusercontent.com/frafol/CleanScreenShare/main/src/main/resources/config.yml"))
 					.backup(true)
 					.update();
@@ -478,7 +478,7 @@ public class CleanSS {
 		if (VelocityConfig.DISCORD_ENABLED.get(Boolean.class)) {
 			jda.startJDA();
 			updateTaskJDA();
-			getLogger().info("§7Hooked into Discord §dsuccessfully§7!");
+			getLogger().info("Hooked into Discord successfully!");
 		}
 	}
 

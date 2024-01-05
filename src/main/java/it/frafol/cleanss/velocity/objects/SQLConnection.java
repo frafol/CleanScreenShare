@@ -50,11 +50,11 @@ public class SQLConnection {
 
     private void connect() {
         try {
-            instance.getLogger().info("§7Connecting to §dMySQL database§7...");
+            instance.getLogger().warn("Connecting to MySQL database...");
             connection = DriverManager.getConnection("JDBC:mysql://" + host + "/" + database + VelocityConfig.MYSQL_ARGUMENTS.get(String.class), user, password);
-            instance.getLogger().info("§7Connected to §dMySQL database§7.");
+            instance.getLogger().info("Connected to MySQL database.");
         } catch (SQLException sqlException) {
-            instance.getLogger().error("§cUnable to connect to the database, cannot start the plugin. Is password correct? Are drivers loaded?");
+            instance.getLogger().error("Unable to connect to the database, cannot start the plugin. Is password correct? Are drivers loaded?");
             sqlException.printStackTrace();
             instance.mysql_installation = true;
         }

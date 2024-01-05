@@ -41,7 +41,7 @@ public class LimboUtils {
                 .setShouldRejoin(true)
                 .setShouldRespawn(true)
                 .setGameMode(GameMode.ADVENTURE);
-        instance.getLogger().info("§7LimboAPI hooked §dsuccessfully§7!");
+        instance.getLogger().info("LimboAPI hooked successfully!");
     }
 
     public void spawnPlayerLimbo(Player player) {
