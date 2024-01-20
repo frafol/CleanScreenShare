@@ -24,7 +24,7 @@ public class SpectateCommand extends Command implements TabExecutor {
     private final CleanSS instance;
 
     public SpectateCommand(CleanSS instance) {
-        super("ssspectate","","sspectate", "sspec", "ssspec", "cleanssspec", "controlspectate", "cleansspec", "cleanssspectate", "cleansspectate", "controlspec");
+        super("ssspectate","","sspectate", "sspect", "ssspect", "goto", "sspec", "ssspec", "cleanssspec", "controlspectate", "cleansspec", "cleanssspectate", "cleansspectate", "controlspec");
         this.instance = instance;
     }
 

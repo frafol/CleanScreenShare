@@ -52,7 +52,7 @@ import java.util.concurrent.TimeUnit;
 @Plugin(
 		id = "cleanscreenshare",
 		name = "CleanScreenShare",
-		version = "2.1.3",
+		version = "2.2.0",
 		description = "Make control hacks on your players.",
 		dependencies = {@Dependency(id = "luckperms", optional = true), @Dependency(id = "mysqlandconfigurateforvelocity", optional = true), @Dependency(id = "limboapi", optional = true), @Dependency(id = "ajqueue", optional = true), @Dependency(id = "premiumvanish", optional = true), @Dependency(id = "velocityvanish", optional = true)},
 		authors = { "frafol" })
@@ -442,8 +442,8 @@ public class CleanSS {
 						.build(), new FinishCommand(this));
 
 		if (VelocityConfig.ENABLE_SPECTATING.get(Boolean.class)) {
-			getInstance().getServer().getCommandManager().register
-					(server.getCommandManager().metaBuilder("ssspectate").aliases("sspectate", "sspec", "ssspec", "cleanssspec", "controlspectate", "cleansspec", "cleanssspectate", "cleansspectate", "controlspec")
+			getServer().getCommandManager().register
+					(server.getCommandManager().metaBuilder("ssspectate").aliases("goto", "sspectate", "sspect", "ssspect", "sspec", "ssspec", "cleanssspec", "controlspectate", "cleansspec", "cleanssspectate", "cleansspectate", "controlspec")
 							.build(), new SpectateCommand(this));
 		}
 

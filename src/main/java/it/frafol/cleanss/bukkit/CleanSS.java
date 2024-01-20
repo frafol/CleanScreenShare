@@ -75,15 +75,6 @@ public class CleanSS extends JavaPlugin {
 				.url("https://github.com/frafol/Config-Updater/releases/download/compile/ConfigUpdater-2.1-SNAPSHOT.jar")
 				.build();
 
-		final Relocation scoreboardrelocation = new Relocation("scoreboard", "it{}frafol{}libs{}scoreboard");
-		Library scoreboard = Library.builder()
-				.groupId("me{}Stijn{}ScoreboardAPI")
-				.artifactId("ScoreboardAPI")
-				.version("0.0.1")
-				.url("https://github.com/frafol/CleanScreenShare/raw/main/libs/ScoreboardAPI.jar")
-				.relocate(scoreboardrelocation)
-				.build();
-
 		final Relocation schedulerrelocation = new Relocation("scheduler", "it{}frafol{}libs{}scheduler");
 		Library scheduler = Library.builder()
 				.groupId("com{}github{}Anon8281")
@@ -108,7 +99,6 @@ public class CleanSS extends JavaPlugin {
 		bukkitLibraryManager.addJitPack();
 		bukkitLibraryManager.loadLibrary(updater);
 		bukkitLibraryManager.loadLibrary(yaml);
-		bukkitLibraryManager.loadLibrary(scoreboard);
 		bukkitLibraryManager.loadLibrary(scheduler);
 
 		getLogger().info("\n   ___  __    ____    __    _  _   ___  ___\n" +

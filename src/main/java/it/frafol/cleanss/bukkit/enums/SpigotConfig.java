@@ -1,7 +1,10 @@
 package it.frafol.cleanss.bukkit.enums;
 
 import it.frafol.cleanss.bukkit.CleanSS;
+import me.clip.placeholderapi.PlaceholderAPI;
+import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -76,6 +79,23 @@ public enum SpigotConfig {
 
     public List<String> getStringList() {
         return instance.getConfigTextFile().getConfig().getStringList(path);
+    }
+
+    public List<String> parseScoreboard(Player player) {
+        List<String> list = new ArrayList<>();
+        for (String string : instance.getConfigTextFile().getConfig().getStringList(path)) {
+            if (instance.isPAPI()) {
+                list.add(color(PlaceholderAPI.setPlaceholders(player, string)));
+            } else {
+                list.add(color(string));
+            }
+        }
+        return list;
+    }
+
+    public String color(String string) {
+        String hex = convertHexColors(string);
+        return hex.replace("&", "§");
     }
 
     public String color() {

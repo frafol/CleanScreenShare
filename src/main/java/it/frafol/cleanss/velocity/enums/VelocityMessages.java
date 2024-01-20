@@ -17,6 +17,7 @@ public enum VelocityMessages {
 
     ONLY_PLAYERS("messages.only_players"),
     NOT_ONLINE("messages.not_online"),
+    NOT_VALID("messages.server_not_valid"),
 
     NO_PERMISSION("messages.no_permission"),
 

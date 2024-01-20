@@ -1,28 +1,22 @@
 package it.frafol.cleanss.bukkit.objects;
 
 import com.github.Anon8281.universalScheduler.UniversalScheduler;
-import com.google.common.base.Strings;
+import fr.mrmicky.fastboard.FastBoard;
 import it.frafol.cleanss.bukkit.CleanSS;
 import it.frafol.cleanss.bukkit.enums.SpigotConfig;
-import it.frafol.cleanss.bukkit.objects.utils.ReflectionUtils;
+import it.frafol.cleanss.bukkit.objects.utils.TabListUtil;
 import lombok.Getter;
 import lombok.experimental.UtilityClass;
-import me.Stijn.ScoreboardAPI.ScoreboardAPI;
 import me.clip.placeholderapi.PlaceholderAPI;
-import org.bukkit.*;
+import org.bukkit.Location;
+import org.bukkit.World;
+import org.bukkit.WorldCreator;
 import org.bukkit.entity.Player;
-import org.bukkit.scoreboard.DisplaySlot;
-import org.bukkit.scoreboard.Team;
 import org.jetbrains.annotations.Contract;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.UUID;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @UtilityClass
 public class PlayerCache {
@@ -40,6 +34,12 @@ public class PlayerCache {
 
     @Getter
     private final HashSet<UUID> administrator = new HashSet<>();
+
+    @Getter
+    private HashMap<UUID, FastBoard> adminBoard = new HashMap<>();
+
+    @Getter
+    private HashMap<UUID, FastBoard> suspectBoard = new HashMap<>();
 
     @Contract("_ -> new")
     public static Location StringToLocation(String line) {
@@ -66,104 +66,14 @@ public class PlayerCache {
         return world + ";" + x + ";" + y + ";" + z + ";" + yaw + ";" + pitch;
     }
 
-    private String genEntry(int slot) {
-        return ChatColor.values()[slot].toString();
-    }
-
-    private String getFirstSplit(String s) {
-        return s.length() > 16 ? s.substring(0, 16) : s;
-    }
-
-    private String getSecondSplit(String s) {
-        if (s.length() > 32) {
-            s = s.substring(0, 32);
-        }
-        return s.length() > 16 ? s.substring(16) : "";
-    }
-
     public void createSuspectScoreboard(Player player) {
-
-        ScoreboardAPI scoreboard = new ScoreboardAPI(player.getName(), SpigotConfig.SB_SUSPECTTITLE.color(), DisplaySlot.SIDEBAR);
-
-        int scoreValue = 15;
-
-        for (String line : SpigotConfig.SB_SUSPECTLINES.getStringList()) {
-
-            Team team = scoreboard.getScoreboard(player).registerNewTeam("SLOT_" + scoreValue);
-            team.addEntry(genEntry(scoreValue));
-
-            String final_line = line;
-            if (instance.isPAPI()) {
-                final_line = PlaceholderAPI.setPlaceholders(player, line);
-            }
-
-            try {
-
-                if (scoreValue == 0) {
-                    return;
-                }
-
-                if (!scoreboard.getScoreboard(player).getEntries().contains(final_line)) {
-                    scoreboard.setScore(final_line, scoreValue);
-                }
-
-                String pre = getFirstSplit(final_line);
-                String suf = getFirstSplit(ChatColor.getLastColors(pre) + getSecondSplit(final_line));
-                team.setPrefix(pre);
-                team.setSuffix(suf);
-                scoreValue--;
-                continue;
-
-            } catch (IllegalArgumentException ignored) {
-                instance.getLogger().severe("Cannot set score for " + player.getName() + " (suspect), too many characters. (is PlaceholderAPI installed?)");
-            }
-
-            scoreValue--;
-        }
-
-        scoreboard.setScoreboard(player);
+        FastBoard board = new FastBoard(player);
+        suspectBoard.put(player.getUniqueId(), board);
     }
 
     public void createAdminScoreboard(Player player) {
-
-        ScoreboardAPI scoreboard = new ScoreboardAPI(player.getName(), SpigotConfig.SB_STAFFTITLE.color(), DisplaySlot.SIDEBAR);
-
-        int scoreValue = 15;
-        for (String line : SpigotConfig.SB_STAFFLINES.getStringList()) {
-
-            Team team = scoreboard.getScoreboard(player).registerNewTeam("SLOT_" + scoreValue);
-            team.addEntry(genEntry(scoreValue));
-
-            String final_line = line;
-            if (instance.isPAPI()) {
-                final_line = PlaceholderAPI.setPlaceholders(player, line);
-            }
-
-            try {
-
-                if (scoreValue == 0) {
-                    return;
-                }
-
-                if (!scoreboard.getScoreboard(player).getEntries().contains(final_line)) {
-                    scoreboard.setScore(final_line, scoreValue);
-                }
-
-                String pre = getFirstSplit(final_line);
-                String suf = getFirstSplit(ChatColor.getLastColors(pre) + getSecondSplit(final_line));
-                team.setPrefix(pre);
-                team.setSuffix(suf);
-                scoreValue--;
-                continue;
-
-            } catch (IllegalArgumentException ignored) {
-                instance.getLogger().severe("Cannot set score for " + player.getName() + " (administrator), too many characters. (is PlaceholderAPI installed?)");
-            }
-
-            scoreValue--;
-        }
-
-        scoreboard.setScoreboard(player);
+        FastBoard board = new FastBoard(player);
+        adminBoard.put(player.getUniqueId(), board);
     }
 
     public void deleteSuspectScoreboard(Player player) {
@@ -172,11 +82,12 @@ public class PlayerCache {
             return;
         }
 
-        ScoreboardAPI scoreboard = new ScoreboardAPI(player.getName(), SpigotConfig.SB_SUSPECTTITLE.color(), DisplaySlot.SIDEBAR);
-
-        for (Team team : scoreboard.getScoreboard(player).getTeams()) {
-            team.unregister();
+        if (suspectBoard.get(player.getUniqueId()) == null) {
+            return;
         }
+
+        suspectBoard.get(player.getUniqueId()).delete();
+        suspectBoard.remove(player.getUniqueId());
     }
 
     public void deleteAdminScoreboard(Player player) {
@@ -185,11 +96,12 @@ public class PlayerCache {
             return;
         }
 
-        ScoreboardAPI scoreboard = new ScoreboardAPI(player.getName(), SpigotConfig.SB_STAFFTITLE.color(), DisplaySlot.SIDEBAR);
-
-        for (Team team : scoreboard.getScoreboard(player).getTeams()) {
-            team.unregister();
+        if (adminBoard.get(player.getUniqueId()) == null) {
+            return;
         }
+
+        adminBoard.get(player.getUniqueId()).delete();
+        adminBoard.remove(player.getUniqueId());
     }
 
     public void updateScoreboardTask() {
@@ -201,25 +113,34 @@ public class PlayerCache {
     }
 
     private void updateScoreboard() {
-        for (UUID uuid : PlayerCache.getSuspicious()) {
+        instance.getServer().getOnlinePlayers().forEach(player -> {
 
-            if (!SpigotConfig.SB_SUSPECT.get(Boolean.class)) {
-                continue;
+            if (SpigotConfig.SB_SUSPECT.get(Boolean.class)) {
+                FastBoard board = suspectBoard.get(player.getUniqueId());
+                if (suspectBoard.get(player.getUniqueId()) != null && board != null) {
+                    if (!instance.isPAPI()) {
+                        board.updateTitle(SpigotConfig.SB_SUSPECTTITLE.color());
+                        board.updateLines(SpigotConfig.SB_SUSPECTLINES.parseScoreboard(player));
+                    } else if (!PlaceholderAPI.setPlaceholders(player, "%screenshare_administrator%").equalsIgnoreCase("none")) {
+                        board.updateTitle(SpigotConfig.SB_SUSPECTTITLE.color());
+                        board.updateLines(SpigotConfig.SB_SUSPECTLINES.parseScoreboard(player));
+                    }
+                }
             }
 
-            deleteSuspectScoreboard(instance.getServer().getPlayer(uuid));
-            createSuspectScoreboard(instance.getServer().getPlayer(uuid));
-        }
-
-        for (UUID uuid : PlayerCache.getAdministrator()) {
-
-            if (!SpigotConfig.SB_STAFF.get(Boolean.class)) {
-                continue;
+            if (SpigotConfig.SB_STAFF.get(Boolean.class)) {
+                FastBoard board = adminBoard.get(player.getUniqueId());
+                if (adminBoard.get(player.getUniqueId()) != null && board != null) {
+                    if (!instance.isPAPI()) {
+                        board.updateTitle(SpigotConfig.SB_STAFFTITLE.color());
+                        board.updateLines(SpigotConfig.SB_STAFFLINES.parseScoreboard(player));
+                    } else if (!PlaceholderAPI.setPlaceholders(player, "%screenshare_suspicious%").equalsIgnoreCase("none")) {
+                        board.updateTitle(SpigotConfig.SB_STAFFTITLE.color());
+                        board.updateLines(SpigotConfig.SB_STAFFLINES.parseScoreboard(player));
+                    }
+                }
             }
-
-            deleteAdminScoreboard(instance.getServer().getPlayer(uuid));
-            createAdminScoreboard(instance.getServer().getPlayer(uuid));
-        }
+        });
     }
 
     private void updateTabList() {
@@ -247,13 +168,13 @@ public class PlayerCache {
         String footer = String.join("\n", SpigotConfig.TABLIST_STAFFFOOTER.getStringList());
 
         if (!instance.isPAPI()) {
-            sendTabList(player, header, footer);
+            TabListUtil.sendTabList(player, header, footer);
             return;
         }
 
         String final_header = PlaceholderAPI.setPlaceholders(player, header);
         String final_footer = PlaceholderAPI.setPlaceholders(player, footer);
-        sendTabList(player, final_header, final_footer);
+        TabListUtil.sendTabList(player, final_header, final_footer);
     }
 
     public void setSuspectTabList(Player player) {
@@ -262,120 +183,12 @@ public class PlayerCache {
         String footer = String.join("\n", SpigotConfig.TABLIST_SUSPECTFOOTER.getStringList());
 
         if (!instance.isPAPI()) {
-            sendTabList(player, header, footer);
+            TabListUtil.sendTabList(player, header, footer);
             return;
         }
 
         String final_header = PlaceholderAPI.setPlaceholders(player, header);
         String final_footer = PlaceholderAPI.setPlaceholders(player, footer);
-        sendTabList(player, final_header, final_footer);
-    }
-
-    public static void sendTabList(Player player, String header, String footer) {
-
-        header = Strings.isNullOrEmpty(header) ? "" : color(header);
-        footer = Strings.isNullOrEmpty(footer) ? "" : color(footer);
-
-        if (!isVersionLessThanOrEqual("1.12.2")) {
-            player.setPlayerListHeaderFooter(header, footer);
-
-            if (!instance.isPAPI()) {
-                player.setPlayerListName(SpigotConfig.TABLIST_FORMAT.color().replace("%player%", player.getName()));
-                return;
-            }
-
-            player.setPlayerListName(color(PlaceholderAPI.setPlaceholders(player, SpigotConfig.TABLIST_FORMAT.get(String.class).replace("%player%", player.getName()))));
-            return;
-        }
-
-        try {
-            Method chatComponentBuilderMethod = Objects.requireNonNull(ReflectionUtils.getNMSClass("IChatBaseComponent")).getDeclaredClasses()[0].getMethod("a", String.class);
-            Object tabHeader = chatComponentBuilderMethod.invoke(null, "{\"text\":\"" + header + "\"}");
-            Object tabFooter = chatComponentBuilderMethod.invoke(null, "{\"text\":\"" + footer + "\"}");
-            Object packet = Objects.requireNonNull(ReflectionUtils.getNMSClass("PacketPlayOutPlayerListHeaderFooter")).getConstructor().newInstance();
-
-            Field aField;
-            Field bField;
-            try {
-                aField = packet.getClass().getDeclaredField("a");
-                bField = packet.getClass().getDeclaredField("b");
-            } catch (Exception ex) {
-                aField = packet.getClass().getDeclaredField("header");
-                bField = packet.getClass().getDeclaredField("footer");
-            }
-
-            aField.setAccessible(true);
-            aField.set(packet, tabHeader);
-
-            bField.setAccessible(true);
-            bField.set(packet, tabFooter);
-
-            ReflectionUtils.sendPacket(player, packet);
-
-        } catch (Exception ignored) {
-            instance.getLogger().severe("Cannot send tablist to " + player.getName() + ".");
-        }
-    }
-
-    public static boolean isVersionLessThanOrEqual(String version) {
-        String serverVersion = Bukkit.getVersion();
-
-        Pattern pattern = Pattern.compile(".*(\\d+\\.\\d+\\.\\d+).*");
-        Matcher matcher = pattern.matcher(serverVersion);
-
-        if (matcher.matches()) {
-            String serverVersionNumber = matcher.group(1);
-            String[] serverVersionParts = serverVersionNumber.split("\\.");
-            String[] targetVersionParts = version.split("\\.");
-
-            for (int i = 0; i < Math.min(serverVersionParts.length, targetVersionParts.length); i++) {
-                int serverPart = Integer.parseInt(serverVersionParts[i]);
-                int targetPart = Integer.parseInt(targetVersionParts[i]);
-
-                if (serverPart < targetPart) {
-                    return true;
-                } else if (serverPart > targetPart) {
-                    return false;
-                }
-            }
-
-            return true;
-        }
-
-        return false;
-    }
-
-    public String color(String string) {
-        String hex = convertHexColors(string);
-        return hex.replace("&", "§");
-    }
-
-    private String convertHexColors(String message) {
-
-        if (!containsHexColor(message)) {
-            return message;
-        }
-
-        Pattern pattern = Pattern.compile("#[a-fA-F0-9]{6}");
-        Matcher matcher = pattern.matcher(message);
-        while (matcher.find()) {
-            String hexCode = message.substring(matcher.start(), matcher.end());
-            String replaceSharp = hexCode.replace('#', 'x');
-
-            char[] ch = replaceSharp.toCharArray();
-            StringBuilder builder = new StringBuilder();
-            for (char c : ch) {
-                builder.append("&").append(c);
-            }
-
-            message = message.replace(hexCode, builder.toString());
-            matcher = pattern.matcher(message);
-        }
-        return message;
-    }
-
-    private boolean containsHexColor(String message) {
-        String hexColorPattern = "(?i)&#[a-f0-9]{6}";
-        return message.matches(".*" + hexColorPattern + ".*");
+        TabListUtil.sendTabList(player, final_header, final_footer);
     }
 }

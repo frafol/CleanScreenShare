@@ -1010,7 +1010,7 @@ public class Utils {
                     continue;
                 }
 
-                instance.getLogger().error("The server " + server + " is not configured correctly, please check the configuration file.");
+                instance.getLogger().error(VelocityMessages.NOT_VALID.color().replace("%server%", server));
                 continue;
             }
 

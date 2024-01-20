@@ -93,7 +93,6 @@ public class PluginMessageReceiver implements PluginMessageListener {
             instance.startTimer(final_player.getUniqueId());
 
             if (SpigotConfig.SB_SUSPECT.get(Boolean.class)) {
-                PlayerCache.deleteSuspectScoreboard(final_player);
                 PlayerCache.createSuspectScoreboard(final_player);
             }
 
@@ -120,10 +119,11 @@ public class PluginMessageReceiver implements PluginMessageListener {
             PlayerCache.getAdministrator().add(final_player.getUniqueId());
             instance.startTimer(final_player.getUniqueId());
 
-            if (SpigotConfig.SB_STAFF.get(Boolean.class)) {
-                PlayerCache.deleteAdminScoreboard(final_player);
-                PlayerCache.createAdminScoreboard(final_player);
-            }
+            UniversalScheduler.getScheduler(instance).runTaskLater(() -> {
+                if (SpigotConfig.SB_STAFF.get(Boolean.class)) {
+                    PlayerCache.createAdminScoreboard(final_player);
+                }
+            }, 40L);
 
             if (SpigotConfig.TABLIST_STAFF.get(Boolean.class)) {
                 UniversalScheduler.getScheduler(instance).runTaskLater(() -> PlayerCache.setStaffTabList(player), 10);

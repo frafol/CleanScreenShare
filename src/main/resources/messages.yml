@@ -25,6 +25,9 @@ messages:
 
   server_offline: "%prefix% &7The server where you have to connect is not &donline&7."
 
+  # This message will appear in console when the server is not added in your BungeeCord/Velocity configuration file.
+  server_not_valid: "The server %server% is not configured correctly, is probably not present in your Proxy configuration."
+
   control:
 
     # If you are using LuckPerms, you can also use %adminprefix%, %adminsuffix% and %suspectprefix%, %suspectsuffix%.

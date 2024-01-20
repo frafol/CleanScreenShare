@@ -68,7 +68,7 @@ options:
 
     # The time in ticks after which the scoreboard will be updated.
     # Lower values may cause performance issues.
-    update_task: 40
+    update_task: 20
 
     # NOTE: In this section, you can use ALL placeholderapi placeholders, if you have it installed.
     staff_board:

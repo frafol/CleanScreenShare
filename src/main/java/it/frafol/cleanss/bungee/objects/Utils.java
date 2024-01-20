@@ -843,7 +843,7 @@ public class Utils {
                 if (BungeeConfig.USE_DISCONNECT.get(Boolean.class)) {
                     continue;
                 }
-                instance.getLogger().severe("The server " + server + " is not configured correctly, please check the configuration file.");
+                instance.getLogger().severe(BungeeMessages.NOT_VALID.color().replace("%server%", server));
                 continue;
             }
 
