@@ -28,6 +28,9 @@ options:
   # If you want to disable this feature, set this value to "none".
   change_gamemode_on_join: "adventure"
 
+  # This is the chat format that will be used for spectators and other players.
+  # Make sure chat preventing is disabled in order to use this feature.
+  chat_format: "&6&lDEBUG &6%player% &7» &f%message%"
 
   # If you want to disable this feature, set this value to "none".
   # If you want to remove completely the message, set this value to "disabled".

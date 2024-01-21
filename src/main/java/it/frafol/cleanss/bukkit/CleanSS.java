@@ -50,6 +50,7 @@ public class CleanSS extends JavaPlugin {
 	@Getter
 	public static CleanSS instance;
 
+	@SuppressWarnings("deprecation")
 	@SneakyThrows
 	@Override
 	public void onEnable() {
@@ -73,6 +74,14 @@ public class CleanSS extends JavaPlugin {
 				.version("2.1-SNAPSHOT")
 				.relocate(updaterrelocation)
 				.url("https://github.com/frafol/Config-Updater/releases/download/compile/ConfigUpdater-2.1-SNAPSHOT.jar")
+				.build();
+
+		final Relocation scoreboardrelocation = new Relocation("scoreboard", "it{}frafol{}libs{}scoreboard");
+		Library scoreboard = Library.builder()
+				.groupId("fr{}mrmicky")
+				.artifactId("FastBoard")
+				.version("2.0.2")
+				.relocate(scoreboardrelocation)
 				.build();
 
 		final Relocation schedulerrelocation = new Relocation("scheduler", "it{}frafol{}libs{}scheduler");
@@ -100,6 +109,7 @@ public class CleanSS extends JavaPlugin {
 		bukkitLibraryManager.loadLibrary(updater);
 		bukkitLibraryManager.loadLibrary(yaml);
 		bukkitLibraryManager.loadLibrary(scheduler);
+		bukkitLibraryManager.loadLibrary(scoreboard);
 
 		getLogger().info("\n   ___  __    ____    __    _  _   ___  ___\n" +
 				"  / __)(  )  ( ___)  /__\\  ( \\( ) / __)/ __)\n" +

@@ -5,6 +5,7 @@ import it.frafol.cleanss.bukkit.CleanSS;
 import it.frafol.cleanss.bukkit.enums.SpigotCache;
 import it.frafol.cleanss.bukkit.enums.SpigotConfig;
 import it.frafol.cleanss.bukkit.objects.PlayerCache;
+import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.HumanEntity;
@@ -27,14 +28,29 @@ public class PlayerListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerChat(AsyncPlayerChatEvent event) {
-        if (PlayerCache.getNo_chat().contains(event.getPlayer().getUniqueId())) {
+
+        Player player = event.getPlayer();
+        String message = event.getMessage();
+
+        if (PlayerCache.getNo_chat().contains(player.getUniqueId())) {
             event.setCancelled(true);
+            return;
         }
 
         if (SpigotConfig.CHAT.get(Boolean.class)) {
             event.setCancelled(true);
+            return;
         }
 
+        String format = SpigotConfig.CHATFORMAT.color().replace("%player%", player.getName()).replace("%message%", message);
+
+        if (instance.isPAPI()) {
+            format = PlaceholderAPI.setPlaceholders(event.getPlayer(), format);
+        }
+
+        event.setCancelled(true);
+        String finalFormat = format;
+        instance.getServer().getOnlinePlayers().forEach(players -> players.sendMessage(finalFormat));
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)

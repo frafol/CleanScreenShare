@@ -24,6 +24,7 @@ public enum SpigotConfig {
     VOID("options.prevent.player.void"),
     MOVE("options.prevent.player.move"),
     CHAT("options.prevent.player.chat"),
+    CHATFORMAT("options.chat_format"),
     SPAWN("options.teleport_to_spawn_on_join"),
     GAMEMODE("options.change_gamemode_on_join"),
 
