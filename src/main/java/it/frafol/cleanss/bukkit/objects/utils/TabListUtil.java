@@ -28,10 +28,14 @@ public class TabListUtil {
 
             if (!instance.isPAPI()) {
                 player.setPlayerListName(SpigotConfig.TABLIST_FORMAT.color().replace("%player%", player.getName()));
+                player.setCustomName(SpigotConfig.TABLIST_FORMAT.color().replace("%player%", player.getName()));
+                player.setCustomNameVisible(true);
                 return;
             }
 
             player.setPlayerListName(color(PlaceholderAPI.setPlaceholders(player, SpigotConfig.TABLIST_FORMAT.get(String.class).replace("%player%", player.getName()))));
+            player.setCustomName(color(PlaceholderAPI.setPlaceholders(player, SpigotConfig.TABLIST_FORMAT.get(String.class).replace("%player%", player.getName()))));
+            player.setCustomNameVisible(true);
             return;
         }
 

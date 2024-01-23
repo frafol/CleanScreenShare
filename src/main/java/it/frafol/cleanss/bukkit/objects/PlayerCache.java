@@ -41,6 +41,9 @@ public class PlayerCache {
     @Getter
     private HashMap<UUID, FastBoard> suspectBoard = new HashMap<>();
 
+    @Getter
+    private HashMap<UUID, FastBoard> otherBoard = new HashMap<>();
+
     @Contract("_ -> new")
     public static Location StringToLocation(String line) {
 
@@ -54,15 +57,14 @@ public class PlayerCache {
         return new Location(world, Double.parseDouble(loc[1]), Double.parseDouble(loc[2]), Double.parseDouble(loc[3]), Float.parseFloat(loc[4]), Float.parseFloat(loc[5]));
     }
 
+    @SuppressWarnings("ALL")
     public static String LocationToString(Location location) {
-
         String world = location.getWorld().getName();
         String x = String.valueOf(location.getBlockX());
         String y = String.valueOf(location.getBlockY());
         String z = String.valueOf(location.getBlockZ());
         String yaw = String.valueOf(location.getYaw());
         String pitch = String.valueOf(location.getPitch());
-
         return world + ";" + x + ";" + y + ";" + z + ";" + yaw + ";" + pitch;
     }
 
@@ -74,6 +76,11 @@ public class PlayerCache {
     public void createAdminScoreboard(Player player) {
         FastBoard board = new FastBoard(player);
         adminBoard.put(player.getUniqueId(), board);
+    }
+
+    public void createOtherScoreboard(Player player) {
+        FastBoard board = new FastBoard(player);
+        otherBoard.put(player.getUniqueId(), board);
     }
 
     public void deleteSuspectScoreboard(Player player) {
@@ -104,6 +111,20 @@ public class PlayerCache {
         adminBoard.remove(player.getUniqueId());
     }
 
+    public void deleteOtherScoreboard(Player player) {
+
+        if (!SpigotConfig.SB_OTHER.get(Boolean.class)) {
+            return;
+        }
+
+        if (otherBoard.get(player.getUniqueId()) == null) {
+            return;
+        }
+
+        otherBoard.get(player.getUniqueId()).delete();
+        otherBoard.remove(player.getUniqueId());
+    }
+
     public void updateScoreboardTask() {
         UniversalScheduler.getScheduler(instance).runTaskTimer(PlayerCache::updateScoreboard, SpigotConfig.SB_UPDATE.get(Integer.class), SpigotConfig.SB_UPDATE.get(Integer.class));
     }
@@ -118,26 +139,32 @@ public class PlayerCache {
             if (SpigotConfig.SB_SUSPECT.get(Boolean.class)) {
                 FastBoard board = suspectBoard.get(player.getUniqueId());
                 if (suspectBoard.get(player.getUniqueId()) != null && board != null) {
-                    if (!instance.isPAPI()) {
-                        board.updateTitle(SpigotConfig.SB_SUSPECTTITLE.color());
-                        board.updateLines(SpigotConfig.SB_SUSPECTLINES.parseScoreboard(player));
-                    } else if (!PlaceholderAPI.setPlaceholders(player, "%screenshare_administrator%").equalsIgnoreCase("none")) {
+                    if (!instance.isPAPI() || !PlaceholderAPI.setPlaceholders(player, "%screenshare_administrator%").equalsIgnoreCase("none")) {
                         board.updateTitle(SpigotConfig.SB_SUSPECTTITLE.color());
                         board.updateLines(SpigotConfig.SB_SUSPECTLINES.parseScoreboard(player));
                     }
                 }
+
+                return;
             }
 
             if (SpigotConfig.SB_STAFF.get(Boolean.class)) {
                 FastBoard board = adminBoard.get(player.getUniqueId());
                 if (adminBoard.get(player.getUniqueId()) != null && board != null) {
-                    if (!instance.isPAPI()) {
-                        board.updateTitle(SpigotConfig.SB_STAFFTITLE.color());
-                        board.updateLines(SpigotConfig.SB_STAFFLINES.parseScoreboard(player));
-                    } else if (!PlaceholderAPI.setPlaceholders(player, "%screenshare_suspicious%").equalsIgnoreCase("none")) {
+                    if (!instance.isPAPI() || !PlaceholderAPI.setPlaceholders(player, "%screenshare_suspicious%").equalsIgnoreCase("none")) {
                         board.updateTitle(SpigotConfig.SB_STAFFTITLE.color());
                         board.updateLines(SpigotConfig.SB_STAFFLINES.parseScoreboard(player));
                     }
+                }
+
+                return;
+            }
+
+            if (SpigotConfig.SB_OTHER.get(Boolean.class)) {
+                FastBoard board = otherBoard.get(player.getUniqueId());
+                if (otherBoard.get(player.getUniqueId()) != null && board != null) {
+                    board.updateTitle(SpigotConfig.SB_OTHERTITLE.color());
+                    board.updateLines(SpigotConfig.SB_OTHERLINES.parseScoreboard(player));
                 }
             }
         });
@@ -161,6 +188,23 @@ public class PlayerCache {
 
             setStaffTabList(instance.getServer().getPlayer(uuid));
         }
+
+        for (Player player : instance.getServer().getOnlinePlayers()) {
+
+            if (!SpigotConfig.TABLIST_OTHER.get(Boolean.class)) {
+                continue;
+            }
+
+            if (PlayerCache.getAdministrator().contains(player.getUniqueId())) {
+                continue;
+            }
+
+            if (PlayerCache.getSuspicious().contains(player.getUniqueId())) {
+                continue;
+            }
+
+            setOtherTabList(player);
+        }
     }
 
     public void setStaffTabList(Player player) {
@@ -181,6 +225,21 @@ public class PlayerCache {
 
         String header = String.join("\n", SpigotConfig.TABLIST_SUSPECTHEADER.getStringList());
         String footer = String.join("\n", SpigotConfig.TABLIST_SUSPECTFOOTER.getStringList());
+
+        if (!instance.isPAPI()) {
+            TabListUtil.sendTabList(player, header, footer);
+            return;
+        }
+
+        String final_header = PlaceholderAPI.setPlaceholders(player, header);
+        String final_footer = PlaceholderAPI.setPlaceholders(player, footer);
+        TabListUtil.sendTabList(player, final_header, final_footer);
+    }
+
+    public void setOtherTabList(Player player) {
+
+        String header = String.join("\n", SpigotConfig.TABLIST_OTHERHEADER.getStringList());
+        String footer = String.join("\n", SpigotConfig.TABLIST_OTHERFOOTER.getStringList());
 
         if (!instance.isPAPI()) {
             TabListUtil.sendTabList(player, header, footer);

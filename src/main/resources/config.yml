@@ -70,7 +70,7 @@ settings:
 
     # Delay (in seconds) of the message that will be sent to the control server with player's information.
     # Increment this if the control server says that the player is not connected.
-    # NOTE: Do not change this value if you don't know what you're doing and do not set it to <=0 values.
+    # NOTE: Do not change this value if you don't know what you're doing. Do not set it to <=0 values and >=20 values.
     message_to_control_delay: 1
 
   slog:

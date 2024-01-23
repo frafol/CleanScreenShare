@@ -5,7 +5,9 @@ import com.velocitypowered.api.event.command.CommandExecuteEvent;
 import com.velocitypowered.api.network.ProtocolVersion;
 import com.velocitypowered.api.proxy.Player;
 import it.frafol.cleanss.velocity.CleanSS;
+import it.frafol.cleanss.velocity.enums.VelocityMessages;
 import it.frafol.cleanss.velocity.objects.PlayerCache;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 
 import java.util.concurrent.TimeUnit;
 
@@ -30,11 +32,12 @@ public class CommandListener {
             return;
         }
 
-        if (!(player.getProtocolVersion().getProtocol() >= ProtocolVersion.getProtocolVersion(759).getProtocol()
-                && !instance.getUnsignedVelocityAddon())) {
-
+        if (!(player.getProtocolVersion().getProtocol() >= ProtocolVersion.getProtocolVersion(759).getProtocol() && !instance.getUnsignedVelocityAddon())) {
             event.setResult(CommandExecuteEvent.CommandResult.denied());
         }
+
+        player.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.COMMAND_BLOCKED.color()
+                .replace("%prefix%", VelocityMessages.PREFIX.color())));
     }
 
     @Subscribe

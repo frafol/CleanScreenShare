@@ -102,6 +102,20 @@ options:
         - "&f"
         - "&emc.yourserver.com"
 
+    other_board:
+      enabled: true
+
+      # Title of the scoreboard.
+      title: "&c&lSCREENSHARE"
+
+      # Lines of the scoreboard.
+      lines:
+        - "&c"
+        - "&7Name: &c%player%"
+        - "&cYou are a spectator."
+        - "&f"
+        - "&emc.yourserver.com"
+
   tablist:
 
     # The time in ticks after which the tablist will be updated.
@@ -137,5 +151,17 @@ options:
       footer:
         - "&f"
         - "&7Administrator: &e%screenshare_administrator%"
+
+    other_tablist:
+      enabled: true
+
+      # Header and footer of the tablist.
+      header:
+        - "&c&lSCREENSHARE"
+        - "&f"
+
+      footer:
+        - "&f"
+        - "&7You are a spectator."
 
 # Enjoy.

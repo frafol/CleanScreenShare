@@ -49,6 +49,10 @@ public enum SpigotConfig {
     SB_SUSPECTTITLE("options.scoreboard.suspect_board.title"),
     SB_SUSPECTLINES("options.scoreboard.suspect_board.lines"),
 
+    SB_OTHER("options.scoreboard.other_board.enabled"),
+    SB_OTHERTITLE("options.scoreboard.other_board.title"),
+    SB_OTHERLINES("options.scoreboard.other_board.lines"),
+
     TABLIST_UPDATE("options.tablist.update_task"),
     TABLIST_FORMAT("options.tablist.format"),
 
@@ -59,6 +63,10 @@ public enum SpigotConfig {
     TABLIST_SUSPECT("options.tablist.suspect_tablist.enabled"),
     TABLIST_SUSPECTHEADER("options.tablist.suspect_tablist.header"),
     TABLIST_SUSPECTFOOTER("options.tablist.suspect_tablist.footer"),
+
+    TABLIST_OTHER("options.tablist.other_tablist.enabled"),
+    TABLIST_OTHERHEADER("options.tablist.other_tablist.header"),
+    TABLIST_OTHERFOOTER("options.tablist.other_tablist.footer"),
 
     CUSTOM_JOIN_MESSAGE("options.custom_join_message"),
     CUSTOM_LEAVE_MESSAGE("options.custom_leave_message"),

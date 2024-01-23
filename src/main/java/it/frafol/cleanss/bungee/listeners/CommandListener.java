@@ -1,7 +1,9 @@
 package it.frafol.cleanss.bungee.listeners;
 
 import it.frafol.cleanss.bungee.CleanSS;
+import it.frafol.cleanss.bungee.enums.BungeeMessages;
 import it.frafol.cleanss.bungee.objects.PlayerCache;
+import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.ChatEvent;
 import net.md_5.bungee.api.plugin.Listener;
@@ -26,6 +28,9 @@ public class CommandListener implements Listener {
 
         if (PlayerCache.getSuspicious().contains(player.getUniqueId())) {
             event.setCancelled(true);
+            player.sendMessage(TextComponent.fromLegacyText(BungeeMessages.COMMAND_BLOCKED.color()
+                    .replace("%prefix%", BungeeMessages.PREFIX.color())));
+            return;
         }
 
         if (PlayerCache.getIn_control().get(player.getUniqueId()) == null) {

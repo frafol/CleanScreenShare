@@ -44,6 +44,9 @@ messages:
     suspicious_finish: "%prefix% &7Hack control &dfinished&7, thanks for your patience."
     suspicious_disconnect: "%prefix% &7Hack control &dfinished&7, %player% has just disconnected."
 
+    # This message will appear when a player tries to execute a command during a hack control.
+    command_blocked: "%prefix% &7You can't use commands during a &dhack control&7."
+
   info:
 
     # If you're using LuckPerms, you can also use %playerprefix% and %playersuffix% here.

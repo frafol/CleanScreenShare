@@ -24,6 +24,7 @@ public enum BungeeMessages {
     NO_PERMISSION("messages.no_permission"),
 
     CONTROL_FORMAT("messages.staff_message.format"),
+    COMMAND_BLOCKED("messages.control.command_blocked"),
 
     CONTROL_CLEAN_NAME("messages.staff_message.clean.name"),
     CONTROL_CLEAN_COMMAND("messages.staff_message.clean.command"),

@@ -153,6 +153,7 @@ public class PlayerListener implements Listener {
                 return;
             }
             player.teleport(PlayerCache.StringToLocation(SpigotCache.OTHER_SPAWN.get(String.class)));
+            PlayerCache.createOtherScoreboard(player);
         }, 20L);
 
         if (Objects.equals(SpigotConfig.CUSTOM_JOIN_MESSAGE.get(String.class), "none")) {
@@ -197,6 +198,7 @@ public class PlayerListener implements Listener {
             PlayerCache.deleteAdminScoreboard(player);
         }
 
+        PlayerCache.deleteOtherScoreboard(player);
         PlayerCache.getSuspicious().remove(player.getUniqueId());
         PlayerCache.getAdministrator().remove(player.getUniqueId());
 
