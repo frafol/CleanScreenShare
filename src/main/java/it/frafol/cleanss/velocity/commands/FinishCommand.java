@@ -72,8 +72,9 @@ public class FinishCommand implements SimpleCommand {
                 }
 
                 if (!player.isPresent()) {
-                    source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.NOT_ONLINE.get(String.class)
-                            .replace("%prefix%", VelocityMessages.PREFIX.color())));
+                    source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.NOT_ONLINE.color()
+                            .replace("%prefix%", VelocityMessages.PREFIX.color())
+                            .replace("%player%", invocation.arguments()[0])));
                     return;
                 }
 

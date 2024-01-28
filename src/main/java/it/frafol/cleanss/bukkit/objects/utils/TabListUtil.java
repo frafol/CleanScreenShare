@@ -34,8 +34,6 @@ public class TabListUtil {
             }
 
             player.setPlayerListName(color(PlaceholderAPI.setPlaceholders(player, SpigotConfig.TABLIST_FORMAT.get(String.class).replace("%player%", player.getName()))));
-            player.setCustomName(color(PlaceholderAPI.setPlaceholders(player, SpigotConfig.TABLIST_FORMAT.get(String.class).replace("%player%", player.getName()))));
-            player.setCustomNameVisible(true);
             return;
         }
 

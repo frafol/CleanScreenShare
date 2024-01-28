@@ -116,6 +116,18 @@ options:
         - "&f"
         - "&emc.yourserver.com"
 
+  nametag:
+
+    # Enable or disable the name-tag feature (Experimental feature).
+    # NOTE: This will work only if your spigot version is not legacy (1.12.2 - Latest).
+    # This does not use NMS, so if you experience lag issues, let this disabled.
+    enabled: false
+
+    # NOTE: In this section, you can use ALL placeholderapi placeholders, if you have it installed.
+    # This will set the "above head" name-tag of the player.
+    nametag_prefix: "%screenshare_prefix%%player%"
+    nametag_suffix: ""
+
   tablist:
 
     # The time in ticks after which the tablist will be updated.

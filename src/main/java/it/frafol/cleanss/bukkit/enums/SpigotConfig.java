@@ -56,6 +56,10 @@ public enum SpigotConfig {
     TABLIST_UPDATE("options.tablist.update_task"),
     TABLIST_FORMAT("options.tablist.format"),
 
+    NAMETAG("options.nametag.enabled"),
+    NAMETAG_PREFIX("options.nametag.nametag_prefix"),
+    NAMETAG_SUFFIX("options.nametag.nametag_suffix"),
+
     TABLIST_STAFF("options.tablist.staff_tablist.enabled"),
     TABLIST_STAFFHEADER("options.tablist.staff_tablist.header"),
     TABLIST_STAFFFOOTER("options.tablist.staff_tablist.footer"),
