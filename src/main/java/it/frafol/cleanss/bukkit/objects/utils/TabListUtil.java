@@ -3,6 +3,7 @@ package it.frafol.cleanss.bukkit.objects.utils;
 import com.google.common.base.Strings;
 import it.frafol.cleanss.bukkit.CleanSS;
 import it.frafol.cleanss.bukkit.enums.SpigotConfig;
+import it.frafol.cleanss.bukkit.objects.Placeholder;
 import lombok.experimental.UtilityClass;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.entity.Player;
@@ -20,8 +21,8 @@ public class TabListUtil {
 
     public static void sendTabList(Player player, String header, String footer) {
 
-        header = Strings.isNullOrEmpty(header) ? "" : color(header);
-        footer = Strings.isNullOrEmpty(footer) ? "" : color(footer);
+        header = Strings.isNullOrEmpty(header) ? "" : Placeholder.color(header);
+        footer = Strings.isNullOrEmpty(footer) ? "" : Placeholder.color(footer);
 
         if (!isLowerThan1_12_2()) {
             player.setPlayerListHeaderFooter(header, footer);
@@ -33,7 +34,7 @@ public class TabListUtil {
                 return;
             }
 
-            player.setPlayerListName(color(PlaceholderAPI.setPlaceholders(player, SpigotConfig.TABLIST_FORMAT.get(String.class).replace("%player%", player.getName()))));
+            player.setPlayerListName(Placeholder.color(PlaceholderAPI.setPlaceholders(player, SpigotConfig.TABLIST_FORMAT.get(String.class).replace("%player%", player.getName()))));
             return;
         }
 
@@ -91,39 +92,5 @@ public class TabListUtil {
         }
 
         return false;
-    }
-
-    private String color(String string) {
-        String hex = convertHexColors(string);
-        return hex.replace("&", "§");
-    }
-
-    private String convertHexColors(String message) {
-
-        if (!containsHexColor(message)) {
-            return message;
-        }
-
-        Pattern pattern = Pattern.compile("#[a-fA-F0-9]{6}");
-        Matcher matcher = pattern.matcher(message);
-        while (matcher.find()) {
-            String hexCode = message.substring(matcher.start(), matcher.end());
-            String replaceSharp = hexCode.replace('#', 'x');
-
-            char[] ch = replaceSharp.toCharArray();
-            StringBuilder builder = new StringBuilder();
-            for (char c : ch) {
-                builder.append("&").append(c);
-            }
-
-            message = message.replace(hexCode, builder.toString());
-            matcher = pattern.matcher(message);
-        }
-        return message;
-    }
-
-    private boolean containsHexColor(String message) {
-        String hexColorPattern = "(?i)&#[a-f0-9]{6}";
-        return message.matches(".*" + hexColorPattern + ".*");
     }
 }

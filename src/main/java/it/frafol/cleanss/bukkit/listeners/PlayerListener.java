@@ -4,6 +4,7 @@ import com.github.Anon8281.universalScheduler.UniversalScheduler;
 import it.frafol.cleanss.bukkit.CleanSS;
 import it.frafol.cleanss.bukkit.enums.SpigotCache;
 import it.frafol.cleanss.bukkit.enums.SpigotConfig;
+import it.frafol.cleanss.bukkit.objects.Placeholder;
 import it.frafol.cleanss.bukkit.objects.PlayerCache;
 import it.frafol.cleanss.bukkit.objects.utils.NametagUtil;
 import me.clip.placeholderapi.PlaceholderAPI;
@@ -51,7 +52,7 @@ public class PlayerListener implements Listener {
 
         event.setCancelled(true);
         String finalFormat = format;
-        instance.getServer().getOnlinePlayers().forEach(players -> players.sendMessage(finalFormat));
+        instance.getServer().getOnlinePlayers().forEach(players -> players.sendMessage(Placeholder.color(finalFormat)));
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)

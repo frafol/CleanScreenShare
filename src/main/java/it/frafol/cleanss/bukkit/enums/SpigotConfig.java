@@ -98,9 +98,9 @@ public enum SpigotConfig {
         List<String> list = new ArrayList<>();
         for (String string : instance.getConfigTextFile().getConfig().getStringList(path)) {
             if (instance.isPAPI()) {
-                list.add(color(PlaceholderAPI.setPlaceholders(player, string)));
+                list.add(color(PlaceholderAPI.setPlaceholders(player, string)).replace("%player%", player.getName()));
             } else {
-                list.add(color(string));
+                list.add(color(string).replace("%player%", player.getName()));
             }
         }
         return list;

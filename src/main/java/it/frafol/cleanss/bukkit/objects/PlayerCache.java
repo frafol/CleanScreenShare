@@ -143,9 +143,8 @@ public class PlayerCache {
                         board.updateTitle(SpigotConfig.SB_SUSPECTTITLE.color());
                         board.updateLines(SpigotConfig.SB_SUSPECTLINES.parseScoreboard(player));
                     }
+                    return;
                 }
-
-                return;
             }
 
             if (SpigotConfig.SB_STAFF.get(Boolean.class)) {
@@ -155,9 +154,8 @@ public class PlayerCache {
                         board.updateTitle(SpigotConfig.SB_STAFFTITLE.color());
                         board.updateLines(SpigotConfig.SB_STAFFLINES.parseScoreboard(player));
                     }
+                    return;
                 }
-
-                return;
             }
 
             if (SpigotConfig.SB_OTHER.get(Boolean.class)) {
