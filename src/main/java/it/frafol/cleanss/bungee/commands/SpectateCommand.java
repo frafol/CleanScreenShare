@@ -1,6 +1,7 @@
 package it.frafol.cleanss.bungee.commands;
 
 import it.frafol.cleanss.bungee.CleanSS;
+import it.frafol.cleanss.bungee.enums.BungeeCommandsConfig;
 import it.frafol.cleanss.bungee.enums.BungeeConfig;
 import it.frafol.cleanss.bungee.enums.BungeeMessages;
 import it.frafol.cleanss.bungee.objects.PlayerCache;
@@ -24,7 +25,7 @@ public class SpectateCommand extends Command implements TabExecutor {
     private final CleanSS instance;
 
     public SpectateCommand(CleanSS instance) {
-        super("ssspectate","","sspectate", "sspect", "ssspect", "goto", "sspec", "ssspec", "cleanssspec", "controlspectate", "cleansspec", "cleanssspectate", "cleansspectate", "controlspec");
+        super(BungeeCommandsConfig.SS_SPECTATE.getStringList().get(0),"", BungeeCommandsConfig.SS_SPECTATE.getStringList().toArray(new String[0]));
         this.instance = instance;
     }
 

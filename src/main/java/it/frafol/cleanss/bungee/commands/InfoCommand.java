@@ -1,6 +1,7 @@
 package it.frafol.cleanss.bungee.commands;
 
 import it.frafol.cleanss.bungee.CleanSS;
+import it.frafol.cleanss.bungee.enums.BungeeCommandsConfig;
 import it.frafol.cleanss.bungee.enums.BungeeConfig;
 import it.frafol.cleanss.bungee.enums.BungeeMessages;
 import it.frafol.cleanss.bungee.objects.Placeholder;
@@ -21,7 +22,7 @@ public class InfoCommand extends Command implements TabExecutor {
     public final CleanSS instance;
 
     public InfoCommand(CleanSS instance) {
-        super("ssinfo","","screenshareinfo","cleanssinfo","cleanscreenshareinfo", "controlinfo");
+        super(BungeeCommandsConfig.SS_INFO.getStringList().get(0),"", BungeeCommandsConfig.SS_INFO.getStringList().toArray(new String[0]));
         this.instance = instance;
     }
 

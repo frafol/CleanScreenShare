@@ -14,10 +14,7 @@ import com.velocitypowered.api.proxy.messages.ChannelIdentifier;
 import com.velocitypowered.api.proxy.messages.MinecraftChannelIdentifier;
 import com.velocitypowered.api.proxy.server.RegisteredServer;
 import it.frafol.cleanss.velocity.commands.*;
-import it.frafol.cleanss.velocity.enums.VelocityConfig;
-import it.frafol.cleanss.velocity.enums.VelocityLimbo;
-import it.frafol.cleanss.velocity.enums.VelocityMessages;
-import it.frafol.cleanss.velocity.enums.VelocityVersion;
+import it.frafol.cleanss.velocity.enums.*;
 import it.frafol.cleanss.velocity.listeners.ChatListener;
 import it.frafol.cleanss.velocity.listeners.CommandListener;
 import it.frafol.cleanss.velocity.listeners.KickListener;
@@ -52,7 +49,7 @@ import java.util.concurrent.TimeUnit;
 @Plugin(
 		id = "cleanscreenshare",
 		name = "CleanScreenShare",
-		version = "2.3.1",
+		version = "2.4.0",
 		description = "Make control hacks on your players.",
 		dependencies = {@Dependency(id = "luckperms", optional = true), @Dependency(id = "mysqlandconfigurateforvelocity", optional = true), @Dependency(id = "limboapi", optional = true), @Dependency(id = "ajqueue", optional = true), @Dependency(id = "premiumvanish", optional = true), @Dependency(id = "velocityvanish", optional = true)},
 		authors = { "frafol" })
@@ -73,6 +70,7 @@ public class CleanSS {
 
     private TextFile messagesTextFile;
 	private TextFile configTextFile;
+	private TextFile aliasesTextFile;
 	private TextFile limboTextFile;
 	private TextFile versionTextFile;
 
@@ -402,6 +400,7 @@ public class CleanSS {
 	private void loadFiles() {
 		configTextFile = new TextFile(path, "config.yml");
 		messagesTextFile = new TextFile(path, "messages.yml");
+		aliasesTextFile = new TextFile(path, "aliases.yml");
 		limboTextFile = new TextFile(path, "limboapi.yml");
 		versionTextFile = new TextFile(path, "version.yml");
 	}
@@ -416,6 +415,9 @@ public class CleanSS {
 					.backup(true)
 					.update();
 			YamlUpdater.create(new File(path + "/messages.yml"), FileUtils.findFile("https://raw.githubusercontent.com/frafol/CleanScreenShare/main/src/main/resources/messages.yml"))
+					.backup(true)
+					.update();
+			YamlUpdater.create(new File(path + "/aliases.yml"), FileUtils.findFile("https://raw.githubusercontent.com/frafol/CleanScreenShare/main/src/main/resources/aliases.yml"))
 					.backup(true)
 					.update();
 			YamlUpdater.create(new File(path + "/limboapi.yml"), FileUtils.findFile("https://raw.githubusercontent.com/frafol/CleanScreenShare/main/src/main/resources/limboapi.yml"))
@@ -433,28 +435,35 @@ public class CleanSS {
 				(server.getCommandManager().metaBuilder("ssdebug").aliases("cleanssdebug", "controldebug")
 						.build(), new DebugCommand(this));
 
-		getServer().getCommandManager().register
-				(server.getCommandManager().metaBuilder("ss").aliases("cleanss", "control")
-						.build(), new ControlCommand(this));
+		final String[] aliases_ss = VelocityCommandsConfig.SS_PLAYER.getStringList().toArray(new String[0]);
+		server.getCommandManager().register(server.getCommandManager()
+				.metaBuilder(VelocityCommandsConfig.SS_PLAYER.getStringList().get(0))
+				.aliases(aliases_ss)
+				.build(), new ControlCommand(this));
 
-		getServer().getCommandManager().register
-				(server.getCommandManager().metaBuilder("ssfinish").aliases("cleanssfinish", "controlfinish")
-						.build(), new FinishCommand(this));
+		final String[] aliases_ssfinish = VelocityCommandsConfig.SS_FINISH.getStringList().toArray(new String[0]);
+		server.getCommandManager().register(server.getCommandManager()
+				.metaBuilder(VelocityCommandsConfig.SS_FINISH.getStringList().get(0))
+				.aliases(aliases_ssfinish)
+				.build(), new FinishCommand(this));
 
 		if (VelocityConfig.ENABLE_SPECTATING.get(Boolean.class)) {
-			getServer().getCommandManager().register
-					(server.getCommandManager().metaBuilder("ssspectate").aliases("goto", "sspectate", "sspect", "ssspect", "sspec", "ssspec", "cleanssspec", "controlspectate", "cleansspec", "cleanssspectate", "cleansspectate", "controlspec")
-							.build(), new SpectateCommand(this));
+			final String[] aliases_spectate = VelocityCommandsConfig.SS_SPECTATE.getStringList().toArray(new String[0]);
+			server.getCommandManager().register(server.getCommandManager()
+					.metaBuilder(VelocityCommandsConfig.SS_SPECTATE.getStringList().get(0))
+					.aliases(aliases_spectate)
+					.build(), new SpectateCommand(this));
 		}
 
-		getServer().getCommandManager().register
-				(server.getCommandManager().metaBuilder("ssinfo").aliases("cleanssinfo", "controlinfo")
-						.build(), new InfoCommand(this));
+		final String[] aliases_info = VelocityCommandsConfig.SS_INFO.getStringList().toArray(new String[0]);
+		server.getCommandManager().register(server.getCommandManager()
+				.metaBuilder(VelocityCommandsConfig.SS_INFO.getStringList().get(0))
+				.aliases(aliases_info)
+				.build(), new InfoCommand(this));
 
 		getServer().getCommandManager().register
 				(server.getCommandManager().metaBuilder("ssreload").aliases("cleanssreload", "controlreload")
 						.build(), new ReloadCommand(this));
-
 	}
 
 	private void loadChannelRegistrar() {

@@ -2,6 +2,7 @@ package it.frafol.cleanss.bungee.commands;
 
 import de.myzelyam.api.vanish.BungeeVanishAPI;
 import it.frafol.cleanss.bungee.CleanSS;
+import it.frafol.cleanss.bungee.enums.BungeeCommandsConfig;
 import it.frafol.cleanss.bungee.enums.BungeeConfig;
 import it.frafol.cleanss.bungee.enums.BungeeMessages;
 import it.frafol.cleanss.bungee.objects.PlayerCache;
@@ -27,7 +28,7 @@ public class ControlCommand extends Command implements TabExecutor {
 	public final CleanSS instance;
 
 	public ControlCommand(CleanSS instance) {
-		super("ss","","screenshare","cleanss","cleanscreenshare", "control");
+		super(BungeeCommandsConfig.SS_PLAYER.getStringList().get(0),"", BungeeCommandsConfig.SS_PLAYER.getStringList().toArray(new String[0]));
 		this.instance = instance;
 	}
 

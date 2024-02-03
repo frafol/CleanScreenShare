@@ -44,6 +44,7 @@ public class CleanSS extends Plugin {
 
     private TextFile messagesTextFile;
 	private TextFile configTextFile;
+	private TextFile aliasesTextFile;
 	private TextFile versionTextFile;
 
 	@Getter
@@ -112,6 +113,10 @@ public class CleanSS extends Plugin {
 		return getInstance().versionTextFile.getConfig();
 	}
 
+	public YamlFile getAliasesTextFile() {
+		return getInstance().aliasesTextFile.getConfig();
+	}
+
 	public YamlFile getMessagesTextFile() {
 		return getInstance().messagesTextFile.getConfig();
 	}
@@ -146,6 +151,7 @@ public class CleanSS extends Plugin {
 	private void loadFiles() {
 		configTextFile = new TextFile(getDataFolder().toPath(), "config.yml");
 		messagesTextFile = new TextFile(getDataFolder().toPath(), "messages.yml");
+		aliasesTextFile = new TextFile(getDataFolder().toPath(), "aliases.yml");
 		versionTextFile = new TextFile(getDataFolder().toPath(), "version.yml");
 	}
 
@@ -340,6 +346,9 @@ public class CleanSS extends Plugin {
 
 			getLogger().info("§7Creating new §dconfigurations§7...");
 			YamlUpdater.create(new File(getDataFolder().toPath() + "/config.yml"), FileUtils.findFile("https://raw.githubusercontent.com/frafol/CleanScreenShare/main/src/main/resources/config.yml"))
+					.backup(true)
+					.update();
+			YamlUpdater.create(new File(getDataFolder().toPath() + "/aliases.yml"), FileUtils.findFile("https://raw.githubusercontent.com/frafol/CleanScreenShare/main/src/main/resources/aliases.yml"))
 					.backup(true)
 					.update();
 			YamlUpdater.create(new File(getDataFolder().toPath() + "/messages.yml"), FileUtils.findFile("https://raw.githubusercontent.com/frafol/CleanScreenShare/main/src/main/resources/messages.yml"))

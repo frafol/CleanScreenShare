@@ -1,6 +1,7 @@
 package it.frafol.cleanss.bungee.commands;
 
 import it.frafol.cleanss.bungee.CleanSS;
+import it.frafol.cleanss.bungee.enums.BungeeCommandsConfig;
 import it.frafol.cleanss.bungee.enums.BungeeConfig;
 import it.frafol.cleanss.bungee.enums.BungeeMessages;
 import it.frafol.cleanss.bungee.objects.PlayerCache;
@@ -25,7 +26,7 @@ public class FinishCommand extends Command implements TabExecutor {
     public final CleanSS instance;
 
     public FinishCommand(CleanSS instance) {
-        super("ssfinish","","screensharefinish","cleanssfinish","cleanscreensharefinish", "controlfinish");
+        super(BungeeCommandsConfig.SS_FINISH.getStringList().get(0),"", BungeeCommandsConfig.SS_FINISH.getStringList().toArray(new String[0]));
         this.instance = instance;
     }
 
