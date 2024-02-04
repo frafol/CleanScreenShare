@@ -14,6 +14,9 @@ import lombok.Getter;
 import lombok.experimental.UtilityClass;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.ComponentBuilder;
+import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.kyori.adventure.title.Title;
@@ -104,7 +107,27 @@ public class Utils {
         return list.stream().map(Utils::color).collect(Collectors.toList());
     }
 
-    public void sendList(CommandSource commandSource, List<String> stringList, Player player_name) {
+    private HashMap<String, String> getButtons(Player suspect) {
+        HashMap<String, String> buttons = new HashMap<>();
+        buttons.put(VelocityMessages.CONTROL_CLEAN_NAME.color(), VelocityMessages.CONTROL_CLEAN_COMMAND.get(String.class).replace("%player%", suspect.getUsername()));
+        buttons.put(VelocityMessages.CONTROL_CHEATER_NAME.color(), VelocityMessages.CONTROL_CHEATER_COMMAND.get(String.class).replace("%player%", suspect.getUsername()));
+        buttons.put(VelocityMessages.CONTROL_ADMIT_NAME.color(), VelocityMessages.CONTROL_ADMIT_COMMAND.get(String.class).replace("%player%", suspect.getUsername()));
+        buttons.put(VelocityMessages.CONTROL_REFUSE_NAME.color(), VelocityMessages.CONTROL_REFUSE_COMMAND.get(String.class).replace("%player%", suspect.getUsername()));
+        return buttons;
+    }
+
+    public void sendCorrectList(CommandSource commandSource, List<String> stringList) {
+        for (String message : stringList) {
+            commandSource.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(message));
+        }
+    }
+
+    public void sendButtons(CommandSource commandSource, List<String> stringList, Player player_name) {
+
+        if (!VelocityMessages.CONTROL_USEVERTICALFORMAT.get(Boolean.class)) {
+            sendHorizontalButtons(commandSource, stringList, player_name);
+            return;
+        }
 
         for (String message : stringList) {
 
@@ -135,7 +158,32 @@ public class Utils {
             } else {
                 commandSource.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(message));
             }
+        }
+    }
 
+    private void sendHorizontalButtons(CommandSource commandSource, List<String> stringList, Player player_name) {
+
+        List<TextComponent> buttons = new ArrayList<>();
+
+        for (String message : stringList) {
+            if (message.contains("%buttons%")) {
+                for (String key : getButtons(player_name).keySet()) {
+                    TextComponent button = LegacyComponentSerializer.legacy('§').deserialize(key)
+                            .clickEvent(ClickEvent.clickEvent(ClickEvent.Action.SUGGEST_COMMAND, getButtons(player_name).get(key)
+                                    .replace("%player%", player_name.getUsername()))).append(Component.text(" "));
+                    buttons.add(button);
+                }
+
+                ComponentBuilder<TextComponent, TextComponent.Builder> builder = Component.text();
+                for (TextComponent component : buttons) {
+                    builder.append(component);
+                }
+
+                commandSource.sendMessage(builder.build());
+                continue;
+            }
+
+            commandSource.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(message));
         }
     }
 
@@ -401,8 +449,12 @@ public class Utils {
         return color(user.getCachedData().getMetaData().getSuffix());
     }
 
-    public void sendFormattedList(VelocityMessages velocityMessages, CommandSource commandSource, Player player_name, Placeholder... placeholders) {
-        sendList(commandSource, color(getStringList(velocityMessages, placeholders)), player_name);
+    public void sendList(VelocityMessages velocityMessages, CommandSource commandSource, Placeholder... placeholders) {
+        sendCorrectList(commandSource, color(getStringList(velocityMessages, placeholders)));
+    }
+
+    public void sendCompiledButtons(VelocityMessages velocityMessages, CommandSource commandSource, Player player_name, Placeholder... placeholders) {
+        sendButtons(commandSource, color(getStringList(velocityMessages, placeholders)), player_name);
     }
 
     public void finishControl(Player suspicious, Player administrator, RegisteredServer proxyServer) {
@@ -659,18 +711,29 @@ public class Utils {
                     .replace("%suspectprefix%", sus_prefix)
                     .replace("%suspectsuffix%", sus_suffix)));
 
-            VelocityMessages.CONTROL_FORMAT.sendList(administrator, suspicious,
-                    new Placeholder("cleanname", VelocityMessages.CONTROL_CLEAN_NAME.color()),
-                    new Placeholder("hackername", VelocityMessages.CONTROL_CHEATER_NAME.color()),
-                    new Placeholder("admitname", VelocityMessages.CONTROL_ADMIT_NAME.color()),
-                    new Placeholder("refusename", VelocityMessages.CONTROL_REFUSE_NAME.color()),
-                    new Placeholder("prefix", VelocityMessages.PREFIX.color()),
-                    new Placeholder("suspect", suspicious.getUsername()),
-                    new Placeholder("administrator", administrator.getUsername()),
-                    new Placeholder("adminprefix", admin_prefix),
-                    new Placeholder("adminsuffix", admin_suffix),
-                    new Placeholder("suspectprefix", sus_prefix),
-                    new Placeholder("suspectsuffix", sus_suffix));
+            if (VelocityMessages.CONTROL_USEVERTICALFORMAT.get(Boolean.class)) {
+                VelocityMessages.CONTROL_VERTICALFORMAT.sendButtons(administrator, suspicious,
+                        new Placeholder("cleanname", VelocityMessages.CONTROL_CLEAN_NAME.color()),
+                        new Placeholder("hackername", VelocityMessages.CONTROL_CHEATER_NAME.color()),
+                        new Placeholder("admitname", VelocityMessages.CONTROL_ADMIT_NAME.color()),
+                        new Placeholder("refusename", VelocityMessages.CONTROL_REFUSE_NAME.color()),
+                        new Placeholder("prefix", VelocityMessages.PREFIX.color()),
+                        new Placeholder("suspect", suspicious.getUsername()),
+                        new Placeholder("administrator", administrator.getUsername()),
+                        new Placeholder("adminprefix", admin_prefix),
+                        new Placeholder("adminsuffix", admin_suffix),
+                        new Placeholder("suspectprefix", sus_prefix),
+                        new Placeholder("suspectsuffix", sus_suffix));
+            } else {
+                VelocityMessages.CONTROL_HORIZONTALFORMAT.sendButtons(administrator, suspicious,
+                        new Placeholder("prefix", VelocityMessages.PREFIX.color()),
+                        new Placeholder("suspect", suspicious.getUsername()),
+                        new Placeholder("administrator", administrator.getUsername()),
+                        new Placeholder("adminprefix", admin_prefix),
+                        new Placeholder("adminsuffix", admin_suffix),
+                        new Placeholder("suspectprefix", sus_prefix),
+                        new Placeholder("suspectsuffix", sus_suffix));
+            }
 
             return;
         }
@@ -774,19 +837,29 @@ public class Utils {
                 .replace("%suspectprefix%", color(sus_prefix))
                 .replace("%suspectsuffix%", color(sus_suffix))));
 
-        VelocityMessages.CONTROL_FORMAT.sendList(administrator, suspicious,
-                new Placeholder("cleanname", VelocityMessages.CONTROL_CLEAN_NAME.color()),
-                new Placeholder("hackername", VelocityMessages.CONTROL_CHEATER_NAME.color()),
-                new Placeholder("admitname", VelocityMessages.CONTROL_ADMIT_NAME.color()),
-                new Placeholder("refusename", VelocityMessages.CONTROL_REFUSE_NAME.color()),
-                new Placeholder("prefix", VelocityMessages.PREFIX.color()),
-                new Placeholder("suspect", suspicious.getUsername()),
-                new Placeholder("administrator", administrator.getUsername()),
-                new Placeholder("adminprefix", color(admin_prefix)),
-                new Placeholder("adminsuffix", color(admin_suffix)),
-                new Placeholder("suspectprefix", color(sus_prefix)),
-                new Placeholder("suspectsuffix", color(sus_suffix)));
-
+        if (VelocityMessages.CONTROL_USEVERTICALFORMAT.get(Boolean.class)) {
+            VelocityMessages.CONTROL_VERTICALFORMAT.sendButtons(administrator, suspicious,
+                    new Placeholder("cleanname", VelocityMessages.CONTROL_CLEAN_NAME.color()),
+                    new Placeholder("hackername", VelocityMessages.CONTROL_CHEATER_NAME.color()),
+                    new Placeholder("admitname", VelocityMessages.CONTROL_ADMIT_NAME.color()),
+                    new Placeholder("refusename", VelocityMessages.CONTROL_REFUSE_NAME.color()),
+                    new Placeholder("prefix", VelocityMessages.PREFIX.color()),
+                    new Placeholder("suspect", suspicious.getUsername()),
+                    new Placeholder("administrator", administrator.getUsername()),
+                    new Placeholder("adminprefix", color(admin_prefix)),
+                    new Placeholder("adminsuffix", color(admin_suffix)),
+                    new Placeholder("suspectprefix", color(sus_prefix)),
+                    new Placeholder("suspectsuffix", color(sus_suffix)));
+        } else {
+            VelocityMessages.CONTROL_HORIZONTALFORMAT.sendButtons(administrator, suspicious,
+                    new Placeholder("prefix", VelocityMessages.PREFIX.color()),
+                    new Placeholder("suspect", suspicious.getUsername()),
+                    new Placeholder("administrator", administrator.getUsername()),
+                    new Placeholder("adminprefix", color(admin_prefix)),
+                    new Placeholder("adminsuffix", color(admin_suffix)),
+                    new Placeholder("suspectprefix", color(sus_prefix)),
+                    new Placeholder("suspectsuffix", color(sus_suffix)));
+        }
     }
 
     @SuppressWarnings("UnstableApiUsage")

@@ -3,7 +3,10 @@ package it.frafol.cleanss.bukkit;
 import com.github.Anon8281.universalScheduler.UniversalScheduler;
 import com.github.Anon8281.universalScheduler.scheduling.tasks.MyScheduledTask;
 import com.tchristofferson.configupdater.ConfigUpdater;
-import it.frafol.cleanss.bukkit.commands.MainCommand;
+import it.frafol.cleanss.bukkit.commands.AdminSpawnCommand;
+import it.frafol.cleanss.bukkit.commands.OtherSpawnCommand;
+import it.frafol.cleanss.bukkit.commands.SpawnCommand;
+import it.frafol.cleanss.bukkit.commands.SuspectSpawnCommand;
 import it.frafol.cleanss.bukkit.enums.SpigotConfig;
 import it.frafol.cleanss.bukkit.enums.SpigotVersion;
 import it.frafol.cleanss.bukkit.hooks.PlaceholderHook;
@@ -155,8 +158,13 @@ public class CleanSS extends JavaPlugin {
 		getLogger().info("Loading channels...");
 		getServer().getMessenger().registerIncomingPluginChannel(this, "cleanss:join", new PluginMessageReceiver());
 
+		getLogger().info("Loading commands...");
+		getCommand("setadminspawn").setExecutor(new AdminSpawnCommand());
+		getCommand("setsuspectspawn").setExecutor(new SuspectSpawnCommand());
+		getCommand("setotherspawn").setExecutor(new OtherSpawnCommand());
+		getCommand("spawn").setExecutor(new SpawnCommand());
+
 		getLogger().info("Loading listeners...");
-		getServer().getPluginManager().registerEvents(new MainCommand(), this);
 		getServer().getPluginManager().registerEvents(new PlayerListener(), this);
 		getServer().getPluginManager().registerEvents(new WorldListener(), this);
 

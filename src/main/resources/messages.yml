@@ -67,30 +67,37 @@ messages:
 
     # Administration message sent to the staffer when sending in hack control server.
     # You can use %cleanname%, %hackername%, %admitname%, %refusename%, %administrator% and %suspect%.
-    # If you are using LuckPerms, you can also use %adminprefix%, %adminsuffix% and %suspectprefix%, %suspectsuffix%.
-    format:
+    use_vertical: true
+    vertical_format:
       - "&8&m------&5&m------&d&m------&5&m------&8&m------"
       - ""
-      - "&d%cleanname% &7(Click to view)"
-      - "&d%hackername% &7(Click to view)"
-      - "&d%admitname% &7(Click to view)"
-      - "&d%refusename% &7(Click to view)"
+      - "%cleanname% &7(Click to view)"
+      - "%hackername% &7(Click to view)"
+      - "%admitname% &7(Click to view)"
+      - "%refusename% &7(Click to view)"
       - ""
+      - "&8&m------&5&m------&d&m------&5&m------&8&m------"
+
+    # With this option you can set all the buttons in one line.
+    # You can use %buttons% to display the buttons.
+    horizontal_format:
+      - "&8&m------&5&m------&d&m------&5&m------&8&m------"
+      - "%buttons%"
       - "&8&m------&5&m------&d&m------&5&m------&8&m------"
 
     # Clickable messages to put in the Administration message. (%player% is the suspicious player's name)
     # NOTE: You can't add new buttons, you can only change the name and the command.
     clean:
-      name: "[Clean]"
+      name: "&a&l[Clean]"
       command: "/controlfinish %player%"
     cheater:
-      name: "[Cheater]"
+      name: "&c&l[Cheater]"
       command: "/tempban %player% 30d Cheating -s"
     admit:
-      name: "[Admit]"
+      name: "&b&l[Admit]"
       command: "/tempban %player% 14d Admit -s"
     refuse:
-      name: "[Refuse]"
+      name: "&4&l[Refuse]"
       command: "/tempban %player% 30d Refusal to SS -s"
 
   spectate:

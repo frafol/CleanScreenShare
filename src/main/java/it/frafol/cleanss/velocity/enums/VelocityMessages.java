@@ -22,7 +22,9 @@ public enum VelocityMessages {
 
     NO_PERMISSION("messages.no_permission"),
 
-    CONTROL_FORMAT("messages.staff_message.format"),
+    CONTROL_USEVERTICALFORMAT("messages.staff_message.use_vertical"),
+    CONTROL_VERTICALFORMAT("messages.staff_message.vertical_format"),
+    CONTROL_HORIZONTALFORMAT("messages.staff_message.horizontal_format"),
 
     CONTROL_CLEAN_NAME("messages.staff_message.clean.name"),
     CONTROL_CLEAN_COMMAND("messages.staff_message.clean.command"),
@@ -160,8 +162,12 @@ public enum VelocityMessages {
         return path;
     }
 
-    public void sendList(CommandSource commandSource, Player player_name, Placeholder... placeHolder) {
-        Utils.sendFormattedList(this, commandSource, player_name, placeHolder);
+    public void sendList(CommandSource commandSource, Placeholder... placeHolder) {
+        Utils.sendList(this, commandSource, placeHolder);
+    }
+
+    public void sendButtons(CommandSource commandSource, Player player_name, Placeholder... placeHolder) {
+        Utils.sendCompiledButtons(this, commandSource, player_name, placeHolder);
     }
 
 }

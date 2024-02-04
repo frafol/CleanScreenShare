@@ -23,7 +23,10 @@ public enum BungeeMessages {
 
     NO_PERMISSION("messages.no_permission"),
 
-    CONTROL_FORMAT("messages.staff_message.format"),
+    CONTROL_USEVERTICALFORMAT("messages.staff_message.use_vertical"),
+    CONTROL_VERTICALFORMAT("messages.staff_message.vertical_format"),
+    CONTROL_HORIZONTALFORMAT("messages.staff_message.horizontal_format"),
+
     COMMAND_BLOCKED("messages.control.command_blocked"),
 
     CONTROL_CLEAN_NAME("messages.staff_message.clean.name"),

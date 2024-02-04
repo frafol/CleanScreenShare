@@ -62,7 +62,7 @@ public class InfoCommand implements SimpleCommand {
         if (VelocityConfig.MYSQL.get(Boolean.class)) {
 
             if (luckperms) {
-                VelocityMessages.INFO_MESSAGE.sendList(source, player.get(),
+                VelocityMessages.INFO_MESSAGE.sendList(source,
                         new Placeholder("player", invocation.arguments()[0]),
                         new Placeholder("prefix", VelocityMessages.PREFIX.color()),
                         new Placeholder("is_in_control", String.valueOf(instance.getData().getStats(player.get().getUniqueId(), "incontrol"))),
@@ -74,7 +74,7 @@ public class InfoCommand implements SimpleCommand {
                 return;
             }
 
-            VelocityMessages.INFO_MESSAGE.sendList(source, player.get(),
+            VelocityMessages.INFO_MESSAGE.sendList(source,
                     new Placeholder("player", invocation.arguments()[0]),
                     new Placeholder("prefix", VelocityMessages.PREFIX.color()),
                     new Placeholder("is_in_control", String.valueOf(instance.getData().getStats(player.get().getUniqueId(), "incontrol"))),
@@ -88,7 +88,7 @@ public class InfoCommand implements SimpleCommand {
         PlayerCache.getControls_suffered().putIfAbsent(player.get().getUniqueId(), 0);
 
         if (luckperms) {
-            VelocityMessages.INFO_MESSAGE.sendList(source, player.get(),
+            VelocityMessages.INFO_MESSAGE.sendList(source,
                     new Placeholder("player", invocation.arguments()[0]),
                     new Placeholder("prefix", VelocityMessages.PREFIX.color()),
                     new Placeholder("is_in_control", String.valueOf(PlayerCache.getSuspicious().contains(player.get().getUniqueId()))),
@@ -100,7 +100,7 @@ public class InfoCommand implements SimpleCommand {
             return;
         }
 
-        VelocityMessages.INFO_MESSAGE.sendList(source, player.get(),
+        VelocityMessages.INFO_MESSAGE.sendList(source,
                 new Placeholder("player", invocation.arguments()[0]),
                 new Placeholder("prefix", VelocityMessages.PREFIX.color()),
                 new Placeholder("is_in_control", String.valueOf(PlayerCache.getSuspicious().contains(player.get().getUniqueId()))),

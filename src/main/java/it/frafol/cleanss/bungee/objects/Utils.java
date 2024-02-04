@@ -16,6 +16,7 @@ import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.Title;
 import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -92,12 +93,25 @@ public class Utils {
         return list.stream().map(Utils::color).collect(Collectors.toList());
     }
 
+    private boolean hasButton(List<String> stringList) {
+        for (String string : stringList) {
+            if (string.contains("%buttons%")) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public void sendList(CommandSender commandSource, List<String> stringList, ProxiedPlayer player_name) {
+
+        if (!BungeeMessages.CONTROL_USEVERTICALFORMAT.get(Boolean.class) && hasButton(stringList)) {
+            sendHorizontalButtons(commandSource, stringList, player_name);
+            return;
+        }
 
         for (String message : stringList) {
 
             TextComponent suggestMessage = new TextComponent(message);
-
             if (message.contains(BungeeMessages.CONTROL_CLEAN_NAME.get(String.class))) {
 
                 suggestMessage.setClickEvent(new ClickEvent(
@@ -131,10 +145,43 @@ public class Utils {
                 commandSource.sendMessage(suggestMessage);
 
             } else {
-
                 commandSource.sendMessage(TextComponent.fromLegacyText(message));
-
             }
+        }
+    }
+
+    private HashMap<String, String> getButtons(ProxiedPlayer suspect) {
+        HashMap<String, String> buttons = new HashMap<>();
+        buttons.put(BungeeMessages.CONTROL_CLEAN_NAME.color(), BungeeMessages.CONTROL_CLEAN_COMMAND.get(String.class).replace("%player%", suspect.getName()));
+        buttons.put(BungeeMessages.CONTROL_CHEATER_NAME.color(), BungeeMessages.CONTROL_CHEATER_COMMAND.get(String.class).replace("%player%", suspect.getName()));
+        buttons.put(BungeeMessages.CONTROL_ADMIT_NAME.color(), BungeeMessages.CONTROL_ADMIT_COMMAND.get(String.class).replace("%player%", suspect.getName()));
+        buttons.put(BungeeMessages.CONTROL_REFUSE_NAME.color(), BungeeMessages.CONTROL_REFUSE_COMMAND.get(String.class).replace("%player%", suspect.getName()));
+        return buttons;
+    }
+
+    private void sendHorizontalButtons(CommandSender commandSource, List<String> stringList, ProxiedPlayer player_name) {
+
+        List<TextComponent> buttons = new ArrayList<>();
+        for (String message : stringList) {
+            if (message.contains("%buttons%")) {
+                for (String key : getButtons(player_name).keySet()) {
+                    TextComponent button = new TextComponent(key + " ");
+                    button.setClickEvent(new ClickEvent(
+                            ClickEvent.Action.SUGGEST_COMMAND,
+                            getButtons(player_name).get(key).replace("%player%", player_name.getName())));
+                    buttons.add(button);
+                }
+
+                ComponentBuilder builder = new ComponentBuilder();
+                for (TextComponent component : buttons) {
+                    builder.append(component);
+                }
+
+                commandSource.sendMessage(builder.create());
+                continue;
+            }
+
+            commandSource.sendMessage(TextComponent.fromLegacyText(message));
         }
     }
 
@@ -626,19 +673,29 @@ public class Utils {
                 .replace("%suspectprefix%", color(sus_prefix))
                 .replace("%suspectsuffix%", color(sus_suffix))));
 
-        BungeeMessages.CONTROL_FORMAT.sendList(administrator, suspicious,
-                new Placeholder("cleanname", BungeeMessages.CONTROL_CLEAN_NAME.color()),
-                new Placeholder("hackername", BungeeMessages.CONTROL_CHEATER_NAME.color()),
-                new Placeholder("admitname", BungeeMessages.CONTROL_ADMIT_NAME.color()),
-                new Placeholder("refusename", BungeeMessages.CONTROL_REFUSE_NAME.color()),
-                new Placeholder("prefix", BungeeMessages.PREFIX.color()),
-                new Placeholder("adminprefix", color(admin_prefix)),
-                new Placeholder("adminsuffix", color(admin_suffix)),
-                new Placeholder("suspectprefix", color(sus_prefix)),
-                new Placeholder("suspectsuffix", color(sus_suffix)),
-                new Placeholder("suspect", suspicious.getName()),
-                new Placeholder("administrator", administrator.getName()));
-
+        if (BungeeMessages.CONTROL_USEVERTICALFORMAT.get(Boolean.class)) {
+            BungeeMessages.CONTROL_VERTICALFORMAT.sendList(administrator, suspicious,
+                    new Placeholder("cleanname", BungeeMessages.CONTROL_CLEAN_NAME.color()),
+                    new Placeholder("hackername", BungeeMessages.CONTROL_CHEATER_NAME.color()),
+                    new Placeholder("admitname", BungeeMessages.CONTROL_ADMIT_NAME.color()),
+                    new Placeholder("refusename", BungeeMessages.CONTROL_REFUSE_NAME.color()),
+                    new Placeholder("prefix", BungeeMessages.PREFIX.color()),
+                    new Placeholder("adminprefix", color(admin_prefix)),
+                    new Placeholder("adminsuffix", color(admin_suffix)),
+                    new Placeholder("suspectprefix", color(sus_prefix)),
+                    new Placeholder("suspectsuffix", color(sus_suffix)),
+                    new Placeholder("suspect", suspicious.getName()),
+                    new Placeholder("administrator", administrator.getName()));
+        } else {
+            BungeeMessages.CONTROL_HORIZONTALFORMAT.sendList(administrator, suspicious,
+                    new Placeholder("prefix", BungeeMessages.PREFIX.color()),
+                    new Placeholder("adminprefix", color(admin_prefix)),
+                    new Placeholder("adminsuffix", color(admin_suffix)),
+                    new Placeholder("suspectprefix", color(sus_prefix)),
+                    new Placeholder("suspectsuffix", color(sus_suffix)),
+                    new Placeholder("suspect", suspicious.getName()),
+                    new Placeholder("administrator", administrator.getName()));
+        }
     }
 
     private void checkForErrors(ProxiedPlayer suspicious, ProxiedPlayer administrator, ServerInfo proxyServer) {

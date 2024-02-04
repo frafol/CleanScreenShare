@@ -337,7 +337,6 @@ public class CleanSS extends Plugin {
 						(BungeeConfig.DISCORD_ACTIVITY_TYPE.get(String.class).toUpperCase()), BungeeConfig.DISCORD_ACTIVITY.get(String.class)
 				.replace("%players%", String.valueOf(getProxy().getOnlineCount()))
 				.replace("%suspiciouses%", String.valueOf(PlayerCache.getSuspicious().size()))));
-
 	}
 
 	@SneakyThrows
