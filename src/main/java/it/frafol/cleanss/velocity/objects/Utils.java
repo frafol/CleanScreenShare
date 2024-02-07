@@ -131,26 +131,22 @@ public class Utils {
 
         for (String message : stringList) {
 
-            if (message.contains(VelocityMessages.CONTROL_CLEAN_NAME.get(String.class))) {
-
+            if (message.contains(VelocityMessages.CONTROL_CLEAN_NAME.color())) {
                 commandSource.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(message).clickEvent(ClickEvent
                         .clickEvent(ClickEvent.Action.SUGGEST_COMMAND, VelocityMessages.CONTROL_CLEAN_COMMAND.get(String.class)
                                 .replace("%player%", player_name.getUsername()))));
 
-            } else if (message.contains(VelocityMessages.CONTROL_CHEATER_NAME.get(String.class))) {
-
+            } else if (message.contains(VelocityMessages.CONTROL_CHEATER_NAME.color())) {
                 commandSource.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(message).clickEvent(ClickEvent
                         .clickEvent(ClickEvent.Action.SUGGEST_COMMAND, VelocityMessages.CONTROL_CHEATER_COMMAND.get(String.class)
                                 .replace("%player%", player_name.getUsername()))));
 
-            } else if (message.contains(VelocityMessages.CONTROL_ADMIT_NAME.get(String.class))) {
-
+            } else if (message.contains(VelocityMessages.CONTROL_ADMIT_NAME.color())) {
                 commandSource.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(message)
                         .clickEvent(ClickEvent.clickEvent(ClickEvent.Action.SUGGEST_COMMAND, VelocityMessages.CONTROL_ADMIT_COMMAND.get(String.class)
                                 .replace("%player%", player_name.getUsername()))));
 
-            } else if (message.contains(VelocityMessages.CONTROL_REFUSE_NAME.get(String.class))) {
-
+            } else if (message.contains(VelocityMessages.CONTROL_REFUSE_NAME.color())) {
                 commandSource.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(message)
                         .clickEvent(ClickEvent.clickEvent(ClickEvent.Action.SUGGEST_COMMAND, VelocityMessages.CONTROL_REFUSE_COMMAND.get(String.class)
                                 .replace("%player%", player_name.getUsername()))));
@@ -458,6 +454,10 @@ public class Utils {
     }
 
     public void finishControl(Player suspicious, Player administrator, RegisteredServer proxyServer) {
+
+        if (suspicious == null || administrator == null) {
+            return;
+        }
 
         if (suspicious.isActive() && administrator.isActive()) {
 

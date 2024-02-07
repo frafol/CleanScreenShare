@@ -1,5 +1,8 @@
 package it.frafol.cleanss.bungee;
 
+import com.alessiodp.libby.BungeeLibraryManager;
+import com.alessiodp.libby.Library;
+import com.alessiodp.libby.relocation.Relocation;
 import de.myzelyam.api.vanish.BungeeVanishAPI;
 import it.frafol.cleanss.bungee.commands.*;
 import it.frafol.cleanss.bungee.enums.BungeeConfig;
@@ -13,13 +16,12 @@ import it.frafol.cleanss.bungee.mysql.MySQLWorker;
 import it.frafol.cleanss.bungee.objects.PlayerCache;
 import it.frafol.cleanss.bungee.objects.TextFile;
 import it.frafol.cleanss.bungee.objects.Utils;
+import it.frafol.cleanss.velocity.enums.VelocityConfig;
 import lombok.Getter;
 import lombok.SneakyThrows;
-import net.byteflux.libby.BungeeLibraryManager;
-import net.byteflux.libby.Library;
-import net.byteflux.libby.relocation.Relocation;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -301,13 +303,31 @@ public class CleanSS extends Plugin {
 
 	private void loadDiscord() {
 		try {
-			jda = JDABuilder.createDefault(BungeeConfig.DISCORD_TOKEN.get(String.class)).enableIntents(GatewayIntent.MESSAGE_CONTENT).build();
+			jda = JDABuilder.createDefault(BungeeConfig.DISCORD_TOKEN.get(String.class))
+					.enableIntents(GatewayIntent.MESSAGE_CONTENT)
+					.setStatus(selectStatus())
+					.build();
 		} catch (ExceptionInInitializerError e) {
 			getLogger().severe("Invalid Discord configuration, please check your config.yml file.");
 			getLogger().severe("Make sure you are not using any strange forks (like Aegis).");
 		}
 
 		updateTaskJDA();
+	}
+
+	private OnlineStatus selectStatus() {
+		String status = VelocityConfig.DISCORD_STATUS.get(String.class);
+		if (status.equalsIgnoreCase("ONLINE")) {
+			return OnlineStatus.ONLINE;
+		} else if (status.equalsIgnoreCase("IDLE")) {
+			return OnlineStatus.IDLE;
+		} else if (status.equalsIgnoreCase("DND")) {
+			return OnlineStatus.DO_NOT_DISTURB;
+		} else if (status.equalsIgnoreCase("INVISIBLE")) {
+			return OnlineStatus.INVISIBLE;
+		} else {
+			return OnlineStatus.ONLINE;
+		}
 	}
 
 	public void updateTaskJDA() {

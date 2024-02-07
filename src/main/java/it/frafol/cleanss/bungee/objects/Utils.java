@@ -112,36 +112,28 @@ public class Utils {
         for (String message : stringList) {
 
             TextComponent suggestMessage = new TextComponent(message);
-            if (message.contains(BungeeMessages.CONTROL_CLEAN_NAME.get(String.class))) {
-
+            if (message.contains(BungeeMessages.CONTROL_CLEAN_NAME.color())) {
                 suggestMessage.setClickEvent(new ClickEvent(
                         ClickEvent.Action.SUGGEST_COMMAND,
                         BungeeMessages.CONTROL_CLEAN_COMMAND.get(String.class).replace("%player%", player_name.getName())));
-
                 commandSource.sendMessage(suggestMessage);
 
-            } else if (message.contains(BungeeMessages.CONTROL_CHEATER_NAME.get(String.class))) {
-
+            } else if (message.contains(BungeeMessages.CONTROL_CHEATER_NAME.color())) {
                 suggestMessage.setClickEvent(new ClickEvent(
                         ClickEvent.Action.SUGGEST_COMMAND,
                         BungeeMessages.CONTROL_CHEATER_COMMAND.get(String.class).replace("%player%", player_name.getName())));
-
                 commandSource.sendMessage(suggestMessage);
 
-            } else if (message.contains(BungeeMessages.CONTROL_ADMIT_NAME.get(String.class))) {
-
+            } else if (message.contains(BungeeMessages.CONTROL_ADMIT_NAME.color())) {
                 suggestMessage.setClickEvent(new ClickEvent(
                         ClickEvent.Action.SUGGEST_COMMAND,
                         BungeeMessages.CONTROL_ADMIT_COMMAND.get(String.class).replace("%player%", player_name.getName())));
-
                 commandSource.sendMessage(suggestMessage);
 
-            } else if (message.contains(BungeeMessages.CONTROL_REFUSE_NAME.get(String.class))) {
-
+            } else if (message.contains(BungeeMessages.CONTROL_REFUSE_NAME.color())) {
                 suggestMessage.setClickEvent(new ClickEvent(
                         ClickEvent.Action.SUGGEST_COMMAND,
                         BungeeMessages.CONTROL_REFUSE_COMMAND.get(String.class).replace("%player%", player_name.getName())));
-
                 commandSource.sendMessage(suggestMessage);
 
             } else {
@@ -405,6 +397,10 @@ public class Utils {
     }
 
     public void finishControl(ProxiedPlayer suspicious, ProxiedPlayer administrator, ServerInfo proxyServer) {
+
+        if (administrator == null || suspicious == null) {
+            return;
+        }
 
         if (administrator.isConnected() && suspicious.isConnected()) {
 

@@ -26,6 +26,7 @@ public enum BungeeConfig {
     DISCORD_EMBED_FOOTER("discord-webhook.embed_footer"),
     SLOG_PUNISH("settings.slog.punish"),
     SLOG_COMMAND("settings.slog.punish_command"),
+    BAN_COMMANDS("settings.slog.ban_commands"),
     DISABLE_PING("settings.disable_ping_check"),
     AUTO_UPDATE("settings.auto_update"),
     MYSQL("mysql.enable"),

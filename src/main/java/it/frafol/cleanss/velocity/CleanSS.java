@@ -1,5 +1,8 @@
 package it.frafol.cleanss.velocity;
 
+import com.alessiodp.libby.Library;
+import com.alessiodp.libby.VelocityLibraryManager;
+import com.alessiodp.libby.relocation.Relocation;
 import com.google.inject.Inject;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
@@ -25,9 +28,6 @@ import it.frafol.cleanss.velocity.objects.adapter.ReflectUtil;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.SneakyThrows;
-import net.byteflux.libby.Library;
-import net.byteflux.libby.VelocityLibraryManager;
-import net.byteflux.libby.relocation.Relocation;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.slf4j.Logger;
 import ru.vyarus.yaml.updater.YamlUpdater;
@@ -49,7 +49,7 @@ import java.util.concurrent.TimeUnit;
 @Plugin(
 		id = "cleanscreenshare",
 		name = "CleanScreenShare",
-		version = "2.4.0",
+		version = "2.4.1",
 		description = "Make control hacks on your players.",
 		dependencies = {@Dependency(id = "luckperms", optional = true), @Dependency(id = "mysqlandconfigurateforvelocity", optional = true), @Dependency(id = "limboapi", optional = true), @Dependency(id = "ajqueue", optional = true), @Dependency(id = "premiumvanish", optional = true), @Dependency(id = "velocityvanish", optional = true)},
 		authors = { "frafol" })
@@ -305,7 +305,7 @@ public class CleanSS {
 	}
 
 	private void loadLibraries() {
-		VelocityLibraryManager<CleanSS> velocityLibraryManager = new VelocityLibraryManager<>(getLogger(), path, getServer().getPluginManager(), this);
+		VelocityLibraryManager<CleanSS> velocityLibraryManager = new VelocityLibraryManager<>(this, getLogger(), path, getServer().getPluginManager());
 
 		final Relocation yamlrelocation = new Relocation("yaml", "it{}frafol{}libs{}yaml");
 		Library yaml = Library.builder()

@@ -43,7 +43,8 @@ public class InfoCommand extends Command implements TabExecutor {
 
         if (!instance.getProxy().getPlayers().toString().contains(args[0])) {
             invocation.sendMessage(TextComponent.fromLegacyText(BungeeMessages.NOT_ONLINE.color()
-                    .replace("%prefix%", BungeeMessages.PREFIX.color())));
+                    .replace("%prefix%", BungeeMessages.PREFIX.color())
+                    .replace("%player%", args[0])));
             return;
         }
 

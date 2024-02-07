@@ -8,16 +8,12 @@ description: "Addition for CleanSS (Bungee/Velocity)"
 commands:
   spawn:
     description: "Teleport to the spawn"
-    usage: "/spawn"
   setadminspawn:
     description: "Set the admin spawn"
-    usage: "/setadminspawn"
   setsuspectspawn:
     description: "Set the suspect spawn"
-    usage: "/setsuspectspawn"
   setotherspawn:
     description: "Set the other spawn"
-    usage: "/setotherspawn"
 softdepend:
   - PlaceholderAPI
   - LuckPerms

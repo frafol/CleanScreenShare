@@ -119,6 +119,9 @@ discord-webhook: # The Discord Integration is an experimental feature, report al
   # Your Discord bot's token.
   token: ""
 
+  # Status: ONLINE, IDLE, DND, INVISIBLE.
+  status: "ONLINE"
+
   # Types: WATCHING, PLAYING, STREAMING.
   activity_type: "WATCHING"
 

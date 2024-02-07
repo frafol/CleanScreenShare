@@ -5,6 +5,7 @@ import com.velocitypowered.api.event.command.CommandExecuteEvent;
 import com.velocitypowered.api.network.ProtocolVersion;
 import com.velocitypowered.api.proxy.Player;
 import it.frafol.cleanss.velocity.CleanSS;
+import it.frafol.cleanss.velocity.enums.VelocityConfig;
 import it.frafol.cleanss.velocity.enums.VelocityMessages;
 import it.frafol.cleanss.velocity.objects.PlayerCache;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
@@ -29,6 +30,10 @@ public class CommandListener {
         final Player player = (Player) event.getCommandSource();
 
         if (!PlayerCache.getSuspicious().contains(player.getUniqueId())) {
+            return;
+        }
+
+        if (event.getCommand().equalsIgnoreCase("spawn")) {
             return;
         }
 
@@ -57,7 +62,7 @@ public class CommandListener {
             return;
         }
 
-        for (String command : instance.getConfigTextFile().getConfig().getStringList("settings.slog.ban_commands")) {
+        for (String command : VelocityConfig.BAN_COMMANDS.getStringList()) {
             if ((event.getCommand().startsWith(command + " ")) && event.getCommand().contains(instance.getValue(PlayerCache.getCouples(), player).getUsername())) {
                 PlayerCache.getBan_execution().add(player.getUniqueId());
                 instance.getServer().getScheduler().buildTask(instance, () -> PlayerCache.getBan_execution().remove(player.getUniqueId())).delay(2L, TimeUnit.SECONDS).schedule();
