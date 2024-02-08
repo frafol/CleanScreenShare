@@ -16,7 +16,6 @@ import it.frafol.cleanss.bungee.mysql.MySQLWorker;
 import it.frafol.cleanss.bungee.objects.PlayerCache;
 import it.frafol.cleanss.bungee.objects.TextFile;
 import it.frafol.cleanss.bungee.objects.Utils;
-import it.frafol.cleanss.velocity.enums.VelocityConfig;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import net.dv8tion.jda.api.JDA;
@@ -316,7 +315,7 @@ public class CleanSS extends Plugin {
 	}
 
 	private OnlineStatus selectStatus() {
-		String status = VelocityConfig.DISCORD_STATUS.get(String.class);
+		String status = BungeeConfig.DISCORD_STATUS.get(String.class);
 		if (status.equalsIgnoreCase("ONLINE")) {
 			return OnlineStatus.ONLINE;
 		} else if (status.equalsIgnoreCase("IDLE")) {
