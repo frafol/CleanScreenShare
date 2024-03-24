@@ -9,6 +9,8 @@ import com.velocitypowered.api.proxy.server.RegisteredServer;
 import it.frafol.cleanss.velocity.CleanSS;
 import it.frafol.cleanss.velocity.enums.VelocityConfig;
 import it.frafol.cleanss.velocity.enums.VelocityMessages;
+import it.frafol.cleanss.velocity.objects.ChatUtil;
+import it.frafol.cleanss.velocity.objects.MessageUtil;
 import it.frafol.cleanss.velocity.objects.PlayerCache;
 import it.frafol.cleanss.velocity.objects.Utils;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
@@ -52,8 +54,9 @@ public class KickListener {
                     .replace("%prefix%", VelocityMessages.PREFIX.color())));
             PlayerCache.getSpectators().remove(player.getUniqueId());
 
-            Utils.sendDiscordSpectatorMessage(player, VelocityMessages.DISCORD_SPECTATOR_END.color()
-                    .replace("%player%", player.getUsername()));
+            MessageUtil.sendDiscordSpectatorMessage(player,
+                    VelocityMessages.DISCORD_SPECTATOR_END.color().replace("%player%", player.getUsername()),
+                    VelocityMessages.DISCORD_SPECTATOR_THUMBNAIL.color());
 
             String admin_prefix;
             String admin_suffix;
@@ -85,8 +88,8 @@ public class KickListener {
                         .forEach(players -> players.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.SPECT_ADMIN_NOTIFY_FINISH.color()
                                 .replace("%prefix%", VelocityMessages.PREFIX.color())
                                 .replace("%admin%", player.getUsername())
-                                .replace("%adminprefix%", Utils.color(admin_prefix))
-                                .replace("%adminsuffix%", Utils.color(admin_suffix)))));
+                                .replace("%adminprefix%", ChatUtil.color(admin_prefix))
+                                .replace("%adminsuffix%", ChatUtil.color(admin_suffix)))));
             }
             return;
         }

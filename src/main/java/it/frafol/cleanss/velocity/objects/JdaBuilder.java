@@ -1,5 +1,6 @@
 package it.frafol.cleanss.velocity.objects;
 
+import it.frafol.cleanss.velocity.CleanSS;
 import it.frafol.cleanss.velocity.enums.VelocityConfig;
 import lombok.SneakyThrows;
 import net.dv8tion.jda.api.JDA;
@@ -10,6 +11,7 @@ import net.dv8tion.jda.api.requests.GatewayIntent;
 public class JdaBuilder {
 
     private JDA jda;
+    private final CleanSS instance = CleanSS.getInstance();
 
     public JDA JdaWorker() {
         return jda;
@@ -26,8 +28,9 @@ public class JdaBuilder {
                     .enableIntents(GatewayIntent.MESSAGE_CONTENT)
                     .setStatus(selectStatus())
                     .build();
+            instance.getLogger().info("Discord hooked successfully.");
         } catch (ExceptionInInitializerError e) {
-            System.out.println("§cInvalid Discord configuration, please check your config.yml file.");
+            instance.getLogger().error("Invalid Discord configuration, please check your config.yml file.");
         }
     }
 

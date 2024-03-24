@@ -25,6 +25,7 @@ public enum BungeeConfig {
     DISCORD_CHANNEL_ID("discord-webhook.channel_id"),
     DISCORD_EMBED_TITLE("discord-webhook.embed_title"),
     DISCORD_EMBED_FOOTER("discord-webhook.embed_footer"),
+    DISCORD_EMBED_FOOTER_ICON("discord-webhook.embed_footer_icon"),
     SLOG_PUNISH("settings.slog.punish"),
     SLOG_COMMAND("settings.slog.punish_command"),
     BAN_COMMANDS("settings.slog.ban_commands"),

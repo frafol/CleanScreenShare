@@ -9,7 +9,17 @@ messages:
 
   prefix: "&d&lSS &7»"
 
-  usage: "%prefix% &7Use: &d/ss [player] &7- &d/ssfinish [player] &7- &d/ssinfo [player] &7- &d/sspec [player]"
+  usage:
+    - "&8&m------&5&m------&d&m------&5&m------&8&m------"
+    - "&f"
+    - "&d&lCleanScreenShare &7- &dCommands:"
+    - "&7- &d/control <player> &7- &fStart a hack control."
+    - "&7- &d/controlfinish <player> &7- &fFinish a hack control."
+    - "&7- &d/sspectate <player> &7- &fStart spectating controls."
+    - "&7- &d/ssinfo <player> &7- &fGet player informations."
+    - "&7- &d/ssreload &7- &fReload the configuration."
+    - "&f"
+    - "&8&m------&5&m------&d&m------&5&m------&8&m------"
 
   only_players: "%prefix% &7This command is only for &dplayers&7."
 
@@ -202,16 +212,20 @@ messages:
     # These messages will be sent in the discord channel when a certain thing happens.
     # You can use %staffer%, %suspect%. If you are using LuckPerms, you can also use %admingroup% and %suspectgroup%.
     started: "The staffer %staffer% started an hack control to %suspect%."
+    started_thumbnail: "none" # You can use a link to an image.
 
     # You can use %staffer%, %suspect% and %result%. If you are using LuckPerms, you can also use %admingroup% and %suspectgroup%.
     finished: "The staffer %staffer% finished the control to %suspect%."
+    finished_thumbnail: "none" # You can use a link to an image.
 
-    # You can use %staffer%, %suspect% and %result%. If you are using LuckPerms, you can also use %admingroup% and %suspectgroup%.
+    # You can use %staffer% and %result%. If you are using LuckPerms, you can also use %admingroup%.
     spectator: "The staffer %staffer% started spectating controls."
     spectator_end: "The staffer %staffer% stopped spectating controls."
+    spectator_thumbnail: "none" # You can use a link to an image.
 
     # You can use %staffer%, %suspect% and %result%. If you are using LuckPerms, you can also use %admingroup% and %suspectgroup%.
     suspect_left_during_control: "The suspect %suspect%, left the server during a control."
+    suspect_left_during_control_thumbnail: "none" # You can use a link to an image.
 
     # Output of placeholder %result%.
     results:

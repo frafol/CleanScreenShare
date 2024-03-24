@@ -2,6 +2,7 @@ package it.frafol.cleanss.bungee.listeners;
 
 import it.frafol.cleanss.bungee.CleanSS;
 import it.frafol.cleanss.bungee.enums.BungeeConfig;
+import it.frafol.cleanss.bungee.objects.MessageUtil;
 import it.frafol.cleanss.bungee.objects.PlayerCache;
 import it.frafol.cleanss.bungee.objects.Utils;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -39,11 +40,11 @@ public class ServerListener implements Listener {
             }
 
             if (PlayerCache.getSuspicious().contains(player.getUniqueId())) {
-                Utils.sendChannelMessage(player, "SUSPECT");
+                MessageUtil.sendChannelMessage(player, "SUSPECT");
             }
 
             if (PlayerCache.getAdministrator().contains(player.getUniqueId())) {
-                Utils.sendChannelAdvancedMessage(player, PlayerCache.getCouples().get(player), "ADMIN");
+                MessageUtil.sendChannelAdvancedMessage(player, PlayerCache.getCouples().get(player), "ADMIN");
             }
 
         }, BungeeConfig.MESSAGE_DELAY.get(Integer.class), TimeUnit.SECONDS);

@@ -28,8 +28,8 @@ public class DebugCommand extends Command {
         invocation.sendMessage(TextComponent.fromLegacyText("§d| "));
         invocation.sendMessage(TextComponent.fromLegacyText("§d| §7Version: §d" + instance.getDescription().getVersion()));
         invocation.sendMessage(TextComponent.fromLegacyText("§d| §7BungeeCord: §d" + instance.getProxy().getVersion()));
-        invocation.sendMessage(TextComponent.fromLegacyText("§d| §7MySQL: §d" + getMySQL()));
-        invocation.sendMessage(TextComponent.fromLegacyText("§d| §7Discord: §d" + getDiscord()));
+        invocation.sendMessage(TextComponent.fromLegacyText("§d| §7MySQL: " + getMySQL()));
+        invocation.sendMessage(TextComponent.fromLegacyText("§d| §7Discord: " + getDiscord()));
         invocation.sendMessage(TextComponent.fromLegacyText("§d| "));
         invocation.sendMessage(TextComponent.fromLegacyText("§d| §7Control servers: "));
 
@@ -61,17 +61,15 @@ public class DebugCommand extends Command {
 
     private String getMySQL() {
         if (instance.getData() == null) {
-            return "Not connected";
-        } else {
-            return "Connected";
+            return "§cNot connected";
         }
+        return "§aConnected";
     }
 
     private String getDiscord() {
         if (instance.getJda() == null) {
-            return "Not connected";
-        } else {
-            return "Connected";
+            return "§cNot connected";
         }
+        return "§aConnected";
     }
 }

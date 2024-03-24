@@ -5,6 +5,7 @@ import it.frafol.cleanss.bungee.CleanSS;
 import it.frafol.cleanss.bungee.enums.BungeeCommandsConfig;
 import it.frafol.cleanss.bungee.enums.BungeeConfig;
 import it.frafol.cleanss.bungee.enums.BungeeMessages;
+import it.frafol.cleanss.bungee.objects.MessageUtil;
 import it.frafol.cleanss.bungee.objects.PlayerCache;
 import it.frafol.cleanss.bungee.objects.Utils;
 import net.luckperms.api.LuckPerms;
@@ -147,7 +148,11 @@ public class ControlCommand extends Command implements TabExecutor {
 			suspect_group = "";
 		}
 
-		Utils.sendDiscordMessage(player.get(), (ProxiedPlayer) invocation, BungeeMessages.DISCORD_STARTED.get(String.class).replace("%suspectgroup%", suspect_group).replace("%admingroup%", admin_group));
+		MessageUtil.sendDiscordMessage(
+				player.get(),
+				(ProxiedPlayer) invocation,
+				BungeeMessages.DISCORD_STARTED.get(String.class).replace("%suspectgroup%", suspect_group).replace("%admingroup%", admin_group),
+				BungeeMessages.DISCORD_STARTED_THUMBNAIL.get(String.class));
 	}
 
 	private String getDisplayName(ProxiedPlayer player) {

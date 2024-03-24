@@ -7,6 +7,8 @@ import com.velocitypowered.api.proxy.server.RegisteredServer;
 import it.frafol.cleanss.velocity.CleanSS;
 import it.frafol.cleanss.velocity.enums.VelocityConfig;
 import it.frafol.cleanss.velocity.enums.VelocityMessages;
+import it.frafol.cleanss.velocity.objects.ChatUtil;
+import it.frafol.cleanss.velocity.objects.MessageUtil;
 import it.frafol.cleanss.velocity.objects.PlayerCache;
 import it.frafol.cleanss.velocity.objects.Utils;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
@@ -188,14 +190,21 @@ public class FinishCommand implements SimpleCommand {
                                     .replace("%prefix%", VelocityMessages.PREFIX.color())
                                     .replace("%admin%", ((Player) invocation.source()).getUsername())
                                     .replace("%suspect%", player.get().getUsername())
-                                    .replace("%adminprefix%", Utils.color(admin_prefix))
-                                    .replace("%adminsuffix%", Utils.color(admin_suffix))
-                                    .replace("%suspectprefix%", Utils.color(sus_prefix))
-                                    .replace("%suspectsuffix%", Utils.color(sus_suffix))
+                                    .replace("%adminprefix%", ChatUtil.color(admin_prefix))
+                                    .replace("%adminsuffix%", ChatUtil.color(admin_suffix))
+                                    .replace("%suspectprefix%", ChatUtil.color(sus_prefix))
+                                    .replace("%suspectsuffix%", ChatUtil.color(sus_suffix))
                                     .replace("%result%", VelocityMessages.CLEAN.color()))));
                 }
 
-                Utils.sendDiscordMessage(player.get(), sender, VelocityMessages.DISCORD_FINISHED.get(String.class).replace("%suspectgroup%", suspect_group).replace("%admingroup%", admin_group), VelocityMessages.CLEAN.get(String.class));
+                MessageUtil.sendDiscordMessage(
+                        player.get(),
+                        sender,
+                        VelocityMessages.DISCORD_FINISHED.get(String.class)
+                                .replace("%suspectgroup%", suspect_group)
+                                .replace("%admingroup%", admin_group),
+                        VelocityMessages.CLEAN.get(String.class),
+                        VelocityMessages.DISCORD_FINISHED_THUMBNAIL.get(String.class));
 
             } else {
 

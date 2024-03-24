@@ -1,7 +1,5 @@
 package it.frafol.cleanss.velocity.objects;
 
-import com.google.common.io.ByteArrayDataOutput;
-import com.google.common.io.ByteStreams;
 import com.velocitypowered.api.command.CommandSource;
 import com.velocitypowered.api.network.ProtocolVersion;
 import com.velocitypowered.api.proxy.Player;
@@ -10,270 +8,21 @@ import com.velocitypowered.api.scheduler.ScheduledTask;
 import it.frafol.cleanss.velocity.CleanSS;
 import it.frafol.cleanss.velocity.enums.VelocityConfig;
 import it.frafol.cleanss.velocity.enums.VelocityMessages;
-import lombok.Getter;
 import lombok.experimental.UtilityClass;
-import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.ComponentBuilder;
-import net.kyori.adventure.text.TextComponent;
-import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
-import net.kyori.adventure.title.Title;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.LuckPermsProvider;
 import net.luckperms.api.model.group.Group;
 import net.luckperms.api.model.user.User;
 
-import java.awt.*;
-import java.time.Duration;
-import java.util.List;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 @UtilityClass
 public class Utils {
 
     private static final CleanSS instance = CleanSS.getInstance();
     private final HashMap<RegisteredServer, ScheduledTask> task = new HashMap<>();
-
-    public List<String> getStringList(VelocityMessages velocityMessages) {
-        return instance.getMessagesTextFile().getConfig().getStringList(velocityMessages.getPath());
-    }
-
-    @Getter
-    private ScheduledTask titleTask;
-
-    @Getter
-    private ScheduledTask titleTaskAdmin;
-
-    public List<String> getStringList(VelocityMessages velocityMessages, Placeholder... placeholders) {
-        List<String> newList = new ArrayList<>();
-
-        for (String s : getStringList(velocityMessages)) {
-            s = applyPlaceHolder(s, placeholders);
-            newList.add(s);
-        }
-
-        return newList;
-    }
-
-    public String applyPlaceHolder(String s, Placeholder... placeholders) {
-        for (Placeholder placeholder : placeholders) {
-            s = s.replace(placeholder.getKey(), placeholder.getValue());
-        }
-
-        return s;
-    }
-
-    public String color(String string) {
-        String hex = convertHexColors(string);
-        return hex.replace("&", "§");
-    }
-
-    private String convertHexColors(String message) {
-
-        if (!containsHexColor(message)) {
-            return message;
-        }
-
-        Pattern pattern = Pattern.compile("#[a-fA-F0-9]{6}");
-        Matcher matcher = pattern.matcher(message);
-        while (matcher.find()) {
-            String hexCode = message.substring(matcher.start(), matcher.end());
-            String replaceSharp = hexCode.replace('#', 'x');
-
-            char[] ch = replaceSharp.toCharArray();
-            StringBuilder builder = new StringBuilder();
-            for (char c : ch) {
-                builder.append("&").append(c);
-            }
-
-            message = message.replace(hexCode, builder.toString());
-            matcher = pattern.matcher(message);
-        }
-        return message;
-    }
-
-    private boolean containsHexColor(String message) {
-        String hexColorPattern = "(?i)&#[a-f0-9]{6}";
-        return message.matches(".*" + hexColorPattern + ".*");
-    }
-
-    public List<String> color(List<String> list) {
-        return list.stream().map(Utils::color).collect(Collectors.toList());
-    }
-
-    private HashMap<String, String> getButtons(Player suspect) {
-        HashMap<String, String> buttons = new HashMap<>();
-        buttons.put(VelocityMessages.CONTROL_CLEAN_NAME.color(), VelocityMessages.CONTROL_CLEAN_COMMAND.get(String.class).replace("%player%", suspect.getUsername()));
-        buttons.put(VelocityMessages.CONTROL_CHEATER_NAME.color(), VelocityMessages.CONTROL_CHEATER_COMMAND.get(String.class).replace("%player%", suspect.getUsername()));
-        buttons.put(VelocityMessages.CONTROL_ADMIT_NAME.color(), VelocityMessages.CONTROL_ADMIT_COMMAND.get(String.class).replace("%player%", suspect.getUsername()));
-        buttons.put(VelocityMessages.CONTROL_REFUSE_NAME.color(), VelocityMessages.CONTROL_REFUSE_COMMAND.get(String.class).replace("%player%", suspect.getUsername()));
-        return buttons;
-    }
-
-    public void sendCorrectList(CommandSource commandSource, List<String> stringList) {
-        for (String message : stringList) {
-            commandSource.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(message));
-        }
-    }
-
-    public void sendButtons(CommandSource commandSource, List<String> stringList, Player player_name) {
-
-        if (!VelocityMessages.CONTROL_USEVERTICALFORMAT.get(Boolean.class)) {
-            sendHorizontalButtons(commandSource, stringList, player_name);
-            return;
-        }
-
-        for (String message : stringList) {
-
-            if (message.contains(VelocityMessages.CONTROL_CLEAN_NAME.color())) {
-                commandSource.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(message).clickEvent(ClickEvent
-                        .clickEvent(ClickEvent.Action.SUGGEST_COMMAND, VelocityMessages.CONTROL_CLEAN_COMMAND.get(String.class)
-                                .replace("%player%", player_name.getUsername()))));
-
-            } else if (message.contains(VelocityMessages.CONTROL_CHEATER_NAME.color())) {
-                commandSource.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(message).clickEvent(ClickEvent
-                        .clickEvent(ClickEvent.Action.SUGGEST_COMMAND, VelocityMessages.CONTROL_CHEATER_COMMAND.get(String.class)
-                                .replace("%player%", player_name.getUsername()))));
-
-            } else if (message.contains(VelocityMessages.CONTROL_ADMIT_NAME.color())) {
-                commandSource.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(message)
-                        .clickEvent(ClickEvent.clickEvent(ClickEvent.Action.SUGGEST_COMMAND, VelocityMessages.CONTROL_ADMIT_COMMAND.get(String.class)
-                                .replace("%player%", player_name.getUsername()))));
-
-            } else if (message.contains(VelocityMessages.CONTROL_REFUSE_NAME.color())) {
-                commandSource.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(message)
-                        .clickEvent(ClickEvent.clickEvent(ClickEvent.Action.SUGGEST_COMMAND, VelocityMessages.CONTROL_REFUSE_COMMAND.get(String.class)
-                                .replace("%player%", player_name.getUsername()))));
-
-            } else {
-                commandSource.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(message));
-            }
-        }
-    }
-
-    private void sendHorizontalButtons(CommandSource commandSource, List<String> stringList, Player player_name) {
-
-        List<TextComponent> buttons = new ArrayList<>();
-
-        for (String message : stringList) {
-            if (message.contains("%buttons%")) {
-                for (String key : getButtons(player_name).keySet()) {
-                    TextComponent button = LegacyComponentSerializer.legacy('§').deserialize(key)
-                            .clickEvent(ClickEvent.clickEvent(ClickEvent.Action.SUGGEST_COMMAND, getButtons(player_name).get(key)
-                                    .replace("%player%", player_name.getUsername()))).append(Component.text(" "));
-                    buttons.add(button);
-                }
-
-                ComponentBuilder<TextComponent, TextComponent.Builder> builder = Component.text();
-                for (TextComponent component : buttons) {
-                    builder.append(component);
-                }
-
-                commandSource.sendMessage(builder.build());
-                continue;
-            }
-
-            commandSource.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(message));
-        }
-    }
-
-    public void sendDiscordSpectatorMessage(Player player, String message) {
-
-        if (VelocityConfig.DISCORD_ENABLED.get(Boolean.class)) {
-
-            if (instance.getJda() == null) {
-                return;
-            }
-
-            if (instance.getJda().getJda() == null) {
-                return;
-            }
-
-            final TextChannel channel = instance.getJda().getJda().getTextChannelById(VelocityConfig.DISCORD_CHANNEL_ID.get(String.class));
-
-            if (channel == null) {
-                return;
-            }
-
-            EmbedBuilder embed = new EmbedBuilder();
-
-            embed.setTitle(VelocityConfig.DISCORD_EMBED_TITLE.get(String.class), null);
-
-            embed.setDescription(message
-                    .replace("%staffer%", player.getUsername()));
-
-            embed.setColor(Color.RED);
-            embed.setFooter(VelocityConfig.DISCORD_EMBED_FOOTER.get(String.class));
-
-            channel.sendMessageEmbeds(embed.build()).queue();
-        }
-    }
-
-    public void sendDiscordMessage(Player suspect, Player staffer, String message) {
-
-        if (VelocityConfig.DISCORD_ENABLED.get(Boolean.class)) {
-
-            if (instance.getJda() == null) {
-                return;
-            }
-
-            if (instance.getJda().getJda() == null) {
-                return;
-            }
-
-            final TextChannel channel = instance.getJda().getJda().getTextChannelById(VelocityConfig.DISCORD_CHANNEL_ID.get(String.class));
-
-            if (channel == null) {
-                return;
-            }
-
-            EmbedBuilder embed = new EmbedBuilder();
-
-            embed.setTitle(VelocityConfig.DISCORD_EMBED_TITLE.get(String.class), null);
-
-            embed.setDescription(message
-                    .replace("%suspect%", suspect.getUsername())
-                    .replace("%staffer%", staffer.getUsername()));
-
-            embed.setColor(Color.RED);
-            embed.setFooter(VelocityConfig.DISCORD_EMBED_FOOTER.get(String.class));
-
-            channel.sendMessageEmbeds(embed.build()).queue();
-        }
-    }
-
-    public void sendDiscordMessage(Player suspect, Player staffer, String message, String result) {
-
-        if (VelocityConfig.DISCORD_ENABLED.get(Boolean.class)) {
-
-            final TextChannel channel = instance.getJda().getJda().getTextChannelById(VelocityConfig.DISCORD_CHANNEL_ID.get(String.class));
-
-            if (channel == null) {
-                return;
-            }
-
-            EmbedBuilder embed = new EmbedBuilder();
-
-            embed.setTitle(VelocityConfig.DISCORD_EMBED_TITLE.get(String.class), null);
-
-            embed.setDescription(message
-                    .replace("%suspect%", suspect.getUsername())
-                    .replace("%staffer%", staffer.getUsername())
-                    .replace("%result%", result));
-
-            embed.setColor(Color.RED);
-            embed.setFooter(VelocityConfig.DISCORD_EMBED_FOOTER.get(String.class));
-
-            channel.sendMessageEmbeds(embed.build()).queue();
-
-        }
-    }
 
     public void punishPlayer(UUID administrator, String suspicious, Player administrator_user, Player suspect) {
 
@@ -328,7 +77,14 @@ public class Utils {
 
         if (PlayerCache.getBan_execution().contains(administrator)) {
 
-            Utils.sendDiscordMessage(suspect, administrator_user, VelocityMessages.DISCORD_FINISHED.get(String.class).replace("%suspectgroup%", suspect_group).replace("%admingroup%", admin_group), VelocityMessages.CHEATER.get(String.class));
+            MessageUtil.sendDiscordMessage(
+                    suspect,
+                    administrator_user,
+                    VelocityMessages.DISCORD_FINISHED.get(String.class)
+                            .replace("%suspectgroup%", suspect_group)
+                            .replace("%admingroup%", admin_group),
+                    VelocityMessages.CHEATER.get(String.class),
+                    VelocityMessages.DISCORD_FINISHED_THUMBNAIL.get(String.class));
 
             String admin_prefix;
             String admin_suffix;
@@ -354,16 +110,23 @@ public class Utils {
                                 .replace("%prefix%", VelocityMessages.PREFIX.color())
                                 .replace("%admin%", administrator_user.getUsername())
                                 .replace("%suspect%", suspect.getUsername())
-                                .replace("%adminprefix%", Utils.color(admin_prefix))
-                                .replace("%adminsuffix%", Utils.color(admin_suffix))
-                                .replace("%suspectprefix%", Utils.color(sus_prefix))
-                                .replace("%suspectsuffix%", Utils.color(sus_suffix))
+                                .replace("%adminprefix%", ChatUtil.color(admin_prefix))
+                                .replace("%adminsuffix%", ChatUtil.color(admin_suffix))
+                                .replace("%suspectprefix%", ChatUtil.color(sus_prefix))
+                                .replace("%suspectsuffix%", ChatUtil.color(sus_suffix))
                                 .replace("%result%", VelocityMessages.CHEATER.color()))));
             }
             return;
         }
 
-        Utils.sendDiscordMessage(suspect, administrator_user, VelocityMessages.DISCORD_QUIT.get(String.class).replace("%suspectgroup%", suspect_group).replace("%admingroup%", admin_group), VelocityMessages.LEFT.get(String.class));
+        MessageUtil.sendDiscordMessage(
+                suspect,
+                administrator_user,
+                VelocityMessages.DISCORD_QUIT.get(String.class)
+                        .replace("%suspectgroup%", suspect_group)
+                        .replace("%admingroup%", admin_group),
+                VelocityMessages.LEFT.get(String.class),
+                VelocityMessages.DISCORD_LEAVE_DURING_CONTROL_THUMBNAIL.get(String.class));
 
         String admin_prefix;
         String admin_suffix;
@@ -389,10 +152,10 @@ public class Utils {
                             .replace("%prefix%", VelocityMessages.PREFIX.color())
                             .replace("%admin%", administrator_user.getUsername())
                             .replace("%suspect%", suspect.getUsername())
-                            .replace("%adminprefix%", Utils.color(admin_prefix))
-                            .replace("%adminsuffix%", Utils.color(admin_suffix))
-                            .replace("%suspectprefix%", Utils.color(sus_prefix))
-                            .replace("%suspectsuffix%", Utils.color(sus_suffix))
+                            .replace("%adminprefix%", ChatUtil.color(admin_prefix))
+                            .replace("%adminsuffix%", ChatUtil.color(admin_suffix))
+                            .replace("%suspectprefix%", ChatUtil.color(sus_prefix))
+                            .replace("%suspectsuffix%", ChatUtil.color(sus_suffix))
                             .replace("%result%", VelocityMessages.LEFT.color()))));
         }
 
@@ -426,7 +189,7 @@ public class Utils {
             return "";
         }
 
-        return color(user.getCachedData().getMetaData().getPrefix());
+        return ChatUtil.color(user.getCachedData().getMetaData().getPrefix());
     }
 
     public String getSuffix(Player player) {
@@ -442,15 +205,7 @@ public class Utils {
             return "";
         }
 
-        return color(user.getCachedData().getMetaData().getSuffix());
-    }
-
-    public void sendList(VelocityMessages velocityMessages, CommandSource commandSource, Placeholder... placeholders) {
-        sendCorrectList(commandSource, color(getStringList(velocityMessages, placeholders)));
-    }
-
-    public void sendCompiledButtons(VelocityMessages velocityMessages, CommandSource commandSource, Player player_name, Placeholder... placeholders) {
-        sendButtons(commandSource, color(getStringList(velocityMessages, placeholders)), player_name);
+        return ChatUtil.color(user.getCachedData().getMetaData().getSuffix());
     }
 
     public void finishControl(Player suspicious, Player administrator, RegisteredServer proxyServer) {
@@ -490,11 +245,11 @@ public class Utils {
                     }
 
                 } else {
-                    Utils.sendChannelMessage(suspicious, "DISCONNECT_NOW");
+                    MessageUtil.sendChannelMessage(suspicious, "DISCONNECT_NOW");
                 }
 
-                Utils.sendEndTitle(suspicious);
-                Utils.sendAdminEndTitle(administrator, suspicious);
+                TitleUtil.sendEndTitle(suspicious);
+                TitleUtil.sendAdminEndTitle(administrator, suspicious);
 
                 suspicious.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.FINISHSUS.color()
                         .replace("%prefix%", VelocityMessages.PREFIX.color())));
@@ -515,7 +270,7 @@ public class Utils {
                         }
 
                     } else {
-                        Utils.sendChannelMessage(administrator, "DISCONNECT_NOW");
+                        MessageUtil.sendChannelMessage(administrator, "DISCONNECT_NOW");
                     }
                 }
             }
@@ -542,11 +297,11 @@ public class Utils {
                 }
 
             } else {
-                Utils.sendChannelMessage(suspicious, "DISCONNECT_NOW");
+                MessageUtil.sendChannelMessage(suspicious, "DISCONNECT_NOW");
             }
 
-            Utils.sendEndTitle(suspicious);
-            Utils.sendAdminEndTitle(administrator, suspicious);
+            TitleUtil.sendEndTitle(suspicious);
+            TitleUtil.sendAdminEndTitle(administrator, suspicious);
 
             suspicious.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.FINISHSUS.color()
                     .replace("%prefix%", VelocityMessages.PREFIX.color())));
@@ -575,7 +330,7 @@ public class Utils {
                 }
 
             } else {
-                Utils.sendChannelMessage(administrator, "DISCONNECT_NOW");
+                MessageUtil.sendChannelMessage(administrator, "DISCONNECT_NOW");
             }
 
             administrator.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.LEAVESUS.color()
@@ -678,8 +433,8 @@ public class Utils {
 
             }
 
-            Utils.sendStartTitle(suspicious);
-            Utils.sendAdminStartTitle(administrator, suspicious);
+            TitleUtil.sendStartTitle(suspicious);
+            TitleUtil.sendAdminStartTitle(administrator, suspicious);
 
             if (VelocityConfig.CHECK_FOR_PROBLEMS.get(Boolean.class)) {
                 Utils.checkForErrors(suspicious, administrator, proxyServer);
@@ -696,10 +451,10 @@ public class Utils {
                                 .replace("%prefix%", VelocityMessages.PREFIX.color())
                                 .replace("%admin%", administrator.getUsername())
                                 .replace("%suspect%", suspicious.getUsername())
-                                .replace("%adminprefix%", color(finalAdmin_prefix))
-                                .replace("%adminsuffix%", color(finalAdmin_suffix))
-                                .replace("%suspectprefix%", color(finalSus_prefix))
-                                .replace("%suspectsuffix%", color(finalSus_suffix)))));
+                                .replace("%adminprefix%", ChatUtil.color(finalAdmin_prefix))
+                                .replace("%adminsuffix%", ChatUtil.color(finalAdmin_suffix))
+                                .replace("%suspectprefix%", ChatUtil.color(finalSus_prefix))
+                                .replace("%suspectsuffix%", ChatUtil.color(finalSus_suffix)))));
             }
 
             suspicious.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.MAINSUS.color()
@@ -750,10 +505,10 @@ public class Utils {
             ServerUtils.connect(administrator, proxyServer);
 
         } else {
-            Utils.sendChannelAdvancedMessage(administrator, suspicious, "ADMIN");
+            MessageUtil.sendChannelAdvancedMessage(administrator, suspicious, "ADMIN");
 
             if (administrator.getProtocolVersion().getProtocol() >= ProtocolVersion.getProtocolVersion(759).getProtocol()) {
-                Utils.sendChannelMessage(administrator, "NO_CHAT");
+                MessageUtil.sendChannelMessage(administrator, "NO_CHAT");
             }
         }
 
@@ -761,10 +516,10 @@ public class Utils {
             ServerUtils.connect(suspicious, proxyServer);
 
         } else {
-            Utils.sendChannelMessage(suspicious, "SUSPECT");
+            MessageUtil.sendChannelMessage(suspicious, "SUSPECT");
 
             if (suspicious.getProtocolVersion().getProtocol() >= ProtocolVersion.getProtocolVersion(759).getProtocol()) {
-                Utils.sendChannelMessage(suspicious, "NO_CHAT");
+                MessageUtil.sendChannelMessage(suspicious, "NO_CHAT");
             }
         }
 
@@ -804,8 +559,8 @@ public class Utils {
 
         }
 
-        Utils.sendStartTitle(suspicious);
-        Utils.sendAdminStartTitle(administrator, suspicious);
+        TitleUtil.sendStartTitle(suspicious);
+        TitleUtil.sendAdminStartTitle(administrator, suspicious);
 
         if (VelocityConfig.CHECK_FOR_PROBLEMS.get(Boolean.class)) {
             Utils.checkForErrors(suspicious, administrator, proxyServer);
@@ -822,20 +577,20 @@ public class Utils {
                             .replace("%prefix%", VelocityMessages.PREFIX.color())
                             .replace("%admin%", administrator.getUsername())
                             .replace("%suspect%", suspicious.getUsername())
-                            .replace("%adminprefix%", color(finalAdmin_prefix1))
-                            .replace("%adminsuffix%", color(finalAdmin_suffix1))
-                            .replace("%suspectprefix%", color(finalSus_prefix1))
-                            .replace("%suspectsuffix%", color(finalSus_suffix1)))));
+                            .replace("%adminprefix%", ChatUtil.color(finalAdmin_prefix1))
+                            .replace("%adminsuffix%", ChatUtil.color(finalAdmin_suffix1))
+                            .replace("%suspectprefix%", ChatUtil.color(finalSus_prefix1))
+                            .replace("%suspectsuffix%", ChatUtil.color(finalSus_suffix1)))));
         }
 
         suspicious.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.MAINSUS.color()
                 .replace("%prefix%", VelocityMessages.PREFIX.color())
                 .replace("%administrator%", administrator.getUsername())
                 .replace("%suspect%", suspicious.getUsername())
-                .replace("%adminprefix%", color(admin_prefix))
-                .replace("%adminsuffix%", color(admin_suffix))
-                .replace("%suspectprefix%", color(sus_prefix))
-                .replace("%suspectsuffix%", color(sus_suffix))));
+                .replace("%adminprefix%", ChatUtil.color(admin_prefix))
+                .replace("%adminsuffix%", ChatUtil.color(admin_suffix))
+                .replace("%suspectprefix%", ChatUtil.color(sus_prefix))
+                .replace("%suspectsuffix%", ChatUtil.color(sus_suffix))));
 
         if (VelocityMessages.CONTROL_USEVERTICALFORMAT.get(Boolean.class)) {
             VelocityMessages.CONTROL_VERTICALFORMAT.sendButtons(administrator, suspicious,
@@ -846,45 +601,20 @@ public class Utils {
                     new Placeholder("prefix", VelocityMessages.PREFIX.color()),
                     new Placeholder("suspect", suspicious.getUsername()),
                     new Placeholder("administrator", administrator.getUsername()),
-                    new Placeholder("adminprefix", color(admin_prefix)),
-                    new Placeholder("adminsuffix", color(admin_suffix)),
-                    new Placeholder("suspectprefix", color(sus_prefix)),
-                    new Placeholder("suspectsuffix", color(sus_suffix)));
+                    new Placeholder("adminprefix", ChatUtil.color(admin_prefix)),
+                    new Placeholder("adminsuffix", ChatUtil.color(admin_suffix)),
+                    new Placeholder("suspectprefix", ChatUtil.color(sus_prefix)),
+                    new Placeholder("suspectsuffix", ChatUtil.color(sus_suffix)));
         } else {
             VelocityMessages.CONTROL_HORIZONTALFORMAT.sendButtons(administrator, suspicious,
                     new Placeholder("prefix", VelocityMessages.PREFIX.color()),
                     new Placeholder("suspect", suspicious.getUsername()),
                     new Placeholder("administrator", administrator.getUsername()),
-                    new Placeholder("adminprefix", color(admin_prefix)),
-                    new Placeholder("adminsuffix", color(admin_suffix)),
-                    new Placeholder("suspectprefix", color(sus_prefix)),
-                    new Placeholder("suspectsuffix", color(sus_suffix)));
+                    new Placeholder("adminprefix", ChatUtil.color(admin_prefix)),
+                    new Placeholder("adminsuffix", ChatUtil.color(admin_suffix)),
+                    new Placeholder("suspectprefix", ChatUtil.color(sus_prefix)),
+                    new Placeholder("suspectsuffix", ChatUtil.color(sus_suffix)));
         }
-    }
-
-    @SuppressWarnings("UnstableApiUsage")
-    public void sendChannelMessage(Player player, String type) {
-
-        final ByteArrayDataOutput buf = ByteStreams.newDataOutput();
-
-        buf.writeUTF(type);
-        buf.writeUTF(player.getUsername());
-        player.getCurrentServer().ifPresent(sv ->
-                sv.sendPluginMessage(CleanSS.channel_join, buf.toByteArray()));
-
-    }
-
-    @SuppressWarnings("UnstableApiUsage")
-    public void sendChannelAdvancedMessage(Player administrator, Player suspicious, String type) {
-
-        final ByteArrayDataOutput buf = ByteStreams.newDataOutput();
-
-        buf.writeUTF(type);
-        buf.writeUTF(administrator.getUsername());
-        buf.writeUTF(suspicious.getUsername());
-        administrator.getCurrentServer().ifPresent(sv ->
-                sv.sendPluginMessage(CleanSS.channel_join, buf.toByteArray()));
-
     }
 
     private void checkForErrors(Player suspicious, Player administrator, RegisteredServer proxyServer) {
@@ -935,142 +665,6 @@ public class Utils {
 
     public boolean isConsole(CommandSource invocation) {
         return !(invocation instanceof Player);
-    }
-
-    private void sendStartTitle(Player suspicious) {
-
-        if (!VelocityMessages.CONTROL_USETITLE.get(Boolean.class)) {
-            return;
-        }
-
-        Title controlTitle = Title.title(
-
-                LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.CONTROL_TITLE.color()),
-                LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.CONTROL_SUBTITLE.color()),
-
-                Title.Times.times(
-                        Duration.ofSeconds(VelocityMessages.CONTROL_FADEIN.get(Integer.class)),
-                        Duration.ofSeconds(VelocityMessages.CONTROL_STAY.get(Integer.class)),
-                        Duration.ofSeconds(VelocityMessages.CONTROL_FADEOUT.get(Integer.class))));
-
-        titleTask = instance.getServer().getScheduler().buildTask(
-                        instance, () -> suspicious.showTitle(controlTitle))
-                .delay(VelocityMessages.CONTROL_DELAY.get(Integer.class), TimeUnit.SECONDS)
-                .schedule();
-    }
-
-    private void sendAdminStartTitle(Player administrator, Player suspicious) {
-
-        if (!VelocityMessages.ADMINCONTROL_USETITLE.get(Boolean.class)) {
-            return;
-        }
-
-        boolean luckperms = instance.getServer().getPluginManager().getPlugin("luckperms").isPresent();
-        String user_prefix = "";
-        String user_suffix = "";
-
-        if (luckperms) {
-            user_suffix = getSuffix(suspicious);
-            user_prefix = getPrefix(suspicious);
-        }
-
-        if (user_prefix == null) {
-            user_prefix = "";
-        }
-
-        if (user_suffix == null) {
-            user_suffix = "";
-        }
-
-        Title controlTitle = Title.title(
-
-                LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.ADMINCONTROL_TITLE.color()
-                        .replace("%suspect%", suspicious.getUsername())
-                        .replace("%suspectprefix%", user_prefix)
-                        .replace("%suspectsuffix%", user_suffix)),
-
-                LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.ADMINCONTROL_SUBTITLE.color()
-                        .replace("%suspect%", suspicious.getUsername())
-                        .replace("%suspectprefix%", user_prefix)
-                        .replace("%suspectsuffix%", user_suffix)),
-
-                Title.Times.times(
-                        Duration.ofSeconds(VelocityMessages.ADMINCONTROL_FADEIN.get(Integer.class)),
-                        Duration.ofSeconds(VelocityMessages.ADMINCONTROL_STAY.get(Integer.class)),
-                        Duration.ofSeconds(VelocityMessages.ADMINCONTROL_FADEOUT.get(Integer.class))));
-
-        titleTaskAdmin = instance.getServer().getScheduler().buildTask(
-                        instance, () -> administrator.showTitle(controlTitle))
-                .delay(VelocityMessages.ADMINCONTROL_DELAY.get(Integer.class), TimeUnit.SECONDS)
-                .schedule();
-    }
-
-    private void sendEndTitle(Player suspicious) {
-
-        if (!VelocityMessages.CONTROLFINISH_USETITLE.get(Boolean.class)) {
-            return;
-        }
-
-        Title controlTitle = Title.title(
-
-                LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.CONTROLFINISH_TITLE.color()),
-                LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.CONTROLFINISH_SUBTITLE.color()),
-
-                Title.Times.times(
-                        Duration.ofSeconds(VelocityMessages.CONTROLFINISH_FADEIN.get(Integer.class)),
-                        Duration.ofSeconds(VelocityMessages.CONTROLFINISH_STAY.get(Integer.class)),
-                        Duration.ofSeconds(VelocityMessages.CONTROLFINISH_FADEOUT.get(Integer.class))));
-
-        titleTask = instance.getServer().getScheduler().buildTask(
-                        instance, () -> suspicious.showTitle(controlTitle))
-                .delay(VelocityMessages.CONTROLFINISH_DELAY.get(Integer.class), TimeUnit.SECONDS)
-                .schedule();
-    }
-
-    private void sendAdminEndTitle(Player administrator, Player suspicious) {
-
-        if (!VelocityMessages.ADMINCONTROLFINISH_USETITLE.get(Boolean.class)) {
-            return;
-        }
-
-        boolean luckperms = instance.getServer().getPluginManager().getPlugin("luckperms").isPresent();
-        String user_prefix = "";
-        String user_suffix = "";
-
-        if (luckperms) {
-            user_suffix = getSuffix(suspicious);
-            user_prefix = getPrefix(suspicious);
-        }
-
-        if (user_prefix == null) {
-            user_prefix = "";
-        }
-
-        if (user_suffix == null) {
-            user_suffix = "";
-        }
-
-        Title controlTitle = Title.title(
-
-                LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.ADMINCONTROLFINISH_TITLE.color()
-                        .replace("%suspect%", suspicious.getUsername())
-                        .replace("%suspectprefix%", user_prefix)
-                        .replace("%suspectsuffix%", user_suffix)),
-
-                LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.ADMINCONTROLFINISH_SUBTITLE.color()
-                        .replace("%suspect%", suspicious.getUsername())
-                        .replace("%suspectprefix%", user_prefix)
-                        .replace("%suspectsuffix%", user_suffix)),
-
-                Title.Times.times(
-                        Duration.ofSeconds(VelocityMessages.ADMINCONTROLFINISH_FADEIN.get(Integer.class)),
-                        Duration.ofSeconds(VelocityMessages.ADMINCONTROLFINISH_STAY.get(Integer.class)),
-                        Duration.ofSeconds(VelocityMessages.ADMINCONTROLFINISH_FADEOUT.get(Integer.class))));
-
-        titleTaskAdmin = instance.getServer().getScheduler().buildTask(
-                        instance, () -> administrator.showTitle(controlTitle))
-                .delay(VelocityMessages.ADMINCONTROLFINISH_DELAY.get(Integer.class), TimeUnit.SECONDS)
-                .schedule();
     }
 
     public List<Optional<RegisteredServer>> getServerList(List<String> stringList) {

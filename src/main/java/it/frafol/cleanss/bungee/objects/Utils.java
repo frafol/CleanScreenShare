@@ -1,268 +1,270 @@
 package it.frafol.cleanss.bungee.objects;
 
-import com.google.common.io.ByteArrayDataOutput;
-import com.google.common.io.ByteStreams;
 import it.frafol.cleanss.bungee.CleanSS;
 import it.frafol.cleanss.bungee.enums.BungeeConfig;
 import it.frafol.cleanss.bungee.enums.BungeeMessages;
 import lombok.experimental.UtilityClass;
-import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.LuckPermsProvider;
 import net.luckperms.api.model.group.Group;
 import net.luckperms.api.model.user.User;
-import net.md_5.bungee.api.ChatColor;
-import net.md_5.bungee.api.CommandSender;
-import net.md_5.bungee.api.Title;
-import net.md_5.bungee.api.chat.ClickEvent;
-import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.scheduler.ScheduledTask;
 
-import java.awt.*;
-import java.util.List;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 @UtilityClass
 public class Utils {
 
     private static final CleanSS instance = CleanSS.getInstance();
-
     public HashMap<ServerInfo, ScheduledTask> task = new HashMap<>();
 
-    public List<String> getStringList(BungeeMessages velocityMessages) {
-        return instance.getMessagesTextFile().getStringList(velocityMessages.getPath());
-    }
+    public void startControl(ProxiedPlayer suspicious, ProxiedPlayer administrator, ServerInfo proxyServer) {
 
-    public List<String> getStringList(BungeeMessages velocityMessages, Placeholder... placeholders) {
-        List<String> newList = new ArrayList<>();
-
-        for (String s : getStringList(velocityMessages)) {
-            s = applyPlaceHolder(s, placeholders);
-            newList.add(s);
+        if (!Objects.equals(administrator.getServer().getInfo(), proxyServer)) {
+            connect(administrator, proxyServer);
+        } else {
+            MessageUtil.sendChannelAdvancedMessage(administrator, suspicious,"ADMIN");
         }
 
-        return newList;
-    }
+        if (!Objects.equals(suspicious.getServer().getInfo(), proxyServer)) {
+            connect(suspicious, proxyServer);
 
-    public String applyPlaceHolder(String s, Placeholder ... placeholders) {
-        for (Placeholder placeholder : placeholders) {
-            s = s.replace(placeholder.getKey(), placeholder.getValue());
+        } else {
+            MessageUtil.sendChannelMessage(suspicious, "SUSPECT");
         }
 
-        return s;
-    }
+        PlayerCache.getAdministrator().add(administrator.getUniqueId());
+        PlayerCache.getSuspicious().add(suspicious.getUniqueId());
+        PlayerCache.getCouples().put(administrator, suspicious);
 
-    public String color(String string) {
+        if (BungeeConfig.MYSQL.get(Boolean.class)) {
 
-        if (string == null) {
-            return null;
-        }
+            instance.getData().setInControl(suspicious.getUniqueId(), 1);
+            instance.getData().setInControl(administrator.getUniqueId(), 1);
 
-        String hex = convertHexColors(string);
-        return hex.replace("&", "§");
-    }
-
-    public static String convertHexColors(String str) {
-        Pattern unicode = Pattern.compile("\\\\u\\+[a-fA-F0-9]{4}");
-        Matcher match = unicode.matcher(str);
-        while (match.find()) {
-            String code = str.substring(match.start(),match.end());
-            str = str.replace(code,Character.toString((char) Integer.parseInt(code.replace("\\u+",""),16)));
-            match = unicode.matcher(str);
-        }
-        Pattern pattern = Pattern.compile("&#[a-fA-F0-9]{6}");
-        match = pattern.matcher(str);
-        while (match.find()) {
-            String color = str.substring(match.start(),match.end());
-            str = str.replace(color,ChatColor.of(color.replace("&","")) + "");
-            match = pattern.matcher(str);
-        }
-        return ChatColor.translateAlternateColorCodes('&',str);
-    }
-
-    public List<String> color(List<String> list) {
-        return list.stream().map(Utils::color).collect(Collectors.toList());
-    }
-
-    private boolean hasButton(List<String> stringList) {
-        for (String string : stringList) {
-            if (string.contains("%buttons%")) {
-                return true;
+            if (instance.getData().getStats(administrator.getUniqueId(), "controls") != -1) {
+                instance.getData().setControls(administrator.getUniqueId(), instance.getData().getStats(administrator.getUniqueId(), "controls") + 1);
             }
+
+            if (instance.getData().getStats(suspicious.getUniqueId(), "suffered") != -1) {
+                instance.getData().setControlsSuffered(suspicious.getUniqueId(), instance.getData().getStats(suspicious.getUniqueId(), "suffered") + 1);
+            }
+
+        } else {
+
+            PlayerCache.getIn_control().put(suspicious.getUniqueId(), 1);
+            PlayerCache.getIn_control().put(administrator.getUniqueId(), 1);
+
+            if (PlayerCache.getControls().get(administrator.getUniqueId()) != null) {
+                PlayerCache.getControls().put(administrator.getUniqueId(), PlayerCache.getControls().get(administrator.getUniqueId()) + 1);
+            } else {
+                PlayerCache.getControls().put(administrator.getUniqueId(), 1);
+            }
+
+            if (PlayerCache.getControls_suffered().get(suspicious.getUniqueId()) != null) {
+                PlayerCache.getControls_suffered().put(suspicious.getUniqueId(), PlayerCache.getControls_suffered().get(suspicious.getUniqueId()) + 1);
+            } else {
+                PlayerCache.getControls_suffered().put(suspicious.getUniqueId(), 1);
+            }
+
         }
-        return false;
+
+        TitleUtil.sendStartTitle(suspicious);
+        TitleUtil.sendAdminStartTitle(administrator, suspicious);
+
+        if (BungeeConfig.CHECK_FOR_PROBLEMS.get(Boolean.class)) {
+            Utils.checkForErrors(suspicious, administrator, proxyServer);
+        }
+
+        String admin_prefix;
+        String admin_suffix;
+        String sus_prefix;
+        String sus_suffix;
+
+        boolean luckperms = instance.getProxy().getPluginManager().getPlugin("LuckPerms") != null;
+        if (luckperms) {
+            sus_suffix = getSuffix(suspicious);
+            sus_prefix = getPrefix(suspicious);
+            admin_prefix = getPrefix(administrator);
+            admin_suffix = getSuffix(administrator);
+        } else {
+            sus_suffix = "";
+            sus_prefix = "";
+            admin_suffix = "";
+            admin_prefix = "";
+        }
+
+        if (BungeeConfig.SEND_ADMIN_MESSAGE.get(Boolean.class)) {
+            instance.getProxy().getPlayers().stream()
+                    .filter(players -> players.hasPermission(BungeeConfig.CONTROL_PERMISSION.get(String.class)))
+                    .forEach(players -> players.sendMessage(TextComponent.fromLegacyText(BungeeMessages.ADMIN_NOTIFY.color()
+                            .replace("%prefix%", BungeeMessages.PREFIX.color())
+                            .replace("%admin%", administrator.getName())
+                            .replace("%suspect%", suspicious.getName())
+                            .replace("%adminprefix%", ChatUtil.color(admin_prefix))
+                            .replace("%adminsuffix%", ChatUtil.color(admin_suffix))
+                            .replace("%suspectprefix%", ChatUtil.color(sus_prefix))
+                            .replace("%suspectsuffix%", ChatUtil.color(sus_suffix)))));
+        }
+
+        suspicious.sendMessage(TextComponent.fromLegacyText(BungeeMessages.MAINSUS.color()
+                .replace("%prefix%", BungeeMessages.PREFIX.color())
+                .replace("%administrator%", administrator.getName())
+                .replace("%suspect%", suspicious.getName())
+                .replace("%adminprefix%", ChatUtil.color(admin_prefix))
+                .replace("%adminsuffix%", ChatUtil.color(admin_suffix))
+                .replace("%suspectprefix%", ChatUtil.color(sus_prefix))
+                .replace("%suspectsuffix%", ChatUtil.color(sus_suffix))));
+
+        if (BungeeMessages.CONTROL_USEVERTICALFORMAT.get(Boolean.class)) {
+            BungeeMessages.CONTROL_VERTICALFORMAT.sendList(administrator, suspicious,
+                    new Placeholder("cleanname", BungeeMessages.CONTROL_CLEAN_NAME.color()),
+                    new Placeholder("hackername", BungeeMessages.CONTROL_CHEATER_NAME.color()),
+                    new Placeholder("admitname", BungeeMessages.CONTROL_ADMIT_NAME.color()),
+                    new Placeholder("refusename", BungeeMessages.CONTROL_REFUSE_NAME.color()),
+                    new Placeholder("prefix", BungeeMessages.PREFIX.color()),
+                    new Placeholder("adminprefix", ChatUtil.color(admin_prefix)),
+                    new Placeholder("adminsuffix", ChatUtil.color(admin_suffix)),
+                    new Placeholder("suspectprefix", ChatUtil.color(sus_prefix)),
+                    new Placeholder("suspectsuffix", ChatUtil.color(sus_suffix)),
+                    new Placeholder("suspect", suspicious.getName()),
+                    new Placeholder("administrator", administrator.getName()));
+        } else {
+            BungeeMessages.CONTROL_HORIZONTALFORMAT.sendList(administrator, suspicious,
+                    new Placeholder("prefix", BungeeMessages.PREFIX.color()),
+                    new Placeholder("adminprefix", ChatUtil.color(admin_prefix)),
+                    new Placeholder("adminsuffix", ChatUtil.color(admin_suffix)),
+                    new Placeholder("suspectprefix", ChatUtil.color(sus_prefix)),
+                    new Placeholder("suspectsuffix", ChatUtil.color(sus_suffix)),
+                    new Placeholder("suspect", suspicious.getName()),
+                    new Placeholder("administrator", administrator.getName()));
+        }
     }
 
-    public void sendList(CommandSender commandSource, List<String> stringList, ProxiedPlayer player_name) {
+    public void finishControl(ProxiedPlayer suspicious, ProxiedPlayer administrator, ServerInfo proxyServer) {
 
-        if (!BungeeMessages.CONTROL_USEVERTICALFORMAT.get(Boolean.class) && hasButton(stringList)) {
-            sendHorizontalButtons(commandSource, stringList, player_name);
+        if (administrator == null || suspicious == null) {
             return;
         }
 
-        for (String message : stringList) {
+        if (administrator.isConnected() && suspicious.isConnected()) {
 
-            TextComponent suggestMessage = new TextComponent(message);
-            if (message.contains(BungeeMessages.CONTROL_CLEAN_NAME.color())) {
-                suggestMessage.setClickEvent(new ClickEvent(
-                        ClickEvent.Action.SUGGEST_COMMAND,
-                        BungeeMessages.CONTROL_CLEAN_COMMAND.get(String.class).replace("%player%", player_name.getName())));
-                commandSource.sendMessage(suggestMessage);
+            PlayerCache.getAdministrator().remove(administrator.getUniqueId());
+            PlayerCache.getSuspicious().remove(suspicious.getUniqueId());
+            PlayerCache.getCouples().remove(administrator, suspicious);
 
-            } else if (message.contains(BungeeMessages.CONTROL_CHEATER_NAME.color())) {
-                suggestMessage.setClickEvent(new ClickEvent(
-                        ClickEvent.Action.SUGGEST_COMMAND,
-                        BungeeMessages.CONTROL_CHEATER_COMMAND.get(String.class).replace("%player%", player_name.getName())));
-                commandSource.sendMessage(suggestMessage);
-
-            } else if (message.contains(BungeeMessages.CONTROL_ADMIT_NAME.color())) {
-                suggestMessage.setClickEvent(new ClickEvent(
-                        ClickEvent.Action.SUGGEST_COMMAND,
-                        BungeeMessages.CONTROL_ADMIT_COMMAND.get(String.class).replace("%player%", player_name.getName())));
-                commandSource.sendMessage(suggestMessage);
-
-            } else if (message.contains(BungeeMessages.CONTROL_REFUSE_NAME.color())) {
-                suggestMessage.setClickEvent(new ClickEvent(
-                        ClickEvent.Action.SUGGEST_COMMAND,
-                        BungeeMessages.CONTROL_REFUSE_COMMAND.get(String.class).replace("%player%", player_name.getName())));
-                commandSource.sendMessage(suggestMessage);
-
+            if (BungeeConfig.MYSQL.get(Boolean.class)) {
+                instance.getData().setInControl(suspicious.getUniqueId(), 0);
+                instance.getData().setInControl(administrator.getUniqueId(), 0);
             } else {
-                commandSource.sendMessage(TextComponent.fromLegacyText(message));
+                PlayerCache.getIn_control().put(suspicious.getUniqueId(), 0);
+                PlayerCache.getIn_control().put(administrator.getUniqueId(), 0);
             }
-        }
-    }
 
-    private HashMap<String, String> getButtons(ProxiedPlayer suspect) {
-        HashMap<String, String> buttons = new HashMap<>();
-        buttons.put(BungeeMessages.CONTROL_CLEAN_NAME.color(), BungeeMessages.CONTROL_CLEAN_COMMAND.get(String.class).replace("%player%", suspect.getName()));
-        buttons.put(BungeeMessages.CONTROL_CHEATER_NAME.color(), BungeeMessages.CONTROL_CHEATER_COMMAND.get(String.class).replace("%player%", suspect.getName()));
-        buttons.put(BungeeMessages.CONTROL_ADMIT_NAME.color(), BungeeMessages.CONTROL_ADMIT_COMMAND.get(String.class).replace("%player%", suspect.getName()));
-        buttons.put(BungeeMessages.CONTROL_REFUSE_NAME.color(), BungeeMessages.CONTROL_REFUSE_COMMAND.get(String.class).replace("%player%", suspect.getName()));
-        return buttons;
-    }
+            if (administrator.getServer() == null) {
+                return;
+            }
 
-    private void sendHorizontalButtons(CommandSender commandSource, List<String> stringList, ProxiedPlayer player_name) {
+            if (isInControlServer(administrator.getServer().getInfo())) {
 
-        List<TextComponent> buttons = new ArrayList<>();
-        for (String message : stringList) {
-            if (message.contains("%buttons%")) {
-                for (String key : getButtons(player_name).keySet()) {
-                    TextComponent button = new TextComponent(key + " ");
-                    button.setClickEvent(new ClickEvent(
-                            ClickEvent.Action.SUGGEST_COMMAND,
-                            getButtons(player_name).get(key).replace("%player%", player_name.getName())));
-                    buttons.add(button);
+                if (proxyServer == null) {
+                    return;
                 }
 
-                ComponentBuilder builder = new ComponentBuilder();
-                for (TextComponent component : buttons) {
-                    builder.append(component);
+                if (!BungeeConfig.USE_DISCONNECT.get(Boolean.class)) {
+                    connect(administrator, proxyServer);
+                } else {
+                    MessageUtil.sendChannelMessage(administrator, "DISCONNECT_NOW");
                 }
 
-                commandSource.sendMessage(builder.create());
-                continue;
+                TitleUtil.sendEndTitle(suspicious);
+                TitleUtil.sendAdminEndTitle(administrator, suspicious);
+
+                suspicious.sendMessage(TextComponent.fromLegacyText(BungeeMessages.FINISHSUS.color().replace("%prefix%", BungeeMessages.PREFIX.color())));
+
+                if (suspicious.getServer() == null) {
+                    return;
+                }
+
+                if (isInControlServer(suspicious.getServer().getInfo())) {
+                    connect(suspicious, proxyServer);
+                }
             }
 
-            commandSource.sendMessage(TextComponent.fromLegacyText(message));
-        }
-    }
+        } else if (suspicious.isConnected()) {
 
-    public void sendFormattedList(BungeeMessages velocityMessages, CommandSender commandSender, ProxiedPlayer player_name, Placeholder... placeholders) {
-        sendList(commandSender, color(getStringList(velocityMessages, placeholders)), player_name);
-    }
-
-    public void sendDiscordSpectatorMessage(ProxiedPlayer player, String message) {
-
-        if (BungeeConfig.DISCORD_ENABLED.get(Boolean.class)) {
-
-            if (instance.getJda() == null) {
+            if (instance.getValue(PlayerCache.getCouples(), administrator) == null) {
                 return;
             }
 
-            final TextChannel channel = instance.getJda().getTextChannelById(BungeeConfig.DISCORD_CHANNEL_ID.get(String.class));
+            PlayerCache.getSuspicious().remove(suspicious.getUniqueId());
+            PlayerCache.getAdministrator().remove(administrator.getUniqueId());
 
-            if (channel == null) {
-                return;
+            if (!BungeeConfig.USE_DISCONNECT.get(Boolean.class)) {
+                connect(suspicious, proxyServer);
+            } else {
+                MessageUtil.sendChannelMessage(suspicious, "DISCONNECT_NOW");
             }
 
-            EmbedBuilder embed = new EmbedBuilder();
+            TitleUtil.sendEndTitle(suspicious);
+            TitleUtil.sendAdminEndTitle(administrator, suspicious);
 
-            embed.setTitle(BungeeConfig.DISCORD_EMBED_TITLE.get(String.class), null);
+            suspicious.sendMessage(TextComponent.fromLegacyText(BungeeMessages.FINISHSUS.color()
+                    .replace("%prefix%", BungeeMessages.PREFIX.color())));
 
-            embed.setDescription(message
-                    .replace("%staffer%", player.getName()));
+            PlayerCache.getCouples().remove(administrator);
 
-            embed.setColor(Color.RED);
-            embed.setFooter(BungeeConfig.DISCORD_EMBED_FOOTER.get(String.class));
-
-            channel.sendMessageEmbeds(embed.build()).queue();
-        }
-    }
-
-    public void sendDiscordMessage(ProxiedPlayer suspect, ProxiedPlayer staffer, String message, String result) {
-
-        if (BungeeConfig.DISCORD_ENABLED.get(Boolean.class)) {
-
-            final TextChannel channel = instance.getJda().getTextChannelById(BungeeConfig.DISCORD_CHANNEL_ID.get(String.class));
-
-            if (channel == null) {
-                return;
+            if (BungeeConfig.MYSQL.get(Boolean.class)) {
+                instance.getData().setInControl(suspicious.getUniqueId(), 0);
+                instance.getData().setInControl(administrator.getUniqueId(), 0);
+            } else {
+                PlayerCache.getIn_control().put(suspicious.getUniqueId(), 0);
+                PlayerCache.getIn_control().put(administrator.getUniqueId(), 0);
             }
 
-            EmbedBuilder embed = new EmbedBuilder();
+        } else if (administrator.isConnected()) {
 
-            embed.setTitle(BungeeConfig.DISCORD_EMBED_TITLE.get(String.class), null);
+            PlayerCache.getAdministrator().remove(administrator.getUniqueId());
+            PlayerCache.getSuspicious().remove(suspicious.getUniqueId());
 
-            embed.setDescription(message
-                    .replace("%suspect%", suspect.getName())
-                    .replace("%staffer%", staffer.getName())
-                    .replace("%result%", result));
-
-            embed.setColor(Color.RED);
-            embed.setFooter(BungeeConfig.DISCORD_EMBED_FOOTER.get(String.class));
-
-            channel.sendMessageEmbeds(embed.build()).queue();
-
-        }
-    }
-
-    public void sendDiscordMessage(ProxiedPlayer suspect, ProxiedPlayer staffer, String message) {
-
-        if (BungeeConfig.DISCORD_ENABLED.get(Boolean.class)) {
-
-            if (instance.getJda() == null) {
-                return;
+            if (!BungeeConfig.USE_DISCONNECT.get(Boolean.class)) {
+                    connect(administrator, proxyServer);
+            } else {
+                MessageUtil.sendChannelMessage(administrator, "DISCONNECT_NOW");
             }
 
-            final TextChannel channel = instance.getJda().getTextChannelById(BungeeConfig.DISCORD_CHANNEL_ID.get(String.class));
+            administrator.sendMessage(TextComponent.fromLegacyText(BungeeMessages.LEAVESUS.color()
+                    .replace("%prefix%", BungeeMessages.PREFIX.color())
+                    .replace("%player%", suspicious.getName())));
 
-            if (channel == null) {
-                return;
+            PlayerCache.getCouples().remove(administrator);
+
+            if (BungeeConfig.MYSQL.get(Boolean.class)) {
+                instance.getData().setInControl(suspicious.getUniqueId(), 0);
+                instance.getData().setInControl(administrator.getUniqueId(), 0);
+            } else {
+                PlayerCache.getIn_control().put(suspicious.getUniqueId(), 0);
+                PlayerCache.getIn_control().put(administrator.getUniqueId(), 0);
             }
 
-            EmbedBuilder embed = new EmbedBuilder();
+        } else {
 
-            embed.setTitle(BungeeConfig.DISCORD_EMBED_TITLE.get(String.class), null);
+            PlayerCache.getAdministrator().remove(administrator.getUniqueId());
+            PlayerCache.getSuspicious().remove(suspicious.getUniqueId());
+            PlayerCache.getCouples().remove(administrator);
 
-            embed.setDescription(message
-                    .replace("%suspect%", suspect.getName())
-                    .replace("%staffer%", staffer.getName()));
-
-            embed.setColor(Color.RED);
-            embed.setFooter(BungeeConfig.DISCORD_EMBED_FOOTER.get(String.class));
-
-            channel.sendMessageEmbeds(embed.build()).queue();
-
+            if (BungeeConfig.MYSQL.get(Boolean.class)) {
+                instance.getData().setInControl(suspicious.getUniqueId(), 0);
+                instance.getData().setInControl(administrator.getUniqueId(), 0);
+            } else {
+                PlayerCache.getIn_control().put(suspicious.getUniqueId(), 0);
+                PlayerCache.getIn_control().put(administrator.getUniqueId(), 0);
+            }
         }
     }
 
@@ -320,7 +322,12 @@ public class Utils {
 
         if (PlayerCache.getBan_execution().contains(administrator)) {
 
-            Utils.sendDiscordMessage(suspect, administrator_player, BungeeMessages.DISCORD_FINISHED.get(String.class).replace("%admingroup%", admin_group).replace("%suspectgroup%", suspect_group), BungeeMessages.CHEATER.get(String.class));
+            MessageUtil.sendDiscordMessage(
+                    suspect,
+                    administrator_player,
+                    BungeeMessages.DISCORD_FINISHED.get(String.class).replace("%admingroup%", admin_group).replace("%suspectgroup%", suspect_group),
+                    BungeeMessages.CHEATER.get(String.class),
+                    BungeeMessages.DISCORD_FINISHED_THUMBNAIL.get(String.class));
 
             String admin_prefix;
             String admin_suffix;
@@ -346,17 +353,22 @@ public class Utils {
                                 .replace("%prefix%", BungeeMessages.PREFIX.color())
                                 .replace("%admin%", administrator_player.getName())
                                 .replace("%suspect%", suspect.getName())
-                                .replace("%adminprefix%", Utils.color(admin_prefix))
-                                .replace("%adminsuffix%", Utils.color(admin_suffix))
-                                .replace("%suspectprefix%", Utils.color(sus_prefix))
-                                .replace("%suspectsuffix%", Utils.color(sus_suffix))
+                                .replace("%adminprefix%", ChatUtil.color(admin_prefix))
+                                .replace("%adminsuffix%", ChatUtil.color(admin_suffix))
+                                .replace("%suspectprefix%", ChatUtil.color(sus_prefix))
+                                .replace("%suspectsuffix%", ChatUtil.color(sus_suffix))
                                 .replace("%result%", BungeeMessages.CHEATER.color()))));
             }
 
             return;
         }
 
-        Utils.sendDiscordMessage(suspect, administrator_player, BungeeMessages.DISCORD_QUIT.get(String.class).replace("%admingroup%", admin_group).replace("%suspectgroup%", suspect_group), BungeeMessages.LEFT.get(String.class));
+        MessageUtil.sendDiscordMessage(
+                suspect,
+                administrator_player,
+                BungeeMessages.DISCORD_QUIT.get(String.class).replace("%admingroup%", admin_group).replace("%suspectgroup%", suspect_group),
+                BungeeMessages.LEFT.get(String.class),
+                BungeeMessages.DISCORD_QUIT_THUMBNAIL.get(String.class));
 
         String admin_prefix;
         String admin_suffix;
@@ -382,10 +394,10 @@ public class Utils {
                             .replace("%prefix%", BungeeMessages.PREFIX.color())
                             .replace("%admin%", administrator_player.getName())
                             .replace("%suspect%", suspect.getName())
-                            .replace("%adminprefix%", Utils.color(admin_prefix))
-                            .replace("%adminsuffix%", Utils.color(admin_suffix))
-                            .replace("%suspectprefix%", Utils.color(sus_prefix))
-                            .replace("%suspectsuffix%", Utils.color(sus_suffix))
+                            .replace("%adminprefix%", ChatUtil.color(admin_prefix))
+                            .replace("%adminsuffix%", ChatUtil.color(admin_suffix))
+                            .replace("%suspectprefix%", ChatUtil.color(sus_prefix))
+                            .replace("%suspectsuffix%", ChatUtil.color(sus_suffix))
                             .replace("%result%", BungeeMessages.LEFT.color()))));
         }
 
@@ -394,128 +406,6 @@ public class Utils {
         }
 
         instance.getProxy().getPluginManager().dispatchCommand(instance.getProxy().getConsole(), BungeeConfig.SLOG_COMMAND.get(String.class).replace("%player%", suspicious));
-    }
-
-    public void finishControl(ProxiedPlayer suspicious, ProxiedPlayer administrator, ServerInfo proxyServer) {
-
-        if (administrator == null || suspicious == null) {
-            return;
-        }
-
-        if (administrator.isConnected() && suspicious.isConnected()) {
-
-            PlayerCache.getAdministrator().remove(administrator.getUniqueId());
-            PlayerCache.getSuspicious().remove(suspicious.getUniqueId());
-            PlayerCache.getCouples().remove(administrator, suspicious);
-
-            if (BungeeConfig.MYSQL.get(Boolean.class)) {
-                instance.getData().setInControl(suspicious.getUniqueId(), 0);
-                instance.getData().setInControl(administrator.getUniqueId(), 0);
-            } else {
-                PlayerCache.getIn_control().put(suspicious.getUniqueId(), 0);
-                PlayerCache.getIn_control().put(administrator.getUniqueId(), 0);
-            }
-
-            if (administrator.getServer() == null) {
-                return;
-            }
-
-            if (isInControlServer(administrator.getServer().getInfo())) {
-
-                if (proxyServer == null) {
-                    return;
-                }
-
-                if (!BungeeConfig.USE_DISCONNECT.get(Boolean.class)) {
-                    connect(administrator, proxyServer);
-                } else {
-                    Utils.sendChannelMessage(administrator, "DISCONNECT_NOW");
-                }
-
-                Utils.sendEndTitle(suspicious);
-                Utils.sendAdminEndTitle(administrator, suspicious);
-
-                suspicious.sendMessage(TextComponent.fromLegacyText(BungeeMessages.FINISHSUS.color().replace("%prefix%", BungeeMessages.PREFIX.color())));
-
-                if (suspicious.getServer() == null) {
-                    return;
-                }
-
-                if (isInControlServer(suspicious.getServer().getInfo())) {
-                    connect(suspicious, proxyServer);
-                }
-            }
-
-        } else if (suspicious.isConnected()) {
-
-            if (instance.getValue(PlayerCache.getCouples(), administrator) == null) {
-                return;
-            }
-
-            PlayerCache.getSuspicious().remove(suspicious.getUniqueId());
-            PlayerCache.getAdministrator().remove(administrator.getUniqueId());
-
-            if (!BungeeConfig.USE_DISCONNECT.get(Boolean.class)) {
-                connect(suspicious, proxyServer);
-            } else {
-                Utils.sendChannelMessage(suspicious, "DISCONNECT_NOW");
-            }
-
-            Utils.sendEndTitle(suspicious);
-            Utils.sendAdminEndTitle(administrator, suspicious);
-
-            suspicious.sendMessage(TextComponent.fromLegacyText(BungeeMessages.FINISHSUS.color()
-                    .replace("%prefix%", BungeeMessages.PREFIX.color())));
-
-            PlayerCache.getCouples().remove(administrator);
-
-            if (BungeeConfig.MYSQL.get(Boolean.class)) {
-                instance.getData().setInControl(suspicious.getUniqueId(), 0);
-                instance.getData().setInControl(administrator.getUniqueId(), 0);
-            } else {
-                PlayerCache.getIn_control().put(suspicious.getUniqueId(), 0);
-                PlayerCache.getIn_control().put(administrator.getUniqueId(), 0);
-            }
-
-        } else if (administrator.isConnected()) {
-
-            PlayerCache.getAdministrator().remove(administrator.getUniqueId());
-            PlayerCache.getSuspicious().remove(suspicious.getUniqueId());
-
-            if (!BungeeConfig.USE_DISCONNECT.get(Boolean.class)) {
-                    connect(administrator, proxyServer);
-            } else {
-                Utils.sendChannelMessage(administrator, "DISCONNECT_NOW");
-            }
-
-            administrator.sendMessage(TextComponent.fromLegacyText(BungeeMessages.LEAVESUS.color()
-                    .replace("%prefix%", BungeeMessages.PREFIX.color())
-                    .replace("%player%", suspicious.getName())));
-
-            PlayerCache.getCouples().remove(administrator);
-
-            if (BungeeConfig.MYSQL.get(Boolean.class)) {
-                instance.getData().setInControl(suspicious.getUniqueId(), 0);
-                instance.getData().setInControl(administrator.getUniqueId(), 0);
-            } else {
-                PlayerCache.getIn_control().put(suspicious.getUniqueId(), 0);
-                PlayerCache.getIn_control().put(administrator.getUniqueId(), 0);
-            }
-
-        } else {
-
-            PlayerCache.getAdministrator().remove(administrator.getUniqueId());
-            PlayerCache.getSuspicious().remove(suspicious.getUniqueId());
-            PlayerCache.getCouples().remove(administrator);
-
-            if (BungeeConfig.MYSQL.get(Boolean.class)) {
-                instance.getData().setInControl(suspicious.getUniqueId(), 0);
-                instance.getData().setInControl(administrator.getUniqueId(), 0);
-            } else {
-                PlayerCache.getIn_control().put(suspicious.getUniqueId(), 0);
-                PlayerCache.getIn_control().put(administrator.getUniqueId(), 0);
-            }
-        }
     }
 
     public boolean isInControlServer(ServerInfo server) {
@@ -571,129 +461,6 @@ public class Utils {
         return suffix;
     }
 
-    public void startControl(ProxiedPlayer suspicious, ProxiedPlayer administrator, ServerInfo proxyServer) {
-
-        if (!Objects.equals(administrator.getServer().getInfo(), proxyServer)) {
-            connect(administrator, proxyServer);
-        } else {
-            Utils.sendChannelAdvancedMessage(administrator, suspicious,"ADMIN");
-        }
-
-        if (!Objects.equals(suspicious.getServer().getInfo(), proxyServer)) {
-            connect(suspicious, proxyServer);
-
-        } else {
-            Utils.sendChannelMessage(suspicious, "SUSPECT");
-        }
-
-        PlayerCache.getAdministrator().add(administrator.getUniqueId());
-        PlayerCache.getSuspicious().add(suspicious.getUniqueId());
-        PlayerCache.getCouples().put(administrator, suspicious);
-
-        if (BungeeConfig.MYSQL.get(Boolean.class)) {
-
-            instance.getData().setInControl(suspicious.getUniqueId(), 1);
-            instance.getData().setInControl(administrator.getUniqueId(), 1);
-
-            if (instance.getData().getStats(administrator.getUniqueId(), "controls") != -1) {
-                instance.getData().setControls(administrator.getUniqueId(), instance.getData().getStats(administrator.getUniqueId(), "controls") + 1);
-            }
-
-            if (instance.getData().getStats(suspicious.getUniqueId(), "suffered") != -1) {
-                instance.getData().setControlsSuffered(suspicious.getUniqueId(), instance.getData().getStats(suspicious.getUniqueId(), "suffered") + 1);
-            }
-
-        } else {
-
-            PlayerCache.getIn_control().put(suspicious.getUniqueId(), 1);
-            PlayerCache.getIn_control().put(administrator.getUniqueId(), 1);
-
-            if (PlayerCache.getControls().get(administrator.getUniqueId()) != null) {
-                PlayerCache.getControls().put(administrator.getUniqueId(), PlayerCache.getControls().get(administrator.getUniqueId()) + 1);
-            } else {
-                PlayerCache.getControls().put(administrator.getUniqueId(), 1);
-            }
-
-            if (PlayerCache.getControls_suffered().get(suspicious.getUniqueId()) != null) {
-                PlayerCache.getControls_suffered().put(suspicious.getUniqueId(), PlayerCache.getControls_suffered().get(suspicious.getUniqueId()) + 1);
-            } else {
-                PlayerCache.getControls_suffered().put(suspicious.getUniqueId(), 1);
-            }
-
-        }
-
-        Utils.sendStartTitle(suspicious);
-        Utils.sendAdminStartTitle(administrator, suspicious);
-
-        if (BungeeConfig.CHECK_FOR_PROBLEMS.get(Boolean.class)) {
-            Utils.checkForErrors(suspicious, administrator, proxyServer);
-        }
-
-        String admin_prefix;
-        String admin_suffix;
-        String sus_prefix;
-        String sus_suffix;
-
-        boolean luckperms = instance.getProxy().getPluginManager().getPlugin("LuckPerms") != null;
-        if (luckperms) {
-            sus_suffix = getSuffix(suspicious);
-            sus_prefix = getPrefix(suspicious);
-            admin_prefix = getPrefix(administrator);
-            admin_suffix = getSuffix(administrator);
-        } else {
-            sus_suffix = "";
-            sus_prefix = "";
-            admin_suffix = "";
-            admin_prefix = "";
-        }
-
-        if (BungeeConfig.SEND_ADMIN_MESSAGE.get(Boolean.class)) {
-            instance.getProxy().getPlayers().stream()
-                    .filter(players -> players.hasPermission(BungeeConfig.CONTROL_PERMISSION.get(String.class)))
-                    .forEach(players -> players.sendMessage(TextComponent.fromLegacyText(BungeeMessages.ADMIN_NOTIFY.color()
-                            .replace("%prefix%", BungeeMessages.PREFIX.color())
-                            .replace("%admin%", administrator.getName())
-                            .replace("%suspect%", suspicious.getName())
-                            .replace("%adminprefix%", color(admin_prefix))
-                            .replace("%adminsuffix%", color(admin_suffix))
-                            .replace("%suspectprefix%", color(sus_prefix))
-                            .replace("%suspectsuffix%", color(sus_suffix)))));
-        }
-
-        suspicious.sendMessage(TextComponent.fromLegacyText(BungeeMessages.MAINSUS.color()
-                .replace("%prefix%", BungeeMessages.PREFIX.color())
-                .replace("%administrator%", administrator.getName())
-                .replace("%suspect%", suspicious.getName())
-                .replace("%adminprefix%", color(admin_prefix))
-                .replace("%adminsuffix%", color(admin_suffix))
-                .replace("%suspectprefix%", color(sus_prefix))
-                .replace("%suspectsuffix%", color(sus_suffix))));
-
-        if (BungeeMessages.CONTROL_USEVERTICALFORMAT.get(Boolean.class)) {
-            BungeeMessages.CONTROL_VERTICALFORMAT.sendList(administrator, suspicious,
-                    new Placeholder("cleanname", BungeeMessages.CONTROL_CLEAN_NAME.color()),
-                    new Placeholder("hackername", BungeeMessages.CONTROL_CHEATER_NAME.color()),
-                    new Placeholder("admitname", BungeeMessages.CONTROL_ADMIT_NAME.color()),
-                    new Placeholder("refusename", BungeeMessages.CONTROL_REFUSE_NAME.color()),
-                    new Placeholder("prefix", BungeeMessages.PREFIX.color()),
-                    new Placeholder("adminprefix", color(admin_prefix)),
-                    new Placeholder("adminsuffix", color(admin_suffix)),
-                    new Placeholder("suspectprefix", color(sus_prefix)),
-                    new Placeholder("suspectsuffix", color(sus_suffix)),
-                    new Placeholder("suspect", suspicious.getName()),
-                    new Placeholder("administrator", administrator.getName()));
-        } else {
-            BungeeMessages.CONTROL_HORIZONTALFORMAT.sendList(administrator, suspicious,
-                    new Placeholder("prefix", BungeeMessages.PREFIX.color()),
-                    new Placeholder("adminprefix", color(admin_prefix)),
-                    new Placeholder("adminsuffix", color(admin_suffix)),
-                    new Placeholder("suspectprefix", color(sus_prefix)),
-                    new Placeholder("suspectsuffix", color(sus_suffix)),
-                    new Placeholder("suspect", suspicious.getName()),
-                    new Placeholder("administrator", administrator.getName()));
-        }
-    }
-
     private void checkForErrors(ProxiedPlayer suspicious, ProxiedPlayer administrator, ServerInfo proxyServer) {
 
         instance.getProxy().getScheduler().schedule(instance, () -> {
@@ -721,171 +488,6 @@ public class Utils {
                     "The Control cannot be handled!");
 
         }, 2L, TimeUnit.SECONDS);
-    }
-
-    @SuppressWarnings("UnstableApiUsage")
-    public void sendChannelMessage(ProxiedPlayer player, String type) {
-
-        final ByteArrayDataOutput buf = ByteStreams.newDataOutput();
-
-        buf.writeUTF(type);
-        buf.writeUTF(player.getName());
-
-        if (player.getServer() == null) {
-            instance.getLogger().severe("The player " + player.getName() + " has no server, please check your control server if it's working correctly!");
-            return;
-        }
-
-        player.getServer().sendData("cleanss:join", buf.toByteArray());
-
-    }
-
-    @SuppressWarnings("UnstableApiUsage")
-    public void sendChannelAdvancedMessage(ProxiedPlayer administrator, ProxiedPlayer suspicious, String type) {
-
-        final ByteArrayDataOutput buf = ByteStreams.newDataOutput();
-
-        buf.writeUTF(type);
-        buf.writeUTF(administrator.getName());
-        buf.writeUTF(suspicious.getName());
-
-        if (administrator.getServer() == null) {
-            instance.getLogger().severe("The player " + administrator.getName() + " has no server, please check your control server if it's working correctly!");
-            return;
-        }
-
-        administrator.getServer().sendData("cleanss:join", buf.toByteArray());
-    }
-
-    private void sendStartTitle(ProxiedPlayer suspicious) {
-
-        if (!BungeeMessages.CONTROL_USETITLE.get(Boolean.class)) {
-            return;
-        }
-
-        final Title title = instance.getProxy().createTitle();
-
-        title.fadeIn(BungeeMessages.CONTROL_FADEIN.get(Integer.class) * 20);
-        title.stay(BungeeMessages.CONTROL_STAY.get(Integer.class) * 20);
-        title.fadeOut(BungeeMessages.CONTROL_FADEOUT.get(Integer.class) * 20);
-
-        title.title(new TextComponent(BungeeMessages.CONTROL_TITLE.color()));
-        title.subTitle(new TextComponent(BungeeMessages.CONTROL_SUBTITLE.color()));
-
-        instance.getProxy().getScheduler().schedule(instance, () ->
-                title.send(suspicious), BungeeMessages.CONTROL_DELAY.get(Integer.class), TimeUnit.SECONDS);
-
-    }
-
-    private void sendAdminStartTitle(ProxiedPlayer administrator, ProxiedPlayer suspicious) {
-
-        if (!BungeeMessages.ADMINCONTROL_USETITLE.get(Boolean.class)) {
-            return;
-        }
-
-        final Title title = instance.getProxy().createTitle();
-
-        title.fadeIn(BungeeMessages.ADMINCONTROL_FADEIN.get(Integer.class) * 20);
-        title.stay(BungeeMessages.ADMINCONTROL_STAY.get(Integer.class) * 20);
-        title.fadeOut(BungeeMessages.ADMINCONTROL_FADEOUT.get(Integer.class) * 20);
-
-        String user_prefix = "";
-        String user_suffix = "";
-
-        if (isLuckPerms) {
-
-            final LuckPerms api = LuckPermsProvider.get();
-            final User user = api.getUserManager().getUser(suspicious.getUniqueId());
-
-            if (user == null) {
-                return;
-            }
-
-            final String prefix = user.getCachedData().getMetaData().getPrefix();
-            final String suffix = user.getCachedData().getMetaData().getSuffix();
-            user_prefix = prefix == null ? "" : prefix;
-            user_suffix = suffix == null ? "" : suffix;
-
-        }
-
-        title.title(new TextComponent(BungeeMessages.ADMINCONTROL_TITLE.color()
-                .replace("%suspect%", suspicious.getName())
-                .replace("%suspectprefix%", user_prefix)
-                .replace("%suspectsuffix%", user_suffix)));
-
-        title.subTitle(new TextComponent(BungeeMessages.ADMINCONTROL_SUBTITLE.color()
-                .replace("%suspect%", suspicious.getName())
-                .replace("%suspectprefix%", user_prefix)
-                .replace("%suspectsuffix%", user_suffix)));
-
-        instance.getProxy().getScheduler().schedule(instance, () ->
-                title.send(administrator), BungeeMessages.ADMINCONTROL_DELAY.get(Integer.class), TimeUnit.SECONDS);
-
-    }
-
-    private void sendEndTitle(ProxiedPlayer suspicious) {
-
-        if (!BungeeMessages.CONTROLFINISH_USETITLE.get(Boolean.class)) {
-            return;
-        }
-
-        final Title title = instance.getProxy().createTitle();
-
-        title.fadeIn(BungeeMessages.CONTROLFINISH_FADEIN.get(Integer.class) * 20);
-        title.stay(BungeeMessages.CONTROLFINISH_STAY.get(Integer.class) * 20);
-        title.fadeOut(BungeeMessages.CONTROLFINISH_FADEOUT.get(Integer.class) * 20);
-
-        title.title(new TextComponent(BungeeMessages.CONTROLFINISH_TITLE.color()));
-        title.subTitle(new TextComponent(BungeeMessages.CONTROLFINISH_SUBTITLE.color()));
-
-        instance.getProxy().getScheduler().schedule(instance, () ->
-                title.send(suspicious), BungeeMessages.CONTROLFINISH_DELAY.get(Integer.class), TimeUnit.SECONDS);
-
-    }
-
-    private void sendAdminEndTitle(ProxiedPlayer administrator, ProxiedPlayer suspicious) {
-
-        if (!BungeeMessages.ADMINCONTROLFINISH_USETITLE.get(Boolean.class)) {
-            return;
-        }
-
-        final Title title = instance.getProxy().createTitle();
-
-        title.fadeIn(BungeeMessages.ADMINCONTROLFINISH_FADEIN.get(Integer.class) * 20);
-        title.stay(BungeeMessages.ADMINCONTROLFINISH_STAY.get(Integer.class) * 20);
-        title.fadeOut(BungeeMessages.ADMINCONTROLFINISH_FADEOUT.get(Integer.class) * 20);
-
-        String user_prefix = "";
-        String user_suffix = "";
-
-        if (isLuckPerms) {
-
-            final LuckPerms api = LuckPermsProvider.get();
-            final User user = api.getUserManager().getUser(suspicious.getUniqueId());
-
-            if (user == null) {
-                return;
-            }
-
-            final String prefix = user.getCachedData().getMetaData().getPrefix();
-            final String suffix = user.getCachedData().getMetaData().getSuffix();
-            user_prefix = prefix == null ? "" : prefix;
-            user_suffix = suffix == null ? "" : suffix;
-
-        }
-
-        title.title(new TextComponent(BungeeMessages.ADMINCONTROLFINISH_TITLE.color()
-                .replace("%suspect%", suspicious.getName())
-                .replace("%suspectprefix%", user_prefix)
-                .replace("%suspectsuffix%", user_suffix)));
-
-        title.subTitle(new TextComponent(BungeeMessages.ADMINCONTROLFINISH_SUBTITLE.color()
-                .replace("%suspect%", suspicious.getName())
-                .replace("%suspectprefix%", user_prefix)
-                .replace("%suspectsuffix%", user_suffix)));
-
-        instance.getProxy().getScheduler().schedule(instance, () ->
-                title.send(administrator), BungeeMessages.ADMINCONTROLFINISH_DELAY.get(Integer.class), TimeUnit.SECONDS);
     }
 
     public List<ServerInfo> getServerList(List<String> stringList) {

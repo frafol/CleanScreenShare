@@ -136,6 +136,7 @@ discord-webhook: # The Discord Integration is an experimental feature, report al
 
   # The 'footer' of the embed message sent on Discord.
   embed_footer: "Powered by CleanScreenShare"
+  embed_footer_icon: "none" # You can use a link to an image.
 
 mysql:
 

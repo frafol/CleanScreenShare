@@ -165,7 +165,13 @@ public class ControlCommand implements SimpleCommand {
 					LimboUtils.spawnPlayerLimbo(player.get());
 
 					Utils.startControl(player.get(), sender, null);
-					Utils.sendDiscordMessage(player.get(), sender, VelocityMessages.DISCORD_STARTED.get(String.class).replace("%suspectgroup%", suspect_group).replace("%admingroup%", admin_group));
+					MessageUtil.sendDiscordMessage(
+							player.get(),
+							sender,
+							VelocityMessages.DISCORD_STARTED.get(String.class)
+									.replace("%suspectgroup%", suspect_group)
+									.replace("%admingroup%", admin_group),
+							VelocityMessages.DISCORD_STARTED_THUMBNAIL.get(String.class));
 					return;
 				}
 
@@ -253,7 +259,13 @@ public class ControlCommand implements SimpleCommand {
 				}
 
 				Utils.startControl(player.get(), sender, proxyServer.get());
-				Utils.sendDiscordMessage(player.get(), sender, VelocityMessages.DISCORD_STARTED.get(String.class).replace("%suspectgroup%", suspect_group).replace("%admingroup%", admin_group));
+				MessageUtil.sendDiscordMessage(
+						player.get(),
+						sender,
+						VelocityMessages.DISCORD_STARTED.get(String.class)
+								.replace("%suspectgroup%", suspect_group)
+								.replace("%admingroup%", admin_group),
+						VelocityMessages.DISCORD_STARTED_THUMBNAIL.get(String.class));
 
 			} else {
 				source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.NOT_ONLINE.color()

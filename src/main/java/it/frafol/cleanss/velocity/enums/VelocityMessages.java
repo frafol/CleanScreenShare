@@ -3,8 +3,8 @@ package it.frafol.cleanss.velocity.enums;
 import com.velocitypowered.api.command.CommandSource;
 import com.velocitypowered.api.proxy.Player;
 import it.frafol.cleanss.velocity.CleanSS;
+import it.frafol.cleanss.velocity.objects.ChatUtil;
 import it.frafol.cleanss.velocity.objects.Placeholder;
-import it.frafol.cleanss.velocity.objects.Utils;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -105,6 +105,10 @@ public enum VelocityMessages {
     DISCORD_FINISHED("messages.discord.finished"),
     DISCORD_SPECTATOR("messages.discord.spectator"),
     DISCORD_SPECTATOR_END("messages.discord.spectator_end"),
+    DISCORD_FINISHED_THUMBNAIL("messages.discord.finished_thumbnail"),
+    DISCORD_STARTED_THUMBNAIL("messages.discord.started_thumbnail"),
+    DISCORD_SPECTATOR_THUMBNAIL("messages.discord.spectator_thumbnail"),
+    DISCORD_LEAVE_DURING_CONTROL_THUMBNAIL("messages.discord.suspect_left_during_control_thumbnail"),
     DISCORD_QUIT("messages.discord.suspect_left_during_control"),
     DISCORD_LUCKPERMS_FIX("messages.discord.luckperms.default_group_displayname"),
     INFO_MESSAGE("messages.info.main_message"),
@@ -163,11 +167,11 @@ public enum VelocityMessages {
     }
 
     public void sendList(CommandSource commandSource, Placeholder... placeHolder) {
-        Utils.sendList(this, commandSource, placeHolder);
+        ChatUtil.sendList(this, commandSource, placeHolder);
     }
 
     public void sendButtons(CommandSource commandSource, Player player_name, Placeholder... placeHolder) {
-        Utils.sendCompiledButtons(this, commandSource, player_name, placeHolder);
+        ChatUtil.sendCompiledButtons(this, commandSource, player_name, placeHolder);
     }
 
 }

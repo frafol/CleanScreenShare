@@ -3,6 +3,8 @@ package it.frafol.cleanss.bungee.listeners;
 import it.frafol.cleanss.bungee.CleanSS;
 import it.frafol.cleanss.bungee.enums.BungeeConfig;
 import it.frafol.cleanss.bungee.enums.BungeeMessages;
+import it.frafol.cleanss.bungee.objects.ChatUtil;
+import it.frafol.cleanss.bungee.objects.MessageUtil;
 import it.frafol.cleanss.bungee.objects.PlayerCache;
 import it.frafol.cleanss.bungee.objects.Utils;
 import net.luckperms.api.LuckPerms;
@@ -58,8 +60,8 @@ public class KickListener implements Listener {
                     .replace("%prefix%", BungeeMessages.PREFIX.color())));
             PlayerCache.getSpectators().remove(player.getUniqueId());
 
-            Utils.sendDiscordSpectatorMessage(player, BungeeMessages.DISCORD_SPECTATOR_END.color()
-                    .replace("%player%", player.getName()));
+            MessageUtil.sendDiscordSpectatorMessage(player, BungeeMessages.DISCORD_SPECTATOR_END.color()
+                    .replace("%player%", player.getName()), BungeeMessages.DISCORD_SPECTATOR_END_THUMBNAIL.color());
 
             String admin_prefix;
             String admin_suffix;
@@ -91,8 +93,8 @@ public class KickListener implements Listener {
                         .forEach(players -> players.sendMessage(TextComponent.fromLegacyText(BungeeMessages.SPECT_ADMIN_NOTIFY_FINISH.color()
                                 .replace("%prefix%", BungeeMessages.PREFIX.color())
                                 .replace("%admin%", player.getName())
-                                .replace("%adminprefix%", Utils.color(admin_prefix))
-                                .replace("%adminsuffix%", Utils.color(admin_suffix)))));
+                                .replace("%adminprefix%", ChatUtil.color(admin_prefix))
+                                .replace("%adminsuffix%", ChatUtil.color(admin_suffix)))));
             }
             return;
         }

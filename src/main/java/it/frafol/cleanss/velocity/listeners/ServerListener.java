@@ -6,6 +6,7 @@ import com.velocitypowered.api.network.ProtocolVersion;
 import com.velocitypowered.api.proxy.Player;
 import it.frafol.cleanss.velocity.CleanSS;
 import it.frafol.cleanss.velocity.enums.VelocityConfig;
+import it.frafol.cleanss.velocity.objects.MessageUtil;
 import it.frafol.cleanss.velocity.objects.PlayerCache;
 import it.frafol.cleanss.velocity.objects.Utils;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
@@ -50,15 +51,15 @@ public class ServerListener {
                 }
 
                 if (PlayerCache.getSuspicious().contains(player.getUniqueId())) {
-                    Utils.sendChannelMessage(player, "SUSPECT");
+                    MessageUtil.sendChannelMessage(player, "SUSPECT");
                 }
 
                 if (PlayerCache.getAdministrator().contains(player.getUniqueId())) {
-                    Utils.sendChannelAdvancedMessage(player, PlayerCache.getCouples().get(player), "ADMIN");
+                    MessageUtil.sendChannelAdvancedMessage(player, PlayerCache.getCouples().get(player), "ADMIN");
                 }
 
                 if (player.getProtocolVersion().getProtocol() >= ProtocolVersion.getProtocolVersion(759).getProtocol()) {
-                    Utils.sendChannelMessage(player, "NO_CHAT");
+                    MessageUtil.sendChannelMessage(player, "NO_CHAT");
                 }
             }).delay(VelocityConfig.MESSAGE_DELAY.get(Integer.class), TimeUnit.SECONDS).schedule();
 
@@ -70,15 +71,15 @@ public class ServerListener {
         }
 
         if (PlayerCache.getSuspicious().contains(player.getUniqueId())) {
-            Utils.sendChannelMessage(player, "SUSPECT");
+            MessageUtil.sendChannelMessage(player, "SUSPECT");
         }
 
         if (PlayerCache.getAdministrator().contains(player.getUniqueId())) {
-            Utils.sendChannelAdvancedMessage(player, PlayerCache.getCouples().get(player), "ADMIN");
+            MessageUtil.sendChannelAdvancedMessage(player, PlayerCache.getCouples().get(player), "ADMIN");
         }
 
         if (player.getProtocolVersion().getProtocol() >= ProtocolVersion.getProtocolVersion(759).getProtocol()) {
-            Utils.sendChannelMessage(player, "NO_CHAT");
+            MessageUtil.sendChannelMessage(player, "NO_CHAT");
         }
     }
 

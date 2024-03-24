@@ -5,6 +5,7 @@ import com.velocitypowered.api.proxy.server.RegisteredServer;
 import it.frafol.cleanss.velocity.CleanSS;
 import it.frafol.cleanss.velocity.enums.VelocityConfig;
 import it.frafol.cleanss.velocity.enums.VelocityMessages;
+import it.frafol.cleanss.velocity.objects.MessageUtil;
 import it.frafol.cleanss.velocity.objects.PlayerCache;
 import it.frafol.cleanss.velocity.objects.Utils;
 import net.elytrium.limboapi.api.Limbo;
@@ -211,7 +212,14 @@ public class LimboHandler implements LimboSessionHandler {
 
             }
 
-            Utils.sendDiscordMessage(player.get(), source, VelocityMessages.DISCORD_FINISHED.get(String.class).replace("%suspectgroup%", suspect_group).replace("%admingroup%", admin_group), VelocityMessages.CLEAN.get(String.class));
+            MessageUtil.sendDiscordMessage(
+                    player.get(),
+                    source,
+                    VelocityMessages.DISCORD_FINISHED.get(String.class)
+                            .replace("%suspectgroup%", suspect_group)
+                            .replace("%admingroup%", admin_group),
+                    VelocityMessages.CLEAN.get(String.class),
+                    VelocityMessages.DISCORD_FINISHED_THUMBNAIL.get(String.class));
 
         } else {
 

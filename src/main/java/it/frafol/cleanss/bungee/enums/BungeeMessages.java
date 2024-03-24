@@ -1,8 +1,8 @@
 package it.frafol.cleanss.bungee.enums;
 
 import it.frafol.cleanss.bungee.CleanSS;
+import it.frafol.cleanss.bungee.objects.ChatUtil;
 import it.frafol.cleanss.bungee.objects.Placeholder;
-import it.frafol.cleanss.bungee.objects.Utils;
 import lombok.Getter;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
@@ -102,10 +102,15 @@ public enum BungeeMessages {
     IN_CONTROL_ERROR("messages.spectate.in_control_error"),
 
     DISCORD_STARTED("messages.discord.started"),
+    DISCORD_STARTED_THUMBNAIL("messages.discord.started_thumbnail"),
     DISCORD_FINISHED("messages.discord.finished"),
+    DISCORD_FINISHED_THUMBNAIL("messages.discord.finished_thumbnail"),
     DISCORD_SPECTATOR("messages.discord.spectator"),
+    DISCORD_SPECTATOR_THUMBNAIL("messages.discord.spectator_thumbnail"),
     DISCORD_SPECTATOR_END("messages.discord.spectator_end"),
+    DISCORD_SPECTATOR_END_THUMBNAIL("messages.discord.spectator_end_thumbnail"),
     DISCORD_QUIT("messages.discord.suspect_left_during_control"),
+    DISCORD_QUIT_THUMBNAIL("messages.discord.suspect_left_during_control_thumbnail"),
     DISCORD_LUCKPERMS_FIX("messages.discord.luckperms.default_group_displayname"),
     INFO_MESSAGE("messages.info.main_message"),
     CLEAN("messages.discord.results.clean"),
@@ -150,6 +155,6 @@ public enum BungeeMessages {
     }
 
     public void sendList(CommandSender commandSource, ProxiedPlayer player_name, Placeholder... placeHolder) {
-        Utils.sendFormattedList(this, commandSource, player_name, placeHolder);
+        ChatUtil.sendFormattedList(this, commandSource, player_name, placeHolder);
     }
 }

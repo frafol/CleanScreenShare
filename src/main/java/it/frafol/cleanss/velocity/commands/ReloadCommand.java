@@ -38,6 +38,7 @@ public class ReloadCommand implements SimpleCommand {
 
         stopTasks();
         TextFile.reloadAll();
+        restartBot();
         source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.RELOADED.color()
                 .replace("%prefix%", VelocityMessages.PREFIX.color())));
 
@@ -80,6 +81,13 @@ public class ReloadCommand implements SimpleCommand {
 
         for (Optional<RegisteredServer> fallback : fallbacks) {
             fallback.ifPresent(Utils::stopTask);
+        }
+    }
+
+    private void restartBot() {
+        if (PLUGIN.getJda().getJda() != null) {
+            PLUGIN.getJda().getJda().shutdown();
+            PLUGIN.reloadDiscord();
         }
     }
 }

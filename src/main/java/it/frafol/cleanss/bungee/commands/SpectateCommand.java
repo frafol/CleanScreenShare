@@ -4,6 +4,8 @@ import it.frafol.cleanss.bungee.CleanSS;
 import it.frafol.cleanss.bungee.enums.BungeeCommandsConfig;
 import it.frafol.cleanss.bungee.enums.BungeeConfig;
 import it.frafol.cleanss.bungee.enums.BungeeMessages;
+import it.frafol.cleanss.bungee.objects.ChatUtil;
+import it.frafol.cleanss.bungee.objects.MessageUtil;
 import it.frafol.cleanss.bungee.objects.PlayerCache;
 import it.frafol.cleanss.bungee.objects.Utils;
 import net.luckperms.api.LuckPerms;
@@ -48,7 +50,8 @@ public class SpectateCommand extends Command implements TabExecutor {
         boolean luckperms = instance.getProxy().getPluginManager().getPlugin("LuckPerms") != null;
 
         if (args.length != 1) {
-            invocation.sendMessage(TextComponent.fromLegacyText(BungeeMessages.USAGE.color().replace("%prefix%", BungeeMessages.PREFIX.color())));
+            invocation.sendMessage(TextComponent.fromLegacyText(BungeeMessages.USAGE.color()
+                    .replace("%prefix%", BungeeMessages.PREFIX.color())));
             return;
         }
 
@@ -80,12 +83,9 @@ public class SpectateCommand extends Command implements TabExecutor {
         PlayerCache.getSpectators().add(player.getUniqueId());
         player.connect(server);
 
-        Utils.sendDiscordSpectatorMessage(player, BungeeMessages.DISCORD_SPECTATOR.color()
-                .replace("%server%", server.getName())
-                .replace("%staffer%", player.getName()));
-
         String admin_prefix;
         String admin_suffix;
+        String admin_displayname;
 
         if (luckperms) {
 
@@ -103,10 +103,19 @@ public class SpectateCommand extends Command implements TabExecutor {
             admin_prefix = prefix == null ? "" : prefix;
             admin_suffix = suffix == null ? "" : suffix;
 
+            final String displayname = admin.getCachedData().getMetaData().getPrimaryGroup();
+            admin_displayname = displayname == null ? "" : displayname;
+
         } else {
             admin_prefix = "";
             admin_suffix = "";
+            admin_displayname = "";
         }
+
+        MessageUtil.sendDiscordSpectatorMessage(player, BungeeMessages.DISCORD_SPECTATOR.color()
+                .replace("%server%", server.getName())
+                .replace("%staffer%", player.getName())
+                .replace("%admingroup%", admin_displayname), BungeeMessages.DISCORD_SPECTATOR_THUMBNAIL.color());
 
         if (BungeeConfig.SEND_ADMIN_MESSAGE.get(Boolean.class)) {
             instance.getProxy().getPlayers().stream()
@@ -114,8 +123,8 @@ public class SpectateCommand extends Command implements TabExecutor {
                     .forEach(players -> players.sendMessage(TextComponent.fromLegacyText(BungeeMessages.SPECT_ADMIN_NOTIFY.color()
                             .replace("%prefix%", BungeeMessages.PREFIX.color())
                             .replace("%admin%", player.getName())
-                            .replace("%adminprefix%", Utils.color(admin_prefix))
-                            .replace("%adminsuffix%", Utils.color(admin_suffix)))));
+                            .replace("%adminprefix%", ChatUtil.color(admin_prefix))
+                            .replace("%adminsuffix%", ChatUtil.color(admin_suffix)))));
         }
     }
 

@@ -4,6 +4,8 @@ import it.frafol.cleanss.bungee.CleanSS;
 import it.frafol.cleanss.bungee.enums.BungeeCommandsConfig;
 import it.frafol.cleanss.bungee.enums.BungeeConfig;
 import it.frafol.cleanss.bungee.enums.BungeeMessages;
+import it.frafol.cleanss.bungee.objects.ChatUtil;
+import it.frafol.cleanss.bungee.objects.MessageUtil;
 import it.frafol.cleanss.bungee.objects.PlayerCache;
 import it.frafol.cleanss.bungee.objects.Utils;
 import net.luckperms.api.LuckPerms;
@@ -138,10 +140,10 @@ public class FinishCommand extends Command implements TabExecutor {
                                     .replace("%prefix%", BungeeMessages.PREFIX.color())
                                     .replace("%admin%", invocation.getName())
                                     .replace("%suspect%", player.getName())
-                                    .replace("%adminprefix%", Utils.color(admin_prefix))
-                                    .replace("%adminsuffix%", Utils.color(admin_suffix))
-                                    .replace("%suspectprefix%", Utils.color(sus_prefix))
-                                    .replace("%suspectsuffix%", Utils.color(sus_suffix))
+                                    .replace("%adminprefix%", ChatUtil.color(admin_prefix))
+                                    .replace("%adminsuffix%", ChatUtil.color(admin_suffix))
+                                    .replace("%suspectprefix%", ChatUtil.color(sus_prefix))
+                                    .replace("%suspectsuffix%", ChatUtil.color(sus_suffix))
                                     .replace("%result%", BungeeMessages.CLEAN.color()))));
                 }
 
@@ -193,7 +195,12 @@ public class FinishCommand extends Command implements TabExecutor {
 
                 }
 
-                Utils.sendDiscordMessage(player, (ProxiedPlayer) invocation, BungeeMessages.DISCORD_FINISHED.get(String.class).replace("%suspectgroup%", suspect_group).replace("%admingroup%", admin_group), BungeeMessages.CLEAN.get(String.class));
+                MessageUtil.sendDiscordMessage(
+                        player,
+                        (ProxiedPlayer) invocation,
+                        BungeeMessages.DISCORD_FINISHED.get(String.class).replace("%suspectgroup%", suspect_group).replace("%admingroup%", admin_group),
+                        BungeeMessages.CLEAN.get(String.class),
+                        BungeeMessages.DISCORD_FINISHED_THUMBNAIL.get(String.class));
             }
         }
     }

@@ -2,6 +2,7 @@ package it.frafol.cleanss.bungee.commands;
 
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
+import it.frafol.cleanss.bungee.CleanSS;
 import it.frafol.cleanss.bungee.enums.BungeeConfig;
 import it.frafol.cleanss.bungee.enums.BungeeMessages;
 import it.frafol.cleanss.bungee.objects.TextFile;
@@ -20,6 +21,8 @@ public class ReloadCommand extends Command {
         super("ssreload","","screensharereload","cleanssreload","cleanscreensharereload");
     }
 
+    private final CleanSS instance = CleanSS.getInstance();
+
     @SuppressWarnings("UnstableApiUsage")
     @Override
     public void execute(CommandSender sender, String[] args) {
@@ -32,6 +35,7 @@ public class ReloadCommand extends Command {
 
         stopTasks();
         TextFile.reloadAll();
+        restartBot();
         sender.sendMessage(TextComponent.fromLegacyText(BungeeMessages.RELOADED.color()
                 .replace("%prefix%", BungeeMessages.PREFIX.color())));
 
@@ -75,6 +79,14 @@ public class ReloadCommand extends Command {
 
         for (ServerInfo server : fallbacks) {
             Utils.stopTask(server);
+        }
+    }
+
+    private void restartBot() {
+        if (instance.getJda() != null) {
+            instance.getJda().shutdown();
+            instance.setJda(null);
+            instance.reloadDiscord();
         }
     }
 }

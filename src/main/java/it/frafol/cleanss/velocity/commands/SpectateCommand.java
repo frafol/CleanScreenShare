@@ -7,6 +7,8 @@ import com.velocitypowered.api.proxy.server.RegisteredServer;
 import it.frafol.cleanss.velocity.CleanSS;
 import it.frafol.cleanss.velocity.enums.VelocityConfig;
 import it.frafol.cleanss.velocity.enums.VelocityMessages;
+import it.frafol.cleanss.velocity.objects.ChatUtil;
+import it.frafol.cleanss.velocity.objects.MessageUtil;
 import it.frafol.cleanss.velocity.objects.PlayerCache;
 import it.frafol.cleanss.velocity.objects.Utils;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
@@ -93,12 +95,9 @@ public class SpectateCommand implements SimpleCommand {
         PlayerCache.getSpectators().add(player.getUniqueId());
         player.createConnectionRequest(server).fireAndForget();
 
-        Utils.sendDiscordSpectatorMessage(player, VelocityMessages.DISCORD_SPECTATOR.color()
-                .replace("%staffer%", player.getUsername())
-                .replace("%server%", server.getServerInfo().getName()));
-
         String admin_prefix;
         String admin_suffix;
+        String admin_displayname;
 
         if (luckperms) {
 
@@ -112,14 +111,23 @@ public class SpectateCommand implements SimpleCommand {
 
             final String prefix = admin.getCachedData().getMetaData().getPrefix();
             final String suffix = admin.getCachedData().getMetaData().getSuffix();
+            final String displayname = admin.getCachedData().getMetaData().getPrimaryGroup();
 
             admin_prefix = prefix == null ? "" : prefix;
             admin_suffix = suffix == null ? "" : suffix;
+            admin_displayname = displayname == null ? "" : displayname;
 
         } else {
             admin_prefix = "";
             admin_suffix = "";
+            admin_displayname = "";
         }
+
+        MessageUtil.sendDiscordSpectatorMessage(player, VelocityMessages.DISCORD_SPECTATOR.color()
+                .replace("%staffer%", player.getUsername())
+                .replace("%server%", server.getServerInfo().getName())
+                .replace("%admingroup%", admin_displayname),
+                VelocityMessages.DISCORD_SPECTATOR_THUMBNAIL.color());
 
         if (VelocityConfig.SEND_ADMIN_MESSAGE.get(Boolean.class)) {
             plugin.getServer().getAllPlayers().stream()
@@ -127,8 +135,8 @@ public class SpectateCommand implements SimpleCommand {
                     .forEach(players -> players.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.SPECT_ADMIN_NOTIFY.color()
                             .replace("%prefix%", VelocityMessages.PREFIX.color())
                             .replace("%admin%", player.getUsername())
-                            .replace("%adminprefix%", Utils.color(admin_prefix))
-                            .replace("%adminsuffix%", Utils.color(admin_suffix)))));
+                            .replace("%adminprefix%", ChatUtil.color(admin_prefix))
+                            .replace("%adminsuffix%", ChatUtil.color(admin_suffix)))));
         }
     }
 

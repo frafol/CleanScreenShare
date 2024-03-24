@@ -17,6 +17,7 @@ import it.frafol.cleanss.bungee.objects.PlayerCache;
 import it.frafol.cleanss.bungee.objects.TextFile;
 import it.frafol.cleanss.bungee.objects.Utils;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.SneakyThrows;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
@@ -49,6 +50,7 @@ public class CleanSS extends Plugin {
 	private TextFile versionTextFile;
 
 	@Getter
+	@Setter
 	private JDA jda;
 
 	@Getter
@@ -63,7 +65,6 @@ public class CleanSS extends Plugin {
 	public void onEnable() {
 
 		instance = this;
-
 		loadLibraries();
 
 		getLogger().info("\n§d   ___  __    ____    __    _  _    ___  ___\n" +
@@ -301,6 +302,21 @@ public class CleanSS extends Plugin {
 	}
 
 	private void loadDiscord() {
+		try {
+			jda = JDABuilder.createDefault(BungeeConfig.DISCORD_TOKEN.get(String.class))
+					.enableIntents(GatewayIntent.MESSAGE_CONTENT)
+					.setStatus(selectStatus())
+					.build();
+			getLogger().info("§7Discord hooked §dsuccessfully§7!");
+		} catch (ExceptionInInitializerError e) {
+			getLogger().severe("Invalid Discord configuration, please check your config.yml file.");
+			getLogger().severe("Make sure you are not using any strange forks (like Aegis).");
+		}
+
+		updateTaskJDA();
+	}
+
+	public void reloadDiscord() {
 		try {
 			jda = JDABuilder.createDefault(BungeeConfig.DISCORD_TOKEN.get(String.class))
 					.enableIntents(GatewayIntent.MESSAGE_CONTENT)
