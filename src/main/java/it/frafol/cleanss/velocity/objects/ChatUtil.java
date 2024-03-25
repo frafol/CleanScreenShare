@@ -86,7 +86,7 @@ public class ChatUtil {
     }
 
     public void sendList(VelocityMessages velocityMessages, CommandSource commandSource, Placeholder... placeholders) {
-        sendCorrectList(commandSource, ChatUtil.color(ChatUtil.getStringList(velocityMessages, placeholders)));
+        sendList(commandSource, ChatUtil.color(ChatUtil.getStringList(velocityMessages, placeholders)));
     }
 
     public void sendCompiledButtons(VelocityMessages velocityMessages, CommandSource commandSource, Player player_name, Placeholder... placeholders) {
@@ -100,12 +100,6 @@ public class ChatUtil {
                         .clickEvent(ClickEvent.Action.SUGGEST_COMMAND, containsCommand(message))));
                 return;
             }
-            commandSource.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(message));
-        }
-    }
-
-    public void sendCorrectList(CommandSource commandSource, List<String> stringList) {
-        for (String message : stringList) {
             commandSource.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(message));
         }
     }

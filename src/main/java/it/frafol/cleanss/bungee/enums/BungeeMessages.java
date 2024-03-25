@@ -154,7 +154,7 @@ public enum BungeeMessages {
         return ChatColor.translateAlternateColorCodes('&',str);
     }
 
-    public void sendList(CommandSender commandSource, ProxiedPlayer player_name, Placeholder... placeHolder) {
-        ChatUtil.sendFormattedList(this, commandSource, player_name, placeHolder);
+    public void sendList(CommandSender commandSource, ProxiedPlayer player_name, Placeholder... placeholder) {
+        ChatUtil.sendFormattedList(this, commandSource, player_name, placeholder);
     }
 }

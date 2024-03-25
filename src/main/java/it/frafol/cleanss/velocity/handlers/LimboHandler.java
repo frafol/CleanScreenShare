@@ -6,6 +6,7 @@ import it.frafol.cleanss.velocity.CleanSS;
 import it.frafol.cleanss.velocity.enums.VelocityConfig;
 import it.frafol.cleanss.velocity.enums.VelocityMessages;
 import it.frafol.cleanss.velocity.objects.MessageUtil;
+import it.frafol.cleanss.velocity.objects.Placeholder;
 import it.frafol.cleanss.velocity.objects.PlayerCache;
 import it.frafol.cleanss.velocity.objects.Utils;
 import net.elytrium.limboapi.api.Limbo;
@@ -138,7 +139,8 @@ public class LimboHandler implements LimboSessionHandler {
         if (words.length == 2) {
             secondWord = words[1];
         } else {
-            source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.USAGE.color().replace("%prefix%", VelocityMessages.PREFIX.color())));
+            VelocityMessages.USAGE.sendList(source, null,
+					new Placeholder("%prefix%", VelocityMessages.PREFIX.color()));
             return;
         }
 

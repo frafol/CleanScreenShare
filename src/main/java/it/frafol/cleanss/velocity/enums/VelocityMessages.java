@@ -166,12 +166,11 @@ public enum VelocityMessages {
         return path;
     }
 
-    public void sendList(CommandSource commandSource, Placeholder... placeHolder) {
-        ChatUtil.sendList(this, commandSource, placeHolder);
+    public void sendList(CommandSource commandSource, Placeholder... placeholder) {
+        ChatUtil.sendList(this, commandSource, placeholder);
     }
 
-    public void sendButtons(CommandSource commandSource, Player player_name, Placeholder... placeHolder) {
-        ChatUtil.sendCompiledButtons(this, commandSource, player_name, placeHolder);
+    public void sendButtons(CommandSource commandSource, Player player_name, Placeholder... placeholder) {
+        ChatUtil.sendCompiledButtons(this, commandSource, player_name, placeholder);
     }
-
 }

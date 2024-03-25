@@ -36,8 +36,8 @@ public class InfoCommand extends Command implements TabExecutor {
         }
 
         if (args.length != 1) {
-            invocation.sendMessage(TextComponent.fromLegacyText(BungeeMessages.USAGE.color()
-                    .replace("%prefix%", BungeeMessages.PREFIX.color())));
+            BungeeMessages.USAGE.sendList(invocation, null, 
+					new Placeholder("%prefix%", BungeeMessages.PREFIX.color()));
             return;
         }
 

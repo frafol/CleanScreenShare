@@ -4,10 +4,7 @@ import it.frafol.cleanss.bungee.CleanSS;
 import it.frafol.cleanss.bungee.enums.BungeeCommandsConfig;
 import it.frafol.cleanss.bungee.enums.BungeeConfig;
 import it.frafol.cleanss.bungee.enums.BungeeMessages;
-import it.frafol.cleanss.bungee.objects.ChatUtil;
-import it.frafol.cleanss.bungee.objects.MessageUtil;
-import it.frafol.cleanss.bungee.objects.PlayerCache;
-import it.frafol.cleanss.bungee.objects.Utils;
+import it.frafol.cleanss.bungee.objects.*;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.LuckPermsProvider;
 import net.luckperms.api.model.group.Group;
@@ -50,7 +47,8 @@ public class FinishCommand extends Command implements TabExecutor {
         }
 
         if (args.length == 0) {
-            invocation.sendMessage(TextComponent.fromLegacyText(BungeeMessages.USAGE.color().replace("%prefix%", BungeeMessages.PREFIX.color())));
+            BungeeMessages.USAGE.sendList(invocation, null,
+					new Placeholder("%prefix%", BungeeMessages.PREFIX.color()));
             return;
         }
 

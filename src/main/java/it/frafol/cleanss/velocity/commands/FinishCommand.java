@@ -7,10 +7,7 @@ import com.velocitypowered.api.proxy.server.RegisteredServer;
 import it.frafol.cleanss.velocity.CleanSS;
 import it.frafol.cleanss.velocity.enums.VelocityConfig;
 import it.frafol.cleanss.velocity.enums.VelocityMessages;
-import it.frafol.cleanss.velocity.objects.ChatUtil;
-import it.frafol.cleanss.velocity.objects.MessageUtil;
-import it.frafol.cleanss.velocity.objects.PlayerCache;
-import it.frafol.cleanss.velocity.objects.Utils;
+import it.frafol.cleanss.velocity.objects.*;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.LuckPermsProvider;
@@ -50,7 +47,8 @@ public class FinishCommand implements SimpleCommand {
         }
 
         if (invocation.arguments().length == 0) {
-            source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.USAGE.color().replace("%prefix%", VelocityMessages.PREFIX.color())));
+            VelocityMessages.USAGE.sendList(source, null,
+					new Placeholder("%prefix%", VelocityMessages.PREFIX.color()));
             return;
         }
 
