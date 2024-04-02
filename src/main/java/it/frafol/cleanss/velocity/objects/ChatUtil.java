@@ -97,8 +97,8 @@ public class ChatUtil {
         for (String message : stringList) {
             if (!containsCommand(message).equals("none")) {
                 commandSource.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(message).clickEvent(ClickEvent
-                        .clickEvent(ClickEvent.Action.SUGGEST_COMMAND, containsCommand(message))));
-                return;
+                        .clickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/" + containsCommand(message))));
+                continue;
             }
             commandSource.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(message));
         }

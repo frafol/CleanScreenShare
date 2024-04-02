@@ -93,9 +93,9 @@ public class ChatUtil {
             if (!containsCommand(message).equals("none")) {
                 suggestMessage.setClickEvent(new ClickEvent(
                         ClickEvent.Action.SUGGEST_COMMAND,
-                        containsCommand(message)));
+                        "/" + containsCommand(message)));
                 commandSource.sendMessage(suggestMessage);
-                return;
+                continue;
             }
             commandSource.sendMessage(TextComponent.fromLegacyText(message));
         }
