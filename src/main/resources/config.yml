@@ -55,6 +55,7 @@ settings:
 
   # Check for plugin updates.
   update_check: true
+  update_alert: true
 
   # Automatically update the plugin.
   auto_update: true

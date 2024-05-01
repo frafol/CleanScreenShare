@@ -46,149 +46,49 @@ public class ControlCommand implements SimpleCommand {
 			return;
 		}
 
-		if (invocation.arguments().length == 0) {
+		if (invocation.arguments().length != 1) {
 			VelocityMessages.USAGE.sendList(source, null,
 					new Placeholder("%prefix%", VelocityMessages.PREFIX.color()));
 			return;
 		}
 
-		if (invocation.arguments().length == 1) {
+		if (instance.getServer().getAllPlayers().toString().contains(invocation.arguments()[0])) {
 
-			if (instance.getServer().getAllPlayers().toString().contains(invocation.arguments()[0])) {
+			final Optional<Player> player = instance.getServer().getPlayer(invocation.arguments()[0]);
+			final Player sender = (Player) source;
 
-				final Optional<Player> player = instance.getServer().getPlayer(invocation.arguments()[0]);
-				final Player sender = (Player) source;
+			if (!player.isPresent()) {
+				source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.NOT_ONLINE.color()
+						.replace("%prefix%", VelocityMessages.PREFIX.color())
+						.replace("%player%", invocation.arguments()[0])));
+				return;
+			}
 
-				if (!player.isPresent()) {
-					source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.NOT_ONLINE.color()
-							.replace("%prefix%", VelocityMessages.PREFIX.color())
-							.replace("%player%", invocation.arguments()[0])));
-					return;
-				}
+			if (sender.getUniqueId().equals(player.get().getUniqueId())) {
+				source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.YOURSELF.color()
+						.replace("%prefix%", VelocityMessages.PREFIX.color())));
+				return;
+			}
 
-				if (sender.getUniqueId().equals(player.get().getUniqueId())) {
-					source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.YOURSELF.color()
-							.replace("%prefix%", VelocityMessages.PREFIX.color())));
-					return;
-				}
+			if (player.get().hasPermission(VelocityConfig.BYPASS_PERMISSION.get(String.class))) {
+				source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.PLAYER_BYPASS.color()
+						.replace("%prefix%", VelocityMessages.PREFIX.color())));
+				return;
+			}
 
-				if (player.get().hasPermission(VelocityConfig.BYPASS_PERMISSION.get(String.class))) {
-					source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.PLAYER_BYPASS.color()
-							.replace("%prefix%", VelocityMessages.PREFIX.color())));
-					return;
-				}
+			if (instance.getVelocityVanish() && VelocityConfig.VELOCITYVANISH.get(Boolean.class) && VelocityVanishUtils.isVanished(player.get())) {
+				source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.PLAYER_BYPASS.color()
+						.replace("%prefix%", VelocityMessages.PREFIX.color())));
+				return;
+			}
 
-				if (instance.getVelocityVanish() && VelocityConfig.VELOCITYVANISH.get(Boolean.class) && VelocityVanishUtils.isVanished(player.get())) {
-					source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.PLAYER_BYPASS.color()
-							.replace("%prefix%", VelocityMessages.PREFIX.color())));
-					return;
-				}
+			if (instance.getPremiumVanish() && VelocityConfig.PREMIUMVANISH.get(Boolean.class) && PremiumVanishUtils.isVanished(player.get())) {
+				source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.PLAYER_BYPASS.color()
+						.replace("%prefix%", VelocityMessages.PREFIX.color())));
+				return;
+			}
 
-				if (instance.getPremiumVanish() && VelocityConfig.PREMIUMVANISH.get(Boolean.class) && PremiumVanishUtils.isVanished(player.get())) {
-					source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.PLAYER_BYPASS.color()
-							.replace("%prefix%", VelocityMessages.PREFIX.color())));
-					return;
-				}
-
-				if (instance.useLimbo) {
-
-					if (PlayerCache.getSuspicious().contains(player.get().getUniqueId())) {
-						source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.CONTROL_ALREADY.color()
-								.replace("%prefix%", VelocityMessages.PREFIX.color())));
-						return;
-					}
-
-					if (PlayerCache.getAdministrator().contains(sender.getUniqueId())) {
-						source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.CONTROL_ALREADY.color()
-								.replace("%prefix%", VelocityMessages.PREFIX.color())));
-						return;
-					}
-
-					if (PlayerCache.getIn_control().get(player.get().getUniqueId()) != null && PlayerCache.getIn_control().get(player.get().getUniqueId()) == 1) {
-						source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.CONTROL_ALREADY.color()
-								.replace("%prefix%", VelocityMessages.PREFIX.color())));
-						return;
-					}
-
-					String admin_group;
-					String suspect_group;
-
-					if (luckperms) {
-
-						final LuckPerms api = LuckPermsProvider.get();
-
-						final User admin = api.getUserManager().getUser(sender.getUniqueId());
-						final User suspect = api.getUserManager().getUser(player.get().getUniqueId());
-
-						if (admin == null || suspect == null) {
-							return;
-						}
-
-						final Group admingroup = api.getGroupManager().getGroup(admin.getPrimaryGroup());
-
-						String admingroup_displayname;
-						if (admingroup != null) {
-							admingroup_displayname = admingroup.getFriendlyName();
-
-							if (admingroup_displayname.equalsIgnoreCase("default")) {
-								admingroup_displayname = VelocityMessages.DISCORD_LUCKPERMS_FIX.get(String.class);
-							}
-
-						} else {
-							admingroup_displayname = "";
-						}
-
-						admin_group = admingroup == null ? "" : admingroup_displayname;
-
-						final Group suspectgroup = api.getGroupManager().getGroup(suspect.getPrimaryGroup());
-
-						String suspectroup_displayname;
-						if (suspectgroup != null) {
-							suspectroup_displayname = suspectgroup.getFriendlyName();
-
-							if (suspectroup_displayname.equalsIgnoreCase("default")) {
-								suspectroup_displayname = VelocityMessages.DISCORD_LUCKPERMS_FIX.get(String.class);
-							}
-
-						} else {
-							suspectroup_displayname = "";
-						}
-
-						suspect_group = suspectgroup == null ? "" : suspectroup_displayname;
-
-					} else {
-						admin_group = "";
-						suspect_group = "";
-					}
-
-
-					LimboUtils.spawnPlayerLimbo(sender);
-					LimboUtils.spawnPlayerLimbo(player.get());
-
-					Utils.startControl(player.get(), sender, null);
-					MessageUtil.sendDiscordMessage(
-							player.get(),
-							sender,
-							VelocityMessages.DISCORD_STARTED.get(String.class)
-									.replace("%suspectgroup%", suspect_group)
-									.replace("%admingroup%", admin_group),
-							VelocityMessages.DISCORD_STARTED_THUMBNAIL.get(String.class));
-					return;
-				}
-
-				List<Optional<RegisteredServer>> servers = Utils.getServerList(VelocityConfig.CONTROL.getStringList());
-
-				if (!VelocityConfig.DISABLE_PING.get(Boolean.class)) {
-					servers = Utils.getOnlineServers(servers);
-				}
-
-				Optional<RegisteredServer> proxyServer = Utils.getBestServer(servers);
-
-				if (!proxyServer.isPresent()) {
-					source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.NO_EXIST.color()
-							.replace("%prefix%", VelocityMessages.PREFIX.color())));
-					return;
-				}
+			if (instance.useLimbo) {
 
 				if (PlayerCache.getSuspicious().contains(player.get().getUniqueId())) {
 					source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.CONTROL_ALREADY.color()
@@ -259,7 +159,11 @@ public class ControlCommand implements SimpleCommand {
 					suspect_group = "";
 				}
 
-				Utils.startControl(player.get(), sender, proxyServer.get());
+
+				LimboUtils.spawnPlayerLimbo(sender);
+				LimboUtils.spawnPlayerLimbo(player.get());
+
+				Utils.startControl(player.get(), sender, null);
 				MessageUtil.sendDiscordMessage(
 						player.get(),
 						sender,
@@ -267,12 +171,105 @@ public class ControlCommand implements SimpleCommand {
 								.replace("%suspectgroup%", suspect_group)
 								.replace("%admingroup%", admin_group),
 						VelocityMessages.DISCORD_STARTED_THUMBNAIL.get(String.class));
+				return;
+			}
+
+			List<Optional<RegisteredServer>> servers = Utils.getServerList(VelocityConfig.CONTROL.getStringList());
+
+			if (!VelocityConfig.DISABLE_PING.get(Boolean.class)) {
+				servers = Utils.getOnlineServers(servers);
+			}
+
+			Optional<RegisteredServer> proxyServer = Utils.getBestServer(servers);
+
+			if (!proxyServer.isPresent()) {
+				source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.NO_EXIST.color()
+						.replace("%prefix%", VelocityMessages.PREFIX.color())));
+				return;
+			}
+
+			if (PlayerCache.getSuspicious().contains(player.get().getUniqueId())) {
+				source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.CONTROL_ALREADY.color()
+						.replace("%prefix%", VelocityMessages.PREFIX.color())));
+				return;
+			}
+
+			if (PlayerCache.getAdministrator().contains(sender.getUniqueId())) {
+				source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.CONTROL_ALREADY.color()
+						.replace("%prefix%", VelocityMessages.PREFIX.color())));
+				return;
+			}
+
+			if (PlayerCache.getIn_control().get(player.get().getUniqueId()) != null && PlayerCache.getIn_control().get(player.get().getUniqueId()) == 1) {
+				source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.CONTROL_ALREADY.color()
+						.replace("%prefix%", VelocityMessages.PREFIX.color())));
+				return;
+			}
+
+			String admin_group;
+			String suspect_group;
+
+			if (luckperms) {
+
+				final LuckPerms api = LuckPermsProvider.get();
+
+				final User admin = api.getUserManager().getUser(sender.getUniqueId());
+				final User suspect = api.getUserManager().getUser(player.get().getUniqueId());
+
+				if (admin == null || suspect == null) {
+					return;
+				}
+
+				final Group admingroup = api.getGroupManager().getGroup(admin.getPrimaryGroup());
+
+				String admingroup_displayname;
+				if (admingroup != null) {
+					admingroup_displayname = admingroup.getFriendlyName();
+
+					if (admingroup_displayname.equalsIgnoreCase("default")) {
+						admingroup_displayname = VelocityMessages.DISCORD_LUCKPERMS_FIX.get(String.class);
+					}
+
+				} else {
+					admingroup_displayname = "";
+				}
+
+				admin_group = admingroup == null ? "" : admingroup_displayname;
+
+				final Group suspectgroup = api.getGroupManager().getGroup(suspect.getPrimaryGroup());
+
+				String suspectroup_displayname;
+				if (suspectgroup != null) {
+					suspectroup_displayname = suspectgroup.getFriendlyName();
+
+					if (suspectroup_displayname.equalsIgnoreCase("default")) {
+						suspectroup_displayname = VelocityMessages.DISCORD_LUCKPERMS_FIX.get(String.class);
+					}
+
+				} else {
+					suspectroup_displayname = "";
+				}
+
+				suspect_group = suspectgroup == null ? "" : suspectroup_displayname;
 
 			} else {
-				source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.NOT_ONLINE.color()
-						.replace("%prefix%", VelocityMessages.PREFIX.color())
-						.replace("%player%", invocation.arguments()[0])));
+				admin_group = "";
+				suspect_group = "";
 			}
+
+			Utils.startControl(player.get(), sender, proxyServer.get());
+			MessageUtil.sendDiscordMessage(
+					player.get(),
+					sender,
+					VelocityMessages.DISCORD_STARTED.get(String.class)
+							.replace("%suspectgroup%", suspect_group)
+							.replace("%admingroup%", admin_group),
+					VelocityMessages.DISCORD_STARTED_THUMBNAIL.get(String.class));
+
+		} else {
+			source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.NOT_ONLINE.color()
+					.replace("%prefix%", VelocityMessages.PREFIX.color())
+					.replace("%player%", invocation.arguments()[0])));
 		}
 	}
 

@@ -101,6 +101,9 @@ public enum BungeeMessages {
     INVALID_SERVER("messages.spectate.invalid_server"),
     IN_CONTROL_ERROR("messages.spectate.in_control_error"),
 
+    UPDATE_ALERT("messages.update_found.alert"),
+    UPDATE_LINK("messages.update_found.clickable_link"),
+
     DISCORD_STARTED("messages.discord.started"),
     DISCORD_STARTED_THUMBNAIL("messages.discord.started_thumbnail"),
     DISCORD_FINISHED("messages.discord.finished"),
@@ -113,6 +116,8 @@ public enum BungeeMessages {
     DISCORD_QUIT_THUMBNAIL("messages.discord.suspect_left_during_control_thumbnail"),
     DISCORD_LUCKPERMS_FIX("messages.discord.luckperms.default_group_displayname"),
     INFO_MESSAGE("messages.info.main_message"),
+    INFO_TRUE("messages.info.main_message.true_message"),
+    INFO_FALSE("messages.info.main_message.false_message"),
     CLEAN("messages.discord.results.clean"),
     CHEATER("messages.discord.results.cheater"),
     LEFT("messages.discord.results.left"),

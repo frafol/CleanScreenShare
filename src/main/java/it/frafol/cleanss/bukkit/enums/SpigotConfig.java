@@ -39,6 +39,8 @@ public enum SpigotConfig {
     STAFFPREFIX("options.messages.staff_prefix"),
     OTHERPREFIX("options.messages.other_prefix"),
 
+    NONE("options.messages.placeholder_none"),
+
     SB_UPDATE("options.scoreboard.update_task"),
 
     SB_STAFF("options.scoreboard.staff_board.enabled"),

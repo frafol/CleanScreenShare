@@ -28,6 +28,7 @@ import it.frafol.cleanss.velocity.objects.adapter.ReflectUtil;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.SneakyThrows;
+import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.slf4j.Logger;
 import ru.vyarus.yaml.updater.YamlUpdater;
@@ -564,11 +565,11 @@ public class CleanSS {
 				return;
 			}
 
-			if (!updated) {
+			if (!updated && VelocityConfig.UPDATE_ALERT.get(Boolean.class)) {
 				player.sendMessage(LegacyComponentSerializer.legacy('§')
-						.deserialize("§e[CleanScreenShare] There is a new update available, download it on SpigotMC!"));
+						.deserialize(VelocityMessages.UPDATE_ALERT.color()).clickEvent(ClickEvent
+								.clickEvent(ClickEvent.Action.OPEN_URL, VelocityMessages.UPDATE_LINK.get(String.class))));
 			}
-
 		});
 	}
 

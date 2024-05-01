@@ -62,16 +62,16 @@ public class PlaceholderHook extends PlaceholderExpansion {
 
                 Player checked = plugin.getServer().getPlayer(PlayerCache.getCouples().get(player.getUniqueId()));
                 if (checked == null) {
-                    return "none";
+                    return SpigotConfig.NONE.color();
                 }
 
                 if (!checked.isOnline()) {
-                    return "none";
+                    return SpigotConfig.NONE.color();
                 }
 
                 return checked.getName();
             } else {
-                return "none";
+                return SpigotConfig.NONE.color();
             }
         }
 
@@ -80,16 +80,16 @@ public class PlaceholderHook extends PlaceholderExpansion {
 
                 Player checked = plugin.getServer().getPlayer(getKeyByValue(PlayerCache.getCouples(), player.getUniqueId()));
                 if (checked == null) {
-                    return "none";
+                    return SpigotConfig.NONE.color();
                 }
 
                 if (!checked.isOnline()) {
-                    return "none";
+                    return SpigotConfig.NONE.color();
                 }
 
                 return checked.getName();
             } else {
-                return "none";
+                return SpigotConfig.NONE.color();
             }
         }
 

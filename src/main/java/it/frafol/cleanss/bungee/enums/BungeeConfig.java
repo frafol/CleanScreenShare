@@ -13,6 +13,7 @@ public enum BungeeConfig {
     CHECK_FOR_PROBLEMS("settings.check_for_problems"),
     PING_DELAY("settings.ping_delay"),
     UPDATE_CHECK("settings.update_check"),
+    UPDATE_ALERT("settings.update_alert"),
     USE_DISCONNECT("settings.use_disconnect_instead_of_fallback"),
     CONTROL("settings.control_servers"),
     CONTROL_FALLBACK("settings.fallback_servers"),

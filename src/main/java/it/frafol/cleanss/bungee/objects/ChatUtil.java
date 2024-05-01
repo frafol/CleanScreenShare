@@ -31,14 +31,14 @@ public class ChatUtil {
         List<String> newList = new ArrayList<>();
 
         for (String s : getStringList(velocityMessages)) {
-            s = applyPlaceHolder(s, placeholders);
+            s = applyPlaceholder(s, placeholders);
             newList.add(s);
         }
 
         return newList;
     }
 
-    public String applyPlaceHolder(String s, Placeholder ... placeholders) {
+    public String applyPlaceholder(String s, Placeholder ... placeholders) {
         for (Placeholder placeholder : placeholders) {
             s = s.replace(placeholder.getKey(), placeholder.getValue());
         }
@@ -47,11 +47,9 @@ public class ChatUtil {
     }
 
     public String color(String string) {
-
         if (string == null) {
             return null;
         }
-
         String hex = convertHexColors(string);
         return hex.replace("&", "§");
     }
@@ -89,11 +87,11 @@ public class ChatUtil {
 
     public void sendList(CommandSender commandSource, List<String> stringList) {
         for (String message : stringList) {
-            TextComponent suggestMessage = new TextComponent(message);
             if (!containsCommand(message).equals("none")) {
+                TextComponent suggestMessage = new TextComponent(message);
                 suggestMessage.setClickEvent(new ClickEvent(
                         ClickEvent.Action.SUGGEST_COMMAND,
-                        "/" + containsCommand(message)));
+                        "/" + containsCommand(message) + " "));
                 commandSource.sendMessage(suggestMessage);
                 continue;
             }
@@ -176,24 +174,33 @@ public class ChatUtil {
         return buttons;
     }
 
+    public static String getCommand(String input) {
+        String[] parts = input.split("/");
+        if (parts.length < 2) {
+            return input;
+        }
+        return parts[1].trim();
+    }
+
     private String containsCommand(String message) {
+        String foundCommand = getCommand(message);
         for(String command : BungeeCommandsConfig.SS_PLAYER.getStringList()) {
-            if (message.contains(command)) {
+            if (foundCommand.equalsIgnoreCase(command)) {
                 return command;
             }
         }
         for(String command : BungeeCommandsConfig.SS_SPECTATE.getStringList()) {
-            if (message.contains(command)) {
+            if (foundCommand.equalsIgnoreCase(command)) {
                 return command;
             }
         }
         for(String command : BungeeCommandsConfig.SS_FINISH.getStringList()) {
-            if (message.contains(command)) {
+            if (foundCommand.equalsIgnoreCase(command)) {
                 return command;
             }
         }
         for(String command : BungeeCommandsConfig.SS_INFO.getStringList()) {
-            if (message.contains(command)) {
+            if (foundCommand.equalsIgnoreCase(command)) {
                 return command;
             }
         }

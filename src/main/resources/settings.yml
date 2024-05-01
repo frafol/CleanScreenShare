@@ -67,6 +67,9 @@ options:
     suspect_prefix: "&7[&eSuspicious&7] &r"
     other_prefix: "&7[&bDebug&7] &r"
 
+    # This will replace "none" in placeholders.
+    placeholder_none: "none"
+
   scoreboard:
 
     # The time in ticks after which the scoreboard will be updated.

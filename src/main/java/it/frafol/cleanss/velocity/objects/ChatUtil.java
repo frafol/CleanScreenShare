@@ -97,7 +97,7 @@ public class ChatUtil {
         for (String message : stringList) {
             if (!containsCommand(message).equals("none")) {
                 commandSource.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(message).clickEvent(ClickEvent
-                        .clickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/" + containsCommand(message))));
+                        .clickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/" + containsCommand(message) + " ")));
                 continue;
             }
             commandSource.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(message));
@@ -174,24 +174,33 @@ public class ChatUtil {
         return buttons;
     }
 
+    public static String getCommand(String input) {
+        String[] parts = input.split("/");
+        if (parts.length < 2) {
+            return input;
+        }
+        return parts[1].trim();
+    }
+
     private String containsCommand(String message) {
+        String commandFound = getCommand(message);
         for(String command : VelocityCommandsConfig.SS_PLAYER.getStringList()) {
-            if (message.contains(command)) {
+            if (commandFound.equalsIgnoreCase(command)) {
                 return command;
             }
         }
         for(String command : VelocityCommandsConfig.SS_SPECTATE.getStringList()) {
-            if (message.contains(command)) {
+            if (commandFound.equalsIgnoreCase(command)) {
                 return command;
             }
         }
         for(String command : VelocityCommandsConfig.SS_FINISH.getStringList()) {
-            if (message.contains(command)) {
+            if (commandFound.equalsIgnoreCase(command)) {
                 return command;
             }
         }
         for(String command : VelocityCommandsConfig.SS_INFO.getStringList()) {
-            if (message.contains(command)) {
+            if (commandFound.equalsIgnoreCase(command)) {
                 return command;
             }
         }

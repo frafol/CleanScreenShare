@@ -101,6 +101,9 @@ public enum VelocityMessages {
     LIMBO_ERROR("messages.spectate.limbo_error"),
     IN_CONTROL_ERROR("messages.spectate.in_control_error"),
 
+    UPDATE_ALERT("messages.update_found.alert"),
+    UPDATE_LINK("messages.update_found.clickable_link"),
+
     DISCORD_STARTED("messages.discord.started"),
     DISCORD_FINISHED("messages.discord.finished"),
     DISCORD_SPECTATOR("messages.discord.spectator"),
@@ -112,6 +115,8 @@ public enum VelocityMessages {
     DISCORD_QUIT("messages.discord.suspect_left_during_control"),
     DISCORD_LUCKPERMS_FIX("messages.discord.luckperms.default_group_displayname"),
     INFO_MESSAGE("messages.info.main_message"),
+    INFO_TRUE("messages.info.main_message.true_message"),
+    INFO_FALSE("messages.info.main_message.false_message"),
     CLEAN("messages.discord.results.clean"),
     CHEATER("messages.discord.results.cheater"),
     LEFT("messages.discord.results.left"),

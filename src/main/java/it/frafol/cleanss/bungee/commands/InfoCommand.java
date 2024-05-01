@@ -67,7 +67,7 @@ public class InfoCommand extends Command implements TabExecutor {
                         new Placeholder("playerprefix", Utils.getPrefix(player)),
                         new Placeholder("playersuffix", Utils.getSuffix(player)),
                         new Placeholder("controls_suffered", String.valueOf(instance.getData().getStats(player.getUniqueId(), "suffered"))),
-                        new Placeholder("is_spectating", PlayerCache.getSpectators().contains(player.getUniqueId()) ? "true" : "false"));
+                        new Placeholder("is_spectating", PlayerCache.getSpectators().contains(player.getUniqueId()) ? BungeeMessages.INFO_TRUE.color() : BungeeMessages.INFO_FALSE.color()));
                 return;
             }
 
@@ -77,7 +77,7 @@ public class InfoCommand extends Command implements TabExecutor {
                     new Placeholder("is_in_control", String.valueOf(instance.getData().getStats(player.getUniqueId(), "incontrol"))),
                     new Placeholder("controls_done", String.valueOf(instance.getData().getStats(player.getUniqueId(), "controls"))),
                     new Placeholder("controls_suffered", String.valueOf(instance.getData().getStats(player.getUniqueId(), "suffered"))),
-                    new Placeholder("is_spectating", PlayerCache.getSpectators().contains(player.getUniqueId()) ? "true" : "false"));
+                    new Placeholder("is_spectating", PlayerCache.getSpectators().contains(player.getUniqueId()) ? BungeeMessages.INFO_TRUE.color() : BungeeMessages.INFO_FALSE.color()));
             return;
         }
 
@@ -88,22 +88,22 @@ public class InfoCommand extends Command implements TabExecutor {
             BungeeMessages.INFO_MESSAGE.sendList(invocation, player,
                     new Placeholder("player", args[0]),
                     new Placeholder("prefix", BungeeMessages.PREFIX.color()),
-                    new Placeholder("is_in_control", String.valueOf(PlayerCache.getSuspicious().contains(player.getUniqueId()) || PlayerCache.getAdministrator().contains(player.getUniqueId()))),
+                    new Placeholder("is_in_control", PlayerCache.getSuspicious().contains(player.getUniqueId()) || PlayerCache.getAdministrator().contains(player.getUniqueId()) ? BungeeMessages.INFO_TRUE.color() : BungeeMessages.INFO_FALSE.color()),
                     new Placeholder("controls_done", String.valueOf(PlayerCache.getControls().get(player.getUniqueId()))),
                     new Placeholder("playerprefix", Utils.getPrefix(player)),
                     new Placeholder("playersuffix", Utils.getSuffix(player)),
                     new Placeholder("controls_suffered", String.valueOf(PlayerCache.getControls_suffered().get(player.getUniqueId()))),
-                    new Placeholder("is_spectating", PlayerCache.getSpectators().contains(player.getUniqueId()) ? "true" : "false"));
+                    new Placeholder("is_spectating", PlayerCache.getSpectators().contains(player.getUniqueId()) ? BungeeMessages.INFO_TRUE.color() : BungeeMessages.INFO_FALSE.color()));
             return;
         }
 
         BungeeMessages.INFO_MESSAGE.sendList(invocation, player,
                 new Placeholder("player", args[0]),
                 new Placeholder("prefix", BungeeMessages.PREFIX.color()),
-                new Placeholder("is_in_control", String.valueOf(PlayerCache.getSuspicious().contains(player.getUniqueId()))),
+                new Placeholder("is_in_control", PlayerCache.getSuspicious().contains(player.getUniqueId()) || PlayerCache.getAdministrator().contains(player.getUniqueId()) ? BungeeMessages.INFO_TRUE.color() : BungeeMessages.INFO_FALSE.color()),
                 new Placeholder("controls_done", String.valueOf(PlayerCache.getControls().get(player.getUniqueId()))),
                 new Placeholder("controls_suffered", String.valueOf(PlayerCache.getControls_suffered().get(player.getUniqueId()))),
-                new Placeholder("is_spectating", PlayerCache.getSpectators().contains(player.getUniqueId()) ? "true" : "false"));
+                new Placeholder("is_spectating", PlayerCache.getSpectators().contains(player.getUniqueId()) ? BungeeMessages.INFO_TRUE.color() : BungeeMessages.INFO_FALSE.color()));
 
     }
 

@@ -24,6 +24,7 @@ import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.requests.GatewayIntent;
+import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -294,8 +295,12 @@ public class CleanSS extends Plugin {
 					return;
 				}
 
-				if (!updated) {
-					player.sendMessage(TextComponent.fromLegacyText("§e[CleanScreenShare] There is a new update available, download it on SpigotMC!"));
+				if (!updated && BungeeConfig.UPDATE_ALERT.get(Boolean.class)) {
+					TextComponent update = new TextComponent(BungeeMessages.UPDATE_ALERT.color());
+					update.setClickEvent(new ClickEvent(
+							ClickEvent.Action.OPEN_URL,
+							BungeeMessages.UPDATE_LINK.get(String.class)));
+					player.sendMessage(update);
 				}
 			}
 		});
