@@ -2,8 +2,8 @@ package it.frafol.cleanss.velocity.objects;
 
 import com.velocitypowered.api.command.CommandSource;
 import com.velocitypowered.api.proxy.Player;
-import it.frafol.cleanss.bungee.enums.BungeeCommandsConfig;
 import it.frafol.cleanss.velocity.CleanSS;
+import it.frafol.cleanss.velocity.enums.VelocityCommandsConfig;
 import it.frafol.cleanss.velocity.enums.VelocityMessages;
 import lombok.experimental.UtilityClass;
 import net.kyori.adventure.text.Component;
@@ -188,22 +188,22 @@ public class ChatUtil {
 
     private String containsCommand(String message) {
         String foundCommand = getCommand(message);
-        for (String command : BungeeCommandsConfig.SS_PLAYER.getStringList()) {
+        for (String command : VelocityCommandsConfig.SS_PLAYER.getStringList()) {
             if (foundCommand.equalsIgnoreCase(command)) {
                 return command;
             }
         }
-        for (String command : BungeeCommandsConfig.SS_SPECTATE.getStringList()) {
+        for (String command : VelocityCommandsConfig.SS_SPECTATE.getStringList()) {
             if (foundCommand.equalsIgnoreCase(command)) {
                 return command;
             }
         }
-        for (String command : BungeeCommandsConfig.SS_FINISH.getStringList()) {
+        for (String command : VelocityCommandsConfig.SS_FINISH.getStringList()) {
             if (foundCommand.equalsIgnoreCase(command)) {
                 return command;
             }
         }
-        for (String command : BungeeCommandsConfig.SS_INFO.getStringList()) {
+        for (String command : VelocityCommandsConfig.SS_INFO.getStringList()) {
             if (foundCommand.equalsIgnoreCase(command)) {
                 return command;
             }
