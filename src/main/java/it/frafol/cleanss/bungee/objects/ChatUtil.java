@@ -175,34 +175,41 @@ public class ChatUtil {
     }
 
     public static String getCommand(String input) {
-        String[] parts = input.split("/");
-        if (parts.length < 2) {
+        int slashIndex = input.indexOf("/");
+        if (slashIndex == -1 || slashIndex == input.length() - 1) {
             return input;
         }
-        return parts[1].trim();
+        int spaceIndex = input.indexOf(" ", slashIndex);
+        if (spaceIndex == -1) {
+            spaceIndex = input.length();
+        }
+        return input.substring(slashIndex + 1, spaceIndex).trim();
     }
 
     private String containsCommand(String message) {
         String foundCommand = getCommand(message);
-        for(String command : BungeeCommandsConfig.SS_PLAYER.getStringList()) {
+        for (String command : BungeeCommandsConfig.SS_PLAYER.getStringList()) {
             if (foundCommand.equalsIgnoreCase(command)) {
                 return command;
             }
         }
-        for(String command : BungeeCommandsConfig.SS_SPECTATE.getStringList()) {
+        for (String command : BungeeCommandsConfig.SS_SPECTATE.getStringList()) {
             if (foundCommand.equalsIgnoreCase(command)) {
                 return command;
             }
         }
-        for(String command : BungeeCommandsConfig.SS_FINISH.getStringList()) {
+        for (String command : BungeeCommandsConfig.SS_FINISH.getStringList()) {
             if (foundCommand.equalsIgnoreCase(command)) {
                 return command;
             }
         }
-        for(String command : BungeeCommandsConfig.SS_INFO.getStringList()) {
+        for (String command : BungeeCommandsConfig.SS_INFO.getStringList()) {
             if (foundCommand.equalsIgnoreCase(command)) {
                 return command;
             }
+        }
+        if (foundCommand.equalsIgnoreCase("ssreload")) {
+            return foundCommand;
         }
         return "none";
     }

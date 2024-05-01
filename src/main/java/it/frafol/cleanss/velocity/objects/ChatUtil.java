@@ -2,8 +2,8 @@ package it.frafol.cleanss.velocity.objects;
 
 import com.velocitypowered.api.command.CommandSource;
 import com.velocitypowered.api.proxy.Player;
+import it.frafol.cleanss.bungee.enums.BungeeCommandsConfig;
 import it.frafol.cleanss.velocity.CleanSS;
-import it.frafol.cleanss.velocity.enums.VelocityCommandsConfig;
 import it.frafol.cleanss.velocity.enums.VelocityMessages;
 import lombok.experimental.UtilityClass;
 import net.kyori.adventure.text.Component;
@@ -175,34 +175,41 @@ public class ChatUtil {
     }
 
     public static String getCommand(String input) {
-        String[] parts = input.split("/");
-        if (parts.length < 2) {
+        int slashIndex = input.indexOf("/");
+        if (slashIndex == -1 || slashIndex == input.length() - 1) {
             return input;
         }
-        return parts[1].trim();
+        int spaceIndex = input.indexOf(" ", slashIndex);
+        if (spaceIndex == -1) {
+            spaceIndex = input.length();
+        }
+        return input.substring(slashIndex + 1, spaceIndex).trim();
     }
 
     private String containsCommand(String message) {
-        String commandFound = getCommand(message);
-        for(String command : VelocityCommandsConfig.SS_PLAYER.getStringList()) {
-            if (commandFound.equalsIgnoreCase(command)) {
+        String foundCommand = getCommand(message);
+        for (String command : BungeeCommandsConfig.SS_PLAYER.getStringList()) {
+            if (foundCommand.equalsIgnoreCase(command)) {
                 return command;
             }
         }
-        for(String command : VelocityCommandsConfig.SS_SPECTATE.getStringList()) {
-            if (commandFound.equalsIgnoreCase(command)) {
+        for (String command : BungeeCommandsConfig.SS_SPECTATE.getStringList()) {
+            if (foundCommand.equalsIgnoreCase(command)) {
                 return command;
             }
         }
-        for(String command : VelocityCommandsConfig.SS_FINISH.getStringList()) {
-            if (commandFound.equalsIgnoreCase(command)) {
+        for (String command : BungeeCommandsConfig.SS_FINISH.getStringList()) {
+            if (foundCommand.equalsIgnoreCase(command)) {
                 return command;
             }
         }
-        for(String command : VelocityCommandsConfig.SS_INFO.getStringList()) {
-            if (commandFound.equalsIgnoreCase(command)) {
+        for (String command : BungeeCommandsConfig.SS_INFO.getStringList()) {
+            if (foundCommand.equalsIgnoreCase(command)) {
                 return command;
             }
+        }
+        if (foundCommand.equalsIgnoreCase("ssreload")) {
+            return foundCommand;
         }
         return "none";
     }

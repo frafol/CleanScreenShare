@@ -14,7 +14,7 @@ messages:
     - "&f"
     - "&d&lCleanScreenShare &7- &dCommands:"
     - "&7- &d/control <player> &7- &fStart a hack control."
-    - "&7- &d/controlfinish <player> &7- &fFinish a hack control."
+    - "&7- &d/ssfinish <player> &7- &fFinish a hack control."
     - "&7- &d/sspectate <player> &7- &fStart spectating controls."
     - "&7- &d/ssinfo <player> &7- &fGet player informations."
     - "&7- &d/ssreload &7- &fReload the configuration."
@@ -35,7 +35,7 @@ messages:
 
   update_found:
     alert: "%prefix% &7An update is &davailable&7, click here for more &dinformations&7."
-    clickable_link: "https://github.com/frafol/CleanStaffChat/releases/tag/release"
+    clickable_link: "https://github.com/frafol/CleanScreenShare/releases/tag/release"
 
   server_offline: "%prefix% &7The server where you have to connect is not &donline&7."
 
