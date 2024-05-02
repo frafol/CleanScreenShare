@@ -15,6 +15,7 @@ import net.luckperms.api.model.user.User;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
@@ -62,6 +63,14 @@ public class SpectateCommand implements SimpleCommand {
             source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.INVALID_SERVER.color()
                     .replace("%prefix%", VelocityMessages.PREFIX.color())
                     .replace("%server%", invocation.arguments()[0])));
+            return;
+        }
+
+        if (invocation.arguments()[0].equalsIgnoreCase("finish") && PlayerCache.getSpectators().contains(player.getUniqueId())) {
+            source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.NOT_SPECTATING.color()
+                    .replace("%prefix%", VelocityMessages.PREFIX.color())));
+            PlayerCache.getSpectators().remove(player.getUniqueId());
+            fallback(player);
             return;
         }
 
@@ -136,6 +145,22 @@ public class SpectateCommand implements SimpleCommand {
                             .replace("%adminprefix%", ChatUtil.color(admin_prefix))
                             .replace("%adminsuffix%", ChatUtil.color(admin_suffix)))));
         }
+    }
+
+    private void fallback(Player player) {
+        List<Optional<RegisteredServer>> servers = Utils.getServerList(VelocityConfig.CONTROL_FALLBACK.getStringList());
+
+        if (!VelocityConfig.DISABLE_PING.get(Boolean.class)) {
+            servers = Utils.getOnlineServers(servers);
+        }
+
+        Optional<RegisteredServer> proxyServer = Utils.getBestServer(servers);
+
+        if (!proxyServer.isPresent()) {
+            return;
+        }
+
+        player.createConnectionRequest(proxyServer.get()).fireAndForget();
     }
 
     @Override

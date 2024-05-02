@@ -52,6 +52,14 @@ public class SpectateCommand extends Command implements TabExecutor {
             return;
         }
 
+        if (args[0].equalsIgnoreCase("finish") && PlayerCache.getSpectators().contains(player.getUniqueId())) {
+            PlayerCache.getSpectators().remove(player.getUniqueId());
+            player.sendMessage(TextComponent.fromLegacyText(BungeeMessages.NOT_SPECTATING.color()
+                    .replace("%prefix%", BungeeMessages.PREFIX.color())));
+            fallback(player);
+            return;
+        }
+
         if (instance.getProxy().getServerInfo(args[0]) == null) {
             player.sendMessage(TextComponent.fromLegacyText(BungeeMessages.INVALID_SERVER.color()
                     .replace("%prefix%", BungeeMessages.PREFIX.color())
@@ -123,6 +131,17 @@ public class SpectateCommand extends Command implements TabExecutor {
                             .replace("%adminprefix%", ChatUtil.color(admin_prefix))
                             .replace("%adminsuffix%", ChatUtil.color(admin_suffix)))));
         }
+    }
+
+    private void fallback(ProxiedPlayer player) {
+        List<ServerInfo> servers = Utils.getServerList(BungeeConfig.CONTROL_FALLBACK.getStringList());
+
+        if (!BungeeConfig.DISABLE_PING.get(Boolean.class)) {
+            servers = Utils.getOnlineServers(servers);
+        }
+
+        final ServerInfo proxyServer = Utils.getBestServer(servers);
+        player.connect(proxyServer);
     }
 
     @Override

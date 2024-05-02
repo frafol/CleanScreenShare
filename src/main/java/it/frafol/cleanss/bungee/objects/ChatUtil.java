@@ -82,6 +82,7 @@ public class ChatUtil {
                 return true;
             }
         }
+        System.out.println("No buttons found");
         return false;
     }
 
@@ -214,8 +215,8 @@ public class ChatUtil {
         return "none";
     }
 
-    public void sendFormattedList(BungeeMessages velocityMessages, CommandSender commandSender, ProxiedPlayer player_name, Placeholder... placeholders) {
-        if (hasButton(getStringList(velocityMessages))) {
+    public void sendFormattedList(BungeeMessages velocityMessages, CommandSender commandSender, ProxiedPlayer player_name, boolean start, Placeholder... placeholders) {
+        if (start) {
             sendButtonList(commandSender, color(getStringList(velocityMessages, placeholders)), player_name);
             return;
         }

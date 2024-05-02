@@ -20,6 +20,7 @@ public enum VelocityMessages {
     NOT_VALID("messages.server_not_valid"),
     COMMAND_BLOCKED("messages.control.command_blocked"),
 
+    PLAYER_MISSING("messages.player_missing"),
     NO_PERMISSION("messages.no_permission"),
 
     CONTROL_USEVERTICALFORMAT("messages.staff_message.use_vertical"),

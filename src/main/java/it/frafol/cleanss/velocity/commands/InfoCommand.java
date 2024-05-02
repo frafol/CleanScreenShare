@@ -37,20 +37,18 @@ public class InfoCommand implements SimpleCommand {
             return;
         }
 
-        if (invocation.arguments().length != 1) {
+        if (invocation.arguments().length > 1) {
             source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.USAGE.color()
                     .replace("%prefix%", VelocityMessages.PREFIX.color())));
             return;
         }
 
-        if (!instance.getServer().getAllPlayers().toString().contains(invocation.arguments()[0])) {
-            source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.NOT_ONLINE.color()
-                    .replace("%prefix%", VelocityMessages.PREFIX.color())
-                    .replace("%player%", invocation.arguments()[0])));
-            return;
+        final Optional<Player> player;
+        if (invocation.arguments().length == 0) {
+            player = Optional.of((Player) source);
+        } else {
+            player = instance.getServer().getPlayer(invocation.arguments()[0]);
         }
-
-        final Optional<Player> player = instance.getServer().getPlayer(invocation.arguments()[0]);
 
         if (!player.isPresent()) {
             source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.NOT_ONLINE.color()

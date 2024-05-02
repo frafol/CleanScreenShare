@@ -21,6 +21,7 @@ public enum BungeeMessages {
     NOT_ONLINE("messages.not_online"),
     NOT_VALID("messages.server_not_valid"),
 
+    PLAYER_MISSING("messages.player_missing"),
     NO_PERMISSION("messages.no_permission"),
 
     CONTROL_USEVERTICALFORMAT("messages.staff_message.use_vertical"),
@@ -160,6 +161,10 @@ public enum BungeeMessages {
     }
 
     public void sendList(CommandSender commandSource, ProxiedPlayer player_name, Placeholder... placeholder) {
-        ChatUtil.sendFormattedList(this, commandSource, player_name, placeholder);
+        ChatUtil.sendFormattedList(this, commandSource, player_name, false, placeholder);
+    }
+
+    public void sendStartList(CommandSender commandSource, ProxiedPlayer player_name, Placeholder... placeholder) {
+        ChatUtil.sendFormattedList(this, commandSource, player_name, true, placeholder);
     }
 }

@@ -33,7 +33,6 @@ public class Utils {
 
         if (!Objects.equals(suspicious.getServer().getInfo(), proxyServer)) {
             connect(suspicious, proxyServer);
-
         } else {
             MessageUtil.sendChannelMessage(suspicious, "SUSPECT");
         }
@@ -122,7 +121,7 @@ public class Utils {
                 .replace("%suspectsuffix%", ChatUtil.color(sus_suffix))));
 
         if (BungeeMessages.CONTROL_USEVERTICALFORMAT.get(Boolean.class)) {
-            BungeeMessages.CONTROL_VERTICALFORMAT.sendList(administrator, suspicious,
+            BungeeMessages.CONTROL_VERTICALFORMAT.sendStartList(administrator, suspicious,
                     new Placeholder("cleanname", BungeeMessages.CONTROL_CLEAN_NAME.color()),
                     new Placeholder("hackername", BungeeMessages.CONTROL_CHEATER_NAME.color()),
                     new Placeholder("admitname", BungeeMessages.CONTROL_ADMIT_NAME.color()),
@@ -135,7 +134,7 @@ public class Utils {
                     new Placeholder("suspect", suspicious.getName()),
                     new Placeholder("administrator", administrator.getName()));
         } else {
-            BungeeMessages.CONTROL_HORIZONTALFORMAT.sendList(administrator, suspicious,
+            BungeeMessages.CONTROL_HORIZONTALFORMAT.sendStartList(administrator, suspicious,
                     new Placeholder("prefix", BungeeMessages.PREFIX.color()),
                     new Placeholder("adminprefix", ChatUtil.color(admin_prefix)),
                     new Placeholder("adminsuffix", ChatUtil.color(admin_suffix)),

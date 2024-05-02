@@ -15,7 +15,7 @@ messages:
     - "&d&lCleanScreenShare &7- &dCommands:"
     - "&7- &d/control <player> &7- &fStart a hack control."
     - "&7- &d/ssfinish <player> &7- &fFinish a hack control."
-    - "&7- &d/sspectate <player> &7- &fStart spectating controls."
+    - "&7- &d/sspectate <player/finish> &7- &fStart/End spectating controls."
     - "&7- &d/ssinfo <player> &7- &fGet player informations."
     - "&7- &d/ssreload &7- &fReload the configuration."
     - "&f"
@@ -23,6 +23,7 @@ messages:
 
   only_players: "%prefix% &7This command is only for &dplayers&7."
 
+  player_missing: "%prefix% &7You must specify a &dplayer&7."
   no_permission: "%prefix% &7You do not have the &dpermission &7to do this."
   not_online: "%prefix% &7The user &d%player% &7is not &donline&7."
 
@@ -107,7 +108,7 @@ messages:
     # NOTE: You can't add new buttons, you can only change the name and the command.
     clean:
       name: "&a&l[Clean]"
-      command: "/controlfinish %player%"
+      command: "/ssfinish %player%"
     cheater:
       name: "&c&l[Cheater]"
       command: "/tempban %player% 30d Cheating -s"

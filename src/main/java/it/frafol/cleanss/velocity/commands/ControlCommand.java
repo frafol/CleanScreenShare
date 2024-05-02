@@ -46,7 +46,13 @@ public class ControlCommand implements SimpleCommand {
 			return;
 		}
 
-		if (invocation.arguments().length != 1) {
+		if (invocation.arguments().length == 0) {
+			source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.PLAYER_MISSING.color()
+					.replace("%prefix%", VelocityMessages.PREFIX.color())));
+			return;
+		}
+
+		if (invocation.arguments().length > 1) {
 			VelocityMessages.USAGE.sendList(source, null,
 					new Placeholder("%prefix%", VelocityMessages.PREFIX.color()));
 			return;

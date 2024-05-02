@@ -35,22 +35,26 @@ public class InfoCommand extends Command implements TabExecutor {
             return;
         }
 
-        if (args.length != 1) {
-            BungeeMessages.USAGE.sendList(invocation, null, 
+        if (args.length > 1) {
+            BungeeMessages.USAGE.sendList(invocation, null,
 					new Placeholder("%prefix%", BungeeMessages.PREFIX.color()));
             return;
         }
 
-        if (!instance.getProxy().getPlayers().toString().contains(args[0])) {
-            invocation.sendMessage(TextComponent.fromLegacyText(BungeeMessages.NOT_ONLINE.color()
-                    .replace("%prefix%", BungeeMessages.PREFIX.color())
-                    .replace("%player%", args[0])));
+        if (args.length == 0 && !(invocation instanceof ProxiedPlayer)) {
+            BungeeMessages.USAGE.sendList(invocation, null,
+                    new Placeholder("%prefix%", BungeeMessages.PREFIX.color()));
             return;
         }
 
-        final ProxiedPlayer player = instance.getProxy().getPlayer(args[0]);
+        ProxiedPlayer player;
+        if (args.length == 0) {
+            player = (ProxiedPlayer) invocation;
+        } else {
+            player = instance.getProxy().getPlayer(args[0]);
+        }
 
-        if (player == null) {
+        if (player == null || !player.isConnected()) {
             invocation.sendMessage(TextComponent.fromLegacyText(BungeeMessages.NOT_ONLINE.color()
                     .replace("%prefix%", BungeeMessages.PREFIX.color())));
             return;
