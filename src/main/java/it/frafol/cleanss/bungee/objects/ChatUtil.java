@@ -82,7 +82,6 @@ public class ChatUtil {
                 return true;
             }
         }
-        System.out.println("No buttons found");
         return false;
     }
 
