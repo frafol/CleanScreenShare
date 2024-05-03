@@ -120,29 +120,7 @@ public class Utils {
                 .replace("%suspectprefix%", ChatUtil.color(sus_prefix))
                 .replace("%suspectsuffix%", ChatUtil.color(sus_suffix))));
 
-        if (BungeeMessages.CONTROL_USEVERTICALFORMAT.get(Boolean.class)) {
-            BungeeMessages.CONTROL_VERTICALFORMAT.sendStartList(administrator, suspicious,
-                    new Placeholder("cleanname", BungeeMessages.CONTROL_CLEAN_NAME.color()),
-                    new Placeholder("hackername", BungeeMessages.CONTROL_CHEATER_NAME.color()),
-                    new Placeholder("admitname", BungeeMessages.CONTROL_ADMIT_NAME.color()),
-                    new Placeholder("refusename", BungeeMessages.CONTROL_REFUSE_NAME.color()),
-                    new Placeholder("prefix", BungeeMessages.PREFIX.color()),
-                    new Placeholder("adminprefix", ChatUtil.color(admin_prefix)),
-                    new Placeholder("adminsuffix", ChatUtil.color(admin_suffix)),
-                    new Placeholder("suspectprefix", ChatUtil.color(sus_prefix)),
-                    new Placeholder("suspectsuffix", ChatUtil.color(sus_suffix)),
-                    new Placeholder("suspect", suspicious.getName()),
-                    new Placeholder("administrator", administrator.getName()));
-        } else {
-            BungeeMessages.CONTROL_HORIZONTALFORMAT.sendStartList(administrator, suspicious,
-                    new Placeholder("prefix", BungeeMessages.PREFIX.color()),
-                    new Placeholder("adminprefix", ChatUtil.color(admin_prefix)),
-                    new Placeholder("adminsuffix", ChatUtil.color(admin_suffix)),
-                    new Placeholder("suspectprefix", ChatUtil.color(sus_prefix)),
-                    new Placeholder("suspectsuffix", ChatUtil.color(sus_suffix)),
-                    new Placeholder("suspect", suspicious.getName()),
-                    new Placeholder("administrator", administrator.getName()));
-        }
+        MessageUtil.sendButtons(administrator, suspicious, admin_prefix, admin_suffix, sus_prefix, sus_suffix);
     }
 
     public void finishControl(ProxiedPlayer suspicious, ProxiedPlayer administrator, ServerInfo proxyServer) {

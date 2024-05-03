@@ -50,7 +50,7 @@ import java.util.concurrent.TimeUnit;
 @Plugin(
 		id = "cleanscreenshare",
 		name = "CleanScreenShare",
-		version = "2.5.0",
+		version = "2.5.1",
 		description = "Make control hacks on your players.",
 		dependencies = {@Dependency(id = "luckperms", optional = true), @Dependency(id = "mysqlandconfigurateforvelocity", optional = true), @Dependency(id = "limboapi", optional = true), @Dependency(id = "ajqueue", optional = true), @Dependency(id = "premiumvanish", optional = true), @Dependency(id = "velocityvanish", optional = true)},
 		authors = { "frafol" })
@@ -434,6 +434,12 @@ public class CleanSS {
 		getServer().getCommandManager().register
 				(server.getCommandManager().metaBuilder("ssdebug").aliases("cleanssdebug", "controldebug")
 						.build(), new DebugCommand(this));
+
+		final String[] aliases_help = VelocityCommandsConfig.HELP.getStringList().toArray(new String[0]);
+		server.getCommandManager().register(server.getCommandManager()
+				.metaBuilder(VelocityCommandsConfig.HELP.getStringList().get(0))
+				.aliases(aliases_help)
+				.build(), new HelpCommand(this));
 
 		final String[] aliases_ss = VelocityCommandsConfig.SS_PLAYER.getStringList().toArray(new String[0]);
 		server.getCommandManager().register(server.getCommandManager()

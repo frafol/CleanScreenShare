@@ -5,11 +5,13 @@ import com.google.common.io.ByteStreams;
 import com.velocitypowered.api.proxy.Player;
 import it.frafol.cleanss.velocity.CleanSS;
 import it.frafol.cleanss.velocity.enums.VelocityConfig;
+import it.frafol.cleanss.velocity.enums.VelocityMessages;
 import lombok.experimental.UtilityClass;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 
 import java.awt.*;
+import java.util.concurrent.TimeUnit;
 
 @UtilityClass
 public class MessageUtil {
@@ -148,5 +150,33 @@ public class MessageUtil {
         buf.writeUTF(suspicious.getUsername());
         administrator.getCurrentServer().ifPresent(sv ->
                 sv.sendPluginMessage(CleanSS.channel_join, buf.toByteArray()));
+    }
+
+    public void sendButtons(Player administrator, Player suspicious, String admin_prefix, String admin_suffix, String sus_prefix, String sus_suffix) {
+        instance.getServer().getScheduler().buildTask(instance, () -> {
+            if (VelocityMessages.CONTROL_USEVERTICALFORMAT.get(Boolean.class)) {
+                VelocityMessages.CONTROL_VERTICALFORMAT.sendButtons(administrator, suspicious,
+                        new Placeholder("cleanname", VelocityMessages.CONTROL_CLEAN_NAME.color()),
+                        new Placeholder("hackername", VelocityMessages.CONTROL_CHEATER_NAME.color()),
+                        new Placeholder("admitname", VelocityMessages.CONTROL_ADMIT_NAME.color()),
+                        new Placeholder("refusename", VelocityMessages.CONTROL_REFUSE_NAME.color()),
+                        new Placeholder("prefix", VelocityMessages.PREFIX.color()),
+                        new Placeholder("suspect", suspicious.getUsername()),
+                        new Placeholder("administrator", administrator.getUsername()),
+                        new Placeholder("adminprefix", ChatUtil.color(admin_prefix)),
+                        new Placeholder("adminsuffix", ChatUtil.color(admin_suffix)),
+                        new Placeholder("suspectprefix", ChatUtil.color(sus_prefix)),
+                        new Placeholder("suspectsuffix", ChatUtil.color(sus_suffix)));
+            } else {
+                VelocityMessages.CONTROL_HORIZONTALFORMAT.sendButtons(administrator, suspicious,
+                        new Placeholder("prefix", VelocityMessages.PREFIX.color()),
+                        new Placeholder("suspect", suspicious.getUsername()),
+                        new Placeholder("administrator", administrator.getUsername()),
+                        new Placeholder("adminprefix", ChatUtil.color(admin_prefix)),
+                        new Placeholder("adminsuffix", ChatUtil.color(admin_suffix)),
+                        new Placeholder("suspectprefix", ChatUtil.color(sus_prefix)),
+                        new Placeholder("suspectsuffix", ChatUtil.color(sus_suffix)));
+            }
+        }).delay(VelocityMessages.CONTROL_DELAYMESSAGE.get(Integer.class), TimeUnit.SECONDS).schedule();
     }
 }

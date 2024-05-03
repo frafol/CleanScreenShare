@@ -466,30 +466,7 @@ public class Utils {
                     .replace("%suspectprefix%", sus_prefix)
                     .replace("%suspectsuffix%", sus_suffix)));
 
-            if (VelocityMessages.CONTROL_USEVERTICALFORMAT.get(Boolean.class)) {
-                VelocityMessages.CONTROL_VERTICALFORMAT.sendButtons(administrator, suspicious,
-                        new Placeholder("cleanname", VelocityMessages.CONTROL_CLEAN_NAME.color()),
-                        new Placeholder("hackername", VelocityMessages.CONTROL_CHEATER_NAME.color()),
-                        new Placeholder("admitname", VelocityMessages.CONTROL_ADMIT_NAME.color()),
-                        new Placeholder("refusename", VelocityMessages.CONTROL_REFUSE_NAME.color()),
-                        new Placeholder("prefix", VelocityMessages.PREFIX.color()),
-                        new Placeholder("suspect", suspicious.getUsername()),
-                        new Placeholder("administrator", administrator.getUsername()),
-                        new Placeholder("adminprefix", admin_prefix),
-                        new Placeholder("adminsuffix", admin_suffix),
-                        new Placeholder("suspectprefix", sus_prefix),
-                        new Placeholder("suspectsuffix", sus_suffix));
-            } else {
-                VelocityMessages.CONTROL_HORIZONTALFORMAT.sendButtons(administrator, suspicious,
-                        new Placeholder("prefix", VelocityMessages.PREFIX.color()),
-                        new Placeholder("suspect", suspicious.getUsername()),
-                        new Placeholder("administrator", administrator.getUsername()),
-                        new Placeholder("adminprefix", admin_prefix),
-                        new Placeholder("adminsuffix", admin_suffix),
-                        new Placeholder("suspectprefix", sus_prefix),
-                        new Placeholder("suspectsuffix", sus_suffix));
-            }
-
+            MessageUtil.sendButtons(administrator, suspicious, admin_prefix, admin_suffix, sus_prefix, sus_suffix);
             return;
         }
 
@@ -592,29 +569,7 @@ public class Utils {
                 .replace("%suspectprefix%", ChatUtil.color(sus_prefix))
                 .replace("%suspectsuffix%", ChatUtil.color(sus_suffix))));
 
-        if (VelocityMessages.CONTROL_USEVERTICALFORMAT.get(Boolean.class)) {
-            VelocityMessages.CONTROL_VERTICALFORMAT.sendButtons(administrator, suspicious,
-                    new Placeholder("cleanname", VelocityMessages.CONTROL_CLEAN_NAME.color()),
-                    new Placeholder("hackername", VelocityMessages.CONTROL_CHEATER_NAME.color()),
-                    new Placeholder("admitname", VelocityMessages.CONTROL_ADMIT_NAME.color()),
-                    new Placeholder("refusename", VelocityMessages.CONTROL_REFUSE_NAME.color()),
-                    new Placeholder("prefix", VelocityMessages.PREFIX.color()),
-                    new Placeholder("suspect", suspicious.getUsername()),
-                    new Placeholder("administrator", administrator.getUsername()),
-                    new Placeholder("adminprefix", ChatUtil.color(admin_prefix)),
-                    new Placeholder("adminsuffix", ChatUtil.color(admin_suffix)),
-                    new Placeholder("suspectprefix", ChatUtil.color(sus_prefix)),
-                    new Placeholder("suspectsuffix", ChatUtil.color(sus_suffix)));
-        } else {
-            VelocityMessages.CONTROL_HORIZONTALFORMAT.sendButtons(administrator, suspicious,
-                    new Placeholder("prefix", VelocityMessages.PREFIX.color()),
-                    new Placeholder("suspect", suspicious.getUsername()),
-                    new Placeholder("administrator", administrator.getUsername()),
-                    new Placeholder("adminprefix", ChatUtil.color(admin_prefix)),
-                    new Placeholder("adminsuffix", ChatUtil.color(admin_suffix)),
-                    new Placeholder("suspectprefix", ChatUtil.color(sus_prefix)),
-                    new Placeholder("suspectsuffix", ChatUtil.color(sus_suffix)));
-        }
+        MessageUtil.sendButtons(administrator, suspicious, admin_prefix, admin_suffix, sus_prefix, sus_suffix);
     }
 
     private void checkForErrors(Player suspicious, Player administrator, RegisteredServer proxyServer) {

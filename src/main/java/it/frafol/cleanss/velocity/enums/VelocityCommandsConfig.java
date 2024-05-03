@@ -6,6 +6,8 @@ import java.util.List;
 
 public enum VelocityCommandsConfig {
 
+    HELP("aliases.general.help"),
+
     SS_PLAYER("aliases.screenshare.main"),
     SS_FINISH("aliases.screenshare.finish"),
     SS_INFO("aliases.screenshare.info"),

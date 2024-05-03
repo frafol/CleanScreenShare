@@ -23,6 +23,8 @@ public enum VelocityMessages {
     PLAYER_MISSING("messages.player_missing"),
     NO_PERMISSION("messages.no_permission"),
 
+    CONTROL_DELAYMESSAGE("messages.staff_message.delay"),
+
     CONTROL_USEVERTICALFORMAT("messages.staff_message.use_vertical"),
     CONTROL_VERTICALFORMAT("messages.staff_message.vertical_format"),
     CONTROL_HORIZONTALFORMAT("messages.staff_message.horizontal_format"),
@@ -116,8 +118,8 @@ public enum VelocityMessages {
     DISCORD_QUIT("messages.discord.suspect_left_during_control"),
     DISCORD_LUCKPERMS_FIX("messages.discord.luckperms.default_group_displayname"),
     INFO_MESSAGE("messages.info.main_message"),
-    INFO_TRUE("messages.info.main_message.true_message"),
-    INFO_FALSE("messages.info.main_message.false_message"),
+    INFO_TRUE("messages.info.true_message"),
+    INFO_FALSE("messages.info.false_message"),
     CLEAN("messages.discord.results.clean"),
     CHEATER("messages.discord.results.cheater"),
     LEFT("messages.discord.results.left"),

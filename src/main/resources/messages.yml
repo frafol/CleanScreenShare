@@ -84,6 +84,9 @@ messages:
 
   staff_message:
 
+    # In seconds, the delay between the teleport and the message.
+    delay: 2
+
     # Administration message sent to the staffer when sending in hack control server.
     # You can use %cleanname%, %hackername%, %admitname%, %refusename%, %administrator% and %suspect%.
     use_vertical: true

@@ -140,6 +140,7 @@ public class CleanSS extends Plugin {
 
 	private void registerCommands() {
 		getProxy().getPluginManager().registerCommand(this, new DebugCommand(this));
+		getProxy().getPluginManager().registerCommand(this, new HelpCommand(this));
 		getProxy().getPluginManager().registerCommand(this, new ControlCommand(this));
 		getProxy().getPluginManager().registerCommand(this, new FinishCommand(this));
 

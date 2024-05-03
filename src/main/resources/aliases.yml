@@ -9,6 +9,14 @@
 # NOTE: Reload command is not changable.
 aliases:
 
+  general:
+
+    help:
+      - "sshelp"
+      - "cleansshelp"
+      - "screensharehelp"
+      - "cleanscreensharehelp"
+
   screenshare:
 
     main:
