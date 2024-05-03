@@ -3,7 +3,6 @@ package it.frafol.cleanss.velocity.commands;
 import com.velocitypowered.api.command.CommandSource;
 import com.velocitypowered.api.command.SimpleCommand;
 import it.frafol.cleanss.velocity.CleanSS;
-import it.frafol.cleanss.velocity.enums.VelocityCommandsConfig;
 import it.frafol.cleanss.velocity.enums.VelocityConfig;
 import it.frafol.cleanss.velocity.enums.VelocityMessages;
 import it.frafol.cleanss.velocity.objects.Placeholder;

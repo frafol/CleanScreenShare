@@ -21,7 +21,7 @@ public class HelpCommand extends Command {
     @Override
     public void execute(CommandSender invocation, String[] args) {
 
-        if (invocation.hasPermission(BungeeConfig.CONTROL_PERMISSION.get(String.class))) {
+        if (!invocation.hasPermission(BungeeConfig.CONTROL_PERMISSION.get(String.class))) {
             invocation.sendMessage(TextComponent.fromLegacyText(BungeeMessages.NO_PERMISSION.color()
                     .replace("%prefix%", BungeeMessages.PREFIX.color())));
             return;
