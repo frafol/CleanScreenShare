@@ -404,7 +404,7 @@ public class CleanSS extends Plugin {
 
 		BungeeLibraryManager bungeeLibraryManager = new BungeeLibraryManager(this);
 
-		final Relocation yamlrelocation = new Relocation("yaml", "it{}frafol{}libs{}yaml");
+		final Relocation yamlrelocation = new Relocation("me{}carleslc{}Simple-YAML", "it{}frafol{}libs{}me{}carleslc{}Simple-YAML");
 		Library yaml = Library.builder()
 				.groupId("me{}carleslc{}Simple-YAML")
 				.artifactId("Simple-Yaml")
@@ -412,7 +412,7 @@ public class CleanSS extends Plugin {
 				.relocate(yamlrelocation)
 				.build();
 
-		final Relocation updaterrelocation = new Relocation("updater", "it{}frafol{}libs{}updater");
+		final Relocation updaterrelocation = new Relocation("ru{}vyarus", "it{}frafol{}libs{}ru{}vyarus");
 		Library updater = Library.builder()
 				.groupId("ru{}vyarus")
 				.artifactId("yaml-config-updater")
@@ -420,13 +420,13 @@ public class CleanSS extends Plugin {
 				.relocate(updaterrelocation)
 				.build();
 
-		final Relocation kotlin = new Relocation("kotlin", "it{}frafol{}libs{}kotlin");
+		final Relocation kotlin = new Relocation("net.dv8tion", "it{}frafol{}libs{}net{}dv8tion");
 		Library discord = Library.builder()
 				.groupId("net{}dv8tion")
 				.artifactId("JDA")
-				.version("5.0.0-beta.13")
+				.version("5.0.0-beta.23")
 				.relocate(kotlin)
-				.url("https://github.com/DV8FromTheWorld/JDA/releases/download/v5.0.0-beta.13/JDA-5.0.0-beta.13-withDependencies-min.jar")
+				.url("https://github.com/DV8FromTheWorld/JDA/releases/download/v5.0.0-beta.13/JDA-5.0.0-beta.23-withDependencies-min.jar")
 				.build();
 
 		bungeeLibraryManager.addMavenCentral();
