@@ -74,6 +74,7 @@ public class CleanSS extends Plugin {
 				"  \\___)(____)(____)(__)(__)(_)\\_)  (___/(___/\n");
 
 		getLogger().info("§7Server version: §d" + getServerBrand() + " - " + getServerVersion());
+		checkIncompatibilities();
 
 		getLogger().info("§7Loading §dconfiguration§7...");
 		loadFiles();
@@ -420,13 +421,14 @@ public class CleanSS extends Plugin {
 				.relocate(updaterrelocation)
 				.build();
 
-		final Relocation kotlin = new Relocation("net.dv8tion", "it{}frafol{}libs{}net{}dv8tion");
+		// JDA should be beta.18 because of Java 8 incompatibility.
+		final Relocation kotlin = new Relocation("net{}dv8tion", "it{}frafol{}libs{}net{}dv8tion");
 		Library discord = Library.builder()
 				.groupId("net{}dv8tion")
 				.artifactId("JDA")
-				.version("5.0.0-beta.23")
+				.version("5.0.0-beta.18")
 				.relocate(kotlin)
-				.url("https://github.com/DV8FromTheWorld/JDA/releases/download/v5.0.0-beta.13/JDA-5.0.0-beta.23-withDependencies-min.jar")
+				.url("https://github.com/DV8FromTheWorld/JDA/releases/download/v5.0.0-beta.18/JDA-5.0.0-beta.18-withDependencies-min.jar")
 				.build();
 
 		bungeeLibraryManager.addMavenCentral();
@@ -448,6 +450,15 @@ public class CleanSS extends Plugin {
 		bungeeLibraryManager.loadLibrary(yaml);
 		bungeeLibraryManager.loadLibrary(updater);
 		bungeeLibraryManager.loadLibrary(discord);
+	}
+
+	private void checkIncompatibilities() {
+		if (getSpicord()) {
+			getLogger().severe("Spicord found, this plugin is completely unsupported and you won't receive any support.");
+		}
+		if (getProtocolize()) {
+			getLogger().severe("Protocolize found, this plugin is completely unsupported and you won't receive any support.");
+		}
 	}
 
 	@Override
@@ -515,5 +526,13 @@ public class CleanSS extends Plugin {
 
 	public boolean getPremiumVanish() {
 		return getProxy().getPluginManager().getPlugin("PremiumVanish") != null;
+	}
+
+	private boolean getSpicord() {
+		return getProxy().getPluginManager().getPlugin("Spicord") != null;
+	}
+
+	private boolean getProtocolize() {
+		return getProxy().getPluginManager().getPlugin("Protocolize") != null;
 	}
 }

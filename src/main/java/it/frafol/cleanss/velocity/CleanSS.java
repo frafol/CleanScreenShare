@@ -52,7 +52,7 @@ import java.util.concurrent.TimeUnit;
 		name = "CleanScreenShare",
 		version = "2.5.2",
 		description = "Make control hacks on your players.",
-		dependencies = {@Dependency(id = "luckperms", optional = true), @Dependency(id = "mysqlandconfigurateforvelocity", optional = true), @Dependency(id = "limboapi", optional = true), @Dependency(id = "ajqueue", optional = true), @Dependency(id = "premiumvanish", optional = true), @Dependency(id = "velocityvanish", optional = true), @Dependency(id = "spicord", optional = true)},
+		dependencies = {@Dependency(id = "luckperms", optional = true), @Dependency(id = "mysqlandconfigurateforvelocity", optional = true), @Dependency(id = "limboapi", optional = true), @Dependency(id = "ajqueue", optional = true), @Dependency(id = "premiumvanish", optional = true), @Dependency(id = "velocityvanish", optional = true), @Dependency(id = "spicord", optional = true), @Dependency(id = "clientcatcher", optional = true)},
 		authors = { "frafol" })
 
 public class CleanSS {
@@ -115,6 +115,7 @@ public class CleanSS {
 				"  \\___)(____)(____)(__)(__)(_)\\_) (___/(___/\n");
 
 		logger.info("Server version: " + getServerBrand() + " - " + getServerVersion());
+		checkIncompatibilities();
 
 		logger.info("Loading configuration...");
 		loadFiles();
@@ -322,13 +323,20 @@ public class CleanSS {
 				.relocate(updaterrelocation)
 				.build();
 
-		final Relocation kotlin = new Relocation("net{}dv8tion", "it{}frafol{}libs{}net{}dv8tion");
+		// JDA should be beta.18 because of Java 8 incompatibility.
+		Relocation jda;
+		if (getClientCatcher()) {
+			jda = new Relocation("kotlin", "it{}frafol{}libs{}net{}dv8tion");
+		} else {
+			jda = new Relocation("net{}dv8tion", "it{}frafol{}libs{}net{}dv8tion");
+		}
+
 		Library discord = Library.builder()
 				.groupId("net{}dv8tion")
 				.artifactId("JDA")
-				.version("5.0.0-beta.23")
-				.relocate(kotlin)
-				.url("https://github.com/DV8FromTheWorld/JDA/releases/download/v5.0.0-beta.13/JDA-5.0.0-beta.23-withDependencies-min.jar")
+				.version("5.0.0-beta.18")
+				.relocate(jda)
+				.url("https://github.com/DV8FromTheWorld/JDA/releases/download/v5.0.0-beta.18/JDA-5.0.0-beta.18-withDependencies-min.jar")
 				.build();
 
 		velocityLibraryManager.addMavenCentral();
@@ -350,6 +358,15 @@ public class CleanSS {
 		velocityLibraryManager.loadLibrary(yaml);
 		velocityLibraryManager.loadLibrary(updater);
 		velocityLibraryManager.loadLibrary(discord);
+	}
+
+	private void checkIncompatibilities() {
+		if (getSpicord()) {
+			logger.error("Spicord found, this plugin is completely unsupported and you won't receive any support.");
+		}
+		if (getProtocolize()) {
+			logger.error("Protocolize found, this plugin is completely unsupported and you won't receive any support.");
+		}
 	}
 
 	public boolean isWindows() {
@@ -657,5 +674,20 @@ public class CleanSS {
 	@SuppressWarnings("ALL")
 	public boolean getVelocityVanish() {
 		return getServer().getPluginManager().isLoaded("velocityvanish");
+	}
+
+	@SuppressWarnings("ALL")
+	public boolean getClientCatcher() {
+		return getServer().getPluginManager().isLoaded("clientcatcher");
+	}
+
+	@SuppressWarnings("ALL")
+	public boolean getSpicord() {
+		return getServer().getPluginManager().isLoaded("spicord");
+	}
+
+	@SuppressWarnings("ALL")
+	public boolean getProtocolize() {
+		return getServer().getPluginManager().isLoaded("protocolize");
 	}
 }
