@@ -382,7 +382,11 @@ public class Utils {
             return;
         }
 
-        instance.getProxy().getPluginManager().dispatchCommand(instance.getProxy().getConsole(), BungeeConfig.SLOG_COMMAND.get(String.class).replace("%player%", suspicious));
+        instance.getProxy().getPluginManager().dispatchCommand(
+                instance.getProxy().getConsole(),
+                BungeeConfig.SLOG_COMMAND.get(String.class)
+                        .replace("%player%", suspicious)
+                        .replace("%admin%", administrator_player.getName()));
     }
 
     public boolean isInControlServer(ServerInfo server) {
