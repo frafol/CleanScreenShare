@@ -163,7 +163,11 @@ public class Utils {
             return;
         }
 
-        instance.getServer().getCommandManager().executeAsync(instance.getServer().getConsoleCommandSource(), VelocityConfig.SLOG_COMMAND.get(String.class).replace("%player%", suspicious));
+        instance.getServer().getCommandManager().executeAsync(
+                instance.getServer().getConsoleCommandSource(), 
+                VelocityConfig.SLOG_COMMAND.get(String.class)
+                        .replace("%player%", suspicious)
+                        .replace("%admin%", administrator_user.getUsername()));
 
     }
 
