@@ -315,7 +315,7 @@ public class CleanSS {
 				.relocate(yamlrelocation)
 				.build();
 
-		final Relocation updaterrelocation = new Relocation("ru{}vyarus", "it{}frafol{}libs{}ru{}vyarus");
+		final Relocation updaterrelocation = new Relocation("updater", "it{}frafol{}libs{}updater");
 		Library updater = Library.builder()
 				.groupId("ru{}vyarus")
 				.artifactId("yaml-config-updater")

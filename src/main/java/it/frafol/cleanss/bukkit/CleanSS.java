@@ -119,14 +119,7 @@ public class CleanSS extends JavaPlugin {
 				" ( (__  )(__  )__)  /(__)\\  )  (  \\__ \\\\__ \\\n" +
 				"  \\___)(____)(____)(__)(__)(_)\\_) (___/(___/\n");
 
-		getLogger().info("Server version: " + getServer().getClass().getPackage().getName().split("\\.")[3] + ".");
-
-		if (isSuperLegacy()) {
-			getLogger().severe("Support for your version was declined.");
-			getServer().getPluginManager().disablePlugin(this);
-			return;
-		}
-
+		getLogger().info("Server version: " + getServer().getBukkitVersion());
 		getLogger().info("Loading configuration...");
 		configTextFile = new TextFile(getDataFolder().toPath(), "settings.yml");
 		cacheTextFile = new TextFile(getDataFolder().toPath(), "cache_do_not_touch.yml");
@@ -212,16 +205,6 @@ public class CleanSS extends JavaPlugin {
 			return false;
 		}
 		return true;
-	}
-
-	public boolean isSuperLegacy() {
-		return getServer().getClass().getPackage().getName().split("\\.")[3].contains("1_6_R")
-				|| getServer().getClass().getPackage().getName().split("\\.")[3].contains("1_5_R")
-				|| getServer().getClass().getPackage().getName().split("\\.")[3].contains("1_4_R")
-				|| getServer().getClass().getPackage().getName().split("\\.")[3].contains("1_3_R")
-				|| getServer().getClass().getPackage().getName().split("\\.")[3].contains("1_2_R")
-				|| getServer().getClass().getPackage().getName().split("\\.")[3].contains("1_1_R")
-				|| getServer().getClass().getPackage().getName().split("\\.")[3].contains("1_0_R");
 	}
 
 	private void UpdateChecker() {

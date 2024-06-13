@@ -76,7 +76,7 @@ public class SpectateCommand extends Command implements TabExecutor {
             return;
         }
 
-        if (PlayerCache.getAdministrator().contains(player.getUniqueId()) || PlayerCache.getSuspicious().contains(player.getUniqueId())) {
+        if (PlayerCache.getSpectators().contains(player.getUniqueId()) || PlayerCache.getAdministrator().contains(player.getUniqueId()) || PlayerCache.getSuspicious().contains(player.getUniqueId())) {
             player.sendMessage(TextComponent.fromLegacyText(BungeeMessages.IN_CONTROL_ERROR.color()
                     .replace("%prefix%", BungeeMessages.PREFIX.color())));
             return;

@@ -90,7 +90,7 @@ public class SpectateCommand implements SimpleCommand {
             return;
         }
 
-        if (PlayerCache.getAdministrator().contains(player.getUniqueId()) || PlayerCache.getSuspicious().contains(player.getUniqueId())) {
+        if (PlayerCache.getSpectators().contains(player.getUniqueId()) || PlayerCache.getAdministrator().contains(player.getUniqueId()) || PlayerCache.getSuspicious().contains(player.getUniqueId())) {
             source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.IN_CONTROL_ERROR.color()
                     .replace("%prefix%", VelocityMessages.PREFIX.color())));
             return;

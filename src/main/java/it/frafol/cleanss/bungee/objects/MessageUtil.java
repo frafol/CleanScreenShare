@@ -185,6 +185,13 @@ public class MessageUtil {
                         new Placeholder("suspect", suspicious.getName()),
                         new Placeholder("administrator", administrator.getName()));
             }
-        }, BungeeMessages.CONTROL_DELAYMESSAGE.get(Integer.class), TimeUnit.SECONDS);
+        }, getDelay(), TimeUnit.SECONDS);
+    }
+
+    private int getDelay() {
+        if (BungeeMessages.CONTROL_DELAYMESSAGE.get(Integer.class) <= 1) {
+            return 1;
+        }
+        return BungeeMessages.CONTROL_DELAYMESSAGE.get(Integer.class);
     }
 }

@@ -110,7 +110,7 @@ public class KickListener implements Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler(priority = Byte.MAX_VALUE-1)
     public void onPlayerDisconnect(PlayerDisconnectEvent event) {
 
         final ProxiedPlayer player = event.getPlayer();
@@ -127,12 +127,12 @@ public class KickListener implements Listener {
 
         if (proxyServer == null) {
             if (PlayerCache.getAdministrator().contains(player.getUniqueId())) {
-                instance.getValue(PlayerCache.getCouples(), player).disconnect(TextComponent.fromLegacyText(BungeeMessages.FINISHSUS.color()));
+                instance.getValue(PlayerCache.getCouples(), player).disconnect(TextComponent.fromLegacyText(BungeeMessages.FINISHSUS.color().replace("%prefix%", BungeeMessages.PREFIX.color())));
                 instance.getLogger().severe("Fallback server was not found in your BungeeCord configuration or is offline, " + player.getName() + " will not be able to reconnect to the server.");
             }
 
             if (PlayerCache.getSuspicious().contains(player.getUniqueId())) {
-                instance.getKey(PlayerCache.getCouples(), player).disconnect(TextComponent.fromLegacyText(BungeeMessages.FINISHSUS.color()));
+                instance.getKey(PlayerCache.getCouples(), player).disconnect(TextComponent.fromLegacyText(BungeeMessages.FINISHSUS.color().replace("%prefix%", BungeeMessages.PREFIX.color())));
                 instance.getLogger().severe("Fallback server was not found in your BungeeCord configuration or is offline, " + player.getName() + " will not be able to reconnect to the server.");
             }
         }
