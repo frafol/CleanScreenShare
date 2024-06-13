@@ -19,6 +19,10 @@ public enum SpigotConfig {
 
     SPAWN_SET("options.messages.spawn_set"),
 
+    SPAWN_ADMIN("options.messages.spawn_types.admin"),
+    SPAWN_SPECTATOR("options.messages.spawn_types.other"),
+    SPAWN_SUSPECT("options.messages.spawn_types.suspect"),
+
     PVP("options.prevent.player.pvp"),
     HUNGER("options.prevent.player.hunger"),
     VOID("options.prevent.player.void"),

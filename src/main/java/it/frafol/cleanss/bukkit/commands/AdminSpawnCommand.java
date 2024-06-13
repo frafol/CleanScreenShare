@@ -27,7 +27,7 @@ public class AdminSpawnCommand implements CommandExecutor {
             return false;
         }
 
-        player.sendMessage(SpigotConfig.SPAWN_SET.color());
+        player.sendMessage(SpigotConfig.SPAWN_SET.color().replace("%type%", SpigotConfig.SPAWN_ADMIN.color()));
         cache.set("spawns.admin", PlayerCache.LocationToString(player.getLocation()));
         cache.save();
         return false;

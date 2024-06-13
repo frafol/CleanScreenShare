@@ -15,7 +15,7 @@ messages:
     - "&d&lCleanScreenShare &7- &dCommands:"
     - "&7- &d/control <player> &7- &fStart a hack control."
     - "&7- &d/ssfinish <player> &7- &fFinish a hack control."
-    - "&7- &d/sspectate <player/finish> &7- &fStart/End spectating controls."
+    - "&7- &d/sspectate <server/finish> &7- &fStart/End spectating controls."
     - "&7- &d/ssinfo <player> &7- &fGet player informations."
     - "&7- &d/ssreload &7- &fReload the configuration."
     - "&f"

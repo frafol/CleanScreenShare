@@ -59,7 +59,11 @@ options:
   messages:
 
     # Messages sent to the player when he sets a player spawn in the server.
-    spawn_set: "&aSpawn has been set in your position."
+    spawn_set: "&aSpawn has been set in your position (%type%)."
+    spawn_types:
+      admin: "Administrator"
+      suspect: "Suspect"
+      other: "Spectator"
 
     # Prefixes of the players, you can use it in all plugins that support PlaceholderAPI.
     # Placeholders: %screenshare_prefix%

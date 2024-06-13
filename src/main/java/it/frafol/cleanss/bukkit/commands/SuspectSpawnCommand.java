@@ -27,7 +27,7 @@ public class SuspectSpawnCommand  implements CommandExecutor {
             return false;
         }
 
-        player.sendMessage(SpigotConfig.SPAWN_SET.color());
+        player.sendMessage(SpigotConfig.SPAWN_SET.color().replace("%type%", SpigotConfig.SPAWN_SUSPECT.color()));
         cache.set("spawns.suspect", PlayerCache.LocationToString(player.getLocation()));
         cache.save();
         return false;
