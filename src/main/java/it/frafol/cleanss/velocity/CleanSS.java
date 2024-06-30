@@ -200,7 +200,6 @@ public class CleanSS {
 			if (data != null) {
 				data.close();
 			}
-
 		}
 
 
