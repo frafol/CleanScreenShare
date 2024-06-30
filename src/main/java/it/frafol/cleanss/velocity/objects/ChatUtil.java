@@ -114,25 +114,45 @@ public class ChatUtil {
         for (String message : stringList) {
 
             if (message.contains(VelocityMessages.CONTROL_CLEAN_NAME.color())) {
-                commandSource.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(message).clickEvent(ClickEvent
-                        .clickEvent(ClickEvent.Action.SUGGEST_COMMAND, VelocityMessages.CONTROL_CLEAN_COMMAND.get(String.class)
-                                .replace("%player%", player_name.getUsername()))));
-
+                if (VelocityMessages.BUTTON_EXECUTION.get(Boolean.class)) {
+                    commandSource.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(message).clickEvent(ClickEvent
+                            .clickEvent(ClickEvent.Action.RUN_COMMAND, VelocityMessages.CONTROL_CLEAN_COMMAND.get(String.class)
+                                    .replace("%player%", player_name.getUsername()))));
+                } else {
+                    commandSource.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(message).clickEvent(ClickEvent
+                            .clickEvent(ClickEvent.Action.SUGGEST_COMMAND, VelocityMessages.CONTROL_CLEAN_COMMAND.get(String.class)
+                                    .replace("%player%", player_name.getUsername()))));
+                }
             } else if (message.contains(VelocityMessages.CONTROL_CHEATER_NAME.color())) {
-                commandSource.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(message).clickEvent(ClickEvent
-                        .clickEvent(ClickEvent.Action.SUGGEST_COMMAND, VelocityMessages.CONTROL_CHEATER_COMMAND.get(String.class)
-                                .replace("%player%", player_name.getUsername()))));
-
+                if (VelocityMessages.BUTTON_EXECUTION.get(Boolean.class)) {
+                    commandSource.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(message).clickEvent(ClickEvent
+                            .clickEvent(ClickEvent.Action.RUN_COMMAND, VelocityMessages.CONTROL_CHEATER_COMMAND.get(String.class)
+                                    .replace("%player%", player_name.getUsername()))));
+                } else {
+                    commandSource.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(message).clickEvent(ClickEvent
+                            .clickEvent(ClickEvent.Action.SUGGEST_COMMAND, VelocityMessages.CONTROL_CHEATER_COMMAND.get(String.class)
+                                    .replace("%player%", player_name.getUsername()))));
+                }
             } else if (message.contains(VelocityMessages.CONTROL_ADMIT_NAME.color())) {
-                commandSource.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(message)
-                        .clickEvent(ClickEvent.clickEvent(ClickEvent.Action.SUGGEST_COMMAND, VelocityMessages.CONTROL_ADMIT_COMMAND.get(String.class)
-                                .replace("%player%", player_name.getUsername()))));
-
+                if (VelocityMessages.BUTTON_EXECUTION.get(Boolean.class)) {
+                    commandSource.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(message).clickEvent(ClickEvent
+                            .clickEvent(ClickEvent.Action.RUN_COMMAND, VelocityMessages.CONTROL_ADMIT_COMMAND.get(String.class)
+                                    .replace("%player%", player_name.getUsername()))));
+                } else {
+                    commandSource.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(message).clickEvent(ClickEvent
+                            .clickEvent(ClickEvent.Action.SUGGEST_COMMAND, VelocityMessages.CONTROL_ADMIT_COMMAND.get(String.class)
+                                    .replace("%player%", player_name.getUsername()))));
+                }
             } else if (message.contains(VelocityMessages.CONTROL_REFUSE_NAME.color())) {
-                commandSource.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(message)
-                        .clickEvent(ClickEvent.clickEvent(ClickEvent.Action.SUGGEST_COMMAND, VelocityMessages.CONTROL_REFUSE_COMMAND.get(String.class)
-                                .replace("%player%", player_name.getUsername()))));
-
+                if (VelocityMessages.BUTTON_EXECUTION.get(Boolean.class)) {
+                    commandSource.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(message).clickEvent(ClickEvent
+                            .clickEvent(ClickEvent.Action.RUN_COMMAND, VelocityMessages.CONTROL_REFUSE_COMMAND.get(String.class)
+                                    .replace("%player%", player_name.getUsername()))));
+                } else {
+                    commandSource.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(message)
+                            .clickEvent(ClickEvent.clickEvent(ClickEvent.Action.SUGGEST_COMMAND, VelocityMessages.CONTROL_REFUSE_COMMAND.get(String.class)
+                                    .replace("%player%", player_name.getUsername()))));
+                }
             } else {
                 commandSource.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(message));
             }

@@ -38,6 +38,8 @@ public enum VelocityMessages {
     CONTROL_CHEATER_NAME("messages.staff_message.cheater.name"),
     CONTROL_CHEATER_COMMAND("messages.staff_message.cheater.command"),
 
+    BUTTON_EXECUTION("messages.staff_message.execution"),
+
     CONTROL_ALREADY("messages.already_in_control"),
 
     CONTROL_ADMIT_NAME("messages.staff_message.admit.name"),

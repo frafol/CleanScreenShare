@@ -47,7 +47,7 @@ public class FinishCommand extends Command implements TabExecutor {
         }
 
         if (args.length == 0) {
-            BungeeMessages.USAGE.sendList(invocation, null,
+            BungeeMessages.USAGE.sendList(invocation,
 					new Placeholder("%prefix%", BungeeMessages.PREFIX.color()));
             return;
         }

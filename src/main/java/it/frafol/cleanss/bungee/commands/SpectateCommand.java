@@ -47,7 +47,7 @@ public class SpectateCommand extends Command implements TabExecutor {
         boolean luckperms = instance.getProxy().getPluginManager().getPlugin("LuckPerms") != null;
 
         if (args.length != 1) {
-            BungeeMessages.USAGE.sendList(invocation, null, 
+            BungeeMessages.USAGE.sendList(invocation,
 					new Placeholder("%prefix%", BungeeMessages.PREFIX.color()));
             return;
         }

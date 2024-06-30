@@ -89,6 +89,7 @@ settings:
       - "tempipban"
 
     # Enter the command to be executed by the console when the player disconnects from the server.
+    # You can use %player% to get the suspect's name and %admin% to get the staff member's name.
     punish_command: "ban %player% Slog under hack control -s"
 
   spectate:

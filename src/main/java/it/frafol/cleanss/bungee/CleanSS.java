@@ -405,7 +405,7 @@ public class CleanSS extends Plugin {
 
 		BungeeLibraryManager bungeeLibraryManager = new BungeeLibraryManager(this);
 
-		final Relocation yamlrelocation = new Relocation("me{}carleslc{}Simple-YAML", "it{}frafol{}libs{}me{}carleslc{}Simple-YAML");
+		final Relocation yamlrelocation = new Relocation("yaml", "it{}frafol{}libs{}yaml");
 		Library yaml = Library.builder()
 				.groupId("me{}carleslc{}Simple-YAML")
 				.artifactId("Simple-Yaml")
@@ -421,13 +421,12 @@ public class CleanSS extends Plugin {
 				.relocate(updaterrelocation)
 				.build();
 
-		// JDA should be beta.18 because of Java 8 incompatibility.
-		final Relocation kotlin = new Relocation("net{}dv8tion", "it{}frafol{}libs{}net{}dv8tion");
+		Relocation jda = new Relocation("discord", "it{}frafol{}libs{}discord");
 		Library discord = Library.builder()
 				.groupId("net{}dv8tion")
 				.artifactId("JDA")
 				.version("5.0.0-beta.18")
-				.relocate(kotlin)
+				.relocate(jda)
 				.url("https://github.com/DV8FromTheWorld/JDA/releases/download/v5.0.0-beta.18/JDA-5.0.0-beta.18-withDependencies-min.jar")
 				.build();
 

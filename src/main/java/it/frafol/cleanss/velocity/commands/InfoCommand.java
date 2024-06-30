@@ -61,7 +61,7 @@ public class InfoCommand implements SimpleCommand {
 
             if (luckperms) {
                 VelocityMessages.INFO_MESSAGE.sendList(source,
-                        new Placeholder("player", invocation.arguments()[0]),
+                        new Placeholder("player", player.get().getUsername()),
                         new Placeholder("prefix", VelocityMessages.PREFIX.color()),
                         new Placeholder("is_in_control", String.valueOf(instance.getData().getStats(player.get().getUniqueId(), "incontrol"))),
                         new Placeholder("controls_done", String.valueOf(instance.getData().getStats(player.get().getUniqueId(), "controls"))),
@@ -73,7 +73,7 @@ public class InfoCommand implements SimpleCommand {
             }
 
             VelocityMessages.INFO_MESSAGE.sendList(source,
-                    new Placeholder("player", invocation.arguments()[0]),
+                    new Placeholder("player", player.get().getUsername()),
                     new Placeholder("prefix", VelocityMessages.PREFIX.color()),
                     new Placeholder("is_in_control", String.valueOf(instance.getData().getStats(player.get().getUniqueId(), "incontrol"))),
                     new Placeholder("controls_done", String.valueOf(instance.getData().getStats(player.get().getUniqueId(), "controls"))),
@@ -87,7 +87,7 @@ public class InfoCommand implements SimpleCommand {
 
         if (luckperms) {
             VelocityMessages.INFO_MESSAGE.sendList(source,
-                    new Placeholder("player", invocation.arguments()[0]),
+                    new Placeholder("player", player.get().getUsername()),
                     new Placeholder("prefix", VelocityMessages.PREFIX.color()),
                     new Placeholder("is_in_control", PlayerCache.getSuspicious().contains(player.get().getUniqueId()) || PlayerCache.getAdministrator().contains(player.get().getUniqueId()) ? VelocityMessages.INFO_TRUE.color() : VelocityMessages.INFO_FALSE.color()),
                     new Placeholder("controls_done", String.valueOf(PlayerCache.getControls().get(player.get().getUniqueId()))),
@@ -99,7 +99,7 @@ public class InfoCommand implements SimpleCommand {
         }
 
         VelocityMessages.INFO_MESSAGE.sendList(source,
-                new Placeholder("player", invocation.arguments()[0]),
+                new Placeholder("player", player.get().getUsername()),
                 new Placeholder("prefix", VelocityMessages.PREFIX.color()),
                 new Placeholder("is_in_control", PlayerCache.getSuspicious().contains(player.get().getUniqueId()) || PlayerCache.getAdministrator().contains(player.get().getUniqueId()) ? VelocityMessages.INFO_TRUE.color() : VelocityMessages.INFO_FALSE.color()),
                 new Placeholder("controls_done", String.valueOf(PlayerCache.getControls().get(player.get().getUniqueId()))),

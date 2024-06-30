@@ -107,6 +107,9 @@ messages:
       - "%buttons%"
       - "&8&m------&5&m------&d&m------&5&m------&8&m------"
 
+    # On false, the plugin will suggest the command on the keyboard, on true it will execute it automatically.
+    execution: false
+
     # Clickable messages to put in the Administration message. (%player% is the suspicious player's name)
     # NOTE: You can't add new buttons, you can only change the name and the command.
     clean:

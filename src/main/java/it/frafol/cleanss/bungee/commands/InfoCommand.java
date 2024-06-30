@@ -36,20 +36,20 @@ public class InfoCommand extends Command implements TabExecutor {
         }
 
         if (args.length > 1) {
-            BungeeMessages.USAGE.sendList(invocation, null,
+            BungeeMessages.USAGE.sendList(invocation,
 					new Placeholder("%prefix%", BungeeMessages.PREFIX.color()));
             return;
         }
 
         if (args.length == 0 && !(invocation instanceof ProxiedPlayer)) {
-            BungeeMessages.USAGE.sendList(invocation, null,
+            BungeeMessages.USAGE.sendList(invocation,
                     new Placeholder("%prefix%", BungeeMessages.PREFIX.color()));
             return;
         }
 
         ProxiedPlayer player;
         if (args.length == 0) {
-            player = (ProxiedPlayer) invocation;
+            player = instance.getProxy().getPlayer(invocation.getName());
         } else {
             player = instance.getProxy().getPlayer(args[0]);
         }
@@ -63,8 +63,8 @@ public class InfoCommand extends Command implements TabExecutor {
         if (BungeeConfig.MYSQL.get(Boolean.class)) {
 
             if (Utils.isLuckPerms) {
-                BungeeMessages.INFO_MESSAGE.sendList(invocation, player,
-                        new Placeholder("player", args[0]),
+                BungeeMessages.INFO_MESSAGE.sendList(invocation,
+                        new Placeholder("player", player.getName()),
                         new Placeholder("prefix", BungeeMessages.PREFIX.color()),
                         new Placeholder("is_in_control", String.valueOf(instance.getData().getStats(player.getUniqueId(), "incontrol"))),
                         new Placeholder("controls_done", String.valueOf(instance.getData().getStats(player.getUniqueId(), "controls"))),
@@ -75,8 +75,8 @@ public class InfoCommand extends Command implements TabExecutor {
                 return;
             }
 
-            BungeeMessages.INFO_MESSAGE.sendList(invocation, player,
-                    new Placeholder("player", args[0]),
+            BungeeMessages.INFO_MESSAGE.sendList(invocation,
+                    new Placeholder("player", player.getName()),
                     new Placeholder("prefix", BungeeMessages.PREFIX.color()),
                     new Placeholder("is_in_control", String.valueOf(instance.getData().getStats(player.getUniqueId(), "incontrol"))),
                     new Placeholder("controls_done", String.valueOf(instance.getData().getStats(player.getUniqueId(), "controls"))),
@@ -89,8 +89,8 @@ public class InfoCommand extends Command implements TabExecutor {
         PlayerCache.getControls_suffered().putIfAbsent(player.getUniqueId(), 0);
 
         if (Utils.isLuckPerms) {
-            BungeeMessages.INFO_MESSAGE.sendList(invocation, player,
-                    new Placeholder("player", args[0]),
+            BungeeMessages.INFO_MESSAGE.sendList(invocation,
+                    new Placeholder("player", player.getName()),
                     new Placeholder("prefix", BungeeMessages.PREFIX.color()),
                     new Placeholder("is_in_control", PlayerCache.getSuspicious().contains(player.getUniqueId()) || PlayerCache.getAdministrator().contains(player.getUniqueId()) ? BungeeMessages.INFO_TRUE.color() : BungeeMessages.INFO_FALSE.color()),
                     new Placeholder("controls_done", String.valueOf(PlayerCache.getControls().get(player.getUniqueId()))),
@@ -101,8 +101,8 @@ public class InfoCommand extends Command implements TabExecutor {
             return;
         }
 
-        BungeeMessages.INFO_MESSAGE.sendList(invocation, player,
-                new Placeholder("player", args[0]),
+        BungeeMessages.INFO_MESSAGE.sendList(invocation,
+                new Placeholder("player", player.getName()),
                 new Placeholder("prefix", BungeeMessages.PREFIX.color()),
                 new Placeholder("is_in_control", PlayerCache.getSuspicious().contains(player.getUniqueId()) || PlayerCache.getAdministrator().contains(player.getUniqueId()) ? BungeeMessages.INFO_TRUE.color() : BungeeMessages.INFO_FALSE.color()),
                 new Placeholder("controls_done", String.valueOf(PlayerCache.getControls().get(player.getUniqueId()))),

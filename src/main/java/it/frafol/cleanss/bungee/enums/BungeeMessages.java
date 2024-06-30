@@ -29,6 +29,8 @@ public enum BungeeMessages {
     CONTROL_VERTICALFORMAT("messages.staff_message.vertical_format"),
     CONTROL_HORIZONTALFORMAT("messages.staff_message.horizontal_format"),
 
+    BUTTON_EXECUTION("messages.staff_message.execution"),
+
     COMMAND_BLOCKED("messages.control.command_blocked"),
 
     CONTROL_CLEAN_NAME("messages.staff_message.clean.name"),
@@ -161,8 +163,8 @@ public enum BungeeMessages {
         return ChatColor.translateAlternateColorCodes('&',str);
     }
 
-    public void sendList(CommandSender commandSource, ProxiedPlayer player_name, Placeholder... placeholder) {
-        ChatUtil.sendFormattedList(this, commandSource, player_name, false, placeholder);
+    public void sendList(CommandSender commandSource, Placeholder... placeholder) {
+        ChatUtil.sendFormattedList(this, commandSource, null, false, placeholder);
     }
 
     public void sendStartList(CommandSender commandSource, ProxiedPlayer player_name, Placeholder... placeholder) {

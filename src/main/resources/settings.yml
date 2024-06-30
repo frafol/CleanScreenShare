@@ -80,6 +80,10 @@ options:
     # Lower values may cause performance issues.
     update_task: 20
 
+    # EXPERIMENTAL: Use TAB plugin to send scoreboard to players.
+    # If this is set to false, we'll use the default scoreboard system using FastBoard (recommended).
+    tab_hook: false
+
     # NOTE: In this section, you can use ALL placeholderapi placeholders, if you have it installed.
     staff_board:
       enabled: true

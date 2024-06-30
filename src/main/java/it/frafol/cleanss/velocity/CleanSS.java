@@ -62,8 +62,12 @@ public class CleanSS {
 	public boolean mysql_installation = false;
 	public boolean updated = false;
 
+	@Inject
 	private final Logger logger;
+
+	@Inject
 	private final ProxyServer server;
+
 	private final Path path;
 	private final Metrics.Factory metricsFactory;
 
@@ -307,7 +311,7 @@ public class CleanSS {
 	private void loadLibraries() {
 		VelocityLibraryManager<CleanSS> velocityLibraryManager = new VelocityLibraryManager<>(this, getLogger(), path, getServer().getPluginManager());
 
-		final Relocation yamlrelocation = new Relocation("me{}carleslc{}Simple-YAML", "it{}frafol{}libs{}me{}carleslc{}Simple-YAML");
+		final Relocation yamlrelocation = new Relocation("yaml", "it{}frafol{}libs{}yaml");
 		Library yaml = Library.builder()
 				.groupId("me{}carleslc{}Simple-YAML")
 				.artifactId("Simple-Yaml")
@@ -323,14 +327,8 @@ public class CleanSS {
 				.relocate(updaterrelocation)
 				.build();
 
-		// JDA should be beta.18 because of Java 8 incompatibility.
-		Relocation jda;
-		if (getClientCatcher()) {
-			jda = new Relocation("kotlin", "it{}frafol{}libs{}net{}dv8tion");
-		} else {
-			jda = new Relocation("net{}dv8tion", "it{}frafol{}libs{}net{}dv8tion");
-		}
 
+		Relocation jda = new Relocation("discord", "it{}frafol{}libs{}discord");
 		Library discord = Library.builder()
 				.groupId("net{}dv8tion")
 				.artifactId("JDA")

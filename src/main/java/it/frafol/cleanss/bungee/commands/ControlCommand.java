@@ -58,7 +58,7 @@ public class ControlCommand extends Command implements TabExecutor {
 		}
 
 		if (args.length > 1) {
-			BungeeMessages.USAGE.sendList(invocation, null,
+			BungeeMessages.USAGE.sendList(invocation,
 					new Placeholder("%prefix%", BungeeMessages.PREFIX.color()));
 			return;
 		}

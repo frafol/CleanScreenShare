@@ -110,27 +110,51 @@ public class ChatUtil {
 
             TextComponent suggestMessage = new TextComponent(message);
             if (message.contains(BungeeMessages.CONTROL_CLEAN_NAME.color())) {
-                suggestMessage.setClickEvent(new ClickEvent(
-                        ClickEvent.Action.SUGGEST_COMMAND,
-                        BungeeMessages.CONTROL_CLEAN_COMMAND.get(String.class).replace("%player%", player_name.getName())));
+                if (!BungeeMessages.BUTTON_EXECUTION.get(Boolean.class)) {
+                    suggestMessage.setClickEvent(new ClickEvent(
+                            ClickEvent.Action.SUGGEST_COMMAND,
+                            BungeeMessages.CONTROL_CLEAN_COMMAND.get(String.class).replace("%player%", player_name.getName())));
+                } else {
+                    suggestMessage.setClickEvent(new ClickEvent(
+                            ClickEvent.Action.RUN_COMMAND,
+                            BungeeMessages.CONTROL_CLEAN_COMMAND.get(String.class).replace("%player%", player_name.getName())));
+                }
                 commandSource.sendMessage(suggestMessage);
 
             } else if (message.contains(BungeeMessages.CONTROL_CHEATER_NAME.color())) {
-                suggestMessage.setClickEvent(new ClickEvent(
-                        ClickEvent.Action.SUGGEST_COMMAND,
-                        BungeeMessages.CONTROL_CHEATER_COMMAND.get(String.class).replace("%player%", player_name.getName())));
+                if (!BungeeMessages.BUTTON_EXECUTION.get(Boolean.class)) {
+                    suggestMessage.setClickEvent(new ClickEvent(
+                            ClickEvent.Action.SUGGEST_COMMAND,
+                            BungeeMessages.CONTROL_CHEATER_COMMAND.get(String.class).replace("%player%", player_name.getName())));
+                } else {
+                    suggestMessage.setClickEvent(new ClickEvent(
+                            ClickEvent.Action.RUN_COMMAND,
+                            BungeeMessages.CONTROL_CHEATER_COMMAND.get(String.class).replace("%player%", player_name.getName())));
+                }
                 commandSource.sendMessage(suggestMessage);
 
             } else if (message.contains(BungeeMessages.CONTROL_ADMIT_NAME.color())) {
-                suggestMessage.setClickEvent(new ClickEvent(
-                        ClickEvent.Action.SUGGEST_COMMAND,
-                        BungeeMessages.CONTROL_ADMIT_COMMAND.get(String.class).replace("%player%", player_name.getName())));
+                if (!BungeeMessages.BUTTON_EXECUTION.get(Boolean.class)) {
+                    suggestMessage.setClickEvent(new ClickEvent(
+                            ClickEvent.Action.SUGGEST_COMMAND,
+                            BungeeMessages.CONTROL_ADMIT_COMMAND.get(String.class).replace("%player%", player_name.getName())));
+                } else {
+                    suggestMessage.setClickEvent(new ClickEvent(
+                            ClickEvent.Action.RUN_COMMAND,
+                            BungeeMessages.CONTROL_ADMIT_COMMAND.get(String.class).replace("%player%", player_name.getName())));
+                }
                 commandSource.sendMessage(suggestMessage);
 
             } else if (message.contains(BungeeMessages.CONTROL_REFUSE_NAME.color())) {
-                suggestMessage.setClickEvent(new ClickEvent(
-                        ClickEvent.Action.SUGGEST_COMMAND,
-                        BungeeMessages.CONTROL_REFUSE_COMMAND.get(String.class).replace("%player%", player_name.getName())));
+                if (!BungeeMessages.BUTTON_EXECUTION.get(Boolean.class)) {
+                    suggestMessage.setClickEvent(new ClickEvent(
+                            ClickEvent.Action.SUGGEST_COMMAND,
+                            BungeeMessages.CONTROL_REFUSE_COMMAND.get(String.class).replace("%player%", player_name.getName())));
+                } else {
+                    suggestMessage.setClickEvent(new ClickEvent(
+                            ClickEvent.Action.RUN_COMMAND,
+                            BungeeMessages.CONTROL_REFUSE_COMMAND.get(String.class).replace("%player%", player_name.getName())));
+                }
                 commandSource.sendMessage(suggestMessage);
 
             } else {

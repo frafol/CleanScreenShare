@@ -27,7 +27,7 @@ public class HelpCommand extends Command {
             return;
         }
 
-        BungeeMessages.USAGE.sendList(invocation, null,
+        BungeeMessages.USAGE.sendList(invocation,
                 new Placeholder("%prefix%", BungeeMessages.PREFIX.color()));
     }
 }
