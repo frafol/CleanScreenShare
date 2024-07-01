@@ -5,6 +5,8 @@ import ir.syrent.velocityvanish.velocity.VelocityVanish;
 import it.frafol.cleanss.velocity.CleanSS;
 import lombok.experimental.UtilityClass;
 
+import java.util.UUID;
+
 @UtilityClass
 public class VelocityVanishUtils {
 
@@ -14,5 +16,9 @@ public class VelocityVanishUtils {
 
     public boolean isVanished(Player player) {
         return VelocityVanish.instance.getVanishedPlayers().contains(player.getUsername());
+    }
+
+    public boolean isVanished(String name) {
+        return VelocityVanish.instance.getVanishedPlayers().contains(name);
     }
 }

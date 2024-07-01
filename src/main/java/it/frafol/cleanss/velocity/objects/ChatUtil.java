@@ -89,7 +89,7 @@ public class ChatUtil {
         sendList(commandSource, ChatUtil.color(ChatUtil.getStringList(velocityMessages, placeholders)));
     }
 
-    public void sendCompiledButtons(VelocityMessages velocityMessages, CommandSource commandSource, Player player_name, Placeholder... placeholders) {
+    public void sendCompiledButtons(VelocityMessages velocityMessages, CommandSource commandSource, String player_name, Placeholder... placeholders) {
         sendButtons(commandSource, ChatUtil.color(ChatUtil.getStringList(velocityMessages, placeholders)), player_name);
     }
 
@@ -104,7 +104,7 @@ public class ChatUtil {
         }
     }
 
-    public void sendButtons(CommandSource commandSource, List<String> stringList, Player player_name) {
+    public void sendButtons(CommandSource commandSource, List<String> stringList, String player_name) {
 
         if (!VelocityMessages.CONTROL_USEVERTICALFORMAT.get(Boolean.class)) {
             sendHorizontalButtons(commandSource, stringList, player_name);
@@ -117,41 +117,41 @@ public class ChatUtil {
                 if (VelocityMessages.BUTTON_EXECUTION.get(Boolean.class)) {
                     commandSource.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(message).clickEvent(ClickEvent
                             .clickEvent(ClickEvent.Action.RUN_COMMAND, VelocityMessages.CONTROL_CLEAN_COMMAND.get(String.class)
-                                    .replace("%player%", player_name.getUsername()))));
+                                    .replace("%player%", player_name))));
                 } else {
                     commandSource.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(message).clickEvent(ClickEvent
                             .clickEvent(ClickEvent.Action.SUGGEST_COMMAND, VelocityMessages.CONTROL_CLEAN_COMMAND.get(String.class)
-                                    .replace("%player%", player_name.getUsername()))));
+                                    .replace("%player%", player_name))));
                 }
             } else if (message.contains(VelocityMessages.CONTROL_CHEATER_NAME.color())) {
                 if (VelocityMessages.BUTTON_EXECUTION.get(Boolean.class)) {
                     commandSource.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(message).clickEvent(ClickEvent
                             .clickEvent(ClickEvent.Action.RUN_COMMAND, VelocityMessages.CONTROL_CHEATER_COMMAND.get(String.class)
-                                    .replace("%player%", player_name.getUsername()))));
+                                    .replace("%player%", player_name))));
                 } else {
                     commandSource.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(message).clickEvent(ClickEvent
                             .clickEvent(ClickEvent.Action.SUGGEST_COMMAND, VelocityMessages.CONTROL_CHEATER_COMMAND.get(String.class)
-                                    .replace("%player%", player_name.getUsername()))));
+                                    .replace("%player%", player_name))));
                 }
             } else if (message.contains(VelocityMessages.CONTROL_ADMIT_NAME.color())) {
                 if (VelocityMessages.BUTTON_EXECUTION.get(Boolean.class)) {
                     commandSource.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(message).clickEvent(ClickEvent
                             .clickEvent(ClickEvent.Action.RUN_COMMAND, VelocityMessages.CONTROL_ADMIT_COMMAND.get(String.class)
-                                    .replace("%player%", player_name.getUsername()))));
+                                    .replace("%player%", player_name))));
                 } else {
                     commandSource.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(message).clickEvent(ClickEvent
                             .clickEvent(ClickEvent.Action.SUGGEST_COMMAND, VelocityMessages.CONTROL_ADMIT_COMMAND.get(String.class)
-                                    .replace("%player%", player_name.getUsername()))));
+                                    .replace("%player%", player_name))));
                 }
             } else if (message.contains(VelocityMessages.CONTROL_REFUSE_NAME.color())) {
                 if (VelocityMessages.BUTTON_EXECUTION.get(Boolean.class)) {
                     commandSource.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(message).clickEvent(ClickEvent
                             .clickEvent(ClickEvent.Action.RUN_COMMAND, VelocityMessages.CONTROL_REFUSE_COMMAND.get(String.class)
-                                    .replace("%player%", player_name.getUsername()))));
+                                    .replace("%player%", player_name))));
                 } else {
                     commandSource.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(message)
                             .clickEvent(ClickEvent.clickEvent(ClickEvent.Action.SUGGEST_COMMAND, VelocityMessages.CONTROL_REFUSE_COMMAND.get(String.class)
-                                    .replace("%player%", player_name.getUsername()))));
+                                    .replace("%player%", player_name))));
                 }
             } else {
                 commandSource.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(message));
@@ -159,7 +159,7 @@ public class ChatUtil {
         }
     }
 
-    private void sendHorizontalButtons(CommandSource commandSource, List<String> stringList, Player player_name) {
+    private void sendHorizontalButtons(CommandSource commandSource, List<String> stringList, String player_name) {
 
         List<TextComponent> buttons = new ArrayList<>();
 
@@ -168,7 +168,7 @@ public class ChatUtil {
                 for (String key : getButtons(player_name).keySet()) {
                     TextComponent button = LegacyComponentSerializer.legacy('§').deserialize(key)
                             .clickEvent(ClickEvent.clickEvent(ClickEvent.Action.SUGGEST_COMMAND, getButtons(player_name).get(key)
-                                    .replace("%player%", player_name.getUsername()))).append(Component.text(" "));
+                                    .replace("%player%", player_name))).append(Component.text(" "));
                     buttons.add(button);
                 }
 
@@ -185,12 +185,12 @@ public class ChatUtil {
         }
     }
 
-    private HashMap<String, String> getButtons(Player suspect) {
+    private HashMap<String, String> getButtons(String suspect) {
         HashMap<String, String> buttons = new HashMap<>();
-        buttons.put(VelocityMessages.CONTROL_CLEAN_NAME.color(), VelocityMessages.CONTROL_CLEAN_COMMAND.get(String.class).replace("%player%", suspect.getUsername()));
-        buttons.put(VelocityMessages.CONTROL_CHEATER_NAME.color(), VelocityMessages.CONTROL_CHEATER_COMMAND.get(String.class).replace("%player%", suspect.getUsername()));
-        buttons.put(VelocityMessages.CONTROL_ADMIT_NAME.color(), VelocityMessages.CONTROL_ADMIT_COMMAND.get(String.class).replace("%player%", suspect.getUsername()));
-        buttons.put(VelocityMessages.CONTROL_REFUSE_NAME.color(), VelocityMessages.CONTROL_REFUSE_COMMAND.get(String.class).replace("%player%", suspect.getUsername()));
+        buttons.put(VelocityMessages.CONTROL_CLEAN_NAME.color(), VelocityMessages.CONTROL_CLEAN_COMMAND.get(String.class).replace("%player%", suspect));
+        buttons.put(VelocityMessages.CONTROL_CHEATER_NAME.color(), VelocityMessages.CONTROL_CHEATER_COMMAND.get(String.class).replace("%player%", suspect));
+        buttons.put(VelocityMessages.CONTROL_ADMIT_NAME.color(), VelocityMessages.CONTROL_ADMIT_COMMAND.get(String.class).replace("%player%", suspect));
+        buttons.put(VelocityMessages.CONTROL_REFUSE_NAME.color(), VelocityMessages.CONTROL_REFUSE_COMMAND.get(String.class).replace("%player%", suspect));
         return buttons;
     }
 

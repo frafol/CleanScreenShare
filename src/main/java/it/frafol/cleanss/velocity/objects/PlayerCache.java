@@ -34,6 +34,9 @@ public class PlayerCache {
     private final HashMap<Player, Player> couples = new HashMap<>();
 
     @Getter
+    private final HashMap<UUID, UUID> redisCouples = new HashMap<>();
+
+    @Getter
     private final HashMap<UUID, Integer> controls = new HashMap<>();
 
     @Getter

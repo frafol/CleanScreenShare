@@ -221,5 +221,17 @@
             <version>2.9.0-4</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>com.github.ProxioDev.ValioBungee</groupId>
+            <artifactId>RedisBungee-Bungee</artifactId>
+            <version>0.12.3</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.github.ProxioDev.ValioBungee</groupId>
+            <artifactId>RedisBungee-Velocity</artifactId>
+            <version>0.12.3</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 </project>

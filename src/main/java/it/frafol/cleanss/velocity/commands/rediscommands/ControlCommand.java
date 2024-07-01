@@ -1,4 +1,4 @@
-package it.frafol.cleanss.velocity.commands;
+package it.frafol.cleanss.velocity.commands.rediscommands;
 
 import com.imaginarycode.minecraft.redisbungee.RedisBungeeAPI;
 import com.velocitypowered.api.command.CommandSource;
@@ -8,7 +8,12 @@ import com.velocitypowered.api.proxy.server.RegisteredServer;
 import it.frafol.cleanss.velocity.CleanSS;
 import it.frafol.cleanss.velocity.enums.VelocityConfig;
 import it.frafol.cleanss.velocity.enums.VelocityMessages;
-import it.frafol.cleanss.velocity.objects.*;
+import it.frafol.cleanss.velocity.objects.Placeholder;
+import it.frafol.cleanss.velocity.objects.PlayerCache;
+import it.frafol.cleanss.velocity.objects.PremiumVanishUtils;
+import it.frafol.cleanss.velocity.objects.VelocityVanishUtils;
+import it.frafol.cleanss.velocity.objects.redisbungee.MessageUtil;
+import it.frafol.cleanss.velocity.objects.redisbungee.Utils;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.LuckPermsProvider;
@@ -18,15 +23,18 @@ import net.luckperms.api.model.user.User;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 public class ControlCommand implements SimpleCommand {
 
 	private final CleanSS instance;
+	private final RedisBungeeAPI redisBungeeAPI;
 
-	public ControlCommand(CleanSS instance) {
+	public ControlCommand(CleanSS instance, RedisBungeeAPI redisBungeeAPI) {
 		this.instance = instance;
+		this.redisBungeeAPI = redisBungeeAPI;
 	}
 
 	@Override
@@ -59,125 +67,39 @@ public class ControlCommand implements SimpleCommand {
 			return;
 		}
 
-		if (instance.getServer().getAllPlayers().toString().contains(invocation.arguments()[0])) {
+		if (redisBungeeAPI.getPlayersOnline().contains(redisBungeeAPI.getUuidFromName(invocation.arguments()[0]))) {
 
-			final Optional<Player> player = instance.getServer().getPlayer(invocation.arguments()[0]);
+			final UUID player = redisBungeeAPI.getUuidFromName(invocation.arguments()[0]);
+			final String player_name = invocation.arguments()[0];
 			final Player sender = (Player) source;
 
-			if (!player.isPresent()) {
-				source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.NOT_ONLINE.color()
-						.replace("%prefix%", VelocityMessages.PREFIX.color())
-						.replace("%player%", invocation.arguments()[0])));
-				return;
-			}
-
-			if (sender.getUniqueId().equals(player.get().getUniqueId())) {
+			if (sender.getUniqueId().equals(player)) {
 				source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.YOURSELF.color()
 						.replace("%prefix%", VelocityMessages.PREFIX.color())));
 				return;
 			}
 
-			if (player.get().hasPermission(VelocityConfig.BYPASS_PERMISSION.get(String.class))) {
+			// TODO: Implement this for RedisVelocity
+			//if (player.hasPermission(VelocityConfig.BYPASS_PERMISSION.get(String.class))) {
+			//	source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.PLAYER_BYPASS.color()
+			//			.replace("%prefix%", VelocityMessages.PREFIX.color())));
+			//	return;
+			//}
+
+			if (instance.getVelocityVanish() && VelocityConfig.VELOCITYVANISH.get(Boolean.class) && VelocityVanishUtils.isVanished(player_name)) {
 				source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.PLAYER_BYPASS.color()
 						.replace("%prefix%", VelocityMessages.PREFIX.color())));
 				return;
 			}
 
-			if (instance.getVelocityVanish() && VelocityConfig.VELOCITYVANISH.get(Boolean.class) && VelocityVanishUtils.isVanished(player.get())) {
-				source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.PLAYER_BYPASS.color()
-						.replace("%prefix%", VelocityMessages.PREFIX.color())));
-				return;
-			}
-
-			if (instance.getPremiumVanish() && VelocityConfig.PREMIUMVANISH.get(Boolean.class) && PremiumVanishUtils.isVanished(player.get())) {
+			if (instance.getPremiumVanish() && VelocityConfig.PREMIUMVANISH.get(Boolean.class) && PremiumVanishUtils.isVanished(player)) {
 				source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.PLAYER_BYPASS.color()
 						.replace("%prefix%", VelocityMessages.PREFIX.color())));
 				return;
 			}
 
 			if (instance.useLimbo) {
-
-				if (PlayerCache.getSuspicious().contains(player.get().getUniqueId())) {
-					source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.CONTROL_ALREADY.color()
-							.replace("%prefix%", VelocityMessages.PREFIX.color())));
-					return;
-				}
-
-				if (PlayerCache.getAdministrator().contains(sender.getUniqueId())) {
-					source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.CONTROL_ALREADY.color()
-							.replace("%prefix%", VelocityMessages.PREFIX.color())));
-					return;
-				}
-
-				if (PlayerCache.getIn_control().get(player.get().getUniqueId()) != null && PlayerCache.getIn_control().get(player.get().getUniqueId()) == 1) {
-					source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.CONTROL_ALREADY.color()
-							.replace("%prefix%", VelocityMessages.PREFIX.color())));
-					return;
-				}
-
-				String admin_group;
-				String suspect_group;
-
-				if (luckperms) {
-
-					final LuckPerms api = LuckPermsProvider.get();
-
-					final User admin = api.getUserManager().getUser(sender.getUniqueId());
-					final User suspect = api.getUserManager().getUser(player.get().getUniqueId());
-
-					if (admin == null || suspect == null) {
-						return;
-					}
-
-					final Group admingroup = api.getGroupManager().getGroup(admin.getPrimaryGroup());
-
-					String admingroup_displayname;
-					if (admingroup != null) {
-						admingroup_displayname = admingroup.getFriendlyName();
-
-						if (admingroup_displayname.equalsIgnoreCase("default")) {
-							admingroup_displayname = VelocityMessages.DISCORD_LUCKPERMS_FIX.get(String.class);
-						}
-
-					} else {
-						admingroup_displayname = "";
-					}
-
-					admin_group = admingroup == null ? "" : admingroup_displayname;
-
-					final Group suspectgroup = api.getGroupManager().getGroup(suspect.getPrimaryGroup());
-
-					String suspectroup_displayname;
-					if (suspectgroup != null) {
-						suspectroup_displayname = suspectgroup.getFriendlyName();
-
-						if (suspectroup_displayname.equalsIgnoreCase("default")) {
-							suspectroup_displayname = VelocityMessages.DISCORD_LUCKPERMS_FIX.get(String.class);
-						}
-
-					} else {
-						suspectroup_displayname = "";
-					}
-
-					suspect_group = suspectgroup == null ? "" : suspectroup_displayname;
-
-				} else {
-					admin_group = "";
-					suspect_group = "";
-				}
-
-
-				LimboUtils.spawnPlayerLimbo(sender);
-				LimboUtils.spawnPlayerLimbo(player.get());
-
-				Utils.startControl(player.get(), sender, null);
-				MessageUtil.sendDiscordMessage(
-						player.get(),
-						sender,
-						VelocityMessages.DISCORD_STARTED.get(String.class)
-								.replace("%suspectgroup%", suspect_group)
-								.replace("%admingroup%", admin_group),
-						VelocityMessages.DISCORD_STARTED_THUMBNAIL.get(String.class));
+				instance.getLogger().error("Limbo is not supported in RedisVelocity. Please disable it in the configuration file.");
 				return;
 			}
 
@@ -195,7 +117,7 @@ public class ControlCommand implements SimpleCommand {
 				return;
 			}
 
-			if (PlayerCache.getSuspicious().contains(player.get().getUniqueId())) {
+			if (PlayerCache.getSuspicious().contains(player)) {
 				source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.CONTROL_ALREADY.color()
 						.replace("%prefix%", VelocityMessages.PREFIX.color())));
 				return;
@@ -207,7 +129,7 @@ public class ControlCommand implements SimpleCommand {
 				return;
 			}
 
-			if (PlayerCache.getIn_control().get(player.get().getUniqueId()) != null && PlayerCache.getIn_control().get(player.get().getUniqueId()) == 1) {
+			if (PlayerCache.getIn_control().get(player) != null && PlayerCache.getIn_control().get(player) == 1) {
 				source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.CONTROL_ALREADY.color()
 						.replace("%prefix%", VelocityMessages.PREFIX.color())));
 				return;
@@ -221,7 +143,7 @@ public class ControlCommand implements SimpleCommand {
 				final LuckPerms api = LuckPermsProvider.get();
 
 				final User admin = api.getUserManager().getUser(sender.getUniqueId());
-				final User suspect = api.getUserManager().getUser(player.get().getUniqueId());
+				final User suspect = api.getUserManager().getUser(player);
 
 				if (admin == null || suspect == null) {
 					return;
@@ -264,14 +186,15 @@ public class ControlCommand implements SimpleCommand {
 				suspect_group = "";
 			}
 
-			Utils.startControl(player.get(), sender, proxyServer.get());
+			Utils.startControl(player, sender, proxyServer.get(), redisBungeeAPI);
 			MessageUtil.sendDiscordMessage(
-					player.get(),
+					player,
 					sender,
 					VelocityMessages.DISCORD_STARTED.get(String.class)
 							.replace("%suspectgroup%", suspect_group)
 							.replace("%admingroup%", admin_group),
-					VelocityMessages.DISCORD_STARTED_THUMBNAIL.get(String.class));
+					VelocityMessages.DISCORD_STARTED_THUMBNAIL.get(String.class),
+					redisBungeeAPI);
 
 		} else {
 			source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.NOT_ONLINE.color()

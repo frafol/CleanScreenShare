@@ -5,6 +5,8 @@ import de.myzelyam.api.vanish.VelocityVanishAPI;
 import it.frafol.cleanss.velocity.CleanSS;
 import lombok.experimental.UtilityClass;
 
+import java.util.UUID;
+
 @UtilityClass
 public class PremiumVanishUtils {
 
@@ -14,5 +16,9 @@ public class PremiumVanishUtils {
 
     public boolean isVanished(Player player) {
         return VelocityVanishAPI.getInvisiblePlayers().contains(player.getUniqueId());
+    }
+
+    public boolean isVanished(UUID uuid) {
+        return VelocityVanishAPI.getInvisiblePlayers().contains(uuid);
     }
 }

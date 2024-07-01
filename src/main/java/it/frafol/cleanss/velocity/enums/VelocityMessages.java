@@ -180,7 +180,11 @@ public enum VelocityMessages {
         ChatUtil.sendList(this, commandSource, placeholder);
     }
 
-    public void sendButtons(CommandSource commandSource, Player player_name, Placeholder... placeholder) {
+    public void sendButtons(CommandSource commandSource, String player_name, Placeholder... placeholder) {
         ChatUtil.sendCompiledButtons(this, commandSource, player_name, placeholder);
+    }
+
+    public void sendButtons(CommandSource commandSource, Player player_name, Placeholder... placeholder) {
+        ChatUtil.sendCompiledButtons(this, commandSource, player_name.getUsername(), placeholder);
     }
 }
