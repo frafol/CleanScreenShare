@@ -1,5 +1,6 @@
 package it.frafol.cleanss.velocity.commands.rediscommands;
 
+import com.imaginarycode.minecraft.redisbungee.RedisBungeeAPI;
 import com.velocitypowered.api.command.CommandSource;
 import com.velocitypowered.api.command.SimpleCommand;
 import com.velocitypowered.api.proxy.Player;
@@ -7,7 +8,11 @@ import com.velocitypowered.api.proxy.server.RegisteredServer;
 import it.frafol.cleanss.velocity.CleanSS;
 import it.frafol.cleanss.velocity.enums.VelocityConfig;
 import it.frafol.cleanss.velocity.enums.VelocityMessages;
-import it.frafol.cleanss.velocity.objects.*;
+import it.frafol.cleanss.velocity.objects.ChatUtil;
+import it.frafol.cleanss.velocity.objects.Placeholder;
+import it.frafol.cleanss.velocity.objects.PlayerCache;
+import it.frafol.cleanss.velocity.objects.redisbungee.MessageUtil;
+import it.frafol.cleanss.velocity.objects.redisbungee.Utils;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.LuckPermsProvider;
@@ -17,15 +22,18 @@ import net.luckperms.api.model.user.User;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 public class FinishCommand implements SimpleCommand {
 
     public final CleanSS instance;
+    private final RedisBungeeAPI redisBungeeAPI;
 
-    public FinishCommand(CleanSS instance) {
+    public FinishCommand(CleanSS instance, RedisBungeeAPI redisBungeeAPI) {
         this.instance = instance;
+        this.redisBungeeAPI = redisBungeeAPI;
     }
 
     @Override
@@ -54,9 +62,9 @@ public class FinishCommand implements SimpleCommand {
 
         if (invocation.arguments().length == 1) {
 
-            if (instance.getServer().getAllPlayers().toString().contains(invocation.arguments()[0])) {
+            if (redisBungeeAPI.getPlayersOnline().contains(redisBungeeAPI.getUuidFromName(invocation.arguments()[0]))) {
 
-                final Optional<Player> player = instance.getServer().getPlayer(invocation.arguments()[0]);
+                final UUID player = redisBungeeAPI.getUuidFromName(invocation.arguments()[0]);
 
                 List<Optional<RegisteredServer>> servers = Utils.getServerList(VelocityConfig.CONTROL_FALLBACK.getStringList());
 
@@ -71,19 +79,19 @@ public class FinishCommand implements SimpleCommand {
                     proxyServer = Optional.empty();
                 }
 
-                if (!player.isPresent()) {
+                if (!redisBungeeAPI.isPlayerOnline(player)) {
                     source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.NOT_ONLINE.color()
                             .replace("%prefix%", VelocityMessages.PREFIX.color())
                             .replace("%player%", invocation.arguments()[0])));
                     return;
                 }
 
-                if (!PlayerCache.getSuspicious().contains(player.get().getUniqueId())) {
+                if (!PlayerCache.getSuspicious().contains(player)) {
                     source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.NOT_CONTROL.color().replace("%prefix%", VelocityMessages.PREFIX.color())));
                     return;
                 }
 
-                if (instance.getValue(PlayerCache.getCouples(), sender) == null || instance.getValue(PlayerCache.getCouples(), sender) != player.get()) {
+                if (instance.getValue(PlayerCache.getRedisCouples(), sender.getUniqueId()) == null || instance.getValue(PlayerCache.getRedisCouples(), sender.getUniqueId()) != player) {
                     source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.NOT_CONTROL.color().replace("%prefix%", VelocityMessages.PREFIX.color())));
                     return;
                 }
@@ -92,7 +100,7 @@ public class FinishCommand implements SimpleCommand {
                     return;
                 }
 
-                Utils.finishControl(player.get(), sender, proxyServer.get());
+                Utils.finishControl(player, sender, proxyServer.get(), redisBungeeAPI);
 
                 String admin_group = "";
                 String suspect_group = "";
@@ -102,7 +110,7 @@ public class FinishCommand implements SimpleCommand {
                     final LuckPerms api = LuckPermsProvider.get();
 
                     final User admin = api.getUserManager().getUser(sender.getUniqueId());
-                    final User suspect = api.getUserManager().getUser(player.get().getUniqueId());
+                    final User suspect = api.getUserManager().getUser(player);
 
                     if (admin == null || suspect == null) {
                         return;
@@ -152,7 +160,7 @@ public class FinishCommand implements SimpleCommand {
                     final LuckPerms api = LuckPermsProvider.get();
 
                     final User admin = api.getUserManager().getUser(((Player) invocation.source()).getUniqueId());
-                    final User suspect = api.getUserManager().getUser(player.get().getUniqueId());
+                    final User suspect = api.getUserManager().getUser(player);
 
                     if (admin == null) {
                         return;
@@ -187,7 +195,7 @@ public class FinishCommand implements SimpleCommand {
                             .forEach(players -> players.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.ADMIN_NOTIFY_FINISH.color()
                                     .replace("%prefix%", VelocityMessages.PREFIX.color())
                                     .replace("%admin%", ((Player) invocation.source()).getUsername())
-                                    .replace("%suspect%", player.get().getUsername())
+                                    .replace("%suspect%", redisBungeeAPI.getNameFromUuid(player))
                                     .replace("%adminprefix%", ChatUtil.color(admin_prefix))
                                     .replace("%adminsuffix%", ChatUtil.color(admin_suffix))
                                     .replace("%suspectprefix%", ChatUtil.color(sus_prefix))
@@ -196,13 +204,14 @@ public class FinishCommand implements SimpleCommand {
                 }
 
                 MessageUtil.sendDiscordMessage(
-                        player.get(),
+                        player,
                         sender,
                         VelocityMessages.DISCORD_FINISHED.get(String.class)
                                 .replace("%suspectgroup%", suspect_group)
                                 .replace("%admingroup%", admin_group),
                         VelocityMessages.CLEAN.get(String.class),
-                        VelocityMessages.DISCORD_FINISHED_THUMBNAIL.get(String.class));
+                        VelocityMessages.DISCORD_FINISHED_THUMBNAIL.get(String.class),
+                        redisBungeeAPI);
 
             } else {
 
