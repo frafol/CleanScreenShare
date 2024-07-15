@@ -24,6 +24,7 @@ public enum VelocityConfig {
     DISCORD_STATUS("discord-webhook.status"),
     DISCORD_ACTIVITY("discord-webhook.activity"),
     DISCORD_ACTIVITY_TYPE("discord-webhook.activity_type"),
+    DISCORD_PLAYERS_FORMATTED("discord-webhook.discord_players_formatted_placeholder"),
     DISCORD_CHANNEL_ID("discord-webhook.channel_id"),
     DISCORD_EMBED_TITLE("discord-webhook.embed_title"),
     DISCORD_EMBED_FOOTER("discord-webhook.embed_footer"),

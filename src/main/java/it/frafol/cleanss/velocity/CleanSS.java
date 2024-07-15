@@ -203,10 +203,10 @@ public class CleanSS {
 		}
 
 
-		logger.info("§7Clearing §dinstances§7...");
+		logger.info("Clearing instances...");
 		instance = null;
 
-		logger.info("§7Plugin successfully §ddisabled§7!");
+		logger.info("Plugin successfully disabled!");
 	}
 
 	private void startTasks() {
@@ -613,7 +613,8 @@ public class CleanSS {
 							(VelocityConfig.DISCORD_ACTIVITY_TYPE.get(String.class).toUpperCase()),
 					VelocityConfig.DISCORD_ACTIVITY.get(String.class)
 							.replace("%players%", String.valueOf(VelocityVanishUtils.getOnlinePlayers(this)))
-							.replace("%suspiciouses%", String.valueOf(PlayerCache.getSuspicious().size()))));
+							.replace("%suspicious%", String.valueOf(PlayerCache.getSuspicious().size()))
+							.replace("%players_formatted%", PlayerUtil.getPlayersFormatted())));
 			return;
 		}
 
@@ -622,7 +623,8 @@ public class CleanSS {
 							(VelocityConfig.DISCORD_ACTIVITY_TYPE.get(String.class).toUpperCase()),
 					VelocityConfig.DISCORD_ACTIVITY.get(String.class)
 							.replace("%players%", String.valueOf(PremiumVanishUtils.getOnlinePlayers(this)))
-							.replace("%suspiciouses%", String.valueOf(PlayerCache.getSuspicious().size()))));
+							.replace("%suspicious%", String.valueOf(PlayerCache.getSuspicious().size()))
+							.replace("%players_formatted%", PlayerUtil.getPlayersFormatted())));
 			return;
 		}
 
@@ -630,7 +632,8 @@ public class CleanSS {
 						(VelocityConfig.DISCORD_ACTIVITY_TYPE.get(String.class).toUpperCase()),
 				VelocityConfig.DISCORD_ACTIVITY.get(String.class)
 						.replace("%players%", String.valueOf(server.getAllPlayers().size()))
-						.replace("%suspiciouses%", String.valueOf(PlayerCache.getSuspicious().size()))));
+						.replace("%suspicious%", String.valueOf(PlayerCache.getSuspicious().size()))
+						.replace("%players_formatted%", PlayerUtil.getPlayersFormatted())));
 
 	}
 

@@ -128,6 +128,7 @@ discord-webhook: # The Discord Integration is an experimental feature, report al
   activity_type: "WATCHING"
 
   # The Discord bot's activity. You can use %players% to see the amount of players online.
+  # You can use %players%, %suspicious% and %players_formatted%.
   activity: "%players% online players."
 
   # To use CleanScreenShare with Discord, enter the ID of the chat where you want messages to be sent.
@@ -139,6 +140,10 @@ discord-webhook: # The Discord Integration is an experimental feature, report al
   # The 'footer' of the embed message sent on Discord.
   embed_footer: "Powered by CleanScreenShare"
   embed_footer_icon: "none" # You can use a link to an image.
+
+  # You can use also %allplayers% to include staff members.
+  # Staffers displays people with control permission.
+  discord_players_formatted_placeholder: "%players% players (%staffers% staffers)."
 
 mysql:
 

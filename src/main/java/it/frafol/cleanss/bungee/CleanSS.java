@@ -16,6 +16,7 @@ import it.frafol.cleanss.bungee.mysql.MySQLWorker;
 import it.frafol.cleanss.bungee.objects.PlayerCache;
 import it.frafol.cleanss.bungee.objects.TextFile;
 import it.frafol.cleanss.bungee.objects.Utils;
+import it.frafol.cleanss.bungee.objects.PlayerUtil;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.SneakyThrows;
@@ -371,14 +372,16 @@ public class CleanSS extends Plugin {
 			jda.getPresence().setActivity(Activity.of(Activity.ActivityType.valueOf
 							(BungeeConfig.DISCORD_ACTIVITY_TYPE.get(String.class).toUpperCase()), BungeeConfig.DISCORD_ACTIVITY.get(String.class)
 					.replace("%players%", String.valueOf(getProxy().getOnlineCount() - BungeeVanishAPI.getInvisiblePlayers().size()))
-					.replace("%suspiciouses%", String.valueOf(PlayerCache.getSuspicious().size()))));
+					.replace("%suspicious%", String.valueOf(PlayerCache.getSuspicious().size()))
+					.replace("%players_formatted%", PlayerUtil.getPlayersFormatted())));
 			return;
 		}
 
 		jda.getPresence().setActivity(Activity.of(Activity.ActivityType.valueOf
 						(BungeeConfig.DISCORD_ACTIVITY_TYPE.get(String.class).toUpperCase()), BungeeConfig.DISCORD_ACTIVITY.get(String.class)
 				.replace("%players%", String.valueOf(getProxy().getOnlineCount()))
-				.replace("%suspiciouses%", String.valueOf(PlayerCache.getSuspicious().size()))));
+				.replace("%suspicious%", String.valueOf(PlayerCache.getSuspicious().size()))
+				.replace("%players_formatted%", PlayerUtil.getPlayersFormatted())));
 	}
 
 	@SneakyThrows
