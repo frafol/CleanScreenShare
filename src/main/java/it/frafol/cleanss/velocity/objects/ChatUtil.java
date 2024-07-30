@@ -40,10 +40,11 @@ public class ChatUtil {
     }
 
     public String applyPlaceHolder(String s, Placeholder... placeholders) {
-        for (Placeholder placeholder : placeholders) {
-            s = s.replace(placeholder.getKey(), placeholder.getValue());
-        }
-
+            for (Placeholder placeholder : placeholders) {
+                if (placeholder != null) {
+                    s = s.replace(placeholder.getKey(), placeholder.getValue());
+                }
+            }
         return s;
     }
 
