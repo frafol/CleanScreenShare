@@ -49,6 +49,7 @@ public class CleanSS extends Plugin {
     private TextFile messagesTextFile;
 	private TextFile configTextFile;
 	private TextFile aliasesTextFile;
+	private TextFile dataTextFile;
 	private TextFile versionTextFile;
 
 	@Getter
@@ -118,6 +119,10 @@ public class CleanSS extends Plugin {
 		return getInstance().versionTextFile.getConfig();
 	}
 
+	public YamlFile getDataTextFile() {
+		return getInstance().dataTextFile.getConfig();
+	}
+
 	public YamlFile getAliasesTextFile() {
 		return getInstance().aliasesTextFile.getConfig();
 	}
@@ -158,6 +163,7 @@ public class CleanSS extends Plugin {
 		configTextFile = new TextFile(getDataFolder().toPath(), "config.yml");
 		messagesTextFile = new TextFile(getDataFolder().toPath(), "messages.yml");
 		aliasesTextFile = new TextFile(getDataFolder().toPath(), "aliases.yml");
+		dataTextFile = new TextFile(getDataFolder().toPath(), "database.yml");
 		versionTextFile = new TextFile(getDataFolder().toPath(), "version.yml");
 	}
 

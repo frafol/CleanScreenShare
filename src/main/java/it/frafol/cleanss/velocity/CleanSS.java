@@ -50,7 +50,7 @@ import java.util.concurrent.TimeUnit;
 @Plugin(
 		id = "cleanscreenshare",
 		name = "CleanScreenShare",
-		version = "2.5.3",
+		version = "2.6.0",
 		description = "Make control hacks on your players.",
 		dependencies = {@Dependency(id = "luckperms", optional = true), @Dependency(id = "mysqlandconfigurateforvelocity", optional = true), @Dependency(id = "limboapi", optional = true), @Dependency(id = "ajqueue", optional = true), @Dependency(id = "premiumvanish", optional = true), @Dependency(id = "velocityvanish", optional = true), @Dependency(id = "spicord", optional = true), @Dependency(id = "clientcatcher", optional = true)},
 		authors = { "frafol" })
@@ -73,10 +73,11 @@ public class CleanSS {
 
 	private final JdaBuilder jda = new JdaBuilder();
 
-    private TextFile messagesTextFile;
+	private TextFile messagesTextFile;
 	private TextFile configTextFile;
 	private TextFile aliasesTextFile;
 	private TextFile limboTextFile;
+	private TextFile dataTextFile;
 	private TextFile versionTextFile;
 
 	public boolean useLimbo = false;
@@ -154,21 +155,16 @@ public class CleanSS {
 			loadLibrariesSQL();
 
 			if (mysql_installation) {
-				server.shutdown();
+				getServer().getScheduler().buildTask(this, () -> server.shutdown()).delay(5, TimeUnit.SECONDS).schedule();
 				return;
 			}
 
 			if (ReflectUtil.getClass("com.mysql.cj.jdbc.Driver") == null) {
+				loadLibrariesSQL();
 				return;
 			}
 
 			data = new MySQLWorker();
-
-			if (mysql_installation) {
-				server.shutdown();
-				return;
-			}
-
 			ControlTask();
 		}
 
@@ -182,13 +178,12 @@ public class CleanSS {
 		logger.info("Plugin successfully loaded!");
 	}
 
+	@SneakyThrows
 	@Subscribe
 	public void onProxyShutdown(ProxyShutdownEvent event) {
-
 		stopTasks();
-
+		dataTextFile.getConfig().save();
 		if (getConfigTextFile() == null || VelocityConfig.MYSQL.get(Boolean.class)) {
-
 			logger.info("Closing database...");
 			for (Player players : server.getAllPlayers()) {
 				if (data != null) {
@@ -196,7 +191,6 @@ public class CleanSS {
 					data.setControls(players.getUniqueId(), PlayerCache.getControls().get(players.getUniqueId()));
 				}
 			}
-
 			if (data != null) {
 				data.close();
 			}
@@ -214,7 +208,7 @@ public class CleanSS {
 		List<Optional<RegisteredServer>> fallbacks = Utils.getServerList(VelocityConfig.CONTROL_FALLBACK.getStringList());
 
 		for (Optional<RegisteredServer> server : servers) {
-            server.ifPresent(Utils::startTask);
+			server.ifPresent(Utils::startTask);
 		}
 
 		for (Optional<RegisteredServer> fallback : fallbacks) {
@@ -240,33 +234,30 @@ public class CleanSS {
 		loadLibrariesSQL();
 
 		if (mysql_installation) {
-			server.shutdown();
+			getServer().getScheduler().buildTask(this, () -> server.shutdown()).delay(5, TimeUnit.SECONDS).schedule();
 			return;
 		}
 
 		if (ReflectUtil.getClass("com.mysql.cj.jdbc.Driver") == null) {
+			loadLibrariesSQL();
 			return;
 		}
 
 		data = new MySQLWorker();
-
-		if (mysql_installation) {
-			server.shutdown();
-		}
 	}
 
 	public void loadLibrariesSQL() {
 		try {
-			String fileUrl = "https://github.com/frafol/CleanScreenShare/releases/download/release/MySQL-And-Configurate-For-Velocity-1.0.1-RELEASE.jar";
+			String fileUrl = "https://github.com/frafol/CleanScreenShare/releases/download/release/CleanSQLDriver.jar";
 			String destination = "./plugins/";
 
 			String fileName = getFileNameFromUrl(fileUrl);
 			File outputFile = new File(destination, fileName);
 
 			if (!outputFile.exists()) {
-				downloadFile(fileUrl, outputFile);
+				downloadMySQLFile(fileUrl, outputFile);
 				mysql_installation = true;
-				logger.warn("MySQL drivers (" + fileName + ") are now successfully installed. A restart is required.");
+				logger.warn("MySQL drivers (" + fileName + ") are now successfully installed. A restart will be performed in 5 seconds.");
 			}
 
 		} catch (IOException ignored) {
@@ -379,6 +370,13 @@ public class CleanSS {
 		throw new IllegalArgumentException("Invalid file URL");
 	}
 
+	private void downloadMySQLFile(String fileUrl, File outputFile) throws IOException {
+		URL url = new URL(fileUrl);
+		try (InputStream inputStream = url.openStream()) {
+			Files.copy(inputStream, outputFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+		}
+	}
+
 	private void downloadFile(String fileUrl, File outputFile) throws IOException {
 		URL url = new URL(fileUrl);
 		try (InputStream inputStream = url.openStream()) {
@@ -415,6 +413,7 @@ public class CleanSS {
 		messagesTextFile = new TextFile(path, "messages.yml");
 		aliasesTextFile = new TextFile(path, "aliases.yml");
 		limboTextFile = new TextFile(path, "limboapi.yml");
+		dataTextFile = new TextFile(path, "database.yml");
 		versionTextFile = new TextFile(path, "version.yml");
 	}
 
@@ -499,7 +498,6 @@ public class CleanSS {
 		}
 
 		server.getEventManager().register(this, new KickListener(this));
-
 	}
 
 	private void loadDiscord() {

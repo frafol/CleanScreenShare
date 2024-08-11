@@ -8,6 +8,7 @@ import com.velocitypowered.api.scheduler.ScheduledTask;
 import it.frafol.cleanss.velocity.CleanSS;
 import it.frafol.cleanss.velocity.enums.VelocityConfig;
 import it.frafol.cleanss.velocity.enums.VelocityMessages;
+import it.frafol.cleanss.velocity.handlers.DataHandler;
 import lombok.experimental.UtilityClass;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.luckperms.api.LuckPerms;
@@ -406,35 +407,19 @@ public class Utils {
             PlayerCache.getCouples().put(administrator, suspicious);
 
             if (VelocityConfig.MYSQL.get(Boolean.class)) {
-
                 instance.getData().setInControl(suspicious.getUniqueId(), 1);
                 instance.getData().setInControl(administrator.getUniqueId(), 1);
-
                 if (instance.getData().getStats(administrator.getUniqueId(), "controls") != -1) {
                     instance.getData().setControls(administrator.getUniqueId(), instance.getData().getStats(administrator.getUniqueId(), "controls") + 1);
                 }
-
                 if (instance.getData().getStats(suspicious.getUniqueId(), "suffered") != -1) {
                     instance.getData().setControlsSuffered(suspicious.getUniqueId(), instance.getData().getStats(suspicious.getUniqueId(), "suffered") + 1);
                 }
-
             } else {
-
                 PlayerCache.getIn_control().put(suspicious.getUniqueId(), 1);
                 PlayerCache.getIn_control().put(administrator.getUniqueId(), 1);
-
-                if (PlayerCache.getControls().get(administrator.getUniqueId()) != null) {
-                    PlayerCache.getControls().put(administrator.getUniqueId(), PlayerCache.getControls().get(administrator.getUniqueId()) + 1);
-                } else {
-                    PlayerCache.getControls().put(administrator.getUniqueId(), 1);
-                }
-
-                if (PlayerCache.getControls_suffered().get(suspicious.getUniqueId()) != null) {
-                    PlayerCache.getControls_suffered().put(suspicious.getUniqueId(), PlayerCache.getControls_suffered().get(suspicious.getUniqueId()) + 1);
-                } else {
-                    PlayerCache.getControls_suffered().put(suspicious.getUniqueId(), 1);
-                }
-
+                DataHandler.incrementDone(administrator.getUniqueId());
+                DataHandler.incrementSuffered(suspicious.getUniqueId());
             }
 
             TitleUtil.sendStartTitle(suspicious);
@@ -509,35 +494,19 @@ public class Utils {
         PlayerCache.getCouples().put(administrator, suspicious);
 
         if (VelocityConfig.MYSQL.get(Boolean.class)) {
-
             instance.getData().setInControl(suspicious.getUniqueId(), 1);
             instance.getData().setInControl(administrator.getUniqueId(), 1);
-
             if (instance.getData().getStats(administrator.getUniqueId(), "controls") != -1) {
                 instance.getData().setControls(administrator.getUniqueId(), instance.getData().getStats(administrator.getUniqueId(), "controls") + 1);
             }
-
             if (instance.getData().getStats(suspicious.getUniqueId(), "suffered") != -1) {
                 instance.getData().setControlsSuffered(suspicious.getUniqueId(), instance.getData().getStats(suspicious.getUniqueId(), "suffered") + 1);
             }
-
         } else {
-
             PlayerCache.getIn_control().put(suspicious.getUniqueId(), 1);
             PlayerCache.getIn_control().put(administrator.getUniqueId(), 1);
-
-            if (PlayerCache.getControls().get(administrator.getUniqueId()) != null) {
-                PlayerCache.getControls().put(administrator.getUniqueId(), PlayerCache.getControls().get(administrator.getUniqueId()) + 1);
-            } else {
-                PlayerCache.getControls().put(administrator.getUniqueId(), 1);
-            }
-
-            if (PlayerCache.getControls_suffered().get(suspicious.getUniqueId()) != null) {
-                PlayerCache.getControls_suffered().put(suspicious.getUniqueId(), PlayerCache.getControls_suffered().get(suspicious.getUniqueId()) + 1);
-            } else {
-                PlayerCache.getControls_suffered().put(suspicious.getUniqueId(), 1);
-            }
-
+            DataHandler.incrementDone(administrator.getUniqueId());
+            DataHandler.incrementSuffered(suspicious.getUniqueId());
         }
 
         TitleUtil.sendStartTitle(suspicious);

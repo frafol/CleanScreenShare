@@ -7,6 +7,7 @@ import it.frafol.cleanss.bungee.enums.BungeeMessages;
 import it.frafol.cleanss.bungee.objects.Placeholder;
 import it.frafol.cleanss.bungee.objects.PlayerCache;
 import it.frafol.cleanss.bungee.objects.Utils;
+import it.frafol.cleanss.bungee.objects.handlers.DataHandler;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -85,8 +86,8 @@ public class InfoCommand extends Command implements TabExecutor {
             return;
         }
 
-        PlayerCache.getControls().putIfAbsent(player.getUniqueId(), 0);
-        PlayerCache.getControls_suffered().putIfAbsent(player.getUniqueId(), 0);
+        PlayerCache.getControls().put(player.getUniqueId(), DataHandler.getStat(player.getUniqueId(), "done"));
+        PlayerCache.getControls_suffered().put(player.getUniqueId(), DataHandler.getStat(player.getUniqueId(), "suffered"));
 
         if (Utils.isLuckPerms) {
             BungeeMessages.INFO_MESSAGE.sendList(invocation,

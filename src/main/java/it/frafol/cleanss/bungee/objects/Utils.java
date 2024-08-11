@@ -3,6 +3,7 @@ package it.frafol.cleanss.bungee.objects;
 import it.frafol.cleanss.bungee.CleanSS;
 import it.frafol.cleanss.bungee.enums.BungeeConfig;
 import it.frafol.cleanss.bungee.enums.BungeeMessages;
+import it.frafol.cleanss.bungee.objects.handlers.DataHandler;
 import lombok.experimental.UtilityClass;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.LuckPermsProvider;
@@ -55,22 +56,10 @@ public class Utils {
             }
 
         } else {
-
             PlayerCache.getIn_control().put(suspicious.getUniqueId(), 1);
             PlayerCache.getIn_control().put(administrator.getUniqueId(), 1);
-
-            if (PlayerCache.getControls().get(administrator.getUniqueId()) != null) {
-                PlayerCache.getControls().put(administrator.getUniqueId(), PlayerCache.getControls().get(administrator.getUniqueId()) + 1);
-            } else {
-                PlayerCache.getControls().put(administrator.getUniqueId(), 1);
-            }
-
-            if (PlayerCache.getControls_suffered().get(suspicious.getUniqueId()) != null) {
-                PlayerCache.getControls_suffered().put(suspicious.getUniqueId(), PlayerCache.getControls_suffered().get(suspicious.getUniqueId()) + 1);
-            } else {
-                PlayerCache.getControls_suffered().put(suspicious.getUniqueId(), 1);
-            }
-
+            DataHandler.incrementDone(administrator.getUniqueId());
+            DataHandler.incrementSuffered(suspicious.getUniqueId());
         }
 
         TitleUtil.sendStartTitle(suspicious);

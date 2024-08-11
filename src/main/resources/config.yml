@@ -148,8 +148,8 @@ discord-webhook: # The Discord Integration is an experimental feature, report al
 mysql:
 
   # The MySQL database is an experimental feature.
-  # It's just to allow compatibility with multiple proxies (e.g. RedisBungee and RedisVelocity)
-  # and for saving the /ssinfo command (without MySQL, the command will reset on every reboot).
+  # It's just to allow compatibility with multiple proxies (e.g. RedisBungee and RedisVelocity).
+  # If it's disabled, the plugin will use the local storage for saving data.
   enable: false
 
   # MySQL database connection details.

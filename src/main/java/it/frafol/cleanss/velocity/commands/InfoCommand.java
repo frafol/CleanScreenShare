@@ -6,6 +6,7 @@ import com.velocitypowered.api.proxy.Player;
 import it.frafol.cleanss.velocity.CleanSS;
 import it.frafol.cleanss.velocity.enums.VelocityConfig;
 import it.frafol.cleanss.velocity.enums.VelocityMessages;
+import it.frafol.cleanss.velocity.handlers.DataHandler;
 import it.frafol.cleanss.velocity.objects.Placeholder;
 import it.frafol.cleanss.velocity.objects.PlayerCache;
 import it.frafol.cleanss.velocity.objects.Utils;
@@ -82,8 +83,8 @@ public class InfoCommand implements SimpleCommand {
             return;
         }
 
-        PlayerCache.getControls().putIfAbsent(player.get().getUniqueId(), 0);
-        PlayerCache.getControls_suffered().putIfAbsent(player.get().getUniqueId(), 0);
+        PlayerCache.getControls().put(player.get().getUniqueId(), DataHandler.getStat(player.get().getUniqueId(), "done"));
+        PlayerCache.getControls_suffered().put(player.get().getUniqueId(), DataHandler.getStat(player.get().getUniqueId(), "suffered"));
 
         if (luckperms) {
             VelocityMessages.INFO_MESSAGE.sendList(source,
