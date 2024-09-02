@@ -257,6 +257,7 @@ public class CleanSS extends JavaPlugin {
 				downloadFile(fileUrl, outputFile);
 			} catch (IOException ignored) {
 				getLogger().warning("An error occurred while downloading the update, please download it manually from SpigotMC.");
+				return;
 			}
 
 			updated = true;
@@ -275,7 +276,31 @@ public class CleanSS extends JavaPlugin {
 	private void downloadFile(String fileUrl, File outputFile) throws IOException {
 		URL url = new URL(fileUrl);
 		try (InputStream inputStream = url.openStream()) {
+			deleteFile(outputFile.getParent(), "cleanscreenshare-");
 			Files.copy(inputStream, outputFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+		}
+	}
+
+	@SneakyThrows
+	public void deleteFile(String directoryPath, String file_start) {
+		File directory = new File(directoryPath);
+
+		if (!directory.isDirectory()) {
+			throw new IllegalArgumentException();
+		}
+
+		File[] files = directory.listFiles();
+		if (files == null) {
+			throw new IOException();
+		}
+
+		for (File file : files) {
+			if (file.isFile() && file.getName().startsWith(file_start)) {
+				getLogger().warning("Found an old plugin file: " + file.getName());
+				if (file.delete()) {
+					getLogger().warning("Deleted old file: " + file.getName());
+				}
+			}
 		}
 	}
 

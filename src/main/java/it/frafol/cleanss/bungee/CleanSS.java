@@ -229,6 +229,7 @@ public class CleanSS extends Plugin {
 				downloadFile(fileUrl, outputFile);
 			} catch (IOException ignored) {
 				getLogger().warning("An error occurred while downloading the update, please download it manually from SpigotMC.");
+				return;
 			}
 
 			updated = true;

@@ -291,6 +291,7 @@ public class CleanSS {
 				downloadFile(fileUrl, outputFile);
 			} catch (IOException ignored) {
 				logger.warn("An error occurred while downloading the update, please download it manually from SpigotMC.");
+				return;
 			}
 
 			updated = true;
