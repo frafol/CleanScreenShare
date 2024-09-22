@@ -5,6 +5,7 @@ import fr.mrmicky.fastboard.FastBoard;
 import it.frafol.cleanss.bukkit.CleanSS;
 import it.frafol.cleanss.bukkit.enums.SpigotConfig;
 import it.frafol.cleanss.bukkit.objects.utils.TabListUtil;
+import it.frafol.cleanss.bukkit.objects.utils.ViaScoreboard;
 import lombok.Getter;
 import lombok.experimental.UtilityClass;
 import me.clip.placeholderapi.PlaceholderAPI;
@@ -36,13 +37,13 @@ public class PlayerCache {
     private final HashSet<UUID> administrator = new HashSet<>();
 
     @Getter
-    private HashMap<UUID, FastBoard> adminBoard = new HashMap<>();
+    private final HashMap<UUID, FastBoard> adminBoard = new HashMap<>();
 
     @Getter
-    private HashMap<UUID, FastBoard> suspectBoard = new HashMap<>();
+    private final HashMap<UUID, FastBoard> suspectBoard = new HashMap<>();
 
     @Getter
-    private HashMap<UUID, FastBoard> otherBoard = new HashMap<>();
+    private final HashMap<UUID, FastBoard> otherBoard = new HashMap<>();
 
     @Contract("_ -> new")
     public static Location StringToLocation(String line) {
@@ -69,16 +70,34 @@ public class PlayerCache {
     }
 
     public void createSuspectScoreboard(Player player) {
+
+        if (hasViaVersion()) {
+            ViaScoreboard.createViaSuspectScoreboard(player);
+            return;
+        }
+
         FastBoard board = new FastBoard(player);
         suspectBoard.put(player.getUniqueId(), board);
     }
 
     public void createAdminScoreboard(Player player) {
+
+        if (hasViaVersion()) {
+            ViaScoreboard.createViaAdminScoreboard(player);
+            return;
+        }
+
         FastBoard board = new FastBoard(player);
         adminBoard.put(player.getUniqueId(), board);
     }
 
     public void createOtherScoreboard(Player player) {
+
+        if (hasViaVersion()) {
+            ViaScoreboard.createViaOtherScoreboard(player);
+            return;
+        }
+
         FastBoard board = new FastBoard(player);
         otherBoard.put(player.getUniqueId(), board);
     }
@@ -247,5 +266,9 @@ public class PlayerCache {
         String final_header = PlaceholderAPI.setPlaceholders(player, header);
         String final_footer = PlaceholderAPI.setPlaceholders(player, footer);
         TabListUtil.sendTabList(player, final_header, final_footer);
+    }
+
+    private boolean hasViaVersion() {
+        return instance.getServer().getPluginManager().isPluginEnabled("ViaVersion");
     }
 }
