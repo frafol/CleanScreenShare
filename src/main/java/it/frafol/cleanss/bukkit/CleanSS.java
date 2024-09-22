@@ -6,6 +6,7 @@ import com.alessiodp.libby.relocation.Relocation;
 import com.github.Anon8281.universalScheduler.UniversalScheduler;
 import com.github.Anon8281.universalScheduler.scheduling.tasks.MyScheduledTask;
 import com.tchristofferson.configupdater.ConfigUpdater;
+import fr.mrmicky.fastboard.FastBoardBase;
 import it.frafol.cleanss.bukkit.commands.AdminSpawnCommand;
 import it.frafol.cleanss.bukkit.commands.OtherSpawnCommand;
 import it.frafol.cleanss.bukkit.commands.SpawnCommand;
@@ -190,11 +191,12 @@ public class CleanSS extends JavaPlugin {
 	}
 
 	public void onDisable() {
-
 		instance = null;
 		getServer().getMessenger().unregisterIncomingPluginChannel(this, "cleanss:join");
 		getServer().getMessenger().unregisterIncomingPluginChannel(this, "cleanss:reload");
-
+		PlayerCache.getAdminBoard().values().forEach(FastBoardBase::delete);
+		PlayerCache.getSuspectBoard().values().forEach(FastBoardBase::delete);
+		PlayerCache.getOtherBoard().values().forEach(FastBoardBase::delete);
 		getLogger().info("Successfully disabled!");
 	}
 
