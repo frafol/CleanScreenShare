@@ -84,6 +84,7 @@ public enum BungeeMessages {
 
     YOURSELF("messages.yourself"),
     PLAYER_BYPASS("messages.player_bypass"),
+    PLAYER_BYPASS_SERVER("messages.player_bypass_server"),
     NO_EXIST("messages.server_offline"),
     MAINSUS("messages.control.suspicious_main"),
     LEAVESUS("messages.control.suspicious_disconnect"),

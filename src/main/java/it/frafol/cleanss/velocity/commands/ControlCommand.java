@@ -4,6 +4,9 @@ import com.velocitypowered.api.command.CommandSource;
 import com.velocitypowered.api.command.SimpleCommand;
 import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.server.RegisteredServer;
+import com.velocitypowered.api.proxy.server.ServerInfo;
+import it.frafol.cleanss.bungee.enums.BungeeConfig;
+import it.frafol.cleanss.bungee.enums.BungeeMessages;
 import it.frafol.cleanss.velocity.CleanSS;
 import it.frafol.cleanss.velocity.enums.VelocityConfig;
 import it.frafol.cleanss.velocity.enums.VelocityMessages;
@@ -13,6 +16,7 @@ import net.luckperms.api.LuckPerms;
 import net.luckperms.api.LuckPermsProvider;
 import net.luckperms.api.model.group.Group;
 import net.luckperms.api.model.user.User;
+import net.md_5.bungee.api.chat.TextComponent;
 
 import java.util.Collections;
 import java.util.List;
@@ -74,6 +78,18 @@ public class ControlCommand implements SimpleCommand {
 				source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.YOURSELF.color()
 						.replace("%prefix%", VelocityMessages.PREFIX.color())));
 				return;
+			}
+
+			for (String blocked_servers : VelocityConfig.CONTROL_BYPASS.getStringList()) {
+				if (instance.getServer().getServer(blocked_servers).isPresent() && player.get().getCurrentServer().isPresent()) {
+					ServerInfo blockedServer = instance.getServer().getServer(blocked_servers).get().getServerInfo();
+					if (player.get().getCurrentServer().get().getServerInfo().equals(blockedServer)) {
+						source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.PLAYER_BYPASS_SERVER.color()
+								.replace("%prefix%", VelocityMessages.PREFIX.color())
+								.replace("%server%", blockedServer.getName())));
+						return;
+					}
+				}
 			}
 
 			if (player.get().hasPermission(VelocityConfig.BYPASS_PERMISSION.get(String.class))) {

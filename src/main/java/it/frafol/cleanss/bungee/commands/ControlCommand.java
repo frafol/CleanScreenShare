@@ -93,6 +93,16 @@ public class ControlCommand extends Command implements TabExecutor {
 			return;
 		}
 
+		for (String blocked_servers : BungeeConfig.CONTROL_BYPASS.getStringList()) {
+			ServerInfo blockedServer = instance.getProxy().getServerInfo(blocked_servers);
+			if (player.get().getServer().getInfo().equals(blockedServer)) {
+				invocation.sendMessage(TextComponent.fromLegacyText(BungeeMessages.PLAYER_BYPASS_SERVER.color()
+						.replace("%prefix%", BungeeMessages.PREFIX.color())
+						.replace("%server%", blockedServer.getName())));
+				return;
+			}
+		}
+
 		if (instance.getPremiumVanish() && BungeeConfig.PREMIUMVANISH.get(Boolean.class) && BungeeVanishAPI.getInvisiblePlayers().contains(player.get().getUniqueId())) {
 			invocation.sendMessage(TextComponent.fromLegacyText(BungeeMessages.PLAYER_BYPASS.color()
 					.replace("%prefix%", BungeeMessages.PREFIX.color())));

@@ -25,6 +25,11 @@ settings:
   # WARNING: Only MOST_PLAYERS will check if the server is full.
   sort_strategy: "LEAST_PLAYERS"
 
+  # Players on these servers will not be able to be controlled by anyone.
+  blocked_servers:
+    - "auth1"
+    - "auth2"
+
   # Disconnect the player from the control server instead of taking it to a fallback server.
   # It can be useful if you use plugins that allow multi lobby fallback (e.g., FallbackServer).
   # NOTE: This function will break CleanScreenShare if you haven't also put it on the server control!

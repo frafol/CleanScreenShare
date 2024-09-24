@@ -28,9 +28,8 @@ public class JdaBuilder {
                     .enableIntents(GatewayIntent.MESSAGE_CONTENT)
                     .setStatus(selectStatus())
                     .build();
-            instance.getLogger().info("Discord hooked successfully.");
         } catch (ExceptionInInitializerError e) {
-            instance.getLogger().error("Invalid Discord configuration, please check your config.yml file.");
+            System.out.println("[CleanScreenShare] Invalid Discord configuration, please check your config.yml file.");
         }
     }
 
