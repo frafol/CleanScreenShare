@@ -55,30 +55,19 @@ public class LimboHandler implements LimboSessionHandler {
             return;
         }
 
-        for (String string : VelocityCommandsConfig.SS_FINISH.getStringList()) {
-            if (chat.startsWith("/" + string)) {
-                limboFinishCommand(player, chat);
-                return;
-            }
-        }
-
         if (chat.startsWith("/")) {
-            player.getProxyPlayer().sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.NOT_IN_LIMBO.color()
-                    .replace("%prefix%", VelocityMessages.PREFIX.color())));
+            instance.getServer().getCommandManager().executeImmediatelyAsync(proxyPlayer, chat.substring(1));
             return;
         }
 
         boolean luckperms = instance.getServer().getPluginManager().getPlugin("luckperms").isPresent();
-
         String user_prefix = "";
         String user_suffix = "";
 
         if (luckperms) {
             final LuckPerms api = LuckPermsProvider.get();
             final User user = api.getUserManager().getUser(player.getProxyPlayer().getUniqueId());
-            if (user == null) {
-                return;
-            }
+            if (user == null) return;
             final String prefix = user.getCachedData().getMetaData().getPrefix();
             final String suffix = user.getCachedData().getMetaData().getSuffix();
             user_prefix = prefix == null ? "" : prefix;
@@ -86,7 +75,6 @@ public class LimboHandler implements LimboSessionHandler {
         }
 
         if (PlayerCache.getCouples().containsKey(player.getProxyPlayer())) {
-
             instance.getValue(PlayerCache.getCouples(), player.getProxyPlayer()).sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.CONTROL_CHAT_FORMAT.color()
                     .replace("%prefix%", VelocityMessages.PREFIX.color())
                     .replace("%player%", player.getProxyPlayer().getUsername())
@@ -94,7 +82,6 @@ public class LimboHandler implements LimboSessionHandler {
                     .replace("%userprefix%", user_prefix.replace("&", "§"))
                     .replace("%usersuffix%", user_suffix.replace("&", "§"))
                     .replace("%state%", VelocityMessages.CONTROL_CHAT_STAFF.color())));
-
             player.getProxyPlayer().sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.CONTROL_CHAT_FORMAT.color()
                     .replace("%prefix%", VelocityMessages.PREFIX.color())
                     .replace("%player%", player.getProxyPlayer().getUsername())
@@ -102,13 +89,10 @@ public class LimboHandler implements LimboSessionHandler {
                     .replace("%userprefix%", user_prefix.replace("&", "§"))
                     .replace("%usersuffix%", user_suffix.replace("&", "§"))
                     .replace("%state%", VelocityMessages.CONTROL_CHAT_STAFF.color())));
-
             return;
-
         }
 
         if (PlayerCache.getCouples().containsValue(player.getProxyPlayer())) {
-
             instance.getKey(PlayerCache.getCouples(), player.getProxyPlayer()).sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.CONTROL_CHAT_FORMAT.color()
                     .replace("%prefix%", VelocityMessages.PREFIX.color())
                     .replace("%player%", player.getProxyPlayer().getUsername())
@@ -116,7 +100,6 @@ public class LimboHandler implements LimboSessionHandler {
                     .replace("%userprefix%", user_prefix.replace("&", "§"))
                     .replace("%usersuffix%", user_suffix.replace("&", "§"))
                     .replace("%state%", VelocityMessages.CONTROL_CHAT_SUS.color())));
-
             player.getProxyPlayer().sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.CONTROL_CHAT_FORMAT.color()
                     .replace("%prefix%", VelocityMessages.PREFIX.color())
                     .replace("%player%", player.getProxyPlayer().getUsername())
@@ -124,108 +107,6 @@ public class LimboHandler implements LimboSessionHandler {
                     .replace("%userprefix%", user_prefix.replace("&", "§"))
                     .replace("%usersuffix%", user_suffix.replace("&", "§"))
                     .replace("%state%", VelocityMessages.CONTROL_CHAT_SUS.color())));
-
-        }
-    }
-
-    private void limboFinishCommand(LimboPlayer limboPlayer, String message) {
-
-        final Player source = limboPlayer.getProxyPlayer();
-        String[] words = message.split(" ");
-
-        String secondWord;
-        if (words.length == 2) {
-            secondWord = words[1];
-        } else {
-            VelocityMessages.USAGE.sendList(source, null,
-					new Placeholder("%prefix%", VelocityMessages.PREFIX.color()));
-            return;
-        }
-
-        boolean luckperms = instance.getServer().getPluginManager().isLoaded("luckperms");
-
-        if (Utils.isConsole(source)) {
-            source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.ONLY_PLAYERS.color()
-                    .replace("%prefix%", VelocityMessages.PREFIX.color())));
-            return;
-        }
-
-        if (!source.hasPermission(VelocityConfig.CONTROL_PERMISSION.get(String.class))) {
-            source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.NO_PERMISSION.color()
-                    .replace("%prefix%", VelocityMessages.PREFIX.color())));
-            return;
-        }
-
-        if (instance.getServer().getAllPlayers().toString().contains(secondWord)) {
-
-            final Optional<Player> player = instance.getServer().getPlayer(secondWord);
-            List<Optional<RegisteredServer>> servers = Utils.getServerList(VelocityConfig.CONTROL_FALLBACK.getStringList());
-
-            if (!VelocityConfig.DISABLE_PING.get(Boolean.class)) {
-                servers = Utils.getOnlineServers(servers);
-            }
-
-            Optional<RegisteredServer> proxyServer = Utils.getBestServer(servers);
-
-            if (!player.isPresent()) {
-                source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.NOT_ONLINE.get(String.class)
-                        .replace("%prefix%", VelocityMessages.PREFIX.color())));
-                return;
-            }
-
-            if (!PlayerCache.getSuspicious().contains(player.get().getUniqueId())) {
-                source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.NOT_CONTROL.color().replace("%prefix%", VelocityMessages.PREFIX.color())));
-                return;
-            }
-
-            if (instance.getValue(PlayerCache.getCouples(), source) == null || instance.getValue(PlayerCache.getCouples(), source) != player.get()) {
-                source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.NOT_CONTROL.color().replace("%prefix%", VelocityMessages.PREFIX.color())));
-                return;
-            }
-
-            if (!proxyServer.isPresent()) {
-                return;
-            }
-
-            Utils.finishControl(player.get(), source, proxyServer.get());
-
-            String admin_group = "";
-            String suspect_group = "";
-
-            if (luckperms) {
-
-                final LuckPerms api = LuckPermsProvider.get();
-
-                final User admin = api.getUserManager().getUser(source.getUniqueId());
-                final User suspect = api.getUserManager().getUser(player.get().getUniqueId());
-
-                if (admin == null || suspect == null) {
-                    return;
-                }
-
-                final String admingroup = admin.getCachedData().getMetaData().getPrimaryGroup();
-                admin_group = admingroup == null ? "" : admingroup;
-
-                final String suspectgroup = suspect.getCachedData().getMetaData().getPrimaryGroup();
-                suspect_group = suspectgroup == null ? "" : suspectgroup;
-
-            }
-
-            MessageUtil.sendDiscordMessage(
-                    player.get(),
-                    source,
-                    VelocityMessages.DISCORD_FINISHED.get(String.class)
-                            .replace("%suspectgroup%", suspect_group)
-                            .replace("%admingroup%", admin_group),
-                    VelocityMessages.CLEAN.get(String.class),
-                    VelocityMessages.DISCORD_FINISHED_THUMBNAIL.get(String.class));
-
-        } else {
-
-            source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.NOT_ONLINE.color()
-                    .replace("%prefix%", VelocityMessages.PREFIX.color())
-                    .replace("%player%", secondWord)));
-
         }
     }
 }
