@@ -98,7 +98,8 @@ public class ControlCommand extends Command implements TabExecutor {
 			if (player.get().getServer().getInfo().equals(blockedServer)) {
 				invocation.sendMessage(TextComponent.fromLegacyText(BungeeMessages.PLAYER_BYPASS_SERVER.color()
 						.replace("%prefix%", BungeeMessages.PREFIX.color())
-						.replace("%server%", blockedServer.getName())));
+						.replace("%server%", blockedServer.getName())
+						.replace("%player%", player.get().getDisplayName())));
 				return;
 			}
 		}

@@ -84,7 +84,8 @@ public class ControlCommand implements SimpleCommand {
 					if (player.get().getCurrentServer().get().getServerInfo().equals(blockedServer)) {
 						source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.PLAYER_BYPASS_SERVER.color()
 								.replace("%prefix%", VelocityMessages.PREFIX.color())
-								.replace("%server%", blockedServer.getName())));
+								.replace("%server%", blockedServer.getName())
+								.replace("%player%", player.get().getUsername())));
 						return;
 					}
 				}
