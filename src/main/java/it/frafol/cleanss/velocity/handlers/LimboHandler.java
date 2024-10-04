@@ -55,7 +55,7 @@ public class LimboHandler implements LimboSessionHandler {
             return;
         }
 
-        if (chat.startsWith("/")) {
+        if (chat.startsWith("/") && !PlayerCache.getSuspicious().contains(proxyPlayer.getUniqueId())) {
             instance.getServer().getCommandManager().executeImmediatelyAsync(proxyPlayer, chat.substring(1));
             return;
         }
