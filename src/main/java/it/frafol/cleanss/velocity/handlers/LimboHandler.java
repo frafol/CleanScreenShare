@@ -3,6 +3,7 @@ package it.frafol.cleanss.velocity.handlers;
 import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.server.RegisteredServer;
 import it.frafol.cleanss.velocity.CleanSS;
+import it.frafol.cleanss.velocity.enums.VelocityCommandsConfig;
 import it.frafol.cleanss.velocity.enums.VelocityConfig;
 import it.frafol.cleanss.velocity.enums.VelocityMessages;
 import it.frafol.cleanss.velocity.objects.MessageUtil;
@@ -54,9 +55,11 @@ public class LimboHandler implements LimboSessionHandler {
             return;
         }
 
-        if (chat.startsWith("/controlfinish") || chat.startsWith("/ssfinish") || chat.startsWith("/cleanssfinish")) {
-            limboFinishCommand(player, chat);
-            return;
+        for (String string : VelocityCommandsConfig.SS_FINISH.getStringList()) {
+            if (chat.startsWith("/" + string)) {
+                limboFinishCommand(player, chat);
+                return;
+            }
         }
 
         if (chat.startsWith("/")) {
@@ -71,20 +74,15 @@ public class LimboHandler implements LimboSessionHandler {
         String user_suffix = "";
 
         if (luckperms) {
-
             final LuckPerms api = LuckPermsProvider.get();
-
             final User user = api.getUserManager().getUser(player.getProxyPlayer().getUniqueId());
-
             if (user == null) {
                 return;
             }
-
             final String prefix = user.getCachedData().getMetaData().getPrefix();
             final String suffix = user.getCachedData().getMetaData().getSuffix();
             user_prefix = prefix == null ? "" : prefix;
             user_suffix = suffix == null ? "" : suffix;
-
         }
 
         if (PlayerCache.getCouples().containsKey(player.getProxyPlayer())) {
@@ -189,7 +187,6 @@ public class LimboHandler implements LimboSessionHandler {
                 return;
             }
 
-            System.out.println("Limbo finish");
             Utils.finishControl(player.get(), source, proxyServer.get());
 
             String admin_group = "";

@@ -24,28 +24,24 @@ public class LimboUtils {
 
     public void disconnect(Player player, RegisteredServer proxyServer) {
         LimboPlayer limboPlayer = LimboHandler.limbo_players.get(player);
-        limboPlayer.disconnect(proxyServer);
+        limboPlayer.getScheduledExecutor().execute(() -> limboPlayer.disconnect(proxyServer));
     }
 
     public void loadLimbo() {
         instance.useLimbo = true;
-
-        if (!instance.getServer().getPluginManager().getPlugin("limboapi").flatMap(PluginContainer::getInstance).isPresent()) {
-            return;
+        if (instance.getServer().getPluginManager().getPlugin("limboapi").flatMap(PluginContainer::getInstance).isPresent()) {
+            LimboFactory factory = (LimboFactory) instance.getServer().getPluginManager().getPlugin("limboapi").flatMap(PluginContainer::getInstance).get();
+            VirtualWorld world = factory.createVirtualWorld(Dimension.OVERWORLD, 0, 100, 0, (float) 90, (float) 0.0);
+            limbo = factory.createLimbo(world)
+                    .setName("CleanScreenShare")
+                    .setShouldRejoin(true)
+                    .setShouldRespawn(true)
+                    .setGameMode(GameMode.SURVIVAL);
+            instance.getLogger().info("LimboAPI hooked successfully!");
         }
-
-        LimboFactory factory = (LimboFactory) instance.getServer().getPluginManager().getPlugin("limboapi").flatMap(PluginContainer::getInstance).get();
-        VirtualWorld world = factory.createVirtualWorld(Dimension.OVERWORLD, 0, 100, 0, (float) 90, (float) 0.0);
-        limbo = factory.createLimbo(world)
-                .setName("CleanScreenShare")
-                .setShouldRejoin(true)
-                .setShouldRespawn(true)
-                .setGameMode(GameMode.ADVENTURE);
-        instance.getLogger().info("LimboAPI hooked successfully!");
     }
 
     public void spawnPlayerLimbo(Player player) {
         getLimbo().spawnPlayer(player, new LimboHandler(player, instance));
     }
-
 }

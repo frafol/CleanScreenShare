@@ -241,6 +241,12 @@ public class Utils {
 
             if (instance.useLimbo || isInControlServer(suspicious.getCurrentServer().get().getServer())) {
 
+                TitleUtil.sendEndTitle(suspicious);
+                TitleUtil.sendAdminEndTitle(administrator, suspicious);
+
+                suspicious.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.FINISHSUS.color()
+                        .replace("%prefix%", VelocityMessages.PREFIX.color())));
+
                 if (!VelocityConfig.USE_DISCONNECT.get(Boolean.class) || instance.useLimbo) {
 
                     if (instance.useLimbo) {
@@ -252,12 +258,6 @@ public class Utils {
                 } else {
                     MessageUtil.sendChannelMessage(suspicious, "DISCONNECT_NOW");
                 }
-
-                TitleUtil.sendEndTitle(suspicious);
-                TitleUtil.sendAdminEndTitle(administrator, suspicious);
-
-                suspicious.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.FINISHSUS.color()
-                        .replace("%prefix%", VelocityMessages.PREFIX.color())));
 
                 if (!administrator.getCurrentServer().isPresent()) {
                     if (!instance.useLimbo) {
@@ -293,6 +293,12 @@ public class Utils {
                 PlayerCache.getIn_control().put(administrator.getUniqueId(), 0);
             }
 
+            TitleUtil.sendEndTitle(suspicious);
+            TitleUtil.sendAdminEndTitle(administrator, suspicious);
+
+            suspicious.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.FINISHSUS.color()
+                    .replace("%prefix%", VelocityMessages.PREFIX.color())));
+
             if (!VelocityConfig.USE_DISCONNECT.get(Boolean.class) || instance.useLimbo) {
 
                 if (instance.useLimbo) {
@@ -304,12 +310,6 @@ public class Utils {
             } else {
                 MessageUtil.sendChannelMessage(suspicious, "DISCONNECT_NOW");
             }
-
-            TitleUtil.sendEndTitle(suspicious);
-            TitleUtil.sendAdminEndTitle(administrator, suspicious);
-
-            suspicious.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.FINISHSUS.color()
-                    .replace("%prefix%", VelocityMessages.PREFIX.color())));
 
             PlayerCache.getCouples().remove(administrator);
 
@@ -326,6 +326,10 @@ public class Utils {
                 PlayerCache.getIn_control().put(administrator.getUniqueId(), 0);
             }
 
+            administrator.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.LEAVESUS.color()
+                    .replace("%prefix%", VelocityMessages.PREFIX.color())
+                    .replace("%player%", suspicious.getUsername())));
+
             if (!VelocityConfig.USE_DISCONNECT.get(Boolean.class) || instance.useLimbo) {
 
                 if (instance.useLimbo) {
@@ -337,10 +341,6 @@ public class Utils {
             } else {
                 MessageUtil.sendChannelMessage(administrator, "DISCONNECT_NOW");
             }
-
-            administrator.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.LEAVESUS.color()
-                    .replace("%prefix%", VelocityMessages.PREFIX.color())
-                    .replace("%player%", suspicious.getUsername())));
 
             PlayerCache.getCouples().remove(administrator);
 

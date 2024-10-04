@@ -5,8 +5,6 @@ import com.velocitypowered.api.command.SimpleCommand;
 import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.server.RegisteredServer;
 import com.velocitypowered.api.proxy.server.ServerInfo;
-import it.frafol.cleanss.bungee.enums.BungeeConfig;
-import it.frafol.cleanss.bungee.enums.BungeeMessages;
 import it.frafol.cleanss.velocity.CleanSS;
 import it.frafol.cleanss.velocity.enums.VelocityConfig;
 import it.frafol.cleanss.velocity.enums.VelocityMessages;
@@ -16,8 +14,8 @@ import net.luckperms.api.LuckPerms;
 import net.luckperms.api.LuckPermsProvider;
 import net.luckperms.api.model.group.Group;
 import net.luckperms.api.model.user.User;
-import net.md_5.bungee.api.chat.TextComponent;
 
+import java.time.Duration;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -185,14 +183,16 @@ public class ControlCommand implements SimpleCommand {
 				LimboUtils.spawnPlayerLimbo(sender);
 				LimboUtils.spawnPlayerLimbo(player.get());
 
-				Utils.startControl(player.get(), sender, null);
-				MessageUtil.sendDiscordMessage(
-						player.get(),
-						sender,
-						VelocityMessages.DISCORD_STARTED.get(String.class)
-								.replace("%suspectgroup%", suspect_group)
-								.replace("%admingroup%", admin_group),
-						VelocityMessages.DISCORD_STARTED_THUMBNAIL.get(String.class));
+				instance.getServer().getScheduler().buildTask(instance, () -> {
+					Utils.startControl(player.get(), sender, null);
+					MessageUtil.sendDiscordMessage(
+							player.get(),
+							sender,
+							VelocityMessages.DISCORD_STARTED.get(String.class)
+									.replace("%suspectgroup%", suspect_group)
+									.replace("%admingroup%", admin_group),
+							VelocityMessages.DISCORD_STARTED_THUMBNAIL.get(String.class));
+				}).delay(Duration.ofSeconds(1)).schedule();
 				return;
 			}
 
