@@ -20,5 +20,32 @@ limbo:
     gamemode: "adventure"
 
     # Change world's dimension.
-    # Supported values: overworld, nether, end.
+    # Supported values: overworld, the_nether, the_end.
     dimension: "overworld"
+
+    # Change player's spawn position.
+    # This is also the position where the schematic will be placed if activated.
+    coords:
+      x: 0
+      y: 100
+      z: 0
+      pitch: 0
+      yaw: 0
+
+    schematic:
+
+      # This function enables the use of a schematic file.
+      use: false
+
+      # The type of the schematic file.
+      # You can choose between:
+      # - "SCHEMATIC" 1.12 WorldEdit Schematic File.
+      # - "WORLDEDIT_SCHEM" 1.13+ WorldEdit Schematic File.
+      # - "STRUCTURE" 1.13+ Structure File.
+      type: "SCHEMATIC"
+
+      # The name of the schematic file.
+      # The file must be in the "plugins/CleanScreenShare/" folder.
+      name: "control.schematic"
+
+# Enjoy.

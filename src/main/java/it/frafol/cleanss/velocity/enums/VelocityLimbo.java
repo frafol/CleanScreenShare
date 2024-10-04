@@ -4,7 +4,20 @@ import it.frafol.cleanss.velocity.CleanSS;
 
 public enum VelocityLimbo {
 
-    USE("limbo.use_limbo_api");
+    USE("limbo.use_limbo_api"),
+
+    X("limbo.world_settings.coords.x"),
+    Y("limbo.world_settings.coords.y"),
+    Z("limbo.world_settings.coords.z"),
+    YAW("limbo.world_settings.coords.yaw"),
+    PITCH("limbo.world_settings.coords.pitch"),
+
+    SCHEMATIC_USE("limbo.world_settings.schematic.use"),
+    SCHEMATIC_TYPE("limbo.world_settings.schematic.type"),
+    SCHEMATIC_FILE("limbo.world_settings.schematic.file"),
+
+    GAMEMODE("limbo.world_settings.gamemode"),
+    DIMENSION("limbo.world_settings.dimension");
 
     private final String path;
     public static final CleanSS instance = CleanSS.getInstance();
