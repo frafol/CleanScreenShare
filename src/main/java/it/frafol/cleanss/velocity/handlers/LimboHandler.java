@@ -60,6 +60,12 @@ public class LimboHandler implements LimboSessionHandler {
             return;
         }
 
+        if (chat.startsWith("/")) {
+            proxyPlayer.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.COMMAND_BLOCKED.color()
+                    .replace("%prefix%", VelocityMessages.PREFIX.color())));
+            return;
+        }
+
         boolean luckperms = instance.getServer().getPluginManager().getPlugin("luckperms").isPresent();
         String user_prefix = "";
         String user_suffix = "";

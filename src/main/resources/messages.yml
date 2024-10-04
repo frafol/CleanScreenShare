@@ -219,10 +219,6 @@ messages:
       suspect: "&b&lSUSPECT &b"
       staffer: "&c&lSTAFFER &c"
 
-    limbo_addon:
-      # If you use LimboAPI, you can't use commands in the limbo.
-      command_blocked: "%prefix% &7You can't use commands in a &dLimbo&7."
-
   discord:
 
     # These messages will be sent in the discord channel when a certain thing happens.
