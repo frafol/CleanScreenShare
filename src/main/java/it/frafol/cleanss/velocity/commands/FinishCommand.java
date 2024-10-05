@@ -92,54 +92,32 @@ public class FinishCommand implements SimpleCommand {
                     return;
                 }
 
-                Utils.finishControl(player.get(), sender, proxyServer.get());
-
                 String admin_group = "";
                 String suspect_group = "";
 
                 if (luckperms) {
-
                     final LuckPerms api = LuckPermsProvider.get();
-
                     final User admin = api.getUserManager().getUser(sender.getUniqueId());
                     final User suspect = api.getUserManager().getUser(player.get().getUniqueId());
-
-                    if (admin == null || suspect == null) {
-                        return;
-                    }
-
+                    if (admin == null || suspect == null) return;
                     final Group admingroup = api.getGroupManager().getGroup(admin.getPrimaryGroup());
-
                     String admingroup_displayname;
                     if (admingroup != null) {
                         admingroup_displayname = admingroup.getFriendlyName();
-
                         if (admingroup_displayname.equalsIgnoreCase("default")) {
                             admingroup_displayname = VelocityMessages.DISCORD_LUCKPERMS_FIX.get(String.class);
                         }
-
-                    } else {
-                        admingroup_displayname = "";
-                    }
-
+                    } else admingroup_displayname = "";
                     admin_group = admingroup == null ? "" : admingroup_displayname;
-
                     final Group suspectgroup = api.getGroupManager().getGroup(suspect.getPrimaryGroup());
-
                     String suspectroup_displayname;
                     if (suspectgroup != null) {
                         suspectroup_displayname = suspectgroup.getFriendlyName();
-
                         if (suspectroup_displayname.equalsIgnoreCase("default")) {
                             suspectroup_displayname = VelocityMessages.DISCORD_LUCKPERMS_FIX.get(String.class);
                         }
-
-                    } else {
-                        suspectroup_displayname = "";
-                    }
-
+                    } else suspectroup_displayname = "";
                     suspect_group = suspectgroup == null ? "" : suspectroup_displayname;
-
                 }
 
                 String admin_prefix;
@@ -148,32 +126,19 @@ public class FinishCommand implements SimpleCommand {
                 String sus_suffix;
 
                 if (luckperms) {
-
                     final LuckPerms api = LuckPermsProvider.get();
-
                     final User admin = api.getUserManager().getUser(((Player) invocation.source()).getUniqueId());
                     final User suspect = api.getUserManager().getUser(player.get().getUniqueId());
-
-                    if (admin == null) {
-                        return;
-                    }
-
-                    if (suspect == null) {
-                        return;
-                    }
-
+                    if (admin == null) return;
+                    if (suspect == null) return;
                     final String prefix1 = admin.getCachedData().getMetaData().getPrefix();
                     final String suffix1 = admin.getCachedData().getMetaData().getSuffix();
-
                     final String prefix2 = suspect.getCachedData().getMetaData().getPrefix();
                     final String suffix2 = suspect.getCachedData().getMetaData().getSuffix();
-
                     admin_prefix = prefix1 == null ? "" : prefix1;
                     admin_suffix = suffix1 == null ? "" : suffix1;
-
                     sus_prefix = prefix2 == null ? "" : prefix2;
                     sus_suffix = suffix2 == null ? "" : suffix2;
-
                 } else {
                     admin_prefix = "";
                     admin_suffix = "";
@@ -195,6 +160,7 @@ public class FinishCommand implements SimpleCommand {
                                     .replace("%result%", VelocityMessages.CLEAN.color()))));
                 }
 
+                Utils.finishControl(player.get(), sender, proxyServer.get());
                 MessageUtil.sendDiscordMessage(
                         player.get(),
                         sender,
@@ -203,13 +169,10 @@ public class FinishCommand implements SimpleCommand {
                                 .replace("%admingroup%", admin_group),
                         VelocityMessages.CLEAN.get(String.class),
                         VelocityMessages.DISCORD_FINISHED_THUMBNAIL.get(String.class));
-
             } else {
-
                 source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.NOT_ONLINE.color()
                         .replace("%prefix%", VelocityMessages.PREFIX.color())
                         .replace("%player%", invocation.arguments()[0])));
-
             }
         }
     }
