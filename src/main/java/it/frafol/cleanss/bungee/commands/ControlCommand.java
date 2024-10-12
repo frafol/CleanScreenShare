@@ -95,7 +95,7 @@ public class ControlCommand extends Command implements TabExecutor {
 
 		for (String blocked_servers : BungeeConfig.CONTROL_BYPASS.getStringList()) {
 			ServerInfo blockedServer = instance.getProxy().getServerInfo(blocked_servers);
-			if (player.get().getServer().getInfo().equals(blockedServer)) {
+			if (blockedServer != null && player.get().getServer().getInfo().equals(blockedServer)) {
 				invocation.sendMessage(TextComponent.fromLegacyText(BungeeMessages.PLAYER_BYPASS_SERVER.color()
 						.replace("%prefix%", BungeeMessages.PREFIX.color())
 						.replace("%server%", blockedServer.getName())
