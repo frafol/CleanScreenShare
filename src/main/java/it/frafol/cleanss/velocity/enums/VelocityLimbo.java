@@ -12,9 +12,13 @@ public enum VelocityLimbo {
     YAW("limbo.world_settings.coords.yaw"),
     PITCH("limbo.world_settings.coords.pitch"),
 
+    SCHEM_X("limbo.world_settings.schematic.paste_coords.x"),
+    SCHEM_Y("limbo.world_settings.schematic.paste_coords.y"),
+    SCHEM_Z("limbo.world_settings.schematic.paste_coords.z"),
+
     SCHEMATIC_USE("limbo.world_settings.schematic.use"),
     SCHEMATIC_TYPE("limbo.world_settings.schematic.type"),
-    SCHEMATIC_FILE("limbo.world_settings.schematic.file"),
+    SCHEMATIC_FILE("limbo.world_settings.schematic.name"),
 
     GAMEMODE("limbo.world_settings.gamemode"),
     DIMENSION("limbo.world_settings.dimension");

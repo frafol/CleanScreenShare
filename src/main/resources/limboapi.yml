@@ -24,7 +24,6 @@ limbo:
     dimension: "overworld"
 
     # Change player's spawn position.
-    # This is also the position where the schematic will be placed if activated.
     coords:
       x: 0
       y: 100
@@ -47,5 +46,11 @@ limbo:
       # The name of the schematic file.
       # The file must be in the "plugins/CleanScreenShare/" folder.
       name: "control.schematic"
+
+      # The position where the schematic will be pasted.
+      paste_coords:
+        x: 0
+        y: 100
+        z: 0
 
 # Enjoy.

@@ -18,6 +18,8 @@ import net.elytrium.limboapi.api.file.WorldFile;
 import net.elytrium.limboapi.api.player.GameMode;
 import net.elytrium.limboapi.api.player.LimboPlayer;
 
+import java.io.File;
+
 @UtilityClass
 public class LimboUtils {
 
@@ -38,7 +40,7 @@ public class LimboUtils {
 
             LimboFactory factory = (LimboFactory) instance.getServer().getPluginManager().getPlugin("limboapi").flatMap(PluginContainer::getInstance).get();
             VirtualWorld world = factory.createVirtualWorld(
-                    Dimension.valueOf("minecraft:" + VelocityLimbo.DIMENSION.get(String.class)),
+                    Dimension.valueOf(VelocityLimbo.DIMENSION.get(String.class)),
                     VelocityLimbo.X.get(Integer.class),
                     VelocityLimbo.Y.get(Integer.class),
                     VelocityLimbo.Z.get(Integer.class),
@@ -47,21 +49,22 @@ public class LimboUtils {
 
             if (VelocityLimbo.SCHEMATIC_USE.get(Boolean.class)) {
                 WorldFile schematic;
+                File file = new File(instance.getPath() + "/" + VelocityLimbo.SCHEMATIC_FILE.get(String.class));
                 switch (VelocityLimbo.SCHEMATIC_TYPE.get(String.class)) {
                     case "SCHEMATIC":
                          schematic = factory.openWorldFile(
                                 BuiltInWorldFileType.SCHEMATIC,
-                                instance.getPath().resolve(VelocityLimbo.SCHEMATIC_FILE.get(String.class)));
+                                file.toPath());
                          break;
                     case "WORLDEDIT_SCHEM":
                         schematic = factory.openWorldFile(
                                 BuiltInWorldFileType.WORLDEDIT_SCHEM,
-                                instance.getPath().resolve(VelocityLimbo.SCHEMATIC_FILE.get(String.class)));
+                                file.toPath());
                         break;
                     case "STRUCTURE":
                         schematic = factory.openWorldFile(
                                 BuiltInWorldFileType.STRUCTURE,
-                                instance.getPath().resolve(VelocityLimbo.SCHEMATIC_FILE.get(String.class)));
+                                file.toPath());
                         break;
                     default:
                         schematic = null;
@@ -71,7 +74,7 @@ public class LimboUtils {
                     schematic.toWorld(
                             factory,
                             world,
-                            VelocityLimbo.X.get(Integer.class), VelocityLimbo.Y.get(Integer.class), VelocityLimbo.Z.get(Integer.class));
+                            VelocityLimbo.SCHEM_X.get(Integer.class), VelocityLimbo.SCHEM_Y.get(Integer.class), VelocityLimbo.SCHEM_Z.get(Integer.class));
                 }
             }
 
