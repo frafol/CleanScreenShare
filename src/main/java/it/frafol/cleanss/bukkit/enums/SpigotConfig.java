@@ -43,6 +43,11 @@ public enum SpigotConfig {
     STAFFPREFIX("options.messages.staff_prefix"),
     OTHERPREFIX("options.messages.other_prefix"),
 
+    JOIN_SOUNDS("options.join_sounds.enabled"),
+    SOUND_STAFF("options.join_sounds.staff_join"),
+    SOUND_SUSPECT("options.join_sounds.suspect_join"),
+    SOUND_OTHER("options.join_sounds.other_join"),
+
     NONE("options.messages.placeholder_none"),
 
     SB_UPDATE("options.scoreboard.update_task"),

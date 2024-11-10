@@ -37,6 +37,19 @@ options:
   custom_join_message: "&7[&a+&7] &e%player%"
   custom_leave_message: "&7[&c-&7] &e%player%"
 
+  join_sounds:
+
+    # Enable or disable the sound when a player joins.
+    enabled: false
+
+    # Please note that these sounds won't work in 1.8 versions.
+    # You have to choose a sound that is available in your version.
+    # You can find a list of sounds here: https://www.spigotmc.org/wiki/cc-sounds-list/
+    # Set the value to "none" to disable this feature for only some groups.
+    staff_join: "ENTITY_PLAYER_LEVELUP"
+    suspect_join: "ENTITY_PLAYER_LEVELUP"
+    other_join: "ENTITY_PLAYER_LEVELUP"
+
   # Action preventions.
   prevent:
 

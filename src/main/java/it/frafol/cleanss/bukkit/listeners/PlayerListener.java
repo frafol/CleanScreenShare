@@ -7,6 +7,7 @@ import it.frafol.cleanss.bukkit.enums.SpigotConfig;
 import it.frafol.cleanss.bukkit.objects.Placeholder;
 import it.frafol.cleanss.bukkit.objects.PlayerCache;
 import it.frafol.cleanss.bukkit.objects.utils.NametagUtil;
+import it.frafol.cleanss.bukkit.objects.utils.SoundUtil;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Entity;
@@ -149,14 +150,12 @@ public class PlayerListener implements Listener {
     public void joinMessage(PlayerJoinEvent event) {
 
         Player player = event.getPlayer();
-
         UniversalScheduler.getScheduler(instance).runTaskLater(() -> {
-            if (PlayerCache.getSuspicious().contains(player.getUniqueId()) || PlayerCache.getAdministrator().contains(player.getUniqueId())) {
-                return;
-            }
+            if (PlayerCache.getSuspicious().contains(player.getUniqueId()) || PlayerCache.getAdministrator().contains(player.getUniqueId())) return;
             player.teleport(PlayerCache.StringToLocation(SpigotCache.OTHER_SPAWN.get(String.class)));
             PlayerCache.createOtherScoreboard(player);
             NametagUtil.setTag(player);
+            if (SpigotConfig.JOIN_SOUNDS.get(Boolean.class)) SoundUtil.playSound(player, SpigotConfig.SOUND_OTHER.get(String.class));
         }, 20L);
 
         if (Objects.equals(SpigotConfig.CUSTOM_JOIN_MESSAGE.get(String.class), "none")) {

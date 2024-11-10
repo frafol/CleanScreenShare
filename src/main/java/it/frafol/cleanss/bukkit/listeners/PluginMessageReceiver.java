@@ -8,6 +8,7 @@ import it.frafol.cleanss.bukkit.enums.SpigotCache;
 import it.frafol.cleanss.bukkit.enums.SpigotConfig;
 import it.frafol.cleanss.bukkit.objects.PlayerCache;
 import it.frafol.cleanss.bukkit.objects.TextFile;
+import it.frafol.cleanss.bukkit.objects.utils.SoundUtil;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.messaging.PluginMessageListener;
 
@@ -72,33 +73,28 @@ public class PluginMessageReceiver implements PluginMessageListener {
             String player_found = dataInput.readUTF();
 
             instance.getLogger().warning("Received data (suspect) from the proxy. [" + player_found + "]");
-
             final Player final_player = instance.getServer().getPlayer(player_found);
-
-            UniversalScheduler.getScheduler(instance).runTaskLater(() -> {
-
-                if (final_player == null || !final_player.isOnline()) {
-                    return;
-                }
-
-                final_player.teleport(PlayerCache.StringToLocation(SpigotCache.SUSPECT_SPAWN.get(String.class)));
-            }, 5L);
 
             if (final_player == null) {
                 instance.getLogger().severe("The player " + player_found + " (Suspect) is not in the server. Is your server configured correctly?");
                 return;
             }
 
+            UniversalScheduler.getScheduler(instance).runTaskLater(() -> final_player.teleport(PlayerCache.StringToLocation(SpigotCache.SUSPECT_SPAWN.get(String.class))), 5L);
             PlayerCache.getSuspicious().add(final_player.getUniqueId());
             instance.startTimer(final_player.getUniqueId());
 
-            if (SpigotConfig.SB_SUSPECT.get(Boolean.class)) {
-                PlayerCache.createSuspectScoreboard(final_player);
+            UniversalScheduler.getScheduler(instance).runTaskLater(() -> {
+                if (SpigotConfig.SB_SUSPECT.get(Boolean.class)) {
+                    PlayerCache.createSuspectScoreboard(final_player);
+                }
+            }, 40L);
+
+            if (SpigotConfig.JOIN_SOUNDS.get(Boolean.class)) {
+                SoundUtil.playSound(final_player, SpigotConfig.SOUND_SUSPECT.get(String.class));
             }
 
-            if (SpigotConfig.TABLIST_SUSPECT.get(Boolean.class)) {
-                UniversalScheduler.getScheduler(instance).runTaskLater(() -> PlayerCache.setSuspectTabList(player), 10);
-            }
+            if (SpigotConfig.TABLIST_SUSPECT.get(Boolean.class)) UniversalScheduler.getScheduler(instance).runTaskLater(() -> PlayerCache.setSuspectTabList(player), 10);
             return;
         }
 
@@ -125,22 +121,15 @@ public class PluginMessageReceiver implements PluginMessageListener {
                 }
             }, 40L);
 
-            if (SpigotConfig.TABLIST_STAFF.get(Boolean.class)) {
-                UniversalScheduler.getScheduler(instance).runTaskLater(() -> PlayerCache.setStaffTabList(player), 10);
+            if (SpigotConfig.JOIN_SOUNDS.get(Boolean.class)) {
+                SoundUtil.playSound(final_player, SpigotConfig.SOUND_STAFF.get(String.class));
             }
 
+            if (SpigotConfig.TABLIST_STAFF.get(Boolean.class)) UniversalScheduler.getScheduler(instance).runTaskLater(() -> PlayerCache.setStaffTabList(player), 10);
             UniversalScheduler.getScheduler(instance).runTaskLaterAsynchronously(() -> {
-
-                if (instance.getServer().getPlayer(suspicious_found) == null) {
-                    return;
-                }
-
+                if (instance.getServer().getPlayer(suspicious_found) == null) return;
                 final Player final_suspicious = instance.getServer().getPlayer(suspicious_found).getPlayer();
-
-                if (final_suspicious == null) {
-                    return;
-                }
-
+                if (final_suspicious == null) return;
                 PlayerCache.getCouples().put(final_player.getUniqueId(), final_suspicious.getUniqueId());
             }, 4 * 20L);
         }
