@@ -8,14 +8,12 @@ import org.bukkit.entity.Player;
 public class SoundUtil {
 
     public void playSound(Player player, String sound) {
-        if (getSound(sound) != null) player.playSound(player.getLocation(), sound, 1, 0);
+        if (getSound(sound) != null) player.playSound(player.getLocation(), getSound(sound), 1, 0);
     }
 
     public Sound getSound(String sound) {
-        Sound finalSound;
         try {
-            finalSound = Sound.valueOf(sound);
-            return finalSound;
+            return Sound.valueOf(sound);
         } catch (Exception e) {
             return null;
         }
