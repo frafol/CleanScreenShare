@@ -558,7 +558,11 @@ public class Utils {
                 return;
             }
 
-            if (!(suspicious.getCurrentServer().isPresent() || administrator.getCurrentServer().isPresent())) {
+            if (!suspicious.getCurrentServer().isPresent() || !administrator.getCurrentServer().isPresent()) {
+                return;
+            }
+
+            if (proxyServer == null) {
                 return;
             }
 
