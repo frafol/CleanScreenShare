@@ -143,12 +143,14 @@ public class KickListener {
         if (!proxyServer.isPresent()) {
 
             if (PlayerCache.getAdministrator().contains(player.getUniqueId())) {
-                instance.getValue(PlayerCache.getCouples(), player).disconnect(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.FINISHSUS.color()));
+                instance.getValue(PlayerCache.getCouples(), player).disconnect(LegacyComponentSerializer.legacy('§')
+                        .deserialize(VelocityMessages.FINISHSUS.color().replace("%prefix%", VelocityMessages.PREFIX.color())));
                 instance.getLogger().error("Fallback server was not found in your Velocity configuration or is offline, " + player.getUsername() + " will not be able to reconnect to the server.");
             }
 
             if (PlayerCache.getSuspicious().contains(player.getUniqueId())) {
-                instance.getKey(PlayerCache.getCouples(), player).disconnect(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.FINISHSUS.color()));
+                instance.getKey(PlayerCache.getCouples(), player).disconnect(LegacyComponentSerializer.legacy('§')
+                        .deserialize(VelocityMessages.FINISHSUS.color().replace("%prefix%", VelocityMessages.PREFIX.color())));
                 instance.getLogger().error("Fallback server was not found in your Velocity configuration or is offline, " + player.getUsername() + " will not be able to reconnect to the server.");
             }
 
