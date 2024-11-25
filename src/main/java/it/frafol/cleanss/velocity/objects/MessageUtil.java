@@ -135,21 +135,29 @@ public class MessageUtil {
 
     @SuppressWarnings("UnstableApiUsage")
     public void sendChannelMessage(Player player, String type) {
-        final ByteArrayDataOutput buf = ByteStreams.newDataOutput();
-        buf.writeUTF(type);
-        buf.writeUTF(player.getUsername());
-        player.getCurrentServer().ifPresent(sv ->
-                sv.sendPluginMessage(CleanSS.channel_join, buf.toByteArray()));
+        try {
+            final ByteArrayDataOutput buf = ByteStreams.newDataOutput();
+            buf.writeUTF(type);
+            buf.writeUTF(player.getUsername());
+            player.getCurrentServer().ifPresent(sv ->
+                    sv.sendPluginMessage(CleanSS.channel_join, buf.toByteArray()));
+        } catch (IllegalStateException exception) {
+            instance.getLogger().error("Failed to send message for player " + player.getUsername() + ". Connection failed?");
+        }
     }
 
     @SuppressWarnings("UnstableApiUsage")
     public void sendChannelAdvancedMessage(Player administrator, Player suspicious, String type) {
-        final ByteArrayDataOutput buf = ByteStreams.newDataOutput();
-        buf.writeUTF(type);
-        buf.writeUTF(administrator.getUsername());
-        buf.writeUTF(suspicious.getUsername());
-        administrator.getCurrentServer().ifPresent(sv ->
-                sv.sendPluginMessage(CleanSS.channel_join, buf.toByteArray()));
+        try {
+            final ByteArrayDataOutput buf = ByteStreams.newDataOutput();
+            buf.writeUTF(type);
+            buf.writeUTF(administrator.getUsername());
+            buf.writeUTF(suspicious.getUsername());
+            administrator.getCurrentServer().ifPresent(sv ->
+                    sv.sendPluginMessage(CleanSS.channel_join, buf.toByteArray()));
+        } catch (IllegalStateException exception) {
+            instance.getLogger().error("Failed to send message for players " + administrator.getUsername() + " and " + suspicious.getUsername() + ". Connection failed?");
+        }
     }
 
     public void sendButtons(Player administrator, Player suspicious, String admin_prefix, String admin_suffix, String sus_prefix, String sus_suffix) {
