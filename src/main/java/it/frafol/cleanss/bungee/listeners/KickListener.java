@@ -107,6 +107,10 @@ public class KickListener implements Listener {
             }
 
             event.setCancelled(true);
+            if (event.getReason().equals(ServerConnectEvent.Reason.COMMAND)) {
+                player.sendMessage(TextComponent.fromLegacyText(BungeeMessages.CANT_SWITCH.color()
+                        .replace("%prefix%", BungeeMessages.PREFIX.color())));
+            }
         }
     }
 

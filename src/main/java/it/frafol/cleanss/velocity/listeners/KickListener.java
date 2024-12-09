@@ -97,11 +97,13 @@ public class KickListener {
         if (PlayerCache.getSuspicious().contains(player.getUniqueId())
                 || PlayerCache.getAdministrator().contains(player.getUniqueId())) {
 
-            if (Utils.isInControlServer(server) || instance.useLimbo) {
+            if (!Utils.isInControlServer(server) || instance.useLimbo) {
                 return;
             }
 
             event.setResult(ServerPreConnectEvent.ServerResult.denied());
+            player.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.CANT_SWITCH.color()
+                    .replace("%prefix%", VelocityMessages.PREFIX.color())));
         }
     }
 

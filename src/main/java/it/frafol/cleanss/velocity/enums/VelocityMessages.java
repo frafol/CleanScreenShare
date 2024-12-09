@@ -19,6 +19,7 @@ public enum VelocityMessages {
     NOT_ONLINE("messages.not_online"),
     NOT_VALID("messages.server_not_valid"),
     COMMAND_BLOCKED("messages.control.command_blocked"),
+    CANT_SWITCH("messages.control.cant_switch"),
 
     PLAYER_MISSING("messages.player_missing"),
     NO_PERMISSION("messages.no_permission"),

@@ -63,6 +63,9 @@ messages:
     # This message will appear when a player tries to execute a command during a hack control.
     command_blocked: "%prefix% &7You can't use commands during a &dhack control&7."
 
+    # This message will appear when an administrator tries to change server during a hack control without terminating it.
+    cant_switch: "%prefix% &7You can't switch your server during a &dhack control&7."
+
   info:
 
     # If you're using LuckPerms, you can also use %playerprefix% and %playersuffix% here.

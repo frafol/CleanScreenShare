@@ -32,6 +32,7 @@ public enum BungeeMessages {
     BUTTON_EXECUTION("messages.staff_message.execution"),
 
     COMMAND_BLOCKED("messages.control.command_blocked"),
+    CANT_SWITCH("messages.control.cant_switch"),
 
     CONTROL_CLEAN_NAME("messages.staff_message.clean.name"),
     CONTROL_CLEAN_COMMAND("messages.staff_message.clean.command"),
