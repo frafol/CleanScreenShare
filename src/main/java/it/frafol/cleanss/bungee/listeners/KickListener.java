@@ -102,7 +102,7 @@ public class KickListener implements Listener {
         if (PlayerCache.getAdministrator().contains(player.getUniqueId()) ||
                 PlayerCache.getSuspicious().contains(player.getUniqueId())) {
 
-            if (!Utils.isInControlServer(server)) {
+            if (Utils.isInControlServer(server)) {
                 return;
             }
 

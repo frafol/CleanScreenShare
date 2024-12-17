@@ -237,6 +237,7 @@ messages:
     spectator: "The staffer %staffer% started spectating controls."
     spectator_end: "The staffer %staffer% stopped spectating controls."
     spectator_thumbnail: "none" # You can use a link to an image.
+    spectator_end_thumbnail: "none" # You can use a link to an image.
 
     # You can use %staffer%, %suspect% and %result%. If you are using LuckPerms, you can also use %admingroup% and %suspectgroup%.
     suspect_left_during_control: "The suspect %suspect%, left the server during a control."

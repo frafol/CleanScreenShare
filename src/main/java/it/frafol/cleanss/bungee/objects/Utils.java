@@ -12,6 +12,7 @@ import net.luckperms.api.model.user.User;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
+import net.md_5.bungee.api.event.ServerConnectEvent;
 import net.md_5.bungee.api.scheduler.ScheduledTask;
 
 import java.util.*;
@@ -586,7 +587,7 @@ public class Utils {
     }
 
     private void connect(ProxiedPlayer player, ServerInfo server) {
-            player.connect(server);
+        player.connect(server, ServerConnectEvent.Reason.PLUGIN);
     }
 
     public final boolean isLuckPerms = instance.getProxy().getPluginManager().getPlugin("LuckPerms") != null;
