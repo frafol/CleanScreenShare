@@ -144,9 +144,7 @@ public class ControlCommand extends Command implements TabExecutor {
 			}
 		}
 
-		System.out.println("ProxyServer = " + proxyServer);
 		Utils.startControl(player.get(), sender, proxyServer);
-
 		String suspect_group = "";
 		String admin_group = "";
 
