@@ -97,7 +97,7 @@ public class KickListener {
         if (PlayerCache.getSuspicious().contains(player.getUniqueId())
                 || PlayerCache.getAdministrator().contains(player.getUniqueId())) {
 
-            if (!Utils.isInControlServer(server) || instance.useLimbo) {
+            if (Utils.isInControlServer(server) || instance.useLimbo) {
                 return;
             }
 
