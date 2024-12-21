@@ -40,7 +40,7 @@ public class LimboUtils {
 
             LimboFactory factory = (LimboFactory) instance.getServer().getPluginManager().getPlugin("limboapi").flatMap(PluginContainer::getInstance).get();
             VirtualWorld world = factory.createVirtualWorld(
-                    Dimension.valueOf(VelocityLimbo.DIMENSION.get(String.class)),
+                    Dimension.valueOf(VelocityLimbo.DIMENSION.get(String.class).toUpperCase()),
                     VelocityLimbo.X.get(Integer.class),
                     VelocityLimbo.Y.get(Integer.class),
                     VelocityLimbo.Z.get(Integer.class),
