@@ -79,6 +79,11 @@ settings:
     # NOTE: Do not change this value if you don't know what you're doing. Do not set it to <=0 values and >=20 values.
     message_to_control_delay: 1
 
+    # By activating this feature, for every command execute by a staff member, the plugin will require a confirmation.
+    admin_commands:
+      request: false
+      time_over: 10 # In seconds
+
   slog:
 
     # Enable this if you want to punish the player when it left during a control.

@@ -164,10 +164,6 @@ public class MessageUtil {
         instance.getProxy().getScheduler().schedule(instance, () -> {
             if (BungeeMessages.CONTROL_USEVERTICALFORMAT.get(Boolean.class)) {
                 BungeeMessages.CONTROL_VERTICALFORMAT.sendStartList(administrator, suspicious,
-                        new Placeholder("cleanname", BungeeMessages.CONTROL_CLEAN_NAME.color()),
-                        new Placeholder("hackername", BungeeMessages.CONTROL_CHEATER_NAME.color()),
-                        new Placeholder("admitname", BungeeMessages.CONTROL_ADMIT_NAME.color()),
-                        new Placeholder("refusename", BungeeMessages.CONTROL_REFUSE_NAME.color()),
                         new Placeholder("prefix", BungeeMessages.PREFIX.color()),
                         new Placeholder("adminprefix", ChatUtil.color(admin_prefix)),
                         new Placeholder("adminsuffix", ChatUtil.color(admin_suffix)),

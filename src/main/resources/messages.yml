@@ -63,6 +63,9 @@ messages:
     # This message will appear when a player tries to execute a command during a hack control.
     command_blocked: "%prefix% &7You can't use commands during a &dhack control&7."
 
+    admin_commands:
+      request: "%prefix% &7Are you sure you want to execute this command during a &dcontrol&7? Rewrite the &dcommand &7or &dclick &7this message."
+
     # This message will appear when an administrator tries to change server during a hack control without terminating it.
     cant_switch: "%prefix% &7You can't switch your server during a &dhack control&7."
 
@@ -115,19 +118,20 @@ messages:
     execution: false
 
     # Clickable messages to put in the Administration message. (%player% is the suspicious player's name)
-    # NOTE: You can't add new buttons, you can only change the name and the command.
-    clean:
-      name: "&a&l[Clean]"
-      command: "/ssfinish %player%"
-    cheater:
-      name: "&c&l[Cheater]"
-      command: "/tempban %player% 30d Cheating -s"
-    admit:
-      name: "&b&l[Admit]"
-      command: "/tempban %player% 14d Admit -s"
-    refuse:
-      name: "&4&l[Refuse]"
-      command: "/tempban %player% 30d Refusal to SS -s"
+    # You can add new buttons if you want.
+    buttons:
+      clean:
+        name: "&a&l[Clean]"
+        command: "/ssfinish %player%"
+      cheater:
+        name: "&c&l[Cheater]"
+        command: "/tempban %player% 30d Cheating -s"
+      admit:
+        name: "&b&l[Admit]"
+        command: "/tempban %player% 14d Admit -s"
+      refuse:
+        name: "&4&l[Refuse]"
+        command: "/tempban %player% 30d Refusal to SS -s"
 
   spectate:
 

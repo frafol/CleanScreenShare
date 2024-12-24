@@ -1,15 +1,9 @@
 package it.frafol.cleanss.velocity.handlers;
 
 import com.velocitypowered.api.proxy.Player;
-import com.velocitypowered.api.proxy.server.RegisteredServer;
 import it.frafol.cleanss.velocity.CleanSS;
-import it.frafol.cleanss.velocity.enums.VelocityCommandsConfig;
-import it.frafol.cleanss.velocity.enums.VelocityConfig;
 import it.frafol.cleanss.velocity.enums.VelocityMessages;
-import it.frafol.cleanss.velocity.objects.MessageUtil;
-import it.frafol.cleanss.velocity.objects.Placeholder;
 import it.frafol.cleanss.velocity.objects.PlayerCache;
-import it.frafol.cleanss.velocity.objects.Utils;
 import net.elytrium.limboapi.api.Limbo;
 import net.elytrium.limboapi.api.LimboSessionHandler;
 import net.elytrium.limboapi.api.player.LimboPlayer;
@@ -19,8 +13,6 @@ import net.luckperms.api.LuckPermsProvider;
 import net.luckperms.api.model.user.User;
 
 import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
 
 public class LimboHandler implements LimboSessionHandler {
 

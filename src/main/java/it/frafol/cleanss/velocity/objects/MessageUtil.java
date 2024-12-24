@@ -164,10 +164,6 @@ public class MessageUtil {
         instance.getServer().getScheduler().buildTask(instance, () -> {
             if (VelocityMessages.CONTROL_USEVERTICALFORMAT.get(Boolean.class)) {
                 VelocityMessages.CONTROL_VERTICALFORMAT.sendButtons(administrator, suspicious,
-                        new Placeholder("cleanname", VelocityMessages.CONTROL_CLEAN_NAME.color()),
-                        new Placeholder("hackername", VelocityMessages.CONTROL_CHEATER_NAME.color()),
-                        new Placeholder("admitname", VelocityMessages.CONTROL_ADMIT_NAME.color()),
-                        new Placeholder("refusename", VelocityMessages.CONTROL_REFUSE_NAME.color()),
                         new Placeholder("prefix", VelocityMessages.PREFIX.color()),
                         new Placeholder("suspect", suspicious.getUsername()),
                         new Placeholder("administrator", administrator.getUsername()),

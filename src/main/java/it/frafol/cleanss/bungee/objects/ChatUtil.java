@@ -96,7 +96,7 @@ public class ChatUtil {
                 commandSource.sendMessage(suggestMessage);
                 continue;
             }
-            commandSource.sendMessage(TextComponent.fromLegacyText(message));
+            commandSource.sendMessage(TextComponent.fromLegacy(message));
         }
     }
 
@@ -109,60 +109,28 @@ public class ChatUtil {
 
         for (String message : stringList) {
 
-            TextComponent suggestMessage = new TextComponent(message);
-            if (message.contains(BungeeMessages.CONTROL_CLEAN_NAME.color())) {
-                if (!BungeeMessages.BUTTON_EXECUTION.get(Boolean.class)) {
-                    suggestMessage.setClickEvent(new ClickEvent(
-                            ClickEvent.Action.SUGGEST_COMMAND,
-                            BungeeMessages.CONTROL_CLEAN_COMMAND.get(String.class).replace("%player%", player_name.getName())));
-                } else {
-                    suggestMessage.setClickEvent(new ClickEvent(
-                            ClickEvent.Action.RUN_COMMAND,
-                            BungeeMessages.CONTROL_CLEAN_COMMAND.get(String.class).replace("%player%", player_name.getName())));
-                }
-                commandSource.sendMessage(suggestMessage);
-
-            } else if (message.contains(BungeeMessages.CONTROL_CHEATER_NAME.color())) {
-                if (!BungeeMessages.BUTTON_EXECUTION.get(Boolean.class)) {
-                    suggestMessage.setClickEvent(new ClickEvent(
-                            ClickEvent.Action.SUGGEST_COMMAND,
-                            BungeeMessages.CONTROL_CHEATER_COMMAND.get(String.class).replace("%player%", player_name.getName())));
-                } else {
-                    suggestMessage.setClickEvent(new ClickEvent(
-                            ClickEvent.Action.RUN_COMMAND,
-                            BungeeMessages.CONTROL_CHEATER_COMMAND.get(String.class).replace("%player%", player_name.getName())));
-                }
-                commandSource.sendMessage(suggestMessage);
-
-            } else if (message.contains(BungeeMessages.CONTROL_ADMIT_NAME.color())) {
-                if (!BungeeMessages.BUTTON_EXECUTION.get(Boolean.class)) {
-                    suggestMessage.setClickEvent(new ClickEvent(
-                            ClickEvent.Action.SUGGEST_COMMAND,
-                            BungeeMessages.CONTROL_ADMIT_COMMAND.get(String.class).replace("%player%", player_name.getName())));
-                } else {
-                    suggestMessage.setClickEvent(new ClickEvent(
-                            ClickEvent.Action.RUN_COMMAND,
-                            BungeeMessages.CONTROL_ADMIT_COMMAND.get(String.class).replace("%player%", player_name.getName())));
-                }
-                commandSource.sendMessage(suggestMessage);
-
-            } else if (message.contains(BungeeMessages.CONTROL_REFUSE_NAME.color())) {
-                if (!BungeeMessages.BUTTON_EXECUTION.get(Boolean.class)) {
-                    suggestMessage.setClickEvent(new ClickEvent(
-                            ClickEvent.Action.SUGGEST_COMMAND,
-                            BungeeMessages.CONTROL_REFUSE_COMMAND.get(String.class).replace("%player%", player_name.getName())));
-                } else {
-                    suggestMessage.setClickEvent(new ClickEvent(
-                            ClickEvent.Action.RUN_COMMAND,
-                            BungeeMessages.CONTROL_REFUSE_COMMAND.get(String.class).replace("%player%", player_name.getName())));
-                }
-                commandSource.sendMessage(suggestMessage);
-
-            } else {
-                commandSource.sendMessage(TextComponent.fromLegacyText(message));
+            if (getButton(message) == null) {
+                commandSource.sendMessage(TextComponent.fromLegacy(message));
+                continue;
             }
+
+            String button = getButton(message);
+            TextComponent suggestMessage = new TextComponent(message.replace("%" + button + "name%", color(instance.getMessagesTextFile().getString("messages.staff_message.buttons." + button + ".name"))));
+            if (!BungeeMessages.BUTTON_EXECUTION.get(Boolean.class)) {
+                suggestMessage.setClickEvent(new ClickEvent(
+                        ClickEvent.Action.SUGGEST_COMMAND,
+                        instance.getMessagesTextFile().getString("messages.staff_message.buttons." + button + ".command")
+                                .replace("%player%", player_name.getName())));
+            } else {
+                suggestMessage.setClickEvent(new ClickEvent(
+                        ClickEvent.Action.RUN_COMMAND,
+                        instance.getMessagesTextFile().getString("messages.staff_message.buttons." + button + ".command")
+                                .replace("%player%", player_name.getName())));
+            }
+            commandSource.sendMessage(suggestMessage);
         }
     }
+
 
     private void sendHorizontalButtons(CommandSender commandSource, List<String> stringList, ProxiedPlayer player_name) {
 
@@ -186,16 +154,27 @@ public class ChatUtil {
                 continue;
             }
 
-            commandSource.sendMessage(TextComponent.fromLegacyText(message));
+            commandSource.sendMessage(TextComponent.fromLegacy(message));
         }
+    }
+
+    private String getButton(String message) {
+        for (String buttons : instance.getMessagesTextFile().getStringList("messages.staff_message.buttons")) {
+            if (message.contains("%" + buttons + "name%")) {
+                return buttons;
+            }
+        }
+        return null;
     }
 
     private HashMap<String, String> getButtons(ProxiedPlayer suspect) {
         HashMap<String, String> buttons = new HashMap<>();
-        buttons.put(BungeeMessages.CONTROL_CLEAN_NAME.color(), BungeeMessages.CONTROL_CLEAN_COMMAND.get(String.class).replace("%player%", suspect.getName()));
-        buttons.put(BungeeMessages.CONTROL_CHEATER_NAME.color(), BungeeMessages.CONTROL_CHEATER_COMMAND.get(String.class).replace("%player%", suspect.getName()));
-        buttons.put(BungeeMessages.CONTROL_ADMIT_NAME.color(), BungeeMessages.CONTROL_ADMIT_COMMAND.get(String.class).replace("%player%", suspect.getName()));
-        buttons.put(BungeeMessages.CONTROL_REFUSE_NAME.color(), BungeeMessages.CONTROL_REFUSE_COMMAND.get(String.class).replace("%player%", suspect.getName()));
+        for (String button : instance.getMessagesTextFile().getStringList("messages.staff_message.buttons")) {
+            buttons.put(
+                    instance.getMessagesTextFile().getString("messages.staff_message.buttons." + button + ".name"),
+                    instance.getMessagesTextFile().getString("messages.staff_message.buttons." + button + ".command")
+                            .replace("%player%", suspect.getName()));
+        }
         return buttons;
     }
 

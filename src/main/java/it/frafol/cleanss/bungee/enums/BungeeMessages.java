@@ -34,22 +34,11 @@ public enum BungeeMessages {
     COMMAND_BLOCKED("messages.control.command_blocked"),
     CANT_SWITCH("messages.control.cant_switch"),
 
-    CONTROL_CLEAN_NAME("messages.staff_message.clean.name"),
-    CONTROL_CLEAN_COMMAND("messages.staff_message.clean.command"),
-
     ADMIN_NOTIFY("messages.control.admin_notification"),
     ADMIN_NOTIFY_FINISH("messages.control.admin_notification_finish"),
 
-    CONTROL_CHEATER_NAME("messages.staff_message.cheater.name"),
-    CONTROL_CHEATER_COMMAND("messages.staff_message.cheater.command"),
-
     CONTROL_ALREADY("messages.already_in_control"),
-
-    CONTROL_ADMIT_NAME("messages.staff_message.admit.name"),
-    CONTROL_ADMIT_COMMAND("messages.staff_message.admit.command"),
-
-    CONTROL_REFUSE_NAME("messages.staff_message.refuse.name"),
-    CONTROL_REFUSE_COMMAND("messages.staff_message.refuse.command"),
+    COMMAND_REQUEST("messages.control.admin_commands.request"),
 
     CONTROL_USETITLE("messages.title.start.enable"),
     CONTROL_TITLE("messages.title.start.title"),
