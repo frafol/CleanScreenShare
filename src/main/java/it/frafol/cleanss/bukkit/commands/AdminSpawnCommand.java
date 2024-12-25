@@ -15,18 +15,10 @@ public class AdminSpawnCommand implements CommandExecutor {
     @SneakyThrows
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-
-        if (!(sender instanceof Player)) {
-            return false;
-        }
-
+        if (!(sender instanceof Player)) return false;
         final Player player = (Player) sender;
         final YamlFile cache = CleanSS.getInstance().getCacheTextFile().getConfig();
-
-        if (!player.hasPermission(SpigotConfig.ADMIN_PERMISSION.get(String.class))) {
-            return false;
-        }
-
+        if (!player.hasPermission(SpigotConfig.ADMIN_PERMISSION.get(String.class))) return false;
         player.sendMessage(SpigotConfig.SPAWN_SET.color().replace("%type%", SpigotConfig.SPAWN_ADMIN.color()));
         cache.set("spawns.admin", PlayerCache.LocationToString(player.getLocation()));
         cache.save();

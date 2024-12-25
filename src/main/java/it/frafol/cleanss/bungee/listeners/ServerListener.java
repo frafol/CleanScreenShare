@@ -47,15 +47,15 @@ public class ServerListener implements Listener {
                 MessageUtil.sendChannelAdvancedMessage(player, PlayerCache.getCouples().get(player), "ADMIN");
             }
 
-        }, BungeeConfig.MESSAGE_DELAY.get(Integer.class), TimeUnit.SECONDS);
+        }, BungeeConfig.MESSAGE_DELAY.get(Integer.class), TimeUnit.MILLISECONDS);
     }
 
     private void credits(ProxiedPlayer player) {
-        player.sendMessage(TextComponent.fromLegacyText("§d| "));
-        player.sendMessage(TextComponent.fromLegacyText("§d| §7CleanScreenShare Informations"));
-        player.sendMessage(TextComponent.fromLegacyText("§d| "));
-        player.sendMessage(TextComponent.fromLegacyText("§d| §7Version: §d" + instance.getDescription().getVersion()));
-        player.sendMessage(TextComponent.fromLegacyText("§d| §7BungeeCord: §d" + instance.getProxy().getVersion()));
-        player.sendMessage(TextComponent.fromLegacyText("§d| "));
+        player.sendMessage(TextComponent.fromLegacy("§d| "));
+        player.sendMessage(TextComponent.fromLegacy("§d| §7CleanScreenShare Informations"));
+        player.sendMessage(TextComponent.fromLegacy("§d| "));
+        player.sendMessage(TextComponent.fromLegacy("§d| §7Version: §d" + instance.getDescription().getVersion()));
+        player.sendMessage(TextComponent.fromLegacy("§d| §7BungeeCord: §d" + instance.getProxy().getVersion()));
+        player.sendMessage(TextComponent.fromLegacy("§d| "));
     }
 }

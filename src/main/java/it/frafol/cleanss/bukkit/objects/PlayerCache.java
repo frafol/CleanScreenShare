@@ -71,6 +71,10 @@ public class PlayerCache {
 
     public void createSuspectScoreboard(Player player) {
 
+        if (!SpigotConfig.SB_SUSPECT.get(Boolean.class)) {
+            return;
+        }
+
         if (hasViaVersion()) {
             ViaScoreboard.createViaSuspectScoreboard(player);
             return;
@@ -82,6 +86,10 @@ public class PlayerCache {
 
     public void createAdminScoreboard(Player player) {
 
+        if (!SpigotConfig.SB_STAFF.get(Boolean.class)) {
+            return;
+        }
+
         if (hasViaVersion()) {
             ViaScoreboard.createViaAdminScoreboard(player);
             return;
@@ -92,6 +100,10 @@ public class PlayerCache {
     }
 
     public void createOtherScoreboard(Player player) {
+
+        if (!SpigotConfig.SB_OTHER.get(Boolean.class)) {
+            return;
+        }
 
         if (hasViaVersion()) {
             ViaScoreboard.createViaOtherScoreboard(player);
@@ -158,10 +170,8 @@ public class PlayerCache {
             if (SpigotConfig.SB_SUSPECT.get(Boolean.class)) {
                 FastBoard board = suspectBoard.get(player.getUniqueId());
                 if (suspectBoard.get(player.getUniqueId()) != null && board != null) {
-                    if (!instance.isPAPI() || !PlaceholderAPI.setPlaceholders(player, "%screenshare_administrator%").equalsIgnoreCase("none")) {
-                        board.updateTitle(SpigotConfig.SB_SUSPECTTITLE.color());
-                        board.updateLines(SpigotConfig.SB_SUSPECTLINES.parseScoreboard(player));
-                    }
+                    board.updateTitle(SpigotConfig.SB_SUSPECTTITLE.color());
+                    board.updateLines(SpigotConfig.SB_SUSPECTLINES.parseScoreboard(player));
                     return;
                 }
             }
@@ -169,10 +179,8 @@ public class PlayerCache {
             if (SpigotConfig.SB_STAFF.get(Boolean.class)) {
                 FastBoard board = adminBoard.get(player.getUniqueId());
                 if (adminBoard.get(player.getUniqueId()) != null && board != null) {
-                    if (!instance.isPAPI() || !PlaceholderAPI.setPlaceholders(player, "%screenshare_suspicious%").equalsIgnoreCase("none")) {
-                        board.updateTitle(SpigotConfig.SB_STAFFTITLE.color());
-                        board.updateLines(SpigotConfig.SB_STAFFLINES.parseScoreboard(player));
-                    }
+                    board.updateTitle(SpigotConfig.SB_STAFFTITLE.color());
+                    board.updateLines(SpigotConfig.SB_STAFFLINES.parseScoreboard(player));
                     return;
                 }
             }

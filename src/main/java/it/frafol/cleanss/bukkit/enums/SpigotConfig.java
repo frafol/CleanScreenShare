@@ -19,6 +19,7 @@ public enum SpigotConfig {
 
     SPAWN_SET("options.messages.spawn_set"),
 
+    RELOADED("options.messages.reloaded"),
     SPAWN_ADMIN("options.messages.spawn_types.admin"),
     SPAWN_SPECTATOR("options.messages.spawn_types.other"),
     SPAWN_SUSPECT("options.messages.spawn_types.suspect"),

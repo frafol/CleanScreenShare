@@ -13,10 +13,7 @@ public class SpawnCommand implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] strings) {
 
-        if (!(commandSender instanceof Player)) {
-            return false;
-        }
-
+        if (!(commandSender instanceof Player)) return false;
         Player player = (Player) commandSender;
         if (PlayerCache.getAdministrator().contains(player.getUniqueId())) {
             player.teleport(PlayerCache.StringToLocation(SpigotCache.ADMIN_SPAWN.get(String.class)));

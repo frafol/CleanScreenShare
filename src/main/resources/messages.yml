@@ -95,13 +95,14 @@ messages:
     delay: 2
 
     # Administration message sent to the staffer when sending in hack control server.
-    # You can use %cleanname%, %hackername%, %admitname%, %refusename%, %administrator% and %suspect%.
+    # You can use %cleanname%, %cheatername%, %admitname%, %refusename% etc. (Respecting the format %typename%).
+    # But you can also use %administrator% and %suspect%.
     use_vertical: true
     vertical_format:
       - "&8&m------&5&m------&d&m------&5&m------&8&m------"
       - ""
       - "%cleanname% &7(Click to view)"
-      - "%hackername% &7(Click to view)"
+      - "%cheatername% &7(Click to view)"
       - "%admitname% &7(Click to view)"
       - "%refusename% &7(Click to view)"
       - ""

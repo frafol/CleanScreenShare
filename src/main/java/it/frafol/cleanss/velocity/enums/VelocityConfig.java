@@ -46,7 +46,7 @@ public enum VelocityConfig {
     SEND_ADMIN_MESSAGE("settings.start.send_admin_message"),
     ENABLE_SPECTATING("settings.spectate.enable"),
     CHAT_DISABLED("settings.spectate.block_chat"),
-    MESSAGE_DELAY("settings.start.message_to_control_delay"),
+    MESSAGE_DELAY("settings.start.server_message_delay"),
     COMMAND_REQUEST("settings.start.admin_commands.request"),
     COMMAND_TIME("settings.start.admin_commands.time_over"),
     STATS("settings.stats");

@@ -72,6 +72,7 @@ options:
   messages:
 
     # Messages sent to the player when he sets a player spawn in the server.
+    reloaded: "&aThe plugin has been reloaded (Spigot)."
     spawn_set: "&aSpawn has been set in your position (%type%)."
     spawn_types:
       admin: "Administrator"
@@ -92,10 +93,6 @@ options:
     # The time in ticks after which the scoreboard will be updated.
     # Lower values may cause performance issues.
     update_task: 20
-
-    # EXPERIMENTAL: Use TAB plugin to send scoreboard to players.
-    # If this is set to false, we'll use the default scoreboard system using FastBoard (recommended).
-    tab_hook: false
 
     # NOTE: In this section, you can use ALL placeholderapi placeholders, if you have it installed.
     staff_board:

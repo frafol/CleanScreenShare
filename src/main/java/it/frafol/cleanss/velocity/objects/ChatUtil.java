@@ -11,6 +11,7 @@ import net.kyori.adventure.text.ComponentBuilder;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import org.simpleyaml.configuration.ConfigurationSection;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -92,24 +93,25 @@ public class ChatUtil {
     }
 
     public void sendButtons(CommandSource commandSource, List<String> stringList, Player player_name) {
+
         if (!VelocityMessages.CONTROL_USEVERTICALFORMAT.get(Boolean.class)) {
             sendHorizontalButtons(commandSource, stringList, player_name);
             return;
         }
+
         for (String message : stringList) {
-            if (getButton(message) == null) continue;
-            String button = getButton(message);
-            if (VelocityMessages.BUTTON_EXECUTION.get(Boolean.class)) {
-                commandSource.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(message).clickEvent(ClickEvent
-                        .clickEvent(ClickEvent.Action.RUN_COMMAND, instance.getMessagesTextFile().getConfig().getString("messages.staff_message.buttons." + button + ".command")
-                                .replace("%player%", player_name.getUsername())
-                                .replace("%" + button + "name%", color(instance.getMessagesTextFile().getConfig().getString("messages.staff_message.buttons." + button + ".name"))))));
+
+            if (getButton(message) == null) {
+                commandSource.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(message));
                 continue;
             }
-            commandSource.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(message)
-                    .clickEvent(ClickEvent.clickEvent(ClickEvent.Action.SUGGEST_COMMAND, instance.getMessagesTextFile().getConfig().getString("messages.staff_message.buttons." + button + ".command")
-                            .replace("%player%", player_name.getUsername())
-                            .replace("%" + button + "name%", color(instance.getMessagesTextFile().getConfig().getString("messages.staff_message.buttons." + button + ".name"))))));
+
+            String button = getButton(message);
+            ClickEvent.Action action = ClickEvent.Action.SUGGEST_COMMAND;
+            if (VelocityMessages.BUTTON_EXECUTION.get(Boolean.class)) action = ClickEvent.Action.RUN_COMMAND;
+            commandSource.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(message.replace("%" + button + "name%", color(instance.getMessagesTextFile().getConfig().getString("messages.staff_message.buttons." + button + ".name"))))
+                    .clickEvent(ClickEvent.clickEvent(action, instance.getMessagesTextFile().getConfig().getString("messages.staff_message.buttons." + button + ".command")
+                            .replace("%player%", player_name.getUsername()))));
         }
     }
 
@@ -133,7 +135,8 @@ public class ChatUtil {
     }
 
     private String getButton(String message) {
-        for (String button : instance.getMessagesTextFile().getConfig().getStringList("messages.staff_message.buttons")) {
+        ConfigurationSection buttons = instance.getMessagesTextFile().getConfig().getConfigurationSection("messages.staff_message.buttons");
+        for (String button : buttons.getKeys(false)) {
             if (message.contains("%" + button + "name%")) {
                 return button;
             }

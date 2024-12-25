@@ -63,7 +63,7 @@ settings:
   update_alert: true
 
   # Automatically update the plugin.
-  auto_update: true
+  auto_update: false
 
   # Enables telemetry.
   stats: true
@@ -74,10 +74,11 @@ settings:
     # will receive a notification when another staffer brings in a player for control.
     send_admin_message: true
 
-    # Delay (in seconds) of the message that will be sent to the control server with player's information.
+    # Delay (in milliseconds) of the message that will be sent to the control server with player's information.
     # Increment this if the control server says that the player is not connected.
-    # NOTE: Do not change this value if you don't know what you're doing. Do not set it to <=0 values and >=20 values.
-    message_to_control_delay: 1
+    # Decrement this if you want a more rapid connection and synchronization with your Spigot server.
+    # NOTE: Do not change this value if you don't know what you're doing. Do not set it to <=0 values and >=20000 values.
+    server_message_delay: 500
 
     # By activating this feature, for every command execute by a staff member, the plugin will require a confirmation.
     admin_commands:
@@ -120,8 +121,9 @@ permissions:
   bypass: screenshare.bypass
   reload: screenshare.reload
 
-discord-webhook: # The Discord Integration is an experimental feature, report all problems on our Discord.
+discord-webhook:
 
+  # The Discord Integration is an experimental feature, report all problems on our Discord.
   # Find out how to set up your discord bot through the Discord Web Developer Application via this link.
   # https://www.ionos.com/digitalguide/server/know-how/creating-discord-bot/#:~:text=Creating%20your%20own%20Discord%20bot
 

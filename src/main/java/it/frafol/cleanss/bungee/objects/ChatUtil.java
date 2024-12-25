@@ -10,6 +10,7 @@ import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
+import org.simpleyaml.configuration.ConfigurationSection;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -116,17 +117,12 @@ public class ChatUtil {
 
             String button = getButton(message);
             TextComponent suggestMessage = new TextComponent(message.replace("%" + button + "name%", color(instance.getMessagesTextFile().getString("messages.staff_message.buttons." + button + ".name"))));
-            if (!BungeeMessages.BUTTON_EXECUTION.get(Boolean.class)) {
-                suggestMessage.setClickEvent(new ClickEvent(
-                        ClickEvent.Action.SUGGEST_COMMAND,
-                        instance.getMessagesTextFile().getString("messages.staff_message.buttons." + button + ".command")
-                                .replace("%player%", player_name.getName())));
-            } else {
-                suggestMessage.setClickEvent(new ClickEvent(
-                        ClickEvent.Action.RUN_COMMAND,
-                        instance.getMessagesTextFile().getString("messages.staff_message.buttons." + button + ".command")
-                                .replace("%player%", player_name.getName())));
-            }
+            ClickEvent.Action action = ClickEvent.Action.SUGGEST_COMMAND;
+            if (BungeeMessages.BUTTON_EXECUTION.get(Boolean.class)) action = ClickEvent.Action.RUN_COMMAND;
+            suggestMessage.setClickEvent(new ClickEvent(
+                    action,
+                    instance.getMessagesTextFile().getString("messages.staff_message.buttons." + button + ".command")
+                            .replace("%player%", player_name.getName())));
             commandSource.sendMessage(suggestMessage);
         }
     }
@@ -159,9 +155,10 @@ public class ChatUtil {
     }
 
     private String getButton(String message) {
-        for (String buttons : instance.getMessagesTextFile().getStringList("messages.staff_message.buttons")) {
-            if (message.contains("%" + buttons + "name%")) {
-                return buttons;
+        ConfigurationSection buttons = instance.getMessagesTextFile().getConfigurationSection("messages.staff_message.buttons");
+        for (String button : buttons.getKeys(false)) {
+            if (message.contains("%" + button + "name%")) {
+                return button;
             }
         }
         return null;

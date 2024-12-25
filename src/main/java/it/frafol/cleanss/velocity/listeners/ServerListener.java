@@ -61,7 +61,7 @@ public class ServerListener {
                 if (player.getProtocolVersion().getProtocol() >= ProtocolVersion.getProtocolVersion(759).getProtocol()) {
                     MessageUtil.sendChannelMessage(player, "NO_CHAT");
                 }
-            }).delay(VelocityConfig.MESSAGE_DELAY.get(Integer.class), TimeUnit.SECONDS).schedule();
+            }).delay(VelocityConfig.MESSAGE_DELAY.get(Integer.class), TimeUnit.MILLISECONDS).schedule();
 
             return;
         }
