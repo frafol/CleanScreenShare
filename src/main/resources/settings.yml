@@ -73,6 +73,7 @@ options:
 
     # Messages sent to the player when he sets a player spawn in the server.
     reloaded: "&aThe plugin has been reloaded (Spigot)."
+    spawn_send: "&aYou've teleported %suspect% at his spawn location."
     spawn_set: "&aSpawn has been set in your position (%type%)."
     spawn_types:
       admin: "Administrator"

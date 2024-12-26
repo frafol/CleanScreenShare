@@ -27,5 +27,4 @@ public enum VelocityCommandsConfig {
     public List<String> getStringList() {
         return instance.getAliasesTextFile().getConfig().getStringList(path);
     }
-
 }

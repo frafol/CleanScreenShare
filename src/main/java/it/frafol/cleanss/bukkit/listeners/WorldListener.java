@@ -11,20 +11,12 @@ public class WorldListener  implements Listener {
 
     @EventHandler
     public void onWorldWeatherChange(WeatherChangeEvent event) {
-        if (SpigotConfig.WEATHER.get(Boolean.class)) {
-            event.setCancelled(true);
-        }
+        if (SpigotConfig.WEATHER.get(Boolean.class)) event.setCancelled(true);
     }
 
     @EventHandler
     public void onMobSpawning(EntitySpawnEvent event) {
-
-        if (event.getEntity() instanceof Player) {
-            return;
-        }
-
-        if (SpigotConfig.MOB_SPAWNING.get(Boolean.class)) {
-            event.setCancelled(true);
-        }
+        if (event.getEntity() instanceof Player) return;
+        if (SpigotConfig.MOB_SPAWNING.get(Boolean.class)) event.setCancelled(true);
     }
 }

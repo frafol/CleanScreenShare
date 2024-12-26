@@ -17,10 +17,7 @@ public class NametagUtil {
     @SuppressWarnings("deprecation")
     public void setTag(Player player) {
 
-        if (!SpigotConfig.NAMETAG.get(Boolean.class)) {
-            return;
-        }
-
+        if (!SpigotConfig.NAMETAG.get(Boolean.class)) return;
         Location hologramLocation = player.getLocation().clone().add(0, 2, 0);
         ArmorStand armorStand = (ArmorStand) hologramLocation.getWorld().spawnEntity(hologramLocation, EntityType.ARMOR_STAND);
 
@@ -44,15 +41,8 @@ public class NametagUtil {
 
     @SuppressWarnings("deprecation")
     public void removeTag(Player player) {
-
-        if (!SpigotConfig.NAMETAG.get(Boolean.class)) {
-            return;
-        }
-
-        if (player.getPassenger() != null) {
-            player.getPassenger().remove();
-        }
-
+        if (!SpigotConfig.NAMETAG.get(Boolean.class)) return;
+        if (player.getPassenger() != null) player.getPassenger().remove();
         player.setCustomName(player.getName());
     }
 }

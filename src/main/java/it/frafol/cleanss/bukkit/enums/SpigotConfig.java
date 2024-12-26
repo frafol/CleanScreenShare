@@ -18,6 +18,7 @@ public enum SpigotConfig {
     ADMIN_PERMISSION("options.admin_permission"),
 
     SPAWN_SET("options.messages.spawn_set"),
+    SPAWN_SEND("options.messages.spawn_send"),
 
     RELOADED("options.messages.reloaded"),
     SPAWN_ADMIN("options.messages.spawn_types.admin"),

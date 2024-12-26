@@ -16,6 +16,7 @@ import it.frafol.cleanss.bukkit.enums.SpigotVersion;
 import it.frafol.cleanss.bukkit.hooks.PlaceholderHook;
 import it.frafol.cleanss.bukkit.listeners.PlayerListener;
 import it.frafol.cleanss.bukkit.listeners.PluginMessageReceiver;
+import it.frafol.cleanss.bukkit.listeners.TabListener;
 import it.frafol.cleanss.bukkit.listeners.WorldListener;
 import it.frafol.cleanss.bukkit.objects.PlayerCache;
 import it.frafol.cleanss.bukkit.objects.TextFile;
@@ -157,6 +158,7 @@ public class CleanSS extends JavaPlugin {
 		getCommand("setsuspectspawn").setExecutor(new SuspectSpawnCommand());
 		getCommand("setotherspawn").setExecutor(new OtherSpawnCommand());
 		getCommand("spawn").setExecutor(new SpawnCommand());
+		getCommand("spawn").setTabCompleter(new TabListener());
 
 		getLogger().info("Loading listeners...");
 		getServer().getPluginManager().registerEvents(new PlayerListener(), this);

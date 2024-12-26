@@ -4,8 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.Scanner;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
 public class UpdateCheck {
@@ -17,9 +16,7 @@ public class UpdateCheck {
     }
 
     public void getVersion(final Consumer<String> consumer) {
-        ScheduledThreadPoolExecutor service = new ScheduledThreadPoolExecutor(1);
-
-        service.schedule(() -> {
+        CompletableFuture.runAsync(() -> {
             try (InputStream inputStream = new URL("https://api.spigotmc.org/legacy/update.php?resource=107548")
                     .openStream(); Scanner scanner = new Scanner(inputStream)) {
                 if (scanner.hasNext()) {
@@ -28,6 +25,6 @@ public class UpdateCheck {
             } catch (IOException exception) {
                 PLUGIN.getLogger().severe("Unable to check for updates: " + exception.getMessage());
             }
-        }, 0, TimeUnit.MILLISECONDS);
+        });
     }
 }

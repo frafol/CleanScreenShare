@@ -66,6 +66,7 @@ public class PlayerListener implements Listener {
         }
 
         if (event.getMessage().startsWith("/")) {
+            if (PlayerCache.getAdministrator().contains(player.getUniqueId())) return;
             if (PlayerCache.getNo_chat().contains(event.getPlayer().getUniqueId())) {
                 event.setCancelled(true);
             }
