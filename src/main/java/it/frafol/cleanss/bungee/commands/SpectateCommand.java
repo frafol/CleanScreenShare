@@ -32,13 +32,13 @@ public class SpectateCommand extends Command implements TabExecutor {
     public void execute(CommandSender invocation, String[] args) {
 
         if (!invocation.hasPermission(BungeeConfig.CONTROL_PERMISSION.get(String.class))) {
-            invocation.sendMessage(TextComponent.fromLegacyText(BungeeMessages.NO_PERMISSION.color()
+            invocation.sendMessage(TextComponent.fromLegacy(BungeeMessages.NO_PERMISSION.color()
                     .replace("%prefix%", BungeeMessages.PREFIX.color())));
             return;
         }
 
         if (!(invocation instanceof ProxiedPlayer)) {
-            invocation.sendMessage(TextComponent.fromLegacyText(BungeeMessages.ONLY_PLAYERS.color()
+            invocation.sendMessage(TextComponent.fromLegacy(BungeeMessages.ONLY_PLAYERS.color()
                     .replace("%prefix%", BungeeMessages.PREFIX.color())));
             return;
         }
@@ -54,14 +54,14 @@ public class SpectateCommand extends Command implements TabExecutor {
 
         if (args[0].equalsIgnoreCase("finish") && PlayerCache.getSpectators().contains(player.getUniqueId())) {
             PlayerCache.getSpectators().remove(player.getUniqueId());
-            player.sendMessage(TextComponent.fromLegacyText(BungeeMessages.NOT_SPECTATING.color()
+            player.sendMessage(TextComponent.fromLegacy(BungeeMessages.NOT_SPECTATING.color()
                     .replace("%prefix%", BungeeMessages.PREFIX.color())));
             fallback(player);
             return;
         }
 
         if (instance.getProxy().getServerInfo(args[0]) == null) {
-            player.sendMessage(TextComponent.fromLegacyText(BungeeMessages.INVALID_SERVER.color()
+            player.sendMessage(TextComponent.fromLegacy(BungeeMessages.INVALID_SERVER.color()
                     .replace("%prefix%", BungeeMessages.PREFIX.color())
                     .replace("%server%", args[0])));
             return;
@@ -70,19 +70,19 @@ public class SpectateCommand extends Command implements TabExecutor {
         final ServerInfo server = instance.getProxy().getServerInfo(args[0]);
 
         if (!Utils.isInControlServer(server)) {
-            player.sendMessage(TextComponent.fromLegacyText(BungeeMessages.INVALID_SERVER.color()
+            player.sendMessage(TextComponent.fromLegacy(BungeeMessages.INVALID_SERVER.color()
                     .replace("%prefix%", BungeeMessages.PREFIX.color())
                     .replace("%server%", args[0])));
             return;
         }
 
         if (PlayerCache.getSpectators().contains(player.getUniqueId()) || PlayerCache.getAdministrator().contains(player.getUniqueId()) || PlayerCache.getSuspicious().contains(player.getUniqueId())) {
-            player.sendMessage(TextComponent.fromLegacyText(BungeeMessages.IN_CONTROL_ERROR.color()
+            player.sendMessage(TextComponent.fromLegacy(BungeeMessages.IN_CONTROL_ERROR.color()
                     .replace("%prefix%", BungeeMessages.PREFIX.color())));
             return;
         }
 
-        player.sendMessage(TextComponent.fromLegacyText(BungeeMessages.SPECTATING.color()
+        player.sendMessage(TextComponent.fromLegacy(BungeeMessages.SPECTATING.color()
                 .replace("%prefix%", BungeeMessages.PREFIX.color())
                 .replace("%server%", server.getName())));
         PlayerCache.getSpectators().add(player.getUniqueId());
@@ -125,7 +125,7 @@ public class SpectateCommand extends Command implements TabExecutor {
         if (BungeeConfig.SEND_ADMIN_MESSAGE.get(Boolean.class)) {
             instance.getProxy().getPlayers().stream()
                     .filter(players -> players.hasPermission(BungeeConfig.CONTROL_PERMISSION.get(String.class)))
-                    .forEach(players -> players.sendMessage(TextComponent.fromLegacyText(BungeeMessages.SPECT_ADMIN_NOTIFY.color()
+                    .forEach(players -> players.sendMessage(TextComponent.fromLegacy(BungeeMessages.SPECT_ADMIN_NOTIFY.color()
                             .replace("%prefix%", BungeeMessages.PREFIX.color())
                             .replace("%admin%", player.getName())
                             .replace("%adminprefix%", ChatUtil.color(admin_prefix))

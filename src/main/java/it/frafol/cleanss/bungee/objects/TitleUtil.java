@@ -20,16 +20,11 @@ public class TitleUtil {
 
     void sendStartTitle(ProxiedPlayer suspicious) {
 
-        if (!BungeeMessages.CONTROL_USETITLE.get(Boolean.class)) {
-            return;
-        }
-
+        if (!BungeeMessages.CONTROL_USETITLE.get(Boolean.class)) return;
         final Title title = instance.getProxy().createTitle();
-
         title.fadeIn(BungeeMessages.CONTROL_FADEIN.get(Integer.class) * 20);
         title.stay(BungeeMessages.CONTROL_STAY.get(Integer.class) * 20);
         title.fadeOut(BungeeMessages.CONTROL_FADEOUT.get(Integer.class) * 20);
-
         title.title(new TextComponent(BungeeMessages.CONTROL_TITLE.color()));
         title.subTitle(new TextComponent(BungeeMessages.CONTROL_SUBTITLE.color()));
 
@@ -39,12 +34,9 @@ public class TitleUtil {
 
     void sendAdminStartTitle(ProxiedPlayer administrator, ProxiedPlayer suspicious) {
 
-        if (!BungeeMessages.ADMINCONTROL_USETITLE.get(Boolean.class)) {
-            return;
-        }
+        if (!BungeeMessages.ADMINCONTROL_USETITLE.get(Boolean.class)) return;
 
         final Title title = instance.getProxy().createTitle();
-
         title.fadeIn(BungeeMessages.ADMINCONTROL_FADEIN.get(Integer.class) * 20);
         title.stay(BungeeMessages.ADMINCONTROL_STAY.get(Integer.class) * 20);
         title.fadeOut(BungeeMessages.ADMINCONTROL_FADEOUT.get(Integer.class) * 20);
@@ -53,14 +45,9 @@ public class TitleUtil {
         String user_suffix = "";
 
         if (isLuckPerms) {
-
             final LuckPerms api = LuckPermsProvider.get();
             final User user = api.getUserManager().getUser(suspicious.getUniqueId());
-
-            if (user == null) {
-                return;
-            }
-
+            if (user == null) return;
             final String prefix = user.getCachedData().getMetaData().getPrefix();
             final String suffix = user.getCachedData().getMetaData().getSuffix();
             user_prefix = prefix == null ? "" : prefix;
@@ -83,16 +70,12 @@ public class TitleUtil {
 
     void sendEndTitle(ProxiedPlayer suspicious) {
 
-        if (!BungeeMessages.CONTROLFINISH_USETITLE.get(Boolean.class)) {
-            return;
-        }
+        if (!BungeeMessages.CONTROLFINISH_USETITLE.get(Boolean.class)) return;
 
         final Title title = instance.getProxy().createTitle();
-
         title.fadeIn(BungeeMessages.CONTROLFINISH_FADEIN.get(Integer.class) * 20);
         title.stay(BungeeMessages.CONTROLFINISH_STAY.get(Integer.class) * 20);
         title.fadeOut(BungeeMessages.CONTROLFINISH_FADEOUT.get(Integer.class) * 20);
-
         title.title(new TextComponent(BungeeMessages.CONTROLFINISH_TITLE.color()));
         title.subTitle(new TextComponent(BungeeMessages.CONTROLFINISH_SUBTITLE.color()));
 
@@ -102,12 +85,9 @@ public class TitleUtil {
 
     void sendAdminEndTitle(ProxiedPlayer administrator, ProxiedPlayer suspicious) {
 
-        if (!BungeeMessages.ADMINCONTROLFINISH_USETITLE.get(Boolean.class)) {
-            return;
-        }
+        if (!BungeeMessages.ADMINCONTROLFINISH_USETITLE.get(Boolean.class)) return;
 
         final Title title = instance.getProxy().createTitle();
-
         title.fadeIn(BungeeMessages.ADMINCONTROLFINISH_FADEIN.get(Integer.class) * 20);
         title.stay(BungeeMessages.ADMINCONTROLFINISH_STAY.get(Integer.class) * 20);
         title.fadeOut(BungeeMessages.ADMINCONTROLFINISH_FADEOUT.get(Integer.class) * 20);
@@ -116,14 +96,9 @@ public class TitleUtil {
         String user_suffix = "";
 
         if (isLuckPerms) {
-
             final LuckPerms api = LuckPermsProvider.get();
             final User user = api.getUserManager().getUser(suspicious.getUniqueId());
-
-            if (user == null) {
-                return;
-            }
-
+            if (user == null) return;
             final String prefix = user.getCachedData().getMetaData().getPrefix();
             final String suffix = user.getCachedData().getMetaData().getSuffix();
             user_prefix = prefix == null ? "" : prefix;

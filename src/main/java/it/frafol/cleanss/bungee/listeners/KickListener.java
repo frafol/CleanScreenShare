@@ -56,7 +56,7 @@ public class KickListener implements Listener {
                 return;
             }
 
-            player.sendMessage(TextComponent.fromLegacyText(BungeeMessages.NOT_SPECTATING.color()
+            player.sendMessage(TextComponent.fromLegacy(BungeeMessages.NOT_SPECTATING.color()
                     .replace("%prefix%", BungeeMessages.PREFIX.color())));
             PlayerCache.getSpectators().remove(player.getUniqueId());
 
@@ -90,7 +90,7 @@ public class KickListener implements Listener {
             if (BungeeConfig.SEND_ADMIN_MESSAGE.get(Boolean.class)) {
                 instance.getProxy().getPlayers().stream()
                         .filter(players -> players.hasPermission(BungeeConfig.CONTROL_PERMISSION.get(String.class)))
-                        .forEach(players -> players.sendMessage(TextComponent.fromLegacyText(BungeeMessages.SPECT_ADMIN_NOTIFY_FINISH.color()
+                        .forEach(players -> players.sendMessage(TextComponent.fromLegacy(BungeeMessages.SPECT_ADMIN_NOTIFY_FINISH.color()
                                 .replace("%prefix%", BungeeMessages.PREFIX.color())
                                 .replace("%admin%", player.getName())
                                 .replace("%adminprefix%", ChatUtil.color(admin_prefix))
@@ -108,7 +108,7 @@ public class KickListener implements Listener {
 
             event.setCancelled(true);
             if (event.getReason().equals(ServerConnectEvent.Reason.COMMAND)) {
-                player.sendMessage(TextComponent.fromLegacyText(BungeeMessages.CANT_SWITCH.color()
+                player.sendMessage(TextComponent.fromLegacy(BungeeMessages.CANT_SWITCH.color()
                         .replace("%prefix%", BungeeMessages.PREFIX.color())));
             }
         }
@@ -131,12 +131,12 @@ public class KickListener implements Listener {
 
         if (proxyServer == null) {
             if (PlayerCache.getAdministrator().contains(player.getUniqueId())) {
-                instance.getValue(PlayerCache.getCouples(), player).disconnect(TextComponent.fromLegacyText(BungeeMessages.FINISHSUS.color().replace("%prefix%", BungeeMessages.PREFIX.color())));
+                instance.getValue(PlayerCache.getCouples(), player).disconnect(TextComponent.fromLegacy(BungeeMessages.FINISHSUS.color().replace("%prefix%", BungeeMessages.PREFIX.color())));
                 instance.getLogger().severe("Fallback server was not found in your BungeeCord configuration or is offline, " + player.getName() + " will not be able to reconnect to the server.");
             }
 
             if (PlayerCache.getSuspicious().contains(player.getUniqueId())) {
-                instance.getKey(PlayerCache.getCouples(), player).disconnect(TextComponent.fromLegacyText(BungeeMessages.FINISHSUS.color().replace("%prefix%", BungeeMessages.PREFIX.color())));
+                instance.getKey(PlayerCache.getCouples(), player).disconnect(TextComponent.fromLegacy(BungeeMessages.FINISHSUS.color().replace("%prefix%", BungeeMessages.PREFIX.color())));
                 instance.getLogger().severe("Fallback server was not found in your BungeeCord configuration or is offline, " + player.getName() + " will not be able to reconnect to the server.");
             }
         }

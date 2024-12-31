@@ -40,19 +40,19 @@ public class ControlCommand extends Command implements TabExecutor {
 		boolean luckperms = instance.getProxy().getPluginManager().getPlugin("LuckPerms") != null;
 
 		if (!(invocation instanceof ProxiedPlayer)) {
-			invocation.sendMessage(TextComponent.fromLegacyText(BungeeMessages.ONLY_PLAYERS.color()
+			invocation.sendMessage(TextComponent.fromLegacy(BungeeMessages.ONLY_PLAYERS.color()
 					.replace("%prefix%", BungeeMessages.PREFIX.color())));
 			return;
 		}
 
 		if (!invocation.hasPermission(BungeeConfig.CONTROL_PERMISSION.get(String.class))) {
-			invocation.sendMessage(TextComponent.fromLegacyText(BungeeMessages.NO_PERMISSION.color()
+			invocation.sendMessage(TextComponent.fromLegacy(BungeeMessages.NO_PERMISSION.color()
 					.replace("%prefix%", BungeeMessages.PREFIX.color())));
 			return;
 		}
 
 		if (args.length == 0) {
-			invocation.sendMessage(TextComponent.fromLegacyText(BungeeMessages.PLAYER_MISSING.color()
+			invocation.sendMessage(TextComponent.fromLegacy(BungeeMessages.PLAYER_MISSING.color()
 					.replace("%prefix%", BungeeMessages.PREFIX.color())));
 			return;
 		}
@@ -64,7 +64,7 @@ public class ControlCommand extends Command implements TabExecutor {
 		}
 
 		if (!instance.getProxy().getPlayers().toString().contains(args[0])) {
-			invocation.sendMessage(TextComponent.fromLegacyText(BungeeMessages.NOT_ONLINE.color()
+			invocation.sendMessage(TextComponent.fromLegacy(BungeeMessages.NOT_ONLINE.color()
 					.replace("%prefix%", BungeeMessages.PREFIX.color())
 					.replace("%player%", args[0])));
 			return;
@@ -74,7 +74,7 @@ public class ControlCommand extends Command implements TabExecutor {
 		final ProxiedPlayer sender = (ProxiedPlayer) invocation;
 
 		if (!player.isPresent()) {
-			invocation.sendMessage(TextComponent.fromLegacyText(BungeeMessages.NOT_ONLINE.color()
+			invocation.sendMessage(TextComponent.fromLegacy(BungeeMessages.NOT_ONLINE.color()
 					.replace("%prefix%", BungeeMessages.PREFIX.color())
 					.replace("%player%", args[0])
 					.replace("&", "§")));
@@ -82,13 +82,13 @@ public class ControlCommand extends Command implements TabExecutor {
 		}
 
 		if (sender.getUniqueId().equals(player.get().getUniqueId())) {
-			invocation.sendMessage(TextComponent.fromLegacyText(BungeeMessages.YOURSELF.color()
+			invocation.sendMessage(TextComponent.fromLegacy(BungeeMessages.YOURSELF.color()
 					.replace("%prefix%", BungeeMessages.PREFIX.color())));
 			return;
 		}
 
 		if (player.get().hasPermission(BungeeConfig.BYPASS_PERMISSION.get(String.class))) {
-			invocation.sendMessage(TextComponent.fromLegacyText(BungeeMessages.PLAYER_BYPASS.color()
+			invocation.sendMessage(TextComponent.fromLegacy(BungeeMessages.PLAYER_BYPASS.color()
 					.replace("%prefix%", BungeeMessages.PREFIX.color())));
 			return;
 		}
@@ -96,7 +96,7 @@ public class ControlCommand extends Command implements TabExecutor {
 		for (String blocked_servers : BungeeConfig.CONTROL_BYPASS.getStringList()) {
 			ServerInfo blockedServer = instance.getProxy().getServerInfo(blocked_servers);
 			if (blockedServer != null && player.get().getServer().getInfo().equals(blockedServer)) {
-				invocation.sendMessage(TextComponent.fromLegacyText(BungeeMessages.PLAYER_BYPASS_SERVER.color()
+				invocation.sendMessage(TextComponent.fromLegacy(BungeeMessages.PLAYER_BYPASS_SERVER.color()
 						.replace("%prefix%", BungeeMessages.PREFIX.color())
 						.replace("%server%", blockedServer.getName())
 						.replace("%player%", player.get().getDisplayName())));
@@ -105,7 +105,7 @@ public class ControlCommand extends Command implements TabExecutor {
 		}
 
 		if (instance.getPremiumVanish() && BungeeConfig.PREMIUMVANISH.get(Boolean.class) && BungeeVanishAPI.getInvisiblePlayers().contains(player.get().getUniqueId())) {
-			invocation.sendMessage(TextComponent.fromLegacyText(BungeeMessages.PLAYER_BYPASS.color()
+			invocation.sendMessage(TextComponent.fromLegacy(BungeeMessages.PLAYER_BYPASS.color()
 					.replace("%prefix%", BungeeMessages.PREFIX.color())));
 			return;
 		}
@@ -117,7 +117,7 @@ public class ControlCommand extends Command implements TabExecutor {
 		}
 
 		if (servers.isEmpty()) {
-			invocation.sendMessage(TextComponent.fromLegacyText(BungeeMessages.NO_EXIST.color()
+			invocation.sendMessage(TextComponent.fromLegacy(BungeeMessages.NO_EXIST.color()
 					.replace("%prefix%", BungeeMessages.PREFIX.color())));
 			return;
 		}
@@ -125,20 +125,20 @@ public class ControlCommand extends Command implements TabExecutor {
 		ServerInfo proxyServer = Utils.getBestServer(servers);
 
 		if (PlayerCache.getSuspicious().contains(player.get().getUniqueId())) {
-			invocation.sendMessage(TextComponent.fromLegacyText(BungeeMessages.CONTROL_ALREADY.color()
+			invocation.sendMessage(TextComponent.fromLegacy(BungeeMessages.CONTROL_ALREADY.color()
 					.replace("%prefix%", BungeeMessages.PREFIX.color())));
 			return;
 		}
 
 		if (PlayerCache.getAdministrator().contains(sender.getUniqueId())) {
-			invocation.sendMessage(TextComponent.fromLegacyText(BungeeMessages.CONTROL_ALREADY.color()
+			invocation.sendMessage(TextComponent.fromLegacy(BungeeMessages.CONTROL_ALREADY.color()
 					.replace("%prefix%", BungeeMessages.PREFIX.color())));
 			return;
 		}
 
 		if (getMySQL()) {
 			if (PlayerCache.getIn_control().get(player.get().getUniqueId()) != null && PlayerCache.getIn_control().get(player.get().getUniqueId()) == 1) {
-				invocation.sendMessage(TextComponent.fromLegacyText(BungeeMessages.CONTROL_ALREADY.color()
+				invocation.sendMessage(TextComponent.fromLegacy(BungeeMessages.CONTROL_ALREADY.color()
 						.replace("%prefix%", BungeeMessages.PREFIX.color())));
 				return;
 			}

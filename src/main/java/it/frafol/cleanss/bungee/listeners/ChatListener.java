@@ -49,7 +49,7 @@ public class ChatListener implements Listener {
 
         if (PlayerCache.getSpectators().contains(player.getUniqueId())) {
             event.setCancelled(true);
-            player.sendMessage(TextComponent.fromLegacyText(BungeeMessages.CHAT_DISABLED.color()
+            player.sendMessage(TextComponent.fromLegacy(BungeeMessages.CHAT_DISABLED.color()
                     .replace("%prefix%", BungeeMessages.PREFIX.color())));
             return;
         }
@@ -81,7 +81,7 @@ public class ChatListener implements Listener {
 
             event.setCancelled(true);
 
-            player.sendMessage(TextComponent.fromLegacyText(BungeeMessages.CONTROL_CHAT_FORMAT.color()
+            player.sendMessage(TextComponent.fromLegacy(BungeeMessages.CONTROL_CHAT_FORMAT.color()
                     .replace("%prefix%", BungeeMessages.PREFIX.color())
                     .replace("%player%", player.getName())
                     .replace("%message%", event.getMessage())
@@ -89,7 +89,7 @@ public class ChatListener implements Listener {
                     .replace("%usersuffix%", ChatUtil.color(user_suffix))
                     .replace("%state%", BungeeMessages.CONTROL_CHAT_STAFF.color())));
 
-            instance.getValue(PlayerCache.getCouples(), player).sendMessage(TextComponent.fromLegacyText(BungeeMessages.CONTROL_CHAT_FORMAT.color()
+            instance.getValue(PlayerCache.getCouples(), player).sendMessage(TextComponent.fromLegacy(BungeeMessages.CONTROL_CHAT_FORMAT.color()
                     .replace("%prefix%", BungeeMessages.PREFIX.color())
                     .replace("%player%", player.getName())
                     .replace("%message%", event.getMessage())
@@ -99,7 +99,7 @@ public class ChatListener implements Listener {
 
             instance.getProxy().getPlayers().stream().filter
                             (players -> PlayerCache.getSpectators().contains(players.getUniqueId()))
-                    .forEach(players -> players.sendMessage(TextComponent.fromLegacyText(BungeeMessages.CONTROL_CHAT_FORMAT.color()
+                    .forEach(players -> players.sendMessage(TextComponent.fromLegacy(BungeeMessages.CONTROL_CHAT_FORMAT.color()
                             .replace("%prefix%", BungeeMessages.PREFIX.color())
                             .replace("%player%", player.getName())
                             .replace("%message%", event.getMessage())
@@ -114,7 +114,7 @@ public class ChatListener implements Listener {
 
             event.setCancelled(true);
 
-            player.sendMessage(TextComponent.fromLegacyText(BungeeMessages.CONTROL_CHAT_FORMAT.color()
+            player.sendMessage(TextComponent.fromLegacy(BungeeMessages.CONTROL_CHAT_FORMAT.color()
                     .replace("%prefix%", BungeeMessages.PREFIX.color())
                     .replace("%player%", player.getName())
                     .replace("%message%", event.getMessage())
@@ -122,7 +122,7 @@ public class ChatListener implements Listener {
                     .replace("%usersuffix%", ChatUtil.color(user_suffix))
                     .replace("%state%", BungeeMessages.CONTROL_CHAT_SUS.color())));
 
-            instance.getKey(PlayerCache.getCouples(), player).sendMessage(TextComponent.fromLegacyText(BungeeMessages.CONTROL_CHAT_FORMAT.color()
+            instance.getKey(PlayerCache.getCouples(), player).sendMessage(TextComponent.fromLegacy(BungeeMessages.CONTROL_CHAT_FORMAT.color()
                     .replace("%prefix%", BungeeMessages.PREFIX.color())
                     .replace("%player%", player.getName())
                     .replace("%message%", event.getMessage())
@@ -132,7 +132,7 @@ public class ChatListener implements Listener {
 
             instance.getProxy().getPlayers().stream().filter
                             (players -> PlayerCache.getSpectators().contains(players.getUniqueId()))
-                    .forEach(players -> players.sendMessage(TextComponent.fromLegacyText(BungeeMessages.CONTROL_CHAT_FORMAT.color()
+                    .forEach(players -> players.sendMessage(TextComponent.fromLegacy(BungeeMessages.CONTROL_CHAT_FORMAT.color()
                             .replace("%prefix%", BungeeMessages.PREFIX.color())
                             .replace("%player%", player.getName())
                             .replace("%message%", event.getMessage())

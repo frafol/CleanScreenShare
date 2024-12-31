@@ -31,7 +31,7 @@ public class InfoCommand extends Command implements TabExecutor {
     public void execute(CommandSender invocation, String[] args) {
 
         if (!invocation.hasPermission(BungeeConfig.INFO_PERMISSION.get(String.class))) {
-            invocation.sendMessage(TextComponent.fromLegacyText(BungeeMessages.NO_PERMISSION.color()
+            invocation.sendMessage(TextComponent.fromLegacy(BungeeMessages.NO_PERMISSION.color()
                     .replace("%prefix%", BungeeMessages.PREFIX.color())));
             return;
         }
@@ -56,7 +56,7 @@ public class InfoCommand extends Command implements TabExecutor {
         }
 
         if (player == null || !player.isConnected()) {
-            invocation.sendMessage(TextComponent.fromLegacyText(BungeeMessages.NOT_ONLINE.color()
+            invocation.sendMessage(TextComponent.fromLegacy(BungeeMessages.NOT_ONLINE.color()
                     .replace("%prefix%", BungeeMessages.PREFIX.color())));
             return;
         }

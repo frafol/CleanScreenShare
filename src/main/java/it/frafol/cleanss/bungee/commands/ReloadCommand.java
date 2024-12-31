@@ -28,7 +28,7 @@ public class ReloadCommand extends Command {
     public void execute(CommandSender sender, String[] args) {
 
         if (!sender.hasPermission(BungeeConfig.RELOAD_PERMISSION.get(String.class))) {
-            sender.sendMessage(TextComponent.fromLegacyText(BungeeMessages.NO_PERMISSION.color()
+            sender.sendMessage(TextComponent.fromLegacy(BungeeMessages.NO_PERMISSION.color()
                     .replace("%prefix%", BungeeMessages.PREFIX.color())));
             return;
         }
@@ -36,7 +36,7 @@ public class ReloadCommand extends Command {
         stopTasks();
         TextFile.reloadAll();
         restartBot();
-        sender.sendMessage(TextComponent.fromLegacyText(BungeeMessages.RELOADED.color()
+        sender.sendMessage(TextComponent.fromLegacy(BungeeMessages.RELOADED.color()
                 .replace("%prefix%", BungeeMessages.PREFIX.color())));
 
         startTasks();

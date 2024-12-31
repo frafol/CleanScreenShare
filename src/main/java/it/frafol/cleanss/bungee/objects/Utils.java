@@ -26,36 +26,32 @@ public class Utils {
     public HashMap<ServerInfo, ScheduledTask> task = new HashMap<>();
 
     public void startControl(ProxiedPlayer suspicious, ProxiedPlayer administrator, ServerInfo proxyServer) {
-
+        
         if (!Objects.equals(administrator.getServer().getInfo(), proxyServer)) {
             connect(administrator, proxyServer);
         } else {
             MessageUtil.sendChannelAdvancedMessage(administrator, suspicious,"ADMIN");
         }
-
+        
         if (!Objects.equals(suspicious.getServer().getInfo(), proxyServer)) {
             connect(suspicious, proxyServer);
         } else {
             MessageUtil.sendChannelMessage(suspicious, "SUSPECT");
         }
-
+        
         PlayerCache.getAdministrator().add(administrator.getUniqueId());
         PlayerCache.getSuspicious().add(suspicious.getUniqueId());
         PlayerCache.getCouples().put(administrator, suspicious);
-
+        
         if (BungeeConfig.MYSQL.get(Boolean.class)) {
-
             instance.getData().setInControl(suspicious.getUniqueId(), 1);
             instance.getData().setInControl(administrator.getUniqueId(), 1);
-
             if (instance.getData().getStats(administrator.getUniqueId(), "controls") != -1) {
                 instance.getData().setControls(administrator.getUniqueId(), instance.getData().getStats(administrator.getUniqueId(), "controls") + 1);
             }
-
             if (instance.getData().getStats(suspicious.getUniqueId(), "suffered") != -1) {
                 instance.getData().setControlsSuffered(suspicious.getUniqueId(), instance.getData().getStats(suspicious.getUniqueId(), "suffered") + 1);
             }
-
         } else {
             PlayerCache.getIn_control().put(suspicious.getUniqueId(), 1);
             PlayerCache.getIn_control().put(administrator.getUniqueId(), 1);
@@ -66,10 +62,7 @@ public class Utils {
         TitleUtil.sendStartTitle(suspicious);
         TitleUtil.sendAdminStartTitle(administrator, suspicious);
 
-        if (BungeeConfig.CHECK_FOR_PROBLEMS.get(Boolean.class)) {
-            Utils.checkForErrors(suspicious, administrator, proxyServer);
-        }
-
+        if (BungeeConfig.CHECK_FOR_PROBLEMS.get(Boolean.class)) Utils.checkForErrors(suspicious, administrator, proxyServer);
         String admin_prefix;
         String admin_suffix;
         String sus_prefix;
@@ -91,7 +84,7 @@ public class Utils {
         if (BungeeConfig.SEND_ADMIN_MESSAGE.get(Boolean.class)) {
             instance.getProxy().getPlayers().stream()
                     .filter(players -> players.hasPermission(BungeeConfig.CONTROL_PERMISSION.get(String.class)))
-                    .forEach(players -> players.sendMessage(TextComponent.fromLegacyText(BungeeMessages.ADMIN_NOTIFY.color()
+                    .forEach(players -> players.sendMessage(TextComponent.fromLegacy(BungeeMessages.ADMIN_NOTIFY.color()
                             .replace("%prefix%", BungeeMessages.PREFIX.color())
                             .replace("%admin%", administrator.getName())
                             .replace("%suspect%", suspicious.getName())
@@ -101,7 +94,7 @@ public class Utils {
                             .replace("%suspectsuffix%", ChatUtil.color(sus_suffix)))));
         }
 
-        suspicious.sendMessage(TextComponent.fromLegacyText(BungeeMessages.MAINSUS.color()
+        suspicious.sendMessage(TextComponent.fromLegacy(BungeeMessages.MAINSUS.color()
                 .replace("%prefix%", BungeeMessages.PREFIX.color())
                 .replace("%administrator%", administrator.getName())
                 .replace("%suspect%", suspicious.getName())
@@ -115,10 +108,7 @@ public class Utils {
 
     public void finishControl(ProxiedPlayer suspicious, ProxiedPlayer administrator, ServerInfo proxyServer) {
 
-        if (administrator == null || suspicious == null) {
-            return;
-        }
-
+        if (administrator == null || suspicious == null) return;
         if (administrator.isConnected() && suspicious.isConnected()) {
 
             PlayerCache.getAdministrator().remove(administrator.getUniqueId());
@@ -133,16 +123,10 @@ public class Utils {
                 PlayerCache.getIn_control().put(administrator.getUniqueId(), 0);
             }
 
-            if (administrator.getServer() == null) {
-                return;
-            }
-
+            if (administrator.getServer() == null) return;
             if (isInControlServer(administrator.getServer().getInfo())) {
 
-                if (proxyServer == null) {
-                    return;
-                }
-
+                if (proxyServer == null) return;
                 if (!BungeeConfig.USE_DISCONNECT.get(Boolean.class)) {
                     connect(administrator, proxyServer);
                 } else {
@@ -152,7 +136,7 @@ public class Utils {
                 TitleUtil.sendEndTitle(suspicious);
                 TitleUtil.sendAdminEndTitle(administrator, suspicious);
 
-                suspicious.sendMessage(TextComponent.fromLegacyText(BungeeMessages.FINISHSUS.color().replace("%prefix%", BungeeMessages.PREFIX.color())));
+                suspicious.sendMessage(TextComponent.fromLegacy(BungeeMessages.FINISHSUS.color().replace("%prefix%", BungeeMessages.PREFIX.color())));
 
                 if (suspicious.getServer() == null) {
                     return;
@@ -181,7 +165,7 @@ public class Utils {
             TitleUtil.sendEndTitle(suspicious);
             TitleUtil.sendAdminEndTitle(administrator, suspicious);
 
-            suspicious.sendMessage(TextComponent.fromLegacyText(BungeeMessages.FINISHSUS.color()
+            suspicious.sendMessage(TextComponent.fromLegacy(BungeeMessages.FINISHSUS.color()
                     .replace("%prefix%", BungeeMessages.PREFIX.color())));
 
             PlayerCache.getCouples().remove(administrator);
@@ -205,7 +189,7 @@ public class Utils {
                 MessageUtil.sendChannelMessage(administrator, "DISCONNECT_NOW");
             }
 
-            administrator.sendMessage(TextComponent.fromLegacyText(BungeeMessages.LEAVESUS.color()
+            administrator.sendMessage(TextComponent.fromLegacy(BungeeMessages.LEAVESUS.color()
                     .replace("%prefix%", BungeeMessages.PREFIX.color())
                     .replace("%player%", suspicious.getName())));
 
@@ -316,7 +300,7 @@ public class Utils {
             if (BungeeConfig.SEND_ADMIN_MESSAGE.get(Boolean.class)) {
                 instance.getProxy().getPlayers().stream()
                         .filter(players -> players.hasPermission(BungeeConfig.CONTROL_PERMISSION.get(String.class)))
-                        .forEach(players -> players.sendMessage(TextComponent.fromLegacyText(BungeeMessages.ADMIN_NOTIFY_FINISH.color()
+                        .forEach(players -> players.sendMessage(TextComponent.fromLegacy(BungeeMessages.ADMIN_NOTIFY_FINISH.color()
                                 .replace("%prefix%", BungeeMessages.PREFIX.color())
                                 .replace("%admin%", administrator_player.getName())
                                 .replace("%suspect%", suspect.getName())
@@ -326,7 +310,6 @@ public class Utils {
                                 .replace("%suspectsuffix%", ChatUtil.color(sus_suffix))
                                 .replace("%result%", BungeeMessages.CHEATER.color()))));
             }
-
             return;
         }
 
@@ -357,7 +340,7 @@ public class Utils {
         if (BungeeConfig.SEND_ADMIN_MESSAGE.get(Boolean.class)) {
             instance.getProxy().getPlayers().stream()
                     .filter(players -> players.hasPermission(BungeeConfig.CONTROL_PERMISSION.get(String.class)))
-                    .forEach(players -> players.sendMessage(TextComponent.fromLegacyText(BungeeMessages.ADMIN_NOTIFY_FINISH.color()
+                    .forEach(players -> players.sendMessage(TextComponent.fromLegacy(BungeeMessages.ADMIN_NOTIFY_FINISH.color()
                             .replace("%prefix%", BungeeMessages.PREFIX.color())
                             .replace("%admin%", administrator_player.getName())
                             .replace("%suspect%", suspect.getName())
@@ -368,10 +351,7 @@ public class Utils {
                             .replace("%result%", BungeeMessages.LEFT.color()))));
         }
 
-        if (!BungeeConfig.SLOG_PUNISH.get(Boolean.class)) {
-            return;
-        }
-
+        if (!BungeeConfig.SLOG_PUNISH.get(Boolean.class)) return;
         instance.getProxy().getPluginManager().dispatchCommand(
                 instance.getProxy().getConsole(),
                 BungeeConfig.SLOG_COMMAND.get(String.class)
@@ -380,110 +360,67 @@ public class Utils {
     }
 
     public boolean isInControlServer(ServerInfo server) {
-        for (String string : BungeeConfig.CONTROL.getStringList()) {
-            if (string.equals(server.getName())) {
-                return true;
-            }
-        }
+        for (String string : BungeeConfig.CONTROL.getStringList()) if (string.equals(server.getName())) return true;
         return false;
     }
 
     public String getPrefix(ProxiedPlayer player) {
-
-        if (!isLuckPerms) {
-            return null;
-        }
-
+        if (!isLuckPerms) return null;
         final LuckPerms api = LuckPermsProvider.get();
         final User user = api.getUserManager().getUser(player.getUniqueId());
-
-        if (user == null) {
-            return null;
-        }
-
+        if (user == null) return null;
         String prefix = user.getCachedData().getMetaData().getPrefix();
-
-        if (prefix == null) {
-            prefix = "";
-        }
-
+        if (prefix == null) prefix = "";
         return prefix;
     }
 
     public String getSuffix(ProxiedPlayer player) {
-
-        if (!isLuckPerms) {
-            return null;
-        }
-
+        if (!isLuckPerms) return null;
         final LuckPerms api = LuckPermsProvider.get();
         final User user = api.getUserManager().getUser(player.getUniqueId());
-
-        if (user == null) {
-            return null;
-        }
-
+        if (user == null) return null;
         String suffix = user.getCachedData().getMetaData().getSuffix();
-
-        if (suffix == null) {
-            suffix = "";
-        }
-
+        if (suffix == null) suffix = "";
         return suffix;
     }
 
     private void checkForErrors(ProxiedPlayer suspicious, ProxiedPlayer administrator, ServerInfo proxyServer) {
-
         instance.getProxy().getScheduler().schedule(instance, () -> {
-
-            if (!(PlayerCache.getSuspicious().contains(suspicious.getUniqueId()) && PlayerCache.getAdministrator().contains(administrator.getUniqueId()))) {
-                return;
-            }
-
-            if (suspicious.getServer().getInfo().equals(proxyServer) || administrator.getServer().getInfo().equals(proxyServer)) {
-                return;
-            }
-
+            if (!(PlayerCache.getSuspicious().contains(suspicious.getUniqueId()) && PlayerCache.getAdministrator().contains(administrator.getUniqueId()))) return;
+            if (suspicious.getServer().getInfo().equals(proxyServer) || administrator.getServer().getInfo().equals(proxyServer)) return;
             List<ServerInfo> servers = Utils.getServerList(BungeeConfig.CONTROL_FALLBACK.getStringList());
-
-            if (!BungeeConfig.DISABLE_PING.get(Boolean.class)) {
-                servers = Utils.getOnlineServers(servers);
-            }
-
+            if (!BungeeConfig.DISABLE_PING.get(Boolean.class)) servers = Utils.getOnlineServers(servers);
             final ServerInfo fallbackServer = Utils.getBestServer(servers);
-
+            if (fallbackServer == null) {
+                administrator.disconnect(TextComponent.fromLegacy("Your control server is not configured correctly or is crashed, please check the configuration file. " +
+                        "The Control cannot be handled!"));
+                suspicious.disconnect(TextComponent.fromLegacy("Your control server is not configured correctly or is crashed, please check the configuration file. " +
+                        "The Control cannot be handled!"));
+                return;
+            }
             Utils.finishControl(suspicious, administrator, fallbackServer);
-            administrator.sendMessage(TextComponent.fromLegacyText(BungeeMessages.NO_EXIST.color()
+            administrator.sendMessage(TextComponent.fromLegacy(BungeeMessages.NO_EXIST.color()
                     .replace("%prefix%", BungeeMessages.PREFIX.color())));
             instance.getLogger().severe("Your control server is not configured correctly or is crashed, please check the configuration file. " +
                     "The Control cannot be handled!");
-
         }, 2L, TimeUnit.SECONDS);
     }
 
     public List<ServerInfo> getServerList(List<String> stringList) {
         List<ServerInfo> servers = new ArrayList<>();
         for (String server : stringList) {
-
             if (!instance.getProxy().getServers().containsKey(server)) {
-                if (BungeeConfig.USE_DISCONNECT.get(Boolean.class)) {
-                    continue;
-                }
+                if (BungeeConfig.USE_DISCONNECT.get(Boolean.class)) continue;
                 instance.getLogger().severe(BungeeMessages.NOT_VALID.color().replace("%server%", server));
                 continue;
             }
-
             servers.add(instance.getProxy().getServerInfo(server));
         }
         return servers;
     }
 
     public ServerInfo getBestServer(List<ServerInfo> list) {
-
-        if (list.isEmpty()) {
-            return null;
-        }
-
+        if (list.isEmpty()) return null;
         switch (BungeeConfig.STRATEGY.get(String.class)) {
             case "RANDOM":
                 return getRandomServer(list);
@@ -498,14 +435,12 @@ public class Utils {
     }
 
     public List<ServerInfo> getOnlineServers(List<ServerInfo> list) {
-
         List<ServerInfo> servers = new ArrayList<>();
         list.forEach(server -> {
             if (PlayerCache.getOnlineServers().contains(server)) {
                 servers.add(server);
             }
         });
-
         return servers;
     }
 
@@ -514,37 +449,24 @@ public class Utils {
     }
 
     public void stopTask(ServerInfo serverInfo) {
-        if (task.get(serverInfo) != null) {
-            task.get(serverInfo).cancel();
-        }
-
+        if (task.get(serverInfo) != null) task.get(serverInfo).cancel();
         task.remove(serverInfo);
         PlayerCache.getOnlineServers().remove(serverInfo);
     }
 
     private void taskServer(ServerInfo server) {
-
-        if (BungeeConfig.DISABLE_PING.get(Boolean.class)) {
-            return;
-        }
-
+        if (BungeeConfig.DISABLE_PING.get(Boolean.class)) return;
         task.put(server, instance.getProxy().getScheduler().schedule(instance, () -> server.ping((result, error) -> {
-
-            if (CleanSS.getInstance() == null || instance.getConfigTextFile() == null) {
-                return;
-            }
-
+            if (CleanSS.getInstance() == null || instance.getConfigTextFile() == null) return;
             if (BungeeConfig.CONTROL_FALLBACK.getStringList().contains(server.getName())
                     && BungeeConfig.USE_DISCONNECT.get(Boolean.class)) {
                 PlayerCache.getOnlineServers().add(server);
                 return;
             }
-
             if (error == null && result != null) {
                 PlayerCache.getOnlineServers().add(server);
                 return;
             }
-
             PlayerCache.getOnlineServers().remove(server);
         }), 0L, (long) BungeeConfig.PING_DELAY.get(Integer.class), TimeUnit.SECONDS));
     }
@@ -566,16 +488,13 @@ public class Utils {
         for (ServerInfo serverInfo : list) {
             if (server.get() == null) {
                 server.set(serverInfo);
-            } else if (server.get().getPlayers().size() < serverInfo.getPlayers().size()) {
+                continue;
+            }
+            if (server.get().getPlayers().size() < serverInfo.getPlayers().size()) {
                 serverInfo.ping((result, error) -> {
-                    if (error == null && result != null) {
-
-                        if (result.getPlayers().getMax() == result.getPlayers().getOnline()) {
-                            return;
-                        }
-
-                        server.set(serverInfo);
-                    }
+                    if (error != null || result == null) return;
+                    if (result.getPlayers().getMax() == result.getPlayers().getOnline()) return;
+                    server.set(serverInfo);
                 });
             }
         }

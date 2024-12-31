@@ -23,40 +23,40 @@ public class DebugCommand extends Command {
             return;
         }
 
-        invocation.sendMessage(TextComponent.fromLegacyText("§d| "));
-        invocation.sendMessage(TextComponent.fromLegacyText("§d| §7CleanScreenShare Informations"));
-        invocation.sendMessage(TextComponent.fromLegacyText("§d| "));
-        invocation.sendMessage(TextComponent.fromLegacyText("§d| §7Version: §d" + instance.getDescription().getVersion()));
-        invocation.sendMessage(TextComponent.fromLegacyText("§d| §7BungeeCord: §d" + instance.getProxy().getVersion()));
-        invocation.sendMessage(TextComponent.fromLegacyText("§d| §7MySQL: " + getMySQL()));
-        invocation.sendMessage(TextComponent.fromLegacyText("§d| §7Discord: " + getDiscord()));
-        invocation.sendMessage(TextComponent.fromLegacyText("§d| "));
-        invocation.sendMessage(TextComponent.fromLegacyText("§d| §7Control servers: "));
+        invocation.sendMessage(TextComponent.fromLegacy("§d| "));
+        invocation.sendMessage(TextComponent.fromLegacy("§d| §7CleanScreenShare Informations"));
+        invocation.sendMessage(TextComponent.fromLegacy("§d| "));
+        invocation.sendMessage(TextComponent.fromLegacy("§d| §7Version: §d" + instance.getDescription().getVersion()));
+        invocation.sendMessage(TextComponent.fromLegacy("§d| §7BungeeCord: §d" + instance.getProxy().getVersion()));
+        invocation.sendMessage(TextComponent.fromLegacy("§d| §7MySQL: " + getMySQL()));
+        invocation.sendMessage(TextComponent.fromLegacy("§d| §7Discord: " + getDiscord()));
+        invocation.sendMessage(TextComponent.fromLegacy("§d| "));
+        invocation.sendMessage(TextComponent.fromLegacy("§d| §7Control servers: "));
 
         Utils.getServerList(BungeeConfig.CONTROL.getStringList()).forEach(server -> {
 
             if (Utils.getOnlineServers(Utils.getServerList(BungeeConfig.CONTROL.getStringList())).contains(server)) {
-                invocation.sendMessage(TextComponent.fromLegacyText("§d| §7- §a" + server.getName()));
+                invocation.sendMessage(TextComponent.fromLegacy("§d| §7- §a" + server.getName()));
                 return;
             }
 
-            invocation.sendMessage(TextComponent.fromLegacyText("§d| §7- §c" + server.getName()));
+            invocation.sendMessage(TextComponent.fromLegacy("§d| §7- §c" + server.getName()));
         });
 
-        invocation.sendMessage(TextComponent.fromLegacyText("§d| "));
-        invocation.sendMessage(TextComponent.fromLegacyText("§d| §7Fallback servers: "));
+        invocation.sendMessage(TextComponent.fromLegacy("§d| "));
+        invocation.sendMessage(TextComponent.fromLegacy("§d| §7Fallback servers: "));
 
         Utils.getServerList(BungeeConfig.CONTROL_FALLBACK.getStringList()).forEach(server -> {
 
             if (Utils.getOnlineServers(Utils.getServerList(BungeeConfig.CONTROL_FALLBACK.getStringList())).contains(server)) {
-                invocation.sendMessage(TextComponent.fromLegacyText("§d| §7- §a" + server.getName()));
+                invocation.sendMessage(TextComponent.fromLegacy("§d| §7- §a" + server.getName()));
                 return;
             }
 
-            invocation.sendMessage(TextComponent.fromLegacyText("§d| §7- §c" + server.getName()));
+            invocation.sendMessage(TextComponent.fromLegacy("§d| §7- §c" + server.getName()));
         });
 
-        invocation.sendMessage(TextComponent.fromLegacyText("§d| "));
+        invocation.sendMessage(TextComponent.fromLegacy("§d| "));
     }
 
     private String getMySQL() {

@@ -198,27 +198,15 @@ public class Utils {
     }
 
     public String getSuffix(Player player) {
-
         final LuckPerms api = LuckPermsProvider.get();
         final User user = api.getUserManager().getUser(player.getUniqueId());
-
-        if (user == null) {
-            return null;
-        }
-
-        if (user.getCachedData().getMetaData().getSuffix() == null) {
-            return "";
-        }
-
+        if (user == null) return null;
+        if (user.getCachedData().getMetaData().getSuffix() == null) return "";
         return ChatUtil.color(user.getCachedData().getMetaData().getSuffix());
     }
 
     public void finishControl(Player suspicious, Player administrator, RegisteredServer proxyServer) {
-
-        if (suspicious == null || administrator == null) {
-            return;
-        }
-
+        if (suspicious == null || administrator == null) return;
         if (suspicious.isActive() && administrator.isActive()) {
 
             PlayerCache.getAdministrator().remove(administrator.getUniqueId());
@@ -233,12 +221,7 @@ public class Utils {
                 PlayerCache.getIn_control().put(administrator.getUniqueId(), 0);
             }
 
-            if (!suspicious.getCurrentServer().isPresent()) {
-                if (!instance.useLimbo) {
-                    return;
-                }
-            }
-
+            if (!suspicious.getCurrentServer().isPresent()) if (!instance.useLimbo) return;
             if (instance.useLimbo || isInControlServer(suspicious.getCurrentServer().get().getServer())) {
 
                 TitleUtil.sendEndTitle(suspicious);
@@ -248,32 +231,23 @@ public class Utils {
                         .replace("%prefix%", VelocityMessages.PREFIX.color())));
 
                 if (!VelocityConfig.USE_DISCONNECT.get(Boolean.class) || instance.useLimbo) {
-
                     if (instance.useLimbo) {
                         LimboUtils.disconnect(suspicious, proxyServer);
                     } else {
                         ServerUtils.connect(suspicious, proxyServer);
                     }
-
                 } else {
                     MessageUtil.sendChannelMessage(suspicious, "DISCONNECT_NOW");
                 }
 
-                if (!administrator.getCurrentServer().isPresent()) {
-                    if (!instance.useLimbo) {
-                        return;
-                    }
-                }
-
+                if (!administrator.getCurrentServer().isPresent()) if (!instance.useLimbo) return;
                 if (instance.useLimbo || isInControlServer(administrator.getCurrentServer().get().getServer())) {
                     if (!VelocityConfig.USE_DISCONNECT.get(Boolean.class) || instance.useLimbo) {
-
                         if (instance.useLimbo) {
                             LimboUtils.disconnect(administrator, proxyServer);
                         } else {
                             ServerUtils.connect(administrator, proxyServer);
                         }
-
                     } else {
                         MessageUtil.sendChannelMessage(administrator, "DISCONNECT_NOW");
                     }
@@ -300,13 +274,11 @@ public class Utils {
                     .replace("%prefix%", VelocityMessages.PREFIX.color())));
 
             if (!VelocityConfig.USE_DISCONNECT.get(Boolean.class) || instance.useLimbo) {
-
                 if (instance.useLimbo) {
                     LimboUtils.disconnect(suspicious, proxyServer);
                 } else {
                     ServerUtils.connect(suspicious, proxyServer);
                 }
-
             } else {
                 MessageUtil.sendChannelMessage(suspicious, "DISCONNECT_NOW");
             }
@@ -331,17 +303,14 @@ public class Utils {
                     .replace("%player%", suspicious.getUsername())));
 
             if (!VelocityConfig.USE_DISCONNECT.get(Boolean.class) || instance.useLimbo) {
-
                 if (instance.useLimbo) {
                     LimboUtils.disconnect(administrator, proxyServer);
                 } else {
                     ServerUtils.connect(administrator, proxyServer);
                 }
-
             } else {
                 MessageUtil.sendChannelMessage(administrator, "DISCONNECT_NOW");
             }
-
             PlayerCache.getCouples().remove(administrator);
 
         } else {
@@ -380,28 +349,14 @@ public class Utils {
             sus_suffix = "";
         }
 
-        if (admin_prefix == null) {
-            admin_prefix = "";
-        }
-
-        if (admin_suffix == null) {
-            admin_suffix = "";
-        }
-
-        if (sus_prefix == null) {
-            sus_prefix = "";
-        }
-
-        if (sus_suffix == null) {
-            sus_suffix = "";
-        }
+        if (admin_prefix == null) admin_prefix = "";
+        if (admin_suffix == null) admin_suffix = "";
+        if (sus_prefix == null) sus_prefix = "";
+        if (sus_suffix == null) sus_suffix = "";
 
         if (instance.useLimbo) {
 
-            if (VelocityConfig.CHECK_FOR_PROBLEMS.get(Boolean.class)) {
-                PlayerCache.getNow_started_sus().add(suspicious.getUniqueId());
-            }
-
+            if (VelocityConfig.CHECK_FOR_PROBLEMS.get(Boolean.class)) PlayerCache.getNow_started_sus().add(suspicious.getUniqueId());
             PlayerCache.getAdministrator().add(administrator.getUniqueId());
             PlayerCache.getSuspicious().add(suspicious.getUniqueId());
             PlayerCache.getCouples().put(administrator, suspicious);
@@ -425,10 +380,7 @@ public class Utils {
             TitleUtil.sendStartTitle(suspicious);
             TitleUtil.sendAdminStartTitle(administrator, suspicious);
 
-            if (VelocityConfig.CHECK_FOR_PROBLEMS.get(Boolean.class)) {
-                Utils.checkForErrors(suspicious, administrator, proxyServer);
-            }
-
+            if (VelocityConfig.CHECK_FOR_PROBLEMS.get(Boolean.class)) Utils.checkForErrors(suspicious, administrator, proxyServer);
             if (VelocityConfig.SEND_ADMIN_MESSAGE.get(Boolean.class)) {
                 String finalAdmin_prefix = admin_prefix;
                 String finalAdmin_suffix = admin_suffix;
@@ -459,20 +411,13 @@ public class Utils {
             return;
         }
 
-        if (!administrator.getCurrentServer().isPresent()) {
-            return;
-        }
-
-        if (!suspicious.getCurrentServer().isPresent()) {
-            return;
-        }
+        if (!administrator.getCurrentServer().isPresent()) return;
+        if (!suspicious.getCurrentServer().isPresent()) return;
 
         if (administrator.getCurrentServer().get().getServer() != proxyServer) {
             ServerUtils.connect(administrator, proxyServer);
-
         } else {
             MessageUtil.sendChannelAdvancedMessage(administrator, suspicious, "ADMIN");
-
             if (administrator.getProtocolVersion().getProtocol() >= ProtocolVersion.getProtocolVersion(759).getProtocol()) {
                 MessageUtil.sendChannelMessage(administrator, "NO_CHAT");
             }
@@ -480,10 +425,8 @@ public class Utils {
 
         if (suspicious.getCurrentServer().get().getServer() != proxyServer) {
             ServerUtils.connect(suspicious, proxyServer);
-
         } else {
             MessageUtil.sendChannelMessage(suspicious, "SUSPECT");
-
             if (suspicious.getProtocolVersion().getProtocol() >= ProtocolVersion.getProtocolVersion(759).getProtocol()) {
                 MessageUtil.sendChannelMessage(suspicious, "NO_CHAT");
             }
@@ -512,10 +455,7 @@ public class Utils {
         TitleUtil.sendStartTitle(suspicious);
         TitleUtil.sendAdminStartTitle(administrator, suspicious);
 
-        if (VelocityConfig.CHECK_FOR_PROBLEMS.get(Boolean.class)) {
-            Utils.checkForErrors(suspicious, administrator, proxyServer);
-        }
-
+        if (VelocityConfig.CHECK_FOR_PROBLEMS.get(Boolean.class)) Utils.checkForErrors(suspicious, administrator, proxyServer);
         if (VelocityConfig.SEND_ADMIN_MESSAGE.get(Boolean.class)) {
             String finalAdmin_prefix1 = admin_prefix;
             String finalAdmin_suffix1 = admin_suffix;
@@ -554,30 +494,16 @@ public class Utils {
                 return;
             }
 
-            if (!(PlayerCache.getSuspicious().contains(suspicious.getUniqueId()) && PlayerCache.getAdministrator().contains(administrator.getUniqueId()))) {
-                return;
-            }
-
-            if (!suspicious.getCurrentServer().isPresent() || !administrator.getCurrentServer().isPresent()) {
-                return;
-            }
-
-            if (proxyServer == null) {
-                return;
-            }
-
-            if (suspicious.getCurrentServer().get().getServer().equals(proxyServer) && administrator.getCurrentServer().get().getServer().equals(proxyServer)) {
-                return;
-            }
+            if (!(PlayerCache.getSuspicious().contains(suspicious.getUniqueId()) && PlayerCache.getAdministrator().contains(administrator.getUniqueId()))) return;
+            if (!suspicious.getCurrentServer().isPresent() || !administrator.getCurrentServer().isPresent()) return;
+            if (proxyServer == null) return;
+            if (suspicious.getCurrentServer().get().getServer().equals(proxyServer) && administrator.getCurrentServer().get().getServer().equals(proxyServer)) return;
 
             List<Optional<RegisteredServer>> servers = Utils.getServerList(VelocityConfig.CONTROL_FALLBACK.getStringList());
-
-            if (!VelocityConfig.DISABLE_PING.get(Boolean.class)) {
+            if (!VelocityConfig.DISABLE_PING.get(Boolean.class))
                 servers = Utils.getOnlineServers(servers);
-            }
 
             Optional<RegisteredServer> fallbackServer = Utils.getBestServer(servers);
-
             if (!fallbackServer.isPresent()) {
                 suspicious.disconnect(LegacyComponentSerializer.legacy('§').deserialize("Your control server is not configured correctly or is crashed, please check the configuration file. " +
                         "The Control cannot be handled!"));
@@ -602,28 +528,18 @@ public class Utils {
     public List<Optional<RegisteredServer>> getServerList(List<String> stringList) {
         List<Optional<RegisteredServer>> servers = new ArrayList<>();
         for (String server : stringList) {
-
             if (!instance.getServer().getServer(server).isPresent()) {
-
-                if (VelocityConfig.USE_DISCONNECT.get(Boolean.class)) {
-                    continue;
-                }
-
+                if (VelocityConfig.USE_DISCONNECT.get(Boolean.class)) continue;
                 instance.getLogger().error(VelocityMessages.NOT_VALID.color().replace("%server%", server));
                 continue;
             }
-
             servers.add(instance.getServer().getServer(server));
         }
         return servers;
     }
 
     public Optional<RegisteredServer> getBestServer(List<Optional<RegisteredServer>> list) {
-
-        if (list.isEmpty()) {
-            return Optional.empty();
-        }
-
+        if (list.isEmpty()) return Optional.empty();
         switch (VelocityConfig.STRATEGY.get(String.class)) {
             case "RANDOM":
                 return getRandomServer(list);
@@ -640,14 +556,8 @@ public class Utils {
     public List<Optional<RegisteredServer>> getOnlineServers(List<Optional<RegisteredServer>> list) {
         List<Optional<RegisteredServer>> servers = new ArrayList<>();
         for (Optional<RegisteredServer> server : list) {
-
-            if (!server.isPresent()) {
-                return null;
-            }
-
-            if (PlayerCache.getOnlineServers().contains(server.get())) {
-                servers.add(server);
-            }
+            if (!server.isPresent()) return null;
+            if (PlayerCache.getOnlineServers().contains(server.get())) servers.add(server);
         }
         return servers;
     }
@@ -657,38 +567,25 @@ public class Utils {
     }
 
     public void stopTask(RegisteredServer server) {
-        if (task.get(server) != null) {
-            task.get(server).cancel();
-        }
-
+        if (task.get(server) != null) task.get(server).cancel();
         task.remove(server);
         PlayerCache.getOnlineServers().remove(server);
     }
 
     private void taskServer(RegisteredServer server) {
-
-        if (VelocityConfig.DISABLE_PING.get(Boolean.class)) {
-            return;
-        }
-
+        if (VelocityConfig.DISABLE_PING.get(Boolean.class)) return;
         task.put(server, instance.getServer().getScheduler().buildTask(instance, () ->
                 server.ping().whenComplete((result, throwable) -> {
-
-                    if (instance.getConfigTextFile() == null) {
-                        return;
-                    }
-
+                    if (instance.getConfigTextFile() == null) return;
                     if (VelocityConfig.CONTROL_FALLBACK.getStringList().contains(server.getServerInfo().getName())
                             && VelocityConfig.USE_DISCONNECT.get(Boolean.class)) {
                         PlayerCache.getOnlineServers().add(server);
                         return;
                     }
-
                     if (throwable == null && result != null) {
                         PlayerCache.getOnlineServers().add(server);
                         return;
                     }
-
                     PlayerCache.getOnlineServers().remove(server);
                 })
         ).repeat(VelocityConfig.PING_DELAY.get(Integer.class), TimeUnit.SECONDS).schedule());
@@ -709,22 +606,16 @@ public class Utils {
     private Optional<RegisteredServer> getMostPlayersServer(List<Optional<RegisteredServer>> list) {
         Optional<RegisteredServer> server = Optional.empty();
         for (Optional<RegisteredServer> serverInfo : list) {
-
             if (!server.isPresent()) {
                 server = serverInfo;
                 continue;
             }
-
             if (serverInfo.isPresent() && (server.get().getPlayersConnected().size() < serverInfo.get().getPlayersConnected().size())) {
-
                 if (VelocityConfig.DISABLE_PING.get(Boolean.class)) {
                     server = serverInfo;
                     continue;
                 }
-
-                if (PlayerCache.getOnlineServers().contains(serverInfo.get())) {
-                    server = serverInfo;
-                }
+                if (PlayerCache.getOnlineServers().contains(serverInfo.get())) server = serverInfo;
             }
         }
         return server;
