@@ -19,6 +19,7 @@ import net.md_5.bungee.api.plugin.TabExecutor;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class FinishCommand extends Command implements TabExecutor {
 
@@ -91,6 +92,11 @@ public class FinishCommand extends Command implements TabExecutor {
                 }
 
                 Utils.finishControl(player, (ProxiedPlayer) invocation, proxyServer);
+                instance.getProxy().getScheduler().schedule(instance, () ->
+                        player.sendMessage(TextComponent.fromLegacy(BungeeMessages.CONTROL_FINISH_MESSAGE.color()
+                                .replace("%prefix%", BungeeMessages.PREFIX.color())
+                                .replace("%suspect%", player.getName()))),
+                        BungeeMessages.CONTROL_DELAYMESSAGE.get(Integer.class), TimeUnit.SECONDS);
 
                 String admin_prefix;
                 String admin_suffix;

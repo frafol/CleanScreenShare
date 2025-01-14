@@ -18,6 +18,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 public class FinishCommand implements SimpleCommand {
@@ -161,6 +162,13 @@ public class FinishCommand implements SimpleCommand {
                 }
 
                 Utils.finishControl(player.get(), sender, proxyServer.get());
+                instance.getServer().getScheduler().buildTask(instance, () ->
+                                sender.sendMessage(LegacyComponentSerializer.legacy('§')
+                                        .deserialize(VelocityMessages.CONTROL_FINISH_MESSAGE.color()
+                                                .replace("%prefix%", VelocityMessages.PREFIX.color())
+                                                .replace("%suspect%", player.get().getUsername()))))
+                        .delay(VelocityMessages.CONTROL_DELAYMESSAGE.get(Integer.class), TimeUnit.SECONDS).schedule();
+
                 MessageUtil.sendDiscordMessage(
                         player.get(),
                         sender,

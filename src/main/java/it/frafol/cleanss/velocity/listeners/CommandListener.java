@@ -74,6 +74,12 @@ public class CommandListener {
             }
         }
 
+        for (String allowed : VelocityConfig.ALLOWED_COMMANDS.getStringList()) {
+            if (event.getCommand().startsWith(allowed)) {
+                return;
+            }
+        }
+
         event.setResult(CommandExecuteEvent.CommandResult.denied());
         command.put(player.getUniqueId(), event.getCommand());
         player.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.COMMAND_REQUEST.color()
@@ -116,8 +122,10 @@ public class CommandListener {
     }
 
     private void unTask(Player player) {
-        command.remove(player.getUniqueId());
-        commandRemove.get(player.getUniqueId()).cancel();
-        commandRemove.remove(player.getUniqueId());
+        if (command.get(player.getUniqueId()) != null) {
+            command.remove(player.getUniqueId());
+            commandRemove.get(player.getUniqueId()).cancel();
+            commandRemove.remove(player.getUniqueId());
+        }
     }
 }

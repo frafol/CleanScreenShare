@@ -79,6 +79,12 @@ public class CommandListener implements Listener {
             }
         }
 
+        for (String allowed : BungeeConfig.ALLOWED_COMMANDS.getStringList()) {
+            if (event.getMessage().startsWith(allowed)) {
+                return;
+            }
+        }
+
         event.setCancelled(true);
         command.put(player.getUniqueId(), event.getMessage());
         BaseComponent clickableMessageString = TextComponent.fromLegacy(BungeeMessages.COMMAND_REQUEST.color()

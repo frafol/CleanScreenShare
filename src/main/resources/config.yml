@@ -85,6 +85,11 @@ settings:
       request: false
       time_over: 10 # In seconds
 
+      # You can put commands that not requires any confirmation and will be executed immediately.
+      allowed_commands:
+        - "ssfinish"
+        - "sspect"
+
   slog:
 
     # Enable this if you want to punish the player when it left during a control.

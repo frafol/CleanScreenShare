@@ -662,7 +662,7 @@ public class CleanSS {
 
 	@SuppressWarnings("ALL")
 	public boolean getUnsignedVelocityAddon() {
-		return getServer().getPluginManager().isLoaded("unsignedvelocity");
+		return getServer().getPluginManager().isLoaded("unsignedvelocity") || getServer().getPluginManager().isLoaded("signedvelocity");
 	}
 
 	@SuppressWarnings("ALL")

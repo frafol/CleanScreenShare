@@ -134,6 +134,10 @@ messages:
         name: "&4&l[Refuse]"
         command: "/tempban %player% 30d Refusal to SS -s"
 
+    # This is the message that will be sent to the staffer when using the ssfinish command.
+    # It uses the delay like the start messages.
+    finish_message: "%prefix% &7You've finished the control to &d%suspect%&7."
+
   spectate:
 
     # General messages.

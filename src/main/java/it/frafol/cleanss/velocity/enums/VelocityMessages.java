@@ -36,6 +36,8 @@ public enum VelocityMessages {
     BUTTON_EXECUTION("messages.staff_message.execution"),
     CONTROL_ALREADY("messages.already_in_control"),
 
+    CONTROL_FINISH_MESSAGE("messages.staff_message.finish_message"),
+
     CONTROL_USETITLE("messages.title.start.enable"),
     CONTROL_TITLE("messages.title.start.title"),
     CONTROL_SUBTITLE("messages.title.start.subtitle"),

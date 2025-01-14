@@ -47,6 +47,7 @@ public enum BungeeConfig {
     MESSAGE_DELAY("settings.start.server_message_delay"),
     COMMAND_REQUEST("settings.start.admin_commands.request"),
     COMMAND_TIME("settings.start.admin_commands.time_over"),
+    ALLOWED_COMMANDS("settings.start.admin_commands.allowed_commands"),
     STATS("settings.stats");
 
     private final String path;
