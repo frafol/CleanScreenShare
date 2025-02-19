@@ -1,10 +1,13 @@
 package it.frafol.cleanss.bungee.objects;
 
+import com.velocitypowered.api.proxy.Player;
 import it.frafol.cleanss.bungee.CleanSS;
 import it.frafol.cleanss.bungee.enums.BungeeConfig;
 import it.frafol.cleanss.bungee.enums.BungeeMessages;
 import it.frafol.cleanss.bungee.objects.handlers.DataHandler;
+import it.frafol.cleanss.velocity.enums.VelocityMessages;
 import lombok.experimental.UtilityClass;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.LuckPermsProvider;
 import net.luckperms.api.model.group.Group;
@@ -382,6 +385,30 @@ public class Utils {
         String suffix = user.getCachedData().getMetaData().getSuffix();
         if (suffix == null) suffix = "";
         return suffix;
+    }
+
+    public void sendAdmit(ProxiedPlayer suspect, ProxiedPlayer administrator) {
+        suspect.sendMessage(TextComponent.fromLegacy(BungeeMessages.ADMITSUS.color()
+                .replace("%prefix%", BungeeMessages.PREFIX.color())));
+        administrator.sendMessage(TextComponent.fromLegacy(BungeeMessages.CONTROL_ADMIT_MESSAGE.color()
+                .replace("%prefix%", BungeeMessages.PREFIX.color())
+                .replace("%suspect%", suspect.getName())));
+        if (VelocityMessages.CONTROL_ADMIT_RESENDBUTTONS.get(Boolean.class)) {
+            String admin_prefix, admin_suffix, sus_prefix, sus_suffix;
+            boolean luckperms = instance.getProxy().getPluginManager().getPlugin("luckperms") != null;
+            if (luckperms) {
+                sus_suffix = getSuffix(suspect);
+                sus_prefix = getPrefix(suspect);
+                admin_prefix = getPrefix(administrator);
+                admin_suffix = getSuffix(administrator);
+            } else {
+                sus_suffix = "";
+                sus_prefix = "";
+                admin_suffix = "";
+                admin_prefix = "";
+            }
+            MessageUtil.sendButtons(administrator, suspect, admin_prefix, admin_suffix, sus_prefix, sus_suffix);
+        }
     }
 
     private void checkForErrors(ProxiedPlayer suspicious, ProxiedPlayer administrator, ServerInfo proxyServer) {

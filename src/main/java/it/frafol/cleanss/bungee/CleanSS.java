@@ -150,6 +150,7 @@ public class CleanSS extends Plugin {
 		getProxy().getPluginManager().registerCommand(this, new HelpCommand(this));
 		getProxy().getPluginManager().registerCommand(this, new ControlCommand(this));
 		getProxy().getPluginManager().registerCommand(this, new FinishCommand(this));
+		getProxy().getPluginManager().registerCommand(this, new AdmitCommand(this));
 
 		if (BungeeConfig.ENABLE_SPECTATING.get(Boolean.class)) {
 			getProxy().getPluginManager().registerCommand(this, new SpectateCommand(this));

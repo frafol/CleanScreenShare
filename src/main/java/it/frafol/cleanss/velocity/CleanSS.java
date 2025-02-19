@@ -466,6 +466,12 @@ public class CleanSS {
 				.aliases(aliases_ssfinish)
 				.build(), new FinishCommand(this));
 
+		final String[] aliases_ssadmit = VelocityCommandsConfig.SS_ADMIT.getStringList().toArray(new String[0]);
+		server.getCommandManager().register(server.getCommandManager()
+				.metaBuilder(VelocityCommandsConfig.SS_ADMIT.getStringList().get(0))
+				.aliases(aliases_ssadmit)
+				.build(), new AdmitCommand(this));
+
 		if (VelocityConfig.ENABLE_SPECTATING.get(Boolean.class)) {
 			final String[] aliases_spectate = VelocityCommandsConfig.SS_SPECTATE.getStringList().toArray(new String[0]);
 			server.getCommandManager().register(server.getCommandManager()

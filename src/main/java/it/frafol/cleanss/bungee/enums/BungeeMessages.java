@@ -33,6 +33,9 @@ public enum BungeeMessages {
 
     CONTROL_FINISH_MESSAGE("messages.staff_message.finish_message"),
 
+    CONTROL_ADMIT_MESSAGE("messages.staff_message.admit_message"),
+    CONTROL_ADMIT_RESENDBUTTONS("messages.staff_message.admit_resend_buttons"),
+
     COMMAND_BLOCKED("messages.control.command_blocked"),
     CANT_SWITCH("messages.control.cant_switch"),
 
@@ -79,6 +82,7 @@ public enum BungeeMessages {
     PLAYER_BYPASS_SERVER("messages.player_bypass_server"),
     NO_EXIST("messages.server_offline"),
     MAINSUS("messages.control.suspicious_main"),
+    ADMITSUS("messages.control.suspicious_admit"),
     LEAVESUS("messages.control.suspicious_disconnect"),
     FINISHSUS("messages.control.suspicious_finish"),
 

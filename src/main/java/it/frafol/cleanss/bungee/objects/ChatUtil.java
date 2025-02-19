@@ -204,6 +204,11 @@ public class ChatUtil {
                 return command;
             }
         }
+        for (String command : BungeeCommandsConfig.SS_ADMIT.getStringList()) {
+            if (foundCommand.equalsIgnoreCase(command)) {
+                return command;
+            }
+        }
         for (String command : BungeeCommandsConfig.SS_INFO.getStringList()) {
             if (foundCommand.equalsIgnoreCase(command)) {
                 return command;

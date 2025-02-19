@@ -57,6 +57,7 @@ messages:
     # If you are using LuckPerms, you can also use %adminprefix%, %adminsuffix% and %suspectprefix%, %suspectsuffix%.
     suspicious_main: "%prefix% &7You're now under &dhack control&7, please read the chat."
 
+    suspicious_admit: "%prefix% &7You admitted using &dcheats&7."
     suspicious_finish: "%prefix% &7Hack control &dfinished&7, thanks for your patience."
     suspicious_disconnect: "%prefix% &7Hack control &dfinished&7, %player% has just disconnected."
 
@@ -137,6 +138,10 @@ messages:
     # This is the message that will be sent to the staffer when using the ssfinish command.
     # It uses the delay like the start messages.
     finish_message: "%prefix% &7You've finished the control to &d%suspect%&7."
+
+    # This message will appear to the staff when the suspect uses the admin command.
+    admit_message: "%prefix% &c&lWARNING! &7Player %suspect% admitted using &dcheats&7."
+    admit_resend_buttons: true
 
   spectate:
 

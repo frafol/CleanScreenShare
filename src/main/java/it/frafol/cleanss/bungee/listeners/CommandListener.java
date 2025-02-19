@@ -1,6 +1,7 @@
 package it.frafol.cleanss.bungee.listeners;
 
 import it.frafol.cleanss.bungee.CleanSS;
+import it.frafol.cleanss.bungee.enums.BungeeCommandsConfig;
 import it.frafol.cleanss.bungee.enums.BungeeConfig;
 import it.frafol.cleanss.bungee.enums.BungeeMessages;
 import it.frafol.cleanss.bungee.objects.PlayerCache;
@@ -38,8 +39,11 @@ public class CommandListener implements Listener {
             return;
         }
 
-        final ProxiedPlayer player = (ProxiedPlayer) event.getSender();
+        for (String admit_command : BungeeCommandsConfig.SS_ADMIT.getStringList()) {
+            if (event.getMessage().equalsIgnoreCase("/" + admit_command)) return;
+        }
 
+        final ProxiedPlayer player = (ProxiedPlayer) event.getSender();
         if (PlayerCache.getSuspicious().contains(player.getUniqueId())) {
             event.setCancelled(true);
             player.sendMessage(TextComponent.fromLegacy(BungeeMessages.COMMAND_BLOCKED.color()

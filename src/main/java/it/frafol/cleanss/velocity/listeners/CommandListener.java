@@ -6,6 +6,7 @@ import com.velocitypowered.api.network.ProtocolVersion;
 import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.scheduler.ScheduledTask;
 import it.frafol.cleanss.velocity.CleanSS;
+import it.frafol.cleanss.velocity.enums.VelocityCommandsConfig;
 import it.frafol.cleanss.velocity.enums.VelocityConfig;
 import it.frafol.cleanss.velocity.enums.VelocityMessages;
 import it.frafol.cleanss.velocity.objects.PlayerCache;
@@ -41,6 +42,10 @@ public class CommandListener {
 
         if (event.getCommand().equalsIgnoreCase("spawn")) {
             return;
+        }
+
+        for (String admit_command : VelocityCommandsConfig.SS_ADMIT.getStringList()) {
+            if (event.getCommand().equalsIgnoreCase(admit_command)) return;
         }
 
         if (!(player.getProtocolVersion().getProtocol() >= ProtocolVersion.getProtocolVersion(759).getProtocol() && !instance.getUnsignedVelocityAddon())) {

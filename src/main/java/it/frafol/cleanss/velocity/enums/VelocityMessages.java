@@ -38,6 +38,9 @@ public enum VelocityMessages {
 
     CONTROL_FINISH_MESSAGE("messages.staff_message.finish_message"),
 
+    CONTROL_ADMIT_MESSAGE("messages.staff_message.admit_message"),
+    CONTROL_ADMIT_RESENDBUTTONS("messages.staff_message.admit_resend_buttons"),
+
     CONTROL_USETITLE("messages.title.start.enable"),
     CONTROL_TITLE("messages.title.start.title"),
     CONTROL_SUBTITLE("messages.title.start.subtitle"),
@@ -75,6 +78,7 @@ public enum VelocityMessages {
     PLAYER_BYPASS_SERVER("messages.player_bypass_server"),
     NO_EXIST("messages.server_offline"),
     MAINSUS("messages.control.suspicious_main"),
+    ADMITSUS("messages.control.suspicious_admit"),
     LEAVESUS("messages.control.suspicious_disconnect"),
     FINISHSUS("messages.control.suspicious_finish"),
 

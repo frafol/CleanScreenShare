@@ -485,6 +485,34 @@ public class Utils {
         MessageUtil.sendButtons(administrator, suspicious, admin_prefix, admin_suffix, sus_prefix, sus_suffix);
     }
 
+    public void sendAdmit(Player suspicious, Player administrator) {
+        suspicious.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.ADMITSUS.color()
+                .replace("%prefix%", VelocityMessages.PREFIX.color())));
+        administrator.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.CONTROL_ADMIT_MESSAGE.color()
+                .replace("%prefix%", VelocityMessages.PREFIX.color())
+                .replace("%suspect%", suspicious.getUsername())));
+        if (VelocityMessages.CONTROL_ADMIT_RESENDBUTTONS.get(Boolean.class)) {
+            String admin_prefix, admin_suffix, sus_prefix, sus_suffix;
+            boolean luckperms = instance.getServer().getPluginManager().getPlugin("luckperms").isPresent();
+            if (luckperms) {
+                admin_suffix = getSuffix(administrator);
+                admin_prefix = getPrefix(administrator);
+                sus_suffix = getSuffix(suspicious);
+                sus_prefix = getPrefix(suspicious);
+            } else {
+                admin_prefix = "";
+                admin_suffix = "";
+                sus_prefix = "";
+                sus_suffix = "";
+            }
+            if (admin_prefix == null) admin_prefix = "";
+            if (admin_suffix == null) admin_suffix = "";
+            if (sus_prefix == null) sus_prefix = "";
+            if (sus_suffix == null) sus_suffix = "";
+            MessageUtil.sendButtons(administrator, suspicious, admin_prefix, admin_suffix, sus_prefix, sus_suffix);
+        }
+    }
+
     private void checkForErrors(Player suspicious, Player administrator, RegisteredServer proxyServer) {
 
         instance.getServer().getScheduler().buildTask(instance, () -> {

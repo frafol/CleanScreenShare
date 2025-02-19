@@ -168,6 +168,7 @@ public class ChatUtil {
         for (String command : VelocityCommandsConfig.SS_PLAYER.getStringList()) if (foundCommand.equalsIgnoreCase(command)) return command;
         for (String command : VelocityCommandsConfig.SS_SPECTATE.getStringList()) if (foundCommand.equalsIgnoreCase(command)) return command;
         for (String command : VelocityCommandsConfig.SS_FINISH.getStringList()) if (foundCommand.equalsIgnoreCase(command)) return command;
+        for (String command : VelocityCommandsConfig.SS_ADMIT.getStringList()) if (foundCommand.equalsIgnoreCase(command)) return command;
         for (String command : VelocityCommandsConfig.SS_INFO.getStringList()) if (foundCommand.equalsIgnoreCase(command)) return command;
         if (foundCommand.equalsIgnoreCase("ssreload")) return foundCommand;
         return "none";
