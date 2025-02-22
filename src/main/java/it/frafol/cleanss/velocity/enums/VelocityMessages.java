@@ -110,6 +110,8 @@ public enum VelocityMessages {
     DISCORD_SPECTATOR_END("messages.discord.spectator_end"),
     DISCORD_FINISHED_THUMBNAIL("messages.discord.finished_thumbnail"),
     DISCORD_STARTED_THUMBNAIL("messages.discord.started_thumbnail"),
+    DISCORD_ADMIT("messages.discord.admit"),
+    DISCORD_ADMIT_THUMBNAIL("messages.discord.admit_thumbnail"),
     DISCORD_SPECTATOR_THUMBNAIL("messages.discord.spectator_thumbnail"),
     DISCORD_LEAVE_DURING_CONTROL_THUMBNAIL("messages.discord.suspect_left_during_control_thumbnail"),
     DISCORD_QUIT("messages.discord.suspect_left_during_control"),

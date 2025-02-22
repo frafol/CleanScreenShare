@@ -182,18 +182,10 @@ public class Utils {
     }
 
     public String getPrefix(Player player) {
-
         final LuckPerms api = LuckPermsProvider.get();
         final User user = api.getUserManager().getUser(player.getUniqueId());
-
-        if (user == null) {
-            return null;
-        }
-
-        if (user.getCachedData().getMetaData().getPrefix() == null) {
-            return "";
-        }
-
+        if (user == null) return null;
+        if (user.getCachedData().getMetaData().getPrefix() == null) return "";
         return ChatUtil.color(user.getCachedData().getMetaData().getPrefix());
     }
 
@@ -203,6 +195,14 @@ public class Utils {
         if (user == null) return null;
         if (user.getCachedData().getMetaData().getSuffix() == null) return "";
         return ChatUtil.color(user.getCachedData().getMetaData().getSuffix());
+    }
+
+    public String getGroup(Player player) {
+        final LuckPerms api = LuckPermsProvider.get();
+        final User user = api.getUserManager().getUser(player.getUniqueId());
+        if (user == null) return null;
+        if (user.getCachedData().getMetaData().getPrimaryGroup() == null) return "";
+        return ChatUtil.color(user.getCachedData().getMetaData().getPrimaryGroup());
     }
 
     public void finishControl(Player suspicious, Player administrator, RegisteredServer proxyServer) {
@@ -510,6 +510,13 @@ public class Utils {
             if (sus_prefix == null) sus_prefix = "";
             if (sus_suffix == null) sus_suffix = "";
             MessageUtil.sendButtons(administrator, suspicious, admin_prefix, admin_suffix, sus_prefix, sus_suffix);
+            MessageUtil.sendDiscordMessage(
+                    suspicious,
+                    administrator,
+                    VelocityMessages.DISCORD_ADMIT.get(String.class)
+                            .replace("%suspectgroup%", getGroup(suspicious))
+                            .replace("%admingroup%", getGroup(administrator)),
+                    VelocityMessages.DISCORD_ADMIT_THUMBNAIL.get(String.class));
         }
     }
 

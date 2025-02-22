@@ -109,6 +109,8 @@ public enum BungeeMessages {
     DISCORD_STARTED_THUMBNAIL("messages.discord.started_thumbnail"),
     DISCORD_FINISHED("messages.discord.finished"),
     DISCORD_FINISHED_THUMBNAIL("messages.discord.finished_thumbnail"),
+    DISCORD_ADMIT("messages.discord.admit"),
+    DISCORD_ADMIT_THUMBNAIL("messages.discord.admit_thumbnail"),
     DISCORD_SPECTATOR("messages.discord.spectator"),
     DISCORD_SPECTATOR_THUMBNAIL("messages.discord.spectator_thumbnail"),
     DISCORD_SPECTATOR_END("messages.discord.spectator_end"),

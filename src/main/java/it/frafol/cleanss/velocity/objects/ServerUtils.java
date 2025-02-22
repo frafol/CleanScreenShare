@@ -7,6 +7,6 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public class ServerUtils {
     public void connect(Player player, RegisteredServer proxyServer) {
-            if (proxyServer != null) player.createConnectionRequest(proxyServer).fireAndForget();
+        if (proxyServer != null) player.createConnectionRequest(proxyServer).fireAndForget();
     }
 }

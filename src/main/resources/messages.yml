@@ -247,6 +247,10 @@ messages:
     finished: "The staffer %staffer% finished the control to %suspect%."
     finished_thumbnail: "none" # You can use a link to an image.
 
+    # You can use %staffer%, %suspect%. If you are using LuckPerms, you can also use %admingroup% and %suspectgroup%.
+    admit: "The player %suspect% admitted using cheats."
+    admit_thumbnail: "none" # You can use a link to an image.
+
     # You can use %staffer% and %result%. If you are using LuckPerms, you can also use %admingroup%.
     spectator: "The staffer %staffer% started spectating controls."
     spectator_end: "The staffer %staffer% stopped spectating controls."

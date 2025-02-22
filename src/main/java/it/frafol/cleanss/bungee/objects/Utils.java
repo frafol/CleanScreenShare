@@ -387,6 +387,16 @@ public class Utils {
         return suffix;
     }
 
+    public String getGroup(ProxiedPlayer player) {
+        if (!isLuckPerms) return null;
+        final LuckPerms api = LuckPermsProvider.get();
+        final User user = api.getUserManager().getUser(player.getUniqueId());
+        if (user == null) return null;
+        String group = user.getCachedData().getMetaData().getPrimaryGroup();
+        if (group == null) group = "";
+        return group;
+    }
+
     public void sendAdmit(ProxiedPlayer suspect, ProxiedPlayer administrator) {
         suspect.sendMessage(TextComponent.fromLegacy(BungeeMessages.ADMITSUS.color()
                 .replace("%prefix%", BungeeMessages.PREFIX.color())));
@@ -394,20 +404,29 @@ public class Utils {
                 .replace("%prefix%", BungeeMessages.PREFIX.color())
                 .replace("%suspect%", suspect.getName())));
         if (VelocityMessages.CONTROL_ADMIT_RESENDBUTTONS.get(Boolean.class)) {
-            String admin_prefix, admin_suffix, sus_prefix, sus_suffix;
+            String admin_prefix, admin_suffix, sus_prefix, sus_suffix, sus_group, admin_group;
             boolean luckperms = instance.getProxy().getPluginManager().getPlugin("luckperms") != null;
             if (luckperms) {
                 sus_suffix = getSuffix(suspect);
                 sus_prefix = getPrefix(suspect);
+                sus_group = getGroup(suspect);
                 admin_prefix = getPrefix(administrator);
                 admin_suffix = getSuffix(administrator);
+                admin_group = getGroup(administrator);
             } else {
                 sus_suffix = "";
                 sus_prefix = "";
+                sus_group = "";
                 admin_suffix = "";
+                admin_group = "";
                 admin_prefix = "";
             }
             MessageUtil.sendButtons(administrator, suspect, admin_prefix, admin_suffix, sus_prefix, sus_suffix);
+            MessageUtil.sendDiscordMessage(
+                    suspect,
+                    administrator,
+                    BungeeMessages.DISCORD_ADMIT.get(String.class).replace("%suspectgroup%", sus_group).replace("%admingroup%", admin_group),
+                    BungeeMessages.DISCORD_ADMIT_THUMBNAIL.get(String.class));
         }
     }
 
