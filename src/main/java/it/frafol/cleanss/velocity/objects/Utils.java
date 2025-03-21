@@ -78,14 +78,26 @@ public class Utils {
 
         if (PlayerCache.getBan_execution().contains(administrator)) {
 
-            MessageUtil.sendDiscordMessage(
-                    suspect,
-                    administrator_user,
-                    VelocityMessages.DISCORD_FINISHED.get(String.class)
-                            .replace("%suspectgroup%", suspect_group)
-                            .replace("%admingroup%", admin_group),
-                    VelocityMessages.CHEATER.get(String.class),
-                    VelocityMessages.DISCORD_FINISHED_THUMBNAIL.get(String.class));
+            if (!PlayerCache.getAdmits().contains(suspect.getUniqueId())) {
+                MessageUtil.sendDiscordMessage(
+                        suspect,
+                        administrator_user,
+                        VelocityMessages.DISCORD_FINISHED.get(String.class)
+                                .replace("%suspectgroup%", suspect_group)
+                                .replace("%admingroup%", admin_group),
+                        VelocityMessages.CHEATER.get(String.class),
+                        VelocityMessages.DISCORD_FINISHED_THUMBNAIL.get(String.class));
+            } else {
+                PlayerCache.getAdmits().remove(suspect.getUniqueId());
+                MessageUtil.sendDiscordMessage(
+                        suspect,
+                        administrator_user,
+                        VelocityMessages.DISCORD_FINISHED.get(String.class)
+                                .replace("%suspectgroup%", suspect_group)
+                                .replace("%admingroup%", admin_group),
+                        VelocityMessages.ADMIT.get(String.class),
+                        VelocityMessages.DISCORD_FINISHED_THUMBNAIL.get(String.class));
+            }
 
             String admin_prefix;
             String admin_suffix;
@@ -491,6 +503,7 @@ public class Utils {
         administrator.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.CONTROL_ADMIT_MESSAGE.color()
                 .replace("%prefix%", VelocityMessages.PREFIX.color())
                 .replace("%suspect%", suspicious.getUsername())));
+        PlayerCache.getAdmits().add(suspicious.getUniqueId());
         if (VelocityMessages.CONTROL_ADMIT_RESENDBUTTONS.get(Boolean.class)) {
             String admin_prefix, admin_suffix, sus_prefix, sus_suffix;
             boolean luckperms = instance.getServer().getPluginManager().getPlugin("luckperms").isPresent();

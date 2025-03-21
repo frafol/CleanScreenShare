@@ -265,6 +265,7 @@ messages:
     results:
       clean: "Clean"
       cheater: "Cheater"
+      admit: "Admit"
       left: "Left"
 
     luckperms:

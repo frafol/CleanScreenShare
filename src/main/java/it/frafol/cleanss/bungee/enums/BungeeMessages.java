@@ -123,6 +123,7 @@ public enum BungeeMessages {
     INFO_FALSE("messages.info.false_message"),
     CLEAN("messages.discord.results.clean"),
     CHEATER("messages.discord.results.cheater"),
+    ADMIT("messages.discord.results.admit"),
     LEFT("messages.discord.results.left"),
     RELOADED("messages.reloaded");
 

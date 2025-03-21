@@ -276,12 +276,22 @@ public class Utils {
 
         if (PlayerCache.getBan_execution().contains(administrator)) {
 
-            MessageUtil.sendDiscordMessage(
-                    suspect,
-                    administrator_player,
-                    BungeeMessages.DISCORD_FINISHED.get(String.class).replace("%admingroup%", admin_group).replace("%suspectgroup%", suspect_group),
-                    BungeeMessages.CHEATER.get(String.class),
-                    BungeeMessages.DISCORD_FINISHED_THUMBNAIL.get(String.class));
+            if (!PlayerCache.getAdmits().contains(suspect.getUniqueId())) {
+                MessageUtil.sendDiscordMessage(
+                        suspect,
+                        administrator_player,
+                        BungeeMessages.DISCORD_FINISHED.get(String.class).replace("%admingroup%", admin_group).replace("%suspectgroup%", suspect_group),
+                        BungeeMessages.CHEATER.get(String.class),
+                        BungeeMessages.DISCORD_FINISHED_THUMBNAIL.get(String.class));
+            } else {
+                PlayerCache.getAdmits().remove(suspect.getUniqueId());
+                MessageUtil.sendDiscordMessage(
+                        suspect,
+                        administrator_player,
+                        BungeeMessages.DISCORD_FINISHED.get(String.class).replace("%admingroup%", admin_group).replace("%suspectgroup%", suspect_group),
+                        BungeeMessages.ADMIT.get(String.class),
+                        BungeeMessages.DISCORD_FINISHED_THUMBNAIL.get(String.class));
+            }
 
             String admin_prefix;
             String admin_suffix;
@@ -398,6 +408,7 @@ public class Utils {
     }
 
     public void sendAdmit(ProxiedPlayer suspect, ProxiedPlayer administrator) {
+        PlayerCache.getAdmits().add(suspect.getUniqueId());
         suspect.sendMessage(TextComponent.fromLegacy(BungeeMessages.ADMITSUS.color()
                 .replace("%prefix%", BungeeMessages.PREFIX.color())));
         administrator.sendMessage(TextComponent.fromLegacy(BungeeMessages.CONTROL_ADMIT_MESSAGE.color()
