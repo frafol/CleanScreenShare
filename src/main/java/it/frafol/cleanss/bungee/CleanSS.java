@@ -307,7 +307,9 @@ public class CleanSS extends Plugin {
 				}
 
 				if (!updated && BungeeConfig.UPDATE_ALERT.get(Boolean.class)) {
-					TextComponent update = new TextComponent(BungeeMessages.UPDATE_ALERT.color());
+					TextComponent update = new TextComponent(BungeeMessages.UPDATE_ALERT.color()
+							.replace("%old_version%", getDescription().getVersion())
+							.replace("%new_version%", version));
 					update.setClickEvent(new ClickEvent(
 							ClickEvent.Action.OPEN_URL,
 							BungeeMessages.UPDATE_LINK.get(String.class)));

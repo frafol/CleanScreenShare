@@ -591,8 +591,11 @@ public class CleanSS {
 
 			if (!updated && VelocityConfig.UPDATE_ALERT.get(Boolean.class)) {
 				player.sendMessage(LegacyComponentSerializer.legacy('§')
-						.deserialize(VelocityMessages.UPDATE_ALERT.color()).clickEvent(ClickEvent
-								.clickEvent(ClickEvent.Action.OPEN_URL, VelocityMessages.UPDATE_LINK.get(String.class))));
+						.deserialize(
+								VelocityMessages.UPDATE_ALERT.color()
+										.replace("%old_version%", container.getDescription().getVersion().get())
+										.replace("%new_version%", version)
+						).clickEvent(ClickEvent.clickEvent(ClickEvent.Action.OPEN_URL, VelocityMessages.UPDATE_LINK.get(String.class))));
 			}
 		});
 	}
