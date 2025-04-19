@@ -151,19 +151,15 @@ public class CleanSS {
 		}
 
 		if (VelocityConfig.MYSQL.get(Boolean.class)) {
-
 			loadLibrariesSQL();
-
 			if (mysql_installation) {
 				getServer().getScheduler().buildTask(this, () -> server.shutdown()).delay(5, TimeUnit.SECONDS).schedule();
 				return;
 			}
-
 			if (ReflectUtil.getClass("com.mysql.cj.jdbc.Driver") == null) {
 				loadLibrariesSQL();
 				return;
 			}
-
 			data = new MySQLWorker();
 			ControlTask();
 		}
@@ -257,7 +253,7 @@ public class CleanSS {
 			if (!outputFile.exists()) {
 				downloadMySQLFile(fileUrl, outputFile);
 				mysql_installation = true;
-				logger.warn("MySQL drivers (" + fileName + ") are now successfully installed. A restart will be performed in 5 seconds.");
+                logger.warn("MySQL drivers ({}) are now successfully installed. A restart will be performed in 5 seconds.", fileName);
 			}
 
 		} catch (IOException ignored) {
@@ -350,12 +346,8 @@ public class CleanSS {
 	}
 
 	private void checkIncompatibilities() {
-		if (getSpicord()) {
-			logger.error("Spicord found, this plugin is completely unsupported and you won't receive any support.");
-		}
-		if (getProtocolize()) {
-			logger.error("Protocolize found, this plugin is completely unsupported and you won't receive any support.");
-		}
+		if (getSpicord()) logger.error("Spicord found, this plugin is completely unsupported and you won't receive any support.");
+		if (getProtocolize()) logger.error("Protocolize found, this plugin is completely unsupported and you won't receive any support.");
 	}
 
 	public boolean isWindows() {
@@ -365,9 +357,7 @@ public class CleanSS {
 
 	private String getFileNameFromUrl(String fileUrl) {
 		int slashIndex = fileUrl.lastIndexOf('/');
-		if (slashIndex != -1 && slashIndex < fileUrl.length() - 1) {
-			return fileUrl.substring(slashIndex + 1);
-		}
+		if (slashIndex != -1 && slashIndex < fileUrl.length() - 1) return fileUrl.substring(slashIndex + 1);
 		throw new IllegalArgumentException("Invalid file URL");
 	}
 
@@ -389,22 +379,13 @@ public class CleanSS {
 	@SneakyThrows
 	public void deleteFile(String directoryPath, String file_start) {
 		File directory = new File(directoryPath);
-
-		if (!directory.isDirectory()) {
-			throw new IllegalArgumentException();
-		}
-
+		if (!directory.isDirectory()) throw new IllegalArgumentException();
 		File[] files = directory.listFiles();
-		if (files == null) {
-			throw new IOException();
-		}
-
+		if (files == null) throw new IOException();
 		for (File file : files) {
 			if (file.isFile() && file.getName().startsWith(file_start)) {
-				logger.warn("Found an old plugin file: " + file.getName());
-				if (file.delete()) {
-					logger.warn("Deleted old file: " + file.getName());
-				}
+                logger.warn("Found an old plugin file: {}", file.getName());
+				if (file.delete()) logger.warn("Deleted old file: {}", file.getName());
 			}
 		}
 	}
@@ -420,34 +401,23 @@ public class CleanSS {
 
 	@SneakyThrows
 	private void updateConfig() {
+		if (!container.getDescription().getVersion().isPresent()) return;
+		if (container.getDescription().getVersion().get().equals(VelocityVersion.VERSION.get(String.class))) return;
+		logger.info("Creating new configurations...");
+		YamlUpdater.create(new File(path + "/config.yml"), findFile("config.yml")).backup(true).update();
+		YamlUpdater.create(new File(path + "/messages.yml"), findFile("messages.yml")).backup(true).update();
+		YamlUpdater.create(new File(path + "/aliases.yml"), findFile("aliases.yml")).backup(true).update();
+		YamlUpdater.create(new File(path + "/limboapi.yml"), findFile("limboapi.yml")).backup(true).update();
+		versionTextFile.getConfig().set("version", container.getDescription().getVersion().get());
+		versionTextFile.getConfig().save();
+		loadFiles();
+	}
 
-		if (container.getDescription().getVersion().isPresent() && (!container.getDescription().getVersion().get().equals(VelocityVersion.VERSION.get(String.class)))) {
-
-			logger.info("Creating new configurations...");
-			YamlUpdater.create(new File(path + "/config.yml"), FileUtils.findFile("https://raw.githubusercontent.com/frafol/CleanScreenShare/main/src/main/resources/config.yml"))
-					.backup(true)
-					.update();
-			YamlUpdater.create(new File(path + "/messages.yml"), FileUtils.findFile("https://raw.githubusercontent.com/frafol/CleanScreenShare/main/src/main/resources/messages.yml"))
-					.backup(true)
-					.update();
-			YamlUpdater.create(new File(path + "/aliases.yml"), FileUtils.findFile("https://raw.githubusercontent.com/frafol/CleanScreenShare/main/src/main/resources/aliases.yml"))
-					.backup(true)
-					.update();
-			YamlUpdater.create(new File(path + "/limboapi.yml"), FileUtils.findFile("https://raw.githubusercontent.com/frafol/CleanScreenShare/main/src/main/resources/limboapi.yml"))
-					.backup(true)
-					.update();
-			versionTextFile.getConfig().set("version", container.getDescription().getVersion().get());
-			versionTextFile.getConfig().save();
-			loadFiles();
-		}
+	private InputStream findFile(String fileName) {
+		return FileUtils.findFile("https://raw.githubusercontent.com/frafol/CleanScreenShare/main/src/main/resources/" + fileName);
 	}
 
 	private void loadCommands() {
-
-		getServer().getCommandManager().register
-				(server.getCommandManager().metaBuilder("ssdebug").aliases("cleanssdebug", "controldebug")
-						.build(), new DebugCommand(this));
-
 		final String[] aliases_help = VelocityCommandsConfig.HELP.getStringList().toArray(new String[0]);
 		server.getCommandManager().register(server.getCommandManager()
 				.metaBuilder(VelocityCommandsConfig.HELP.getStringList().get(0))
@@ -472,6 +442,12 @@ public class CleanSS {
 				.aliases(aliases_ssadmit)
 				.build(), new AdmitCommand(this));
 
+		final String[] aliases_info = VelocityCommandsConfig.SS_INFO.getStringList().toArray(new String[0]);
+		server.getCommandManager().register(server.getCommandManager()
+				.metaBuilder(VelocityCommandsConfig.SS_INFO.getStringList().get(0))
+				.aliases(aliases_info)
+				.build(), new InfoCommand(this));
+
 		if (VelocityConfig.ENABLE_SPECTATING.get(Boolean.class)) {
 			final String[] aliases_spectate = VelocityCommandsConfig.SS_SPECTATE.getStringList().toArray(new String[0]);
 			server.getCommandManager().register(server.getCommandManager()
@@ -480,15 +456,10 @@ public class CleanSS {
 					.build(), new SpectateCommand(this));
 		}
 
-		final String[] aliases_info = VelocityCommandsConfig.SS_INFO.getStringList().toArray(new String[0]);
-		server.getCommandManager().register(server.getCommandManager()
-				.metaBuilder(VelocityCommandsConfig.SS_INFO.getStringList().get(0))
-				.aliases(aliases_info)
-				.build(), new InfoCommand(this));
-
-		getServer().getCommandManager().register
-				(server.getCommandManager().metaBuilder("ssreload").aliases("cleanssreload", "controlreload")
-						.build(), new ReloadCommand(this));
+		getServer().getCommandManager().register(server.getCommandManager().metaBuilder("ssdebug").aliases("cleanssdebug", "controldebug")
+				.build(), new DebugCommand(this));
+		getServer().getCommandManager().register(server.getCommandManager().metaBuilder("ssreload").aliases("cleanssreload", "controlreload")
+				.build(), new ReloadCommand(this));
 	}
 
 	private void loadChannelRegistrar() {
@@ -496,14 +467,9 @@ public class CleanSS {
 	}
 
 	private void loadListeners() {
-
 		server.getEventManager().register(this, new ServerListener(this));
 		server.getEventManager().register(this, new CommandListener(this));
-
-		if (VelocityMessages.CONTROL_CHAT.get(Boolean.class)) {
-			server.getEventManager().register(this, new ChatListener(this));
-		}
-
+		if (VelocityMessages.CONTROL_CHAT.get(Boolean.class)) server.getEventManager().register(this, new ChatListener(this));
 		server.getEventManager().register(this, new KickListener(this));
 	}
 
@@ -533,38 +499,27 @@ public class CleanSS {
 		}
 
 		new UpdateCheck(this).getVersion(version -> {
-
 			if (Integer.parseInt(container.getDescription().getVersion().get().replace(".", "")) < Integer.parseInt(version.replace(".", ""))) {
-
 				if (VelocityConfig.AUTO_UPDATE.get(Boolean.class) && !updated) {
 					autoUpdate();
 					return;
 				}
-
-				if (!updated) {
-					logger.warn("There is a new update available, download it on SpigotMC!");
-				}
+				if (!updated) logger.warn("There is a new update available, download it on SpigotMC!");
 			}
-
 			if (Integer.parseInt(container.getDescription().getVersion().get().replace(".", "")) > Integer.parseInt(version.replace(".", ""))) {
 				logger.warn("You are using a development version, please report any bugs!");
 			}
-
 		});
 	}
 
 	public void ControlTask() {
-
 		instance.getServer().getScheduler().buildTask(this, () -> {
-
 			for (Player players : server.getAllPlayers()) {
 				PlayerCache.getIn_control().put(players.getUniqueId(), data.getStats(players.getUniqueId(), "incontrol"));
 				PlayerCache.getControls().put(players.getUniqueId(), data.getStats(players.getUniqueId(), "controls"));
 				PlayerCache.getControls_suffered().put(players.getUniqueId(), data.getStats(players.getUniqueId(), "suffered"));
 			}
-
 		}).repeat(1, TimeUnit.SECONDS).schedule();
-
 	}
 
 	public void UpdateChecker(Player player) {
@@ -646,26 +601,12 @@ public class CleanSS {
 	}
 
 	public <K, V> K getKey(Map<K, V> map, V value) {
-
-		for (Map.Entry<K, V> entry : map.entrySet()) {
-
-			if (entry.getValue().equals(value)) {
-				return entry.getKey();
-			}
-
-		}
+		for (Map.Entry<K, V> entry : map.entrySet()) if (entry.getValue().equals(value)) return entry.getKey();
 		return null;
 	}
 
 	public <K, V> V getValue(Map<K, V> map, K key) {
-
-		for (Map.Entry<K, V> entry : map.entrySet()) {
-
-			if (entry.getKey().equals(key)) {
-				return entry.getValue();
-			}
-
-		}
+		for (Map.Entry<K, V> entry : map.entrySet()) if (entry.getKey().equals(key)) return entry.getValue();
 		return null;
 	}
 

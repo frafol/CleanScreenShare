@@ -146,17 +146,13 @@ public class CleanSS extends Plugin {
 	}
 
 	private void registerCommands() {
-		getProxy().getPluginManager().registerCommand(this, new DebugCommand(this));
 		getProxy().getPluginManager().registerCommand(this, new HelpCommand(this));
 		getProxy().getPluginManager().registerCommand(this, new ControlCommand(this));
 		getProxy().getPluginManager().registerCommand(this, new FinishCommand(this));
 		getProxy().getPluginManager().registerCommand(this, new AdmitCommand(this));
-
-		if (BungeeConfig.ENABLE_SPECTATING.get(Boolean.class)) {
-			getProxy().getPluginManager().registerCommand(this, new SpectateCommand(this));
-		}
-
 		getProxy().getPluginManager().registerCommand(this, new InfoCommand(this));
+		if (BungeeConfig.ENABLE_SPECTATING.get(Boolean.class)) getProxy().getPluginManager().registerCommand(this, new SpectateCommand(this));
+		getProxy().getPluginManager().registerCommand(this, new DebugCommand(this));
 		getProxy().getPluginManager().registerCommand(this, new ReloadCommand());
 	}
 
@@ -169,14 +165,9 @@ public class CleanSS extends Plugin {
 	}
 
 	private void registerListeners() {
-
 		getProxy().getPluginManager().registerListener(this, new ServerListener());
 		getProxy().getPluginManager().registerListener(this, new CommandListener());
-
-		if (BungeeMessages.CONTROL_CHAT.get(Boolean.class)) {
-			getProxy().getPluginManager().registerListener(this, new ChatListener(this));
-		}
-
+		if (BungeeMessages.CONTROL_CHAT.get(Boolean.class)) getProxy().getPluginManager().registerListener(this, new ChatListener(this));
 		getProxy().getPluginManager().registerListener(this, new KickListener(this));
 	}
 
@@ -187,23 +178,18 @@ public class CleanSS extends Plugin {
 		}
 
 		new UpdateCheck(this).getVersion(version -> {
-
 			if (Integer.parseInt(getDescription().getVersion().replace(".", "")) < Integer.parseInt(version.replace(".", ""))) {
-
 				if (BungeeConfig.AUTO_UPDATE.get(Boolean.class) && !updated) {
 					autoUpdate();
 					return;
 				}
-
 				if (!updated) {
 					getLogger().warning("§eThere is a new update available, download it on SpigotMC!");
 				}
 			}
-
 			if (Integer.parseInt(getDescription().getVersion().replace(".", "")) > Integer.parseInt(version.replace(".", ""))) {
 				getLogger().warning("§eYou are using a development version, please report any bugs!");
 			}
-
 		});
 	}
 
@@ -240,9 +226,7 @@ public class CleanSS extends Plugin {
 
 	private String getFileNameFromUrl(String fileUrl) {
 		int slashIndex = fileUrl.lastIndexOf('/');
-		if (slashIndex != -1 && slashIndex < fileUrl.length() - 1) {
-			return fileUrl.substring(slashIndex + 1);
-		}
+		if (slashIndex != -1 && slashIndex < fileUrl.length() - 1) return fileUrl.substring(slashIndex + 1);
 		throw new IllegalArgumentException("Invalid file URL");
 	}
 
@@ -278,17 +262,13 @@ public class CleanSS extends Plugin {
 	}
 
 	public void ControlTask() {
-
 		instance.getProxy().getScheduler().schedule(this, () -> {
-
 			for (ProxiedPlayer players : getProxy().getPlayers()) {
 				PlayerCache.getIn_control().put(players.getUniqueId(), data.getStats(players.getUniqueId(), "incontrol"));
 				PlayerCache.getControls().put(players.getUniqueId(), data.getStats(players.getUniqueId(), "controls"));
 				PlayerCache.getControls_suffered().put(players.getUniqueId(), data.getStats(players.getUniqueId(), "controls"));
 			}
-
 		}, 1L, 1L, TimeUnit.SECONDS);
-
 	}
 
 	public void UpdateChecker(ProxiedPlayer player) {
@@ -344,7 +324,6 @@ public class CleanSS extends Plugin {
 			getLogger().severe("Invalid Discord configuration, please check your config.yml file.");
 			getLogger().severe("Make sure you are not using any strange forks (like Aegis).");
 		}
-
 		updateTaskJDA();
 	}
 
@@ -396,28 +375,23 @@ public class CleanSS extends Plugin {
 
 	@SneakyThrows
 	private void updateConfig() {
-		if (!getDescription().getVersion().equals(BungeeVersion.VERSION.get(String.class))) {
+		if (getDescription().getVersion().equals(BungeeVersion.VERSION.get(String.class))) return;
+		getLogger().info("§7Creating new §dconfigurations§7...");
+		YamlUpdater.create(new File(getDataFolder().toPath() + "/config.yml"), findFile("config.yml")).backup(true).update();
+		YamlUpdater.create(new File(getDataFolder().toPath() + "/aliases.yml"), findFile("aliases.yml")).backup(true).update();
+		YamlUpdater.create(new File(getDataFolder().toPath() + "/messages.yml"), findFile("messages.yml")).backup(true).update();
+		versionTextFile.getConfig().set("version", getDescription().getVersion());
+		versionTextFile.getConfig().save();
+		loadFiles();
+	}
 
-			getLogger().info("§7Creating new §dconfigurations§7...");
-			YamlUpdater.create(new File(getDataFolder().toPath() + "/config.yml"), FileUtils.findFile("https://raw.githubusercontent.com/frafol/CleanScreenShare/main/src/main/resources/config.yml"))
-					.backup(true)
-					.update();
-			YamlUpdater.create(new File(getDataFolder().toPath() + "/aliases.yml"), FileUtils.findFile("https://raw.githubusercontent.com/frafol/CleanScreenShare/main/src/main/resources/aliases.yml"))
-					.backup(true)
-					.update();
-			YamlUpdater.create(new File(getDataFolder().toPath() + "/messages.yml"), FileUtils.findFile("https://raw.githubusercontent.com/frafol/CleanScreenShare/main/src/main/resources/messages.yml"))
-					.backup(true)
-					.update();
-			versionTextFile.getConfig().set("version", getDescription().getVersion());
-			versionTextFile.getConfig().save();
-			loadFiles();
-		}
+	private InputStream findFile(String fileName) {
+		return FileUtils.findFile("https://raw.githubusercontent.com/frafol/CleanScreenShare/main/src/main/resources/" + fileName);
 	}
 
 	private void loadLibraries() {
 
 		BungeeLibraryManager bungeeLibraryManager = new BungeeLibraryManager(this);
-
 		final Relocation yamlrelocation = new Relocation("yaml", "it{}frafol{}libs{}yaml");
 		Library yaml = Library.builder()
 				.groupId("me{}carleslc{}Simple-YAML")
@@ -475,12 +449,9 @@ public class CleanSS extends Plugin {
 
 	@Override
 	public void onDisable() {
-
 		getProxy().unregisterChannel("cleanss:join");
 		stopTasks();
-
 		if (getConfigTextFile() == null || BungeeConfig.MYSQL.get(Boolean.class)) {
-
 			getLogger().info("§7Closing §ddatabase§7...");
 			for (ProxiedPlayer players : getProxy().getPlayers()) {
 				if (data != null) {
@@ -488,15 +459,10 @@ public class CleanSS extends Plugin {
 					data.setControls(players.getUniqueId(), PlayerCache.getControls().get(players.getUniqueId()));
 				}
 			}
-
-			if (data != null) {
-				data.close();
-			}
+			if (data != null) data.close();
 		}
-
 		getLogger().info("§7Clearing §dinstances§7...");
 		instance = null;
-
 		getLogger().info("§7Plugin successfully §ddisabled§7!");
 	}
 
@@ -509,26 +475,12 @@ public class CleanSS extends Plugin {
 	}
 
 	public <K, V> K getKey(Map<K, V> map, V value) {
-
-		for (Map.Entry<K, V> entry : map.entrySet()) {
-
-			if (entry.getValue().equals(value)) {
-				return entry.getKey();
-			}
-
-		}
+		for (Map.Entry<K, V> entry : map.entrySet()) if (entry.getValue().equals(value)) return entry.getKey();
 		return null;
 	}
 
 	public <K, V> V getValue(Map<K, V> map, K key) {
-
-		for (Map.Entry<K, V> entry : map.entrySet()) {
-
-			if (entry.getKey().equals(key)) {
-				return entry.getValue();
-			}
-
-		}
+		for (Map.Entry<K, V> entry : map.entrySet()) if (entry.getKey().equals(key)) return entry.getValue();
 		return null;
 	}
 
