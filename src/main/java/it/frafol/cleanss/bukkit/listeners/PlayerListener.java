@@ -10,6 +10,7 @@ import it.frafol.cleanss.bukkit.objects.utils.NametagUtil;
 import it.frafol.cleanss.bukkit.objects.utils.SoundUtil;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.GameMode;
+import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
@@ -24,6 +25,7 @@ import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.player.*;
 
 import java.util.Objects;
+import java.util.UUID;
 
 public class PlayerListener implements Listener {
 
@@ -97,7 +99,7 @@ public class PlayerListener implements Listener {
 
         if (event.getCause().equals(EntityDamageEvent.DamageCause.VOID) && SpigotConfig.VOID.get(Boolean.class)) {
             event.setCancelled(true);
-            player.teleport(player.getWorld().getSpawnLocation());
+            player.teleport(getPlayerSpawn(player.getUniqueId()));
         }
     }
 
@@ -251,6 +253,16 @@ public class PlayerListener implements Listener {
 
         if (SpigotConfig.PLACE.get(Boolean.class)) {
             event.setCancelled(true);
+        }
+    }
+
+    private Location getPlayerSpawn(UUID uuid) {
+        if (PlayerCache.getAdministrator().contains(uuid)) {
+            return PlayerCache.StringToLocation(SpigotCache.ADMIN_SPAWN.get(String.class));
+        } else if (PlayerCache.getSuspicious().contains(uuid)) {
+            return PlayerCache.StringToLocation(SpigotCache.SUSPECT_SPAWN.get(String.class));
+        } else {
+            return PlayerCache.StringToLocation(SpigotCache.OTHER_SPAWN.get(String.class));
         }
     }
 }

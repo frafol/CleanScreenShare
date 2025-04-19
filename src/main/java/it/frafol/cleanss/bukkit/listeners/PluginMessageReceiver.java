@@ -83,6 +83,10 @@ public class PluginMessageReceiver implements PluginMessageListener {
                 return;
             }
 
+            if (SpigotCache.SUSPECT_SPAWN.get(String.class) == null || SpigotCache.SUSPECT_SPAWN.get(String.class).equals("world;0.0;0.0;0.0;0.0;0.0")) {
+                instance.getLogger().severe("Suspect spawn is not set correctly, this may cause issues during the control check.");
+            }
+
             UniversalScheduler.getScheduler(instance).runTaskLater(() -> final_player.teleport(PlayerCache.StringToLocation(SpigotCache.SUSPECT_SPAWN.get(String.class))), 5L);
             PlayerCache.getSuspicious().add(final_player.getUniqueId());
             instance.startTimer(final_player.getUniqueId());
@@ -110,6 +114,10 @@ public class PluginMessageReceiver implements PluginMessageListener {
             if (final_player == null) {
                 instance.getLogger().severe("The player " + player_found + " (staff) is not in the server. Is your server configured correctly?");
                 return;
+            }
+
+            if (SpigotCache.ADMIN_SPAWN.get(String.class) == null || SpigotCache.ADMIN_SPAWN.get(String.class).equals("world;0.0;0.0;0.0;0.0;0.0")) {
+                instance.getLogger().severe("Administrator spawn is not set correctly, this may cause issues during the control check.");
             }
 
             UniversalScheduler.getScheduler(instance).runTaskLater(() -> final_player.teleport(PlayerCache.StringToLocation(SpigotCache.ADMIN_SPAWN.get(String.class))), 5L);
