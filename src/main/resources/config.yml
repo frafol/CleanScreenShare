@@ -35,6 +35,9 @@ settings:
   # NOTE: This function will break CleanScreenShare if you haven't also put it on the server control!
   use_disconnect_instead_of_fallback: false
 
+  # Makes the server staff to remain connected in the hack control server after the end of the control.
+  do_not_fallback_staff: false
+
   # This will check if you have been properly connected to the control server,
   # and if not, it will exit the control. If you encounter an error in the console
   # telling you that the server may be offline or crashed,

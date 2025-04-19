@@ -18,6 +18,7 @@ public enum VelocityConfig {
     USE_DISCONNECT("settings.use_disconnect_instead_of_fallback"),
     CONTROL("settings.control_servers"),
     CONTROL_FALLBACK("settings.fallback_servers"),
+    NOT_FALLBACK_STAFF("settings.do_not_fallback_staff"),
     CONTROL_BYPASS("settings.blocked_servers"),
     STRATEGY("settings.sort_strategy"),
     DISCORD_ENABLED("discord-webhook.enabled"),

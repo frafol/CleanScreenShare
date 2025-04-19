@@ -238,29 +238,22 @@ public class Utils {
 
                 TitleUtil.sendEndTitle(suspicious);
                 TitleUtil.sendAdminEndTitle(administrator, suspicious);
-
                 suspicious.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.FINISHSUS.color()
                         .replace("%prefix%", VelocityMessages.PREFIX.color())));
 
                 if (!VelocityConfig.USE_DISCONNECT.get(Boolean.class) || instance.useLimbo) {
-                    if (instance.useLimbo) {
-                        LimboUtils.disconnect(suspicious, proxyServer);
-                    } else {
-                        ServerUtils.connect(suspicious, proxyServer);
-                    }
+                    if (instance.useLimbo) LimboUtils.disconnect(suspicious, proxyServer);
+                    else ServerUtils.connect(suspicious, proxyServer);
                 } else {
                     MessageUtil.sendChannelMessage(suspicious, "DISCONNECT_NOW");
                 }
 
                 if (!administrator.getCurrentServer().isPresent()) if (!instance.useLimbo) return;
                 if (instance.useLimbo || isInControlServer(administrator.getCurrentServer().get().getServer())) {
-                    if (!VelocityConfig.USE_DISCONNECT.get(Boolean.class) || instance.useLimbo) {
-                        if (instance.useLimbo) {
-                            LimboUtils.disconnect(administrator, proxyServer);
-                        } else {
-                            ServerUtils.connect(administrator, proxyServer);
-                        }
-                    } else {
+                    if ((!VelocityConfig.USE_DISCONNECT.get(Boolean.class) && !VelocityConfig.NOT_FALLBACK_STAFF.get(Boolean.class)) || instance.useLimbo) {
+                        if (instance.useLimbo) LimboUtils.disconnect(administrator, proxyServer);
+                        else ServerUtils.connect(administrator, proxyServer);
+                    } else if (!VelocityConfig.NOT_FALLBACK_STAFF.get(Boolean.class)) {
                         MessageUtil.sendChannelMessage(administrator, "DISCONNECT_NOW");
                     }
                 }
@@ -280,28 +273,19 @@ public class Utils {
             }
 
             TitleUtil.sendEndTitle(suspicious);
-            TitleUtil.sendAdminEndTitle(administrator, suspicious);
-
             suspicious.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.FINISHSUS.color()
                     .replace("%prefix%", VelocityMessages.PREFIX.color())));
 
             if (!VelocityConfig.USE_DISCONNECT.get(Boolean.class) || instance.useLimbo) {
-                if (instance.useLimbo) {
-                    LimboUtils.disconnect(suspicious, proxyServer);
-                } else {
-                    ServerUtils.connect(suspicious, proxyServer);
-                }
-            } else {
-                MessageUtil.sendChannelMessage(suspicious, "DISCONNECT_NOW");
-            }
-
+                if (instance.useLimbo) LimboUtils.disconnect(suspicious, proxyServer);
+                else ServerUtils.connect(suspicious, proxyServer);
+            } else MessageUtil.sendChannelMessage(suspicious, "DISCONNECT_NOW");
             PlayerCache.getCouples().remove(administrator);
 
         } else if (administrator.isActive()) {
 
             PlayerCache.getAdministrator().remove(administrator.getUniqueId());
             PlayerCache.getSuspicious().remove(suspicious.getUniqueId());
-
             if (VelocityConfig.MYSQL.get(Boolean.class)) {
                 instance.getData().setInControl(suspicious.getUniqueId(), 0);
                 instance.getData().setInControl(administrator.getUniqueId(), 0);
@@ -314,15 +298,10 @@ public class Utils {
                     .replace("%prefix%", VelocityMessages.PREFIX.color())
                     .replace("%player%", suspicious.getUsername())));
 
-            if (!VelocityConfig.USE_DISCONNECT.get(Boolean.class) || instance.useLimbo) {
-                if (instance.useLimbo) {
-                    LimboUtils.disconnect(administrator, proxyServer);
-                } else {
-                    ServerUtils.connect(administrator, proxyServer);
-                }
-            } else {
-                MessageUtil.sendChannelMessage(administrator, "DISCONNECT_NOW");
-            }
+            if ((!VelocityConfig.USE_DISCONNECT.get(Boolean.class) && !VelocityConfig.NOT_FALLBACK_STAFF.get(Boolean.class)) || instance.useLimbo) {
+                if (instance.useLimbo) LimboUtils.disconnect(administrator, proxyServer);
+                else ServerUtils.connect(administrator, proxyServer);
+            } else if (!VelocityConfig.NOT_FALLBACK_STAFF.get(Boolean.class)) MessageUtil.sendChannelMessage(administrator, "DISCONNECT_NOW");
             PlayerCache.getCouples().remove(administrator);
 
         } else {

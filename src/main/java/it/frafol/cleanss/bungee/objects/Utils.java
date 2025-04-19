@@ -113,11 +113,9 @@ public class Utils {
 
         if (administrator == null || suspicious == null) return;
         if (administrator.isConnected() && suspicious.isConnected()) {
-
             PlayerCache.getAdministrator().remove(administrator.getUniqueId());
             PlayerCache.getSuspicious().remove(suspicious.getUniqueId());
             PlayerCache.getCouples().remove(administrator, suspicious);
-
             if (BungeeConfig.MYSQL.get(Boolean.class)) {
                 instance.getData().setInControl(suspicious.getUniqueId(), 0);
                 instance.getData().setInControl(administrator.getUniqueId(), 0);
@@ -126,36 +124,28 @@ public class Utils {
                 PlayerCache.getIn_control().put(administrator.getUniqueId(), 0);
             }
 
-            if (administrator.getServer() == null) return;
-            if (isInControlServer(administrator.getServer().getInfo())) {
-
+            if (administrator.getServer() != null && isInControlServer(administrator.getServer().getInfo())) {
                 if (proxyServer == null) return;
-                if (!BungeeConfig.USE_DISCONNECT.get(Boolean.class)) {
+                if (!BungeeConfig.USE_DISCONNECT.get(Boolean.class) && !BungeeConfig.NOT_FALLBACK_STAFF.get(Boolean.class)) {
                     connect(administrator, proxyServer);
-                } else {
+                } else if (!BungeeConfig.NOT_FALLBACK_STAFF.get(Boolean.class)) {
                     MessageUtil.sendChannelMessage(administrator, "DISCONNECT_NOW");
                 }
-
-                TitleUtil.sendEndTitle(suspicious);
                 TitleUtil.sendAdminEndTitle(administrator, suspicious);
+            }
 
-                suspicious.sendMessage(TextComponent.fromLegacy(BungeeMessages.FINISHSUS.color().replace("%prefix%", BungeeMessages.PREFIX.color())));
-
-                if (suspicious.getServer() == null) {
-                    return;
-                }
-
-                if (isInControlServer(suspicious.getServer().getInfo())) {
+            if (suspicious.getServer() != null && isInControlServer(suspicious.getServer().getInfo())) {
+                if (!BungeeConfig.USE_DISCONNECT.get(Boolean.class)) {
                     connect(suspicious, proxyServer);
+                } else if (!BungeeConfig.NOT_FALLBACK_STAFF.get(Boolean.class)) {
+                    MessageUtil.sendChannelMessage(suspicious, "DISCONNECT_NOW");
                 }
+                TitleUtil.sendEndTitle(suspicious);
+                suspicious.sendMessage(TextComponent.fromLegacy(BungeeMessages.FINISHSUS.color().replace("%prefix%", BungeeMessages.PREFIX.color())));
             }
 
         } else if (suspicious.isConnected()) {
-
-            if (instance.getValue(PlayerCache.getCouples(), administrator) == null) {
-                return;
-            }
-
+            if (instance.getValue(PlayerCache.getCouples(), administrator) == null) return;
             PlayerCache.getSuspicious().remove(suspicious.getUniqueId());
             PlayerCache.getAdministrator().remove(administrator.getUniqueId());
 
@@ -165,13 +155,10 @@ public class Utils {
                 MessageUtil.sendChannelMessage(suspicious, "DISCONNECT_NOW");
             }
 
+            PlayerCache.getCouples().remove(administrator);
             TitleUtil.sendEndTitle(suspicious);
-            TitleUtil.sendAdminEndTitle(administrator, suspicious);
-
             suspicious.sendMessage(TextComponent.fromLegacy(BungeeMessages.FINISHSUS.color()
                     .replace("%prefix%", BungeeMessages.PREFIX.color())));
-
-            PlayerCache.getCouples().remove(administrator);
 
             if (BungeeConfig.MYSQL.get(Boolean.class)) {
                 instance.getData().setInControl(suspicious.getUniqueId(), 0);
@@ -185,18 +172,17 @@ public class Utils {
 
             PlayerCache.getAdministrator().remove(administrator.getUniqueId());
             PlayerCache.getSuspicious().remove(suspicious.getUniqueId());
-
-            if (!BungeeConfig.USE_DISCONNECT.get(Boolean.class)) {
+            if (!BungeeConfig.USE_DISCONNECT.get(Boolean.class) && !BungeeConfig.NOT_FALLBACK_STAFF.get(Boolean.class)) {
                     connect(administrator, proxyServer);
-            } else {
+            } else if (!BungeeConfig.NOT_FALLBACK_STAFF.get(Boolean.class)) {
                 MessageUtil.sendChannelMessage(administrator, "DISCONNECT_NOW");
             }
 
+            PlayerCache.getCouples().remove(administrator);
+            TitleUtil.sendAdminEndTitle(administrator, suspicious);
             administrator.sendMessage(TextComponent.fromLegacy(BungeeMessages.LEAVESUS.color()
                     .replace("%prefix%", BungeeMessages.PREFIX.color())
                     .replace("%player%", suspicious.getName())));
-
-            PlayerCache.getCouples().remove(administrator);
 
             if (BungeeConfig.MYSQL.get(Boolean.class)) {
                 instance.getData().setInControl(suspicious.getUniqueId(), 0);
