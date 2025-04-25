@@ -46,6 +46,11 @@ public class InfoCommand implements SimpleCommand {
 
         final Optional<Player> player;
         if (invocation.arguments().length == 0) {
+            if (!(source instanceof Player)) {
+                VelocityMessages.USAGE.sendList(source, null,
+                        new Placeholder("%prefix%", VelocityMessages.PREFIX.color()));
+                return;
+            }
             player = Optional.of((Player) source);
         } else {
             player = instance.getServer().getPlayer(invocation.arguments()[0]);
