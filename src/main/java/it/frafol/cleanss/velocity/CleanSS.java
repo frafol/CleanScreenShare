@@ -16,10 +16,10 @@ import com.velocitypowered.api.proxy.ProxyServer;
 import com.velocitypowered.api.proxy.messages.ChannelIdentifier;
 import com.velocitypowered.api.proxy.messages.MinecraftChannelIdentifier;
 import com.velocitypowered.api.proxy.server.RegisteredServer;
-import it.frafol.cleanss.velocity.listeners.CommandListener;
 import it.frafol.cleanss.velocity.commands.*;
 import it.frafol.cleanss.velocity.enums.*;
 import it.frafol.cleanss.velocity.listeners.ChatListener;
+import it.frafol.cleanss.velocity.listeners.CommandListener;
 import it.frafol.cleanss.velocity.listeners.KickListener;
 import it.frafol.cleanss.velocity.listeners.ServerListener;
 import it.frafol.cleanss.velocity.mysql.MySQLWorker;
@@ -628,6 +628,11 @@ public class CleanSS {
 	@SuppressWarnings("ALL")
 	public boolean getClientCatcher() {
 		return getServer().getPluginManager().isLoaded("clientcatcher");
+	}
+
+	@SuppressWarnings("ALL")
+	public boolean getLuckPerms() {
+		return getServer().getPluginManager().isLoaded("luckperms");
 	}
 
 	@SuppressWarnings("ALL")

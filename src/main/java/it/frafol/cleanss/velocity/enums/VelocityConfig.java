@@ -46,6 +46,7 @@ public enum VelocityConfig {
     MYSQL_ARGUMENTS("mysql.arguments"),
     SEND_ADMIN_MESSAGE("settings.start.send_admin_message"),
     ENABLE_SPECTATING("settings.spectate.enable"),
+    SPECTATOR_SERVER_SWITCH("settings.spectate.teleport_spectator"),
     CHAT_DISABLED("settings.spectate.block_chat"),
     MESSAGE_DELAY("settings.start.server_message_delay"),
     COMMAND_REQUEST("settings.start.admin_commands.request"),

@@ -492,6 +492,10 @@ public class CleanSS extends Plugin {
 		return getProxy().getPluginManager().getPlugin("PremiumVanish") != null;
 	}
 
+	public boolean getLuckPerms() {
+		return getProxy().getPluginManager().getPlugin("PremiumVanish") != null;
+	}
+
 	private boolean getSpicord() {
 		return getProxy().getPluginManager().getPlugin("Spicord") != null;
 	}

@@ -1,13 +1,11 @@
 package it.frafol.cleanss.bungee.objects;
 
-import com.velocitypowered.api.proxy.Player;
 import it.frafol.cleanss.bungee.CleanSS;
 import it.frafol.cleanss.bungee.enums.BungeeConfig;
 import it.frafol.cleanss.bungee.enums.BungeeMessages;
 import it.frafol.cleanss.bungee.objects.handlers.DataHandler;
 import it.frafol.cleanss.velocity.enums.VelocityMessages;
 import lombok.experimental.UtilityClass;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.LuckPermsProvider;
 import net.luckperms.api.model.group.Group;

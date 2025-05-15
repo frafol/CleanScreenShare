@@ -1,6 +1,5 @@
 package it.frafol.cleanss.bukkit.listeners;
 
-import com.github.Anon8281.universalScheduler.UniversalScheduler;
 import it.frafol.cleanss.bukkit.CleanSS;
 import it.frafol.cleanss.bukkit.enums.SpigotCache;
 import it.frafol.cleanss.bukkit.enums.SpigotConfig;

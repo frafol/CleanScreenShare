@@ -3,10 +3,10 @@ package it.frafol.cleanss.velocity.commands;
 import com.velocitypowered.api.command.CommandSource;
 import com.velocitypowered.api.command.SimpleCommand;
 import com.velocitypowered.api.proxy.Player;
+import it.frafol.cleanss.velocity.CleanSS;
 import it.frafol.cleanss.velocity.enums.VelocityMessages;
 import it.frafol.cleanss.velocity.objects.PlayerCache;
 import it.frafol.cleanss.velocity.objects.Utils;
-import it.frafol.cleanss.velocity.CleanSS;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 
 public class AdmitCommand implements SimpleCommand {

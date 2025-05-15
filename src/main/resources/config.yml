@@ -116,6 +116,9 @@ settings:
     # Enable this if you want to enable the spectator mode.
     enable: true
 
+    # Enable this if you want to become a spectator also on /server (control server).
+    teleport_spectator: false
+
     # Enable this if you want to disable the chat for spectators.
     # If this is false, the chat for spectators WON'T be handled by CleanScreenShare.
     block_chat: true
