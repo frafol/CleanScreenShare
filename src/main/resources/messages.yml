@@ -253,6 +253,7 @@ messages:
     admit_thumbnail: "none" # You can use a link to an image.
 
     # You can use %staffer% and %result%. If you are using LuckPerms, you can also use %admingroup%.
+    # You can use %controls% only in spectator start message, it shows the number of current controls.
     spectator: "The staffer %staffer% started spectating controls."
     spectator_end: "The staffer %staffer% stopped spectating controls."
     spectator_thumbnail: "none" # You can use a link to an image.

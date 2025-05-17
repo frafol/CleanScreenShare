@@ -120,6 +120,7 @@ public class SpectateCommand extends Command implements TabExecutor {
         MessageUtil.sendDiscordSpectatorMessage(player, BungeeMessages.DISCORD_SPECTATOR.color()
                 .replace("%server%", server.getName())
                 .replace("%staffer%", player.getName())
+                .replace("%controls%", String.valueOf(PlayerCache.getSuspicious().size()))
                 .replace("%admingroup%", admin_displayname), BungeeMessages.DISCORD_SPECTATOR_THUMBNAIL.color());
 
         if (BungeeConfig.SEND_ADMIN_MESSAGE.get(Boolean.class)) {

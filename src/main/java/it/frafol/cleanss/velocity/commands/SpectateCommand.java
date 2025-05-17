@@ -131,9 +131,10 @@ public class SpectateCommand implements SimpleCommand {
         }
 
         MessageUtil.sendDiscordSpectatorMessage(player, VelocityMessages.DISCORD_SPECTATOR.color()
-                .replace("%staffer%", player.getUsername())
-                .replace("%server%", server.getServerInfo().getName())
-                .replace("%admingroup%", admin_displayname),
+                        .replace("%staffer%", player.getUsername())
+                        .replace("%server%", server.getServerInfo().getName())
+                        .replace("%controls%", String.valueOf(PlayerCache.getSuspicious().size()))
+                        .replace("%admingroup%", admin_displayname),
                 VelocityMessages.DISCORD_SPECTATOR_THUMBNAIL.color());
 
         if (VelocityConfig.SEND_ADMIN_MESSAGE.get(Boolean.class)) {
