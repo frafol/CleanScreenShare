@@ -167,7 +167,7 @@ public class FinishCommand implements SimpleCommand {
                                         .deserialize(VelocityMessages.CONTROL_FINISH_MESSAGE.color()
                                                 .replace("%prefix%", VelocityMessages.PREFIX.color())
                                                 .replace("%suspect%", player.get().getUsername()))))
-                        .delay(VelocityMessages.CONTROL_DELAYMESSAGE.get(Integer.class), TimeUnit.SECONDS).schedule();
+                        .delay(VelocityMessages.CONTROL_FINISH_MESSAGE_DELAY.get(Integer.class), TimeUnit.SECONDS).schedule();
 
                 MessageUtil.sendDiscordMessage(
                         player.get(),

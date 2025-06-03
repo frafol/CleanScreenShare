@@ -96,7 +96,7 @@ public class FinishCommand extends Command implements TabExecutor {
                         player.sendMessage(TextComponent.fromLegacy(BungeeMessages.CONTROL_FINISH_MESSAGE.color()
                                 .replace("%prefix%", BungeeMessages.PREFIX.color())
                                 .replace("%suspect%", player.getName()))),
-                        BungeeMessages.CONTROL_DELAYMESSAGE.get(Integer.class), TimeUnit.SECONDS);
+                        BungeeMessages.CONTROL_FINISH_MESSAGE_DELAY.get(Integer.class), TimeUnit.SECONDS);
 
                 String admin_prefix;
                 String admin_suffix;

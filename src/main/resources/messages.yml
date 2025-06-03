@@ -139,6 +139,7 @@ messages:
     # This is the message that will be sent to the staffer when using the ssfinish command.
     # It uses the delay like the start messages.
     finish_message: "%prefix% &7You've finished the control to &d%suspect%&7."
+    finish_message_delay: 2 # In seconds
 
     # This message will appear to the staff when the suspect uses the admin command.
     admit_message: "%prefix% &c&lWARNING! &7Player %suspect% admitted using &dcheats&7."
