@@ -30,6 +30,7 @@ public class DebugCommand extends Command {
         invocation.sendMessage(TextComponent.fromLegacy("§d| §7BungeeCord: §d" + instance.getProxy().getVersion()));
         invocation.sendMessage(TextComponent.fromLegacy("§d| §7MySQL: " + getMySQL()));
         invocation.sendMessage(TextComponent.fromLegacy("§d| §7Discord: " + getDiscord()));
+        invocation.sendMessage(TextComponent.fromLegacy("§d| §Update Notifier: " + BungeeConfig.UPDATE_CHECK.get(Boolean.class)));
         invocation.sendMessage(TextComponent.fromLegacy("§d| "));
         invocation.sendMessage(TextComponent.fromLegacy("§d| §7Control servers: "));
 

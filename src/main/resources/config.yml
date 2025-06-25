@@ -123,6 +123,10 @@ settings:
     # If this is false, the chat for spectators WON'T be handled by CleanScreenShare.
     block_chat: true
 
+# This option is only for developers, do not activate this if you don't know what it does.
+# DISABLED, NOT WORKING FOR NOW.
+debug: false
+
 permissions:
 
   # You can personalize permissions.

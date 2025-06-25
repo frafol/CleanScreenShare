@@ -35,6 +35,7 @@ public class DebugCommand implements SimpleCommand {
         source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize("§d| §7Velocity: §d" + instance.getServer().getVersion().getVersion()));
         source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize("§d| §7MySQL: §d" + getMySQL()));
         source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize("§d| §7Discord: §d" + getDiscord()));
+        source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize("§d| §7Update Notifier: §d" + VelocityConfig.UPDATE_CHECK.get(Boolean.class)));
         source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize("§d| "));
         source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize("§d| §7Control servers: "));
 
