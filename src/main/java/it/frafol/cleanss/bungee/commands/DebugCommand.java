@@ -2,9 +2,12 @@ package it.frafol.cleanss.bungee.commands;
 
 import it.frafol.cleanss.bungee.CleanSS;
 import it.frafol.cleanss.bungee.enums.BungeeConfig;
+import it.frafol.cleanss.bungee.enums.BungeeMessages;
+import it.frafol.cleanss.bungee.objects.Placeholder;
 import it.frafol.cleanss.bungee.objects.Utils;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Command;
 
 public class DebugCommand extends Command {
@@ -23,6 +26,20 @@ public class DebugCommand extends Command {
             return;
         }
 
+        if (!(invocation instanceof ProxiedPlayer)) {
+            sendConsole(invocation);
+            return;
+        }
+
+        BungeeMessages.DEBUG.sendList(invocation,
+                new Placeholder("server_version", instance.getProxy().getVersion()),
+                new Placeholder("plugin_version", instance.getDescription().getVersion()),
+                new Placeholder("mysql", getMySQL()),
+                new Placeholder("discord", getDiscord()),
+                new Placeholder("update_notifier", String.valueOf(BungeeConfig.UPDATE_CHECK.get(Boolean.class))));
+    }
+
+    private void sendConsole(CommandSender invocation) {
         invocation.sendMessage(TextComponent.fromLegacy("§d| "));
         invocation.sendMessage(TextComponent.fromLegacy("§d| §7CleanScreenShare Informations"));
         invocation.sendMessage(TextComponent.fromLegacy("§d| "));

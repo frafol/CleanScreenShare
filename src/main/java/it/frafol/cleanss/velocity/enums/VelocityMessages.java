@@ -91,6 +91,8 @@ public enum VelocityMessages {
     CONTROL_CHAT_SUS("messages.chat.states.suspect"),
     CONTROL_CHAT_STAFF("messages.chat.states.staffer"),
 
+    DEBUG("messages.debug"),
+
     SPECTATING("messages.spectate.spectating"),
     NOT_SPECTATING("messages.spectate.not_spectating"),
     SPECT_ADMIN_NOTIFY("messages.spectate.admin_notification"),

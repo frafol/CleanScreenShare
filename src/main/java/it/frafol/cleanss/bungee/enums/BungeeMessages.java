@@ -78,6 +78,8 @@ public enum BungeeMessages {
     ADMINCONTROLFINISH_STAY("messages.title.admin_finish.stay"),
     ADMINCONTROLFINISH_DELAY("messages.title.admin_finish.delay"),
 
+    DEBUG("messages.debug"),
+
     YOURSELF("messages.yourself"),
     PLAYER_BYPASS("messages.player_bypass"),
     PLAYER_BYPASS_SERVER("messages.player_bypass_server"),
