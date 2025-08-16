@@ -45,7 +45,7 @@ public class DebugCommand extends Command {
         invocation.sendMessage(TextComponent.fromLegacy("§d| §7CleanScreenShare Informations"));
         invocation.sendMessage(TextComponent.fromLegacy("§d| "));
         invocation.sendMessage(TextComponent.fromLegacy("§d| §7Version: §d" + instance.getDescription().getVersion()));
-        invocation.sendMessage(TextComponent.fromLegacy("§d| §7 " + instance.getProxy().getName() + ": §d" + instance.getProxy().getVersion()));
+        invocation.sendMessage(TextComponent.fromLegacy("§d| §7" + instance.getProxy().getName() + ": §d" + instance.getProxy().getVersion()));
         invocation.sendMessage(TextComponent.fromLegacy("§d| §7MySQL: " + getMySQL()));
         invocation.sendMessage(TextComponent.fromLegacy("§d| §7Discord: " + getDiscord()));
         invocation.sendMessage(TextComponent.fromLegacy("§d| §7Update Notifier: " + BungeeConfig.UPDATE_CHECK.get(Boolean.class)));
