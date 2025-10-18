@@ -1,0 +1,56 @@
+#   ___  __    ____    __    _  _   ___  ___
+#  / __)(  )  ( ___)  /__\  ( \( ) / __)/ __)
+# ( (__  )(__  )__)  /(__)\  )  (  \__ \\__ \
+#  \___)(____)(____)(__)(__)(_)\_) (___/(___/
+# Limbo Configuration file. Made with ❤ by frafol.
+# For support: https://discord.com/invite/sTSwaGBCdC
+
+limbo:
+
+  # This function enables connection to the server created by the LimboAPI plugin, instead of a physical server.
+  # It can be useful if you don't want to create a "Control" server and forgo having a map where you can perform controls.
+  # This doesn't impact performance that much since Velocity is completely asynchronous.
+  use_limbo_api: false
+
+  # You can modify World Settings here.
+  world_settings:
+
+    # Change player's gamemode on player's join.
+    # Supported values: survival, creative, adventure, spectator.
+    gamemode: "adventure"
+
+    # Change world's dimension.
+    # Supported values: overworld, the_nether, the_end.
+    dimension: "overworld"
+
+    # Change player's spawn position.
+    coords:
+      x: 0
+      y: 100
+      z: 0
+      pitch: 0
+      yaw: 0
+
+    schematic:
+
+      # This function enables the use of a schematic file.
+      use: false
+
+      # The type of the schematic file.
+      # You can choose between:
+      # - "SCHEMATIC" 1.12 WorldEdit Schematic File.
+      # - "WORLDEDIT_SCHEM" 1.13+ WorldEdit Schematic File.
+      # - "STRUCTURE" 1.13+ Structure File.
+      type: "SCHEMATIC"
+
+      # The name of the schematic file.
+      # The file must be in the "plugins/CleanScreenShare/" folder.
+      name: "control.schematic"
+
+      # The position where the schematic will be pasted.
+      paste_coords:
+        x: 0
+        y: 100
+        z: 0
+
+# Enjoy.

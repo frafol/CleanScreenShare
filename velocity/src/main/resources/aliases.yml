@@ -1,0 +1,51 @@
+#   ___  __    ____    __    _  _   ___  ___
+#  / __)(  )  ( ___)  /__\  ( \( ) / __)/ __)
+# ( (__  )(__  )__)  /(__)\  )  (  \__ \\__ \
+#  \___)(____)(____)(__)(__)(_)\_) (___/(___/
+#
+# Aliases file. Made with ❤ by frafol.
+# For support: https://dsc.gg/futuredevelopment
+
+# NOTE: Reload command is not changable.
+aliases:
+
+  general:
+
+    help:
+      - "sshelp"
+      - "cleansshelp"
+      - "screensharehelp"
+      - "cleanscreensharehelp"
+
+  screenshare:
+
+    main:
+      - "ss"
+      - "screenshare"
+      - "control"
+      - "sscontrol"
+
+    finish:
+      - "ssfinish"
+      - "finish"
+      - "screensharefinish"
+      - "ssend"
+
+    admit:
+      - "ssadmin"
+      - "admit"
+      - "screenshareadmit"
+
+    info:
+      - "ssinfo"
+      - "info"
+      - "screenshareinfo"
+      - "ssend"
+
+  spectator:
+
+    main:
+      - "sspect"
+      - "sspectator"
+      - "spectatecontrol"
+      - "sspectate"
