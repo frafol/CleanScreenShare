@@ -414,7 +414,7 @@ public class CleanSS {
 	}
 
 	private InputStream findFile(String fileName) {
-		return FileUtils.findFile("https://raw.githubusercontent.com/frafol/CleanScreenShare/main/src/main/resources/" + fileName);
+		return FileUtils.findFile("https://raw.githubusercontent.com/frafol/CleanScreenShare/refs/heads/main/velocity/src/main/resources/" + fileName);
 	}
 
 	private void loadCommands() {
