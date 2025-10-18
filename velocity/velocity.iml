@@ -5,8 +5,6 @@
       <configuration>
         <autoDetectTypes>
           <platformType>VELOCITY</platformType>
-          <platformType>BUNGEECORD</platformType>
-          <platformType>SPIGOT</platformType>
         </autoDetectTypes>
         <projectReimportVersion>1</projectReimportVersion>
       </configuration>

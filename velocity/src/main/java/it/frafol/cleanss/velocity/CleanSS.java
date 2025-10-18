@@ -319,9 +319,9 @@ public class CleanSS {
 		Library discord = Library.builder()
 				.groupId("net{}dv8tion")
 				.artifactId("JDA")
-				.version("5.0.0-beta.18")
+				.version("5.5.1")
 				.relocate(jda)
-				.url("https://github.com/DV8FromTheWorld/JDA/releases/download/v5.0.0-beta.18/JDA-5.0.0-beta.18-withDependencies-min.jar")
+				.url("https://github.com/DV8FromTheWorld/JDA/releases/download/v5.5.1/JDA-5.5.1-withDependencies-min.jar")
 				.build();
 
 		velocityLibraryManager.addMavenCentral();
