@@ -43,10 +43,6 @@
             <url>https://repo.papermc.io/repository/maven-public/</url>
         </repository>
         <repository>
-            <id>spigot-repo</id>
-            <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
-        </repository>
-        <repository>
             <id>jitpack.io</id>
             <url>https://jitpack.io</url>
         </repository>
@@ -59,16 +55,8 @@
             <url>https://maven.elytrium.net/repo/</url>
         </repository>
         <repository>
-            <id>placeholderapi</id>
-            <url>https://repo.extendedclip.com/content/repositories/placeholderapi/</url>
-        </repository>
-        <repository>
             <id>spicord-repo</id>
             <url>https://repo.spicord.org/</url>
-        </repository>
-        <repository>
-            <id>viaversion-repo</id>
-            <url>https://repo.viaversion.com/everything/</url>
         </repository>
         <repository>
             <id>maven_central</id>
