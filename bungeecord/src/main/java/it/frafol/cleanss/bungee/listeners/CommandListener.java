@@ -71,8 +71,7 @@ public class CommandListener implements Listener {
     public void onStaffCommand(ChatEvent event) {
 
         if (!event.isCommand()) return;
-        if (!(event.getSender() instanceof ProxiedPlayer)) return;
-        final ProxiedPlayer player = (ProxiedPlayer) event.getSender();
+        if (!(event.getSender() instanceof ProxiedPlayer player)) return;
         if (!PlayerCache.getAdministrator().contains(player.getUniqueId())) return;
         if (!BungeeConfig.COMMAND_REQUEST.get(Boolean.class)) return;
 
@@ -84,7 +83,7 @@ public class CommandListener implements Listener {
         }
 
         for (String allowed : BungeeConfig.ALLOWED_COMMANDS.getStringList()) {
-            if (event.getMessage().startsWith(allowed)) {
+            if (event.getMessage().startsWith("/" + allowed)) {
                 return;
             }
         }

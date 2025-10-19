@@ -31,11 +31,10 @@ public class CommandListener {
     @Subscribe
     public void onPlayerCommand(CommandExecuteEvent event) {
 
-        if (!(event.getCommandSource() instanceof Player)) {
+        if (!(event.getCommandSource() instanceof Player player)) {
             return;
         }
 
-        final Player player = (Player) event.getCommandSource();
         if (!PlayerCache.getSuspicious().contains(player.getUniqueId())) {
             return;
         }
@@ -59,11 +58,10 @@ public class CommandListener {
     @Subscribe
     public void onStaffCommand(CommandExecuteEvent event) {
 
-        if (!(event.getCommandSource() instanceof Player)) {
+        if (!(event.getCommandSource() instanceof Player player)) {
             return;
         }
 
-        final Player player = (Player) event.getCommandSource();
         if (!PlayerCache.getAdministrator().contains(player.getUniqueId())) {
             return;
         }
