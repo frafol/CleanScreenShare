@@ -20,7 +20,7 @@ jobs:
           java-version: '17'
 
       - name: Build with Maven
-        run: mvn clean install -B
+        run: mvn clean install -B -U
 
       - name: Find JAR file
         id: find_jar
