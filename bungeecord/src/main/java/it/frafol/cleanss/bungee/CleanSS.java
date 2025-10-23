@@ -386,7 +386,7 @@ public class CleanSS extends Plugin {
 	}
 
 	private InputStream findFile(String fileName) {
-		return FileUtils.findFile("https://raw.githubusercontent.com/frafol/CleanScreenShare/refs/heads/main/bungeecord/src/main/resources" + fileName);
+		return FileUtils.findFile("https://raw.githubusercontent.com/frafol/CleanScreenShare/refs/heads/main/bungeecord/src/main/resources/" + fileName);
 	}
 
 	private void loadLibraries() {
