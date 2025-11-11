@@ -37,7 +37,7 @@ public class ServerListener {
             credits(player);
         }
 
-        if (!player.getCurrentServer().isPresent()) {
+        if (player.getCurrentServer().isEmpty()) {
             if (PlayerCache.getSuspicious().contains(player.getUniqueId()) || PlayerCache.getAdministrator().contains(player.getUniqueId())) {
                 instance.getLogger().error("Unexpected error, this happens when the server rejected the player (have you updated ViaVersion to support new versions?).");
             }

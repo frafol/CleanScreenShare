@@ -4,6 +4,9 @@ import it.frafol.cleanss.bungee.CleanSS;
 import it.frafol.cleanss.bungee.enums.BungeeMessages;
 import lombok.SneakyThrows;
 import lombok.experimental.UtilityClass;
+import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
@@ -71,8 +74,21 @@ public class PasteUtils {
         if (!Files.exists(logFile) || !Files.isRegularFile(logFile)) return;
         CompletableFuture.runAsync(() -> {
             String link = uploadLogFile(logFile);
-            targetMessage.sendMessage(TextComponent.fromLegacy(
-                    BungeeMessages.CONTROL_FINISH_LINK.color().replace("%link%", link)));
+            String raw = BungeeMessages.CONTROL_FINISH_LINK.color()
+                    .replace("%link%", link)
+                    .replace("%prefix%", BungeeMessages.PREFIX.color());
+            TextComponent linkComponent = new TextComponent(link);
+            linkComponent.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, link));
+            String[] split = raw.split(java.util.regex.Pattern.quote(link), -1);
+            ComponentBuilder builder = new ComponentBuilder("");
+            for (int i = 0; i < split.length; i++) {
+                builder.append(split[i]);
+                if (i < split.length - 1) {
+                    builder.append(linkComponent);
+                }
+            }
+            BaseComponent[] messageComponents = builder.create();
+            targetMessage.sendMessage(messageComponents);
         }, executor);
     }
 }

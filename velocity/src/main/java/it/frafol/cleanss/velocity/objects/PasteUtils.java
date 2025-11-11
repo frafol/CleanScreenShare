@@ -5,7 +5,12 @@ import it.frafol.cleanss.velocity.CleanSS;
 import it.frafol.cleanss.velocity.enums.VelocityMessages;
 import lombok.SneakyThrows;
 import lombok.experimental.UtilityClass;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import org.intellij.lang.annotations.RegExp;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -70,9 +75,14 @@ public class PasteUtils {
         Path logFile = logsFolder.resolve(fileName);
         if (!Files.exists(logFile) || !Files.isRegularFile(logFile)) return;
         CompletableFuture.runAsync(() -> {
-            String link = uploadLogFile(logFile);
-            targetMessage.sendMessage(LegacyComponentSerializer.legacyAmpersand().deserialize(
-                    VelocityMessages.CONTROL_FINISH_LINK.color().replace("%link%", link)));
+            @RegExp String link = uploadLogFile(logFile);
+            String raw = VelocityMessages.CONTROL_FINISH_LINK.color()
+                    .replace("%link%", link)
+                    .replace("%prefix%", VelocityMessages.PREFIX.color());
+            TextComponent linkComponent = Component.text(link).clickEvent(ClickEvent.openUrl(link));
+            Component messageComponent = LegacyComponentSerializer.legacyAmpersand().deserialize(raw);
+            Component finalMessage = messageComponent.replaceText(r -> r.match(link).replacement(linkComponent));
+            targetMessage.sendMessage(finalMessage);
         }, executor);
     }
 }

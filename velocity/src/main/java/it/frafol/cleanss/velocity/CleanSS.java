@@ -54,7 +54,7 @@ import java.util.concurrent.TimeUnit;
 @Plugin(
 		id = "cleanscreenshare",
 		name = "CleanScreenShare",
-		version = "2.7.1",
+		version = "2.7.2",
 		description = "Make control hacks on your players.",
 		dependencies = {@Dependency(id = "luckperms", optional = true), @Dependency(id = "mysqlandconfigurateforvelocity", optional = true), @Dependency(id = "limboapi", optional = true), @Dependency(id = "ajqueue", optional = true), @Dependency(id = "premiumvanish", optional = true), @Dependency(id = "velocityvanish", optional = true), @Dependency(id = "spicord", optional = true), @Dependency(id = "clientcatcher", optional = true)},
 		authors = { "frafol" })
@@ -406,7 +406,7 @@ public class CleanSS {
 
 	@SneakyThrows
 	private void updateConfig() {
-		if (!container.getDescription().getVersion().isPresent()) return;
+		if (container.getDescription().getVersion().isEmpty()) return;
 		if (container.getDescription().getVersion().get().equals(VelocityVersion.VERSION.get(String.class))) return;
 		logger.info("Creating new configurations...");
 		YamlUpdater.create(new File(path + "/config.yml"), findFile("config.yml")).backup(true).update();
