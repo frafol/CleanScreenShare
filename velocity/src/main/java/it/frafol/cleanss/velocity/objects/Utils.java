@@ -221,6 +221,11 @@ public class Utils {
         if (suspicious == null || administrator == null) return;
         if (suspicious.isActive() && administrator.isActive()) {
 
+            if (VelocityConfig.TAKE_CHATLOGS.get(Boolean.class)) {
+                if (VelocityConfig.UPLOAD_CHATLOGS.get(Boolean.class)) PasteUtils.uploadLogByFileName(LogUtils.writeLogFile(administrator.getUsername()), administrator);
+                else LogUtils.writeLogFile(administrator.getUsername());
+            }
+
             PlayerCache.getAdministrator().remove(administrator.getUniqueId());
             PlayerCache.getSuspicious().remove(suspicious.getUniqueId());
             PlayerCache.getCouples().remove(administrator, suspicious);
@@ -233,7 +238,7 @@ public class Utils {
                 PlayerCache.getIn_control().put(administrator.getUniqueId(), 0);
             }
 
-            if (!suspicious.getCurrentServer().isPresent()) if (!instance.useLimbo) return;
+            if (suspicious.getCurrentServer().isEmpty()) if (!instance.useLimbo) return;
             if (instance.useLimbo || isInControlServer(suspicious.getCurrentServer().get().getServer())) {
 
                 TitleUtil.sendEndTitle(suspicious);
@@ -263,6 +268,11 @@ public class Utils {
 
             PlayerCache.getSuspicious().remove(suspicious.getUniqueId());
             PlayerCache.getAdministrator().remove(administrator.getUniqueId());
+
+            if (VelocityConfig.TAKE_CHATLOGS.get(Boolean.class)) {
+                if (VelocityConfig.UPLOAD_CHATLOGS.get(Boolean.class)) PasteUtils.uploadLogByFileName(LogUtils.writeLogFile(administrator.getUsername()), administrator);
+                else LogUtils.writeLogFile(administrator.getUsername());
+            }
 
             if (VelocityConfig.MYSQL.get(Boolean.class)) {
                 instance.getData().setInControl(suspicious.getUniqueId(), 0);
@@ -294,6 +304,11 @@ public class Utils {
                 PlayerCache.getIn_control().put(administrator.getUniqueId(), 0);
             }
 
+            if (VelocityConfig.TAKE_CHATLOGS.get(Boolean.class)) {
+                if (VelocityConfig.UPLOAD_CHATLOGS.get(Boolean.class)) PasteUtils.uploadLogByFileName(LogUtils.writeLogFile(administrator.getUsername()), administrator);
+                else LogUtils.writeLogFile(administrator.getUsername());
+            }
+
             administrator.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.LEAVESUS.color()
                     .replace("%prefix%", VelocityMessages.PREFIX.color())
                     .replace("%player%", suspicious.getUsername())));
@@ -309,6 +324,11 @@ public class Utils {
             PlayerCache.getAdministrator().remove(administrator.getUniqueId());
             PlayerCache.getSuspicious().remove(suspicious.getUniqueId());
             PlayerCache.getCouples().remove(administrator);
+
+            if (VelocityConfig.TAKE_CHATLOGS.get(Boolean.class)) {
+                if (VelocityConfig.UPLOAD_CHATLOGS.get(Boolean.class)) PasteUtils.uploadLogByFileName(LogUtils.writeLogFile(administrator.getUsername()), administrator);
+                else LogUtils.writeLogFile(administrator.getUsername());
+            }
 
             if (VelocityConfig.MYSQL.get(Boolean.class)) {
                 instance.getData().setInControl(suspicious.getUniqueId(), 0);

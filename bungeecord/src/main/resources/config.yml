@@ -123,6 +123,20 @@ settings:
     # If this is false, the chat for spectators WON'T be handled by CleanScreenShare.
     block_chat: true
 
+  chat_logs:
+
+    # This will take every control chat logs in a log folder (cleanscreenshare/chat-logs/)
+    # The file will be saved in .log after the end of the control.
+    enable: false
+
+    # Specifies the number of days after which we can remove logs from the system.
+    # We recommend a range between 7 and 60.
+    logs_expire: 30
+
+    # If you enable it, we will send you a link at the end of each check that will allow you to download the logs.
+    # The plugin uses the dpaste.com service to upload logs.
+    upload: true
+
 # This option is only for developers, do not activate this if you don't know what it does.
 # DISABLED, NOT WORKING FOR NOW.
 debug: false

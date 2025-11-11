@@ -38,8 +38,13 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -81,6 +86,7 @@ public class CleanSS extends Plugin {
 		getLogger().info("§7Loading §dconfiguration§7...");
 		loadFiles();
 		updateConfig();
+        startLogs();
 
 		getLogger().info("§7Loading §dplugin§7...");
 
@@ -384,6 +390,32 @@ public class CleanSS extends Plugin {
 		versionTextFile.getConfig().save();
 		loadFiles();
 	}
+
+    @SneakyThrows
+    private void startLogs() {
+        if (!BungeeConfig.TAKE_CHATLOGS.get(Boolean.class)) return;
+        Path chatLogsFolder = getDataFolder().toPath().resolve("chat-logs");
+        if (Files.notExists(chatLogsFolder)) Files.createDirectories(chatLogsFolder);
+        deleteLogs(BungeeConfig.EXPIRE_CHATLOGS.get(Integer.class));
+        getLogger().info("§7Started §dchat logs §7creation...");
+    }
+
+    @SneakyThrows
+    private void deleteLogs(int days) {
+        Path logsFolder = getDataFolder().toPath().resolve("chat-logs");
+        if (!Files.exists(logsFolder) || !Files.isDirectory(logsFolder)) return;
+        Instant cutoff = Instant.now().minus(days, ChronoUnit.DAYS);
+        try (DirectoryStream<Path> stream = Files.newDirectoryStream(logsFolder, "*.log")) {
+            for (Path file : stream) {
+                BasicFileAttributes attrs = Files.readAttributes(file, BasicFileAttributes.class);
+                Instant lastModified = attrs.lastModifiedTime().toInstant();
+
+                if (lastModified.isBefore(cutoff)) {
+                    Files.deleteIfExists(file);
+                }
+            }
+        }
+    }
 
 	private InputStream findFile(String fileName) {
 		return FileUtils.findFile("https://raw.githubusercontent.com/frafol/CleanScreenShare/refs/heads/main/bungeecord/src/main/resources/" + fileName);

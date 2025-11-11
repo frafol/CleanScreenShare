@@ -8,8 +8,10 @@ import it.frafol.cleanss.velocity.CleanSS;
 import it.frafol.cleanss.velocity.enums.VelocityConfig;
 import it.frafol.cleanss.velocity.enums.VelocityMessages;
 import it.frafol.cleanss.velocity.objects.ChatUtil;
+import it.frafol.cleanss.velocity.objects.LogUtils;
 import it.frafol.cleanss.velocity.objects.PlayerCache;
 import it.frafol.cleanss.velocity.objects.Utils;
+import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.LuckPermsProvider;
@@ -81,63 +83,49 @@ public class ChatListener {
 
         if (PlayerCache.getCouples().containsKey(player)) {
 
-            instance.getValue(PlayerCache.getCouples(), player).sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.CONTROL_CHAT_FORMAT.color()
+            TextComponent message =LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.CONTROL_CHAT_FORMAT.color()
                     .replace("%prefix%", VelocityMessages.PREFIX.color())
                     .replace("%player%", player.getUsername())
                     .replace("%message%", event.getMessage())
                     .replace("%userprefix%", ChatUtil.color(user_prefix))
                     .replace("%usersuffix%", ChatUtil.color(user_suffix))
-                    .replace("%state%", VelocityMessages.CONTROL_CHAT_STAFF.color())));
+                    .replace("%state%", VelocityMessages.CONTROL_CHAT_STAFF.color()));
 
-            player.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.CONTROL_CHAT_FORMAT.color()
-                    .replace("%prefix%", VelocityMessages.PREFIX.color())
-                    .replace("%player%", player.getUsername())
-                    .replace("%message%", event.getMessage())
-                    .replace("%userprefix%", ChatUtil.color(user_prefix))
-                    .replace("%usersuffix%", ChatUtil.color(user_suffix))
-                    .replace("%state%", VelocityMessages.CONTROL_CHAT_STAFF.color())));
+            if (VelocityConfig.TAKE_CHATLOGS.get(Boolean.class)) {
+                LogUtils.addLine(
+                        player.getUsername(),
+                        LegacyComponentSerializer.legacySection().serialize(message));
+            }
 
+            instance.getValue(PlayerCache.getCouples(), player).sendMessage(message);
+            player.sendMessage(message);
             instance.getServer().getAllPlayers().stream().filter
                             (players -> PlayerCache.getSpectators().contains(players.getUniqueId()))
-                    .forEach(players -> players.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.CONTROL_CHAT_FORMAT.color()
-                            .replace("%prefix%", VelocityMessages.PREFIX.color())
-                            .replace("%player%", player.getUsername())
-                            .replace("%message%", event.getMessage())
-                            .replace("%userprefix%", ChatUtil.color(user_prefix))
-                            .replace("%usersuffix%", ChatUtil.color(user_suffix))
-                            .replace("%state%", VelocityMessages.CONTROL_CHAT_STAFF.color()))));
-
+                    .forEach(players -> players.sendMessage(message));
             return;
-
         }
 
         if (PlayerCache.getCouples().containsValue(player)) {
 
-            instance.getKey(PlayerCache.getCouples(), player).sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.CONTROL_CHAT_FORMAT.color()
+            TextComponent message = LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.CONTROL_CHAT_FORMAT.color()
                     .replace("%prefix%", VelocityMessages.PREFIX.color())
                     .replace("%player%", player.getUsername())
                     .replace("%message%", event.getMessage())
                     .replace("%userprefix%", ChatUtil.color(user_prefix))
                     .replace("%usersuffix%", ChatUtil.color(user_suffix))
-                    .replace("%state%", VelocityMessages.CONTROL_CHAT_SUS.color())));
+                    .replace("%state%", VelocityMessages.CONTROL_CHAT_SUS.color()));
 
-            player.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.CONTROL_CHAT_FORMAT.color()
-                    .replace("%prefix%", VelocityMessages.PREFIX.color())
-                    .replace("%player%", player.getUsername())
-                    .replace("%message%", event.getMessage())
-                    .replace("%userprefix%", ChatUtil.color(user_prefix))
-                    .replace("%usersuffix%", ChatUtil.color(user_suffix))
-                    .replace("%state%", VelocityMessages.CONTROL_CHAT_SUS.color())));
+            if (VelocityConfig.TAKE_CHATLOGS.get(Boolean.class)) {
+                LogUtils.addLine(
+                        instance.getKey(PlayerCache.getCouples(), player).getUsername(),
+                        LegacyComponentSerializer.legacySection().serialize(message));
+            }
 
+            instance.getKey(PlayerCache.getCouples(), player).sendMessage(message);
+            player.sendMessage(message);
             instance.getServer().getAllPlayers().stream().filter
                             (players -> PlayerCache.getSpectators().contains(players.getUniqueId()))
-                    .forEach(players -> players.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.CONTROL_CHAT_FORMAT.color()
-                            .replace("%prefix%", VelocityMessages.PREFIX.color())
-                            .replace("%player%", player.getUsername())
-                            .replace("%message%", event.getMessage())
-                            .replace("%userprefix%", ChatUtil.color(user_prefix))
-                            .replace("%usersuffix%", ChatUtil.color(user_suffix))
-                            .replace("%state%", VelocityMessages.CONTROL_CHAT_SUS.color()))));
+                    .forEach(players -> players.sendMessage(message));
 
         }
     }

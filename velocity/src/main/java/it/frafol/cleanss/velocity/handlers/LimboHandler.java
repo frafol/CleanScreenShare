@@ -2,11 +2,14 @@ package it.frafol.cleanss.velocity.handlers;
 
 import com.velocitypowered.api.proxy.Player;
 import it.frafol.cleanss.velocity.CleanSS;
+import it.frafol.cleanss.velocity.enums.VelocityConfig;
 import it.frafol.cleanss.velocity.enums.VelocityMessages;
+import it.frafol.cleanss.velocity.objects.LogUtils;
 import it.frafol.cleanss.velocity.objects.PlayerCache;
 import net.elytrium.limboapi.api.Limbo;
 import net.elytrium.limboapi.api.LimboSessionHandler;
 import net.elytrium.limboapi.api.player.LimboPlayer;
+import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.LuckPermsProvider;
@@ -73,38 +76,44 @@ public class LimboHandler implements LimboSessionHandler {
         }
 
         if (PlayerCache.getCouples().containsKey(player.getProxyPlayer())) {
-            instance.getValue(PlayerCache.getCouples(), player.getProxyPlayer()).sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.CONTROL_CHAT_FORMAT.color()
+
+            TextComponent message = LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.CONTROL_CHAT_FORMAT.color()
                     .replace("%prefix%", VelocityMessages.PREFIX.color())
                     .replace("%player%", player.getProxyPlayer().getUsername())
                     .replace("%message%", chat)
                     .replace("%userprefix%", user_prefix.replace("&", "§"))
                     .replace("%usersuffix%", user_suffix.replace("&", "§"))
-                    .replace("%state%", VelocityMessages.CONTROL_CHAT_STAFF.color())));
-            player.getProxyPlayer().sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.CONTROL_CHAT_FORMAT.color()
-                    .replace("%prefix%", VelocityMessages.PREFIX.color())
-                    .replace("%player%", player.getProxyPlayer().getUsername())
-                    .replace("%message%", chat)
-                    .replace("%userprefix%", user_prefix.replace("&", "§"))
-                    .replace("%usersuffix%", user_suffix.replace("&", "§"))
-                    .replace("%state%", VelocityMessages.CONTROL_CHAT_STAFF.color())));
+                    .replace("%state%", VelocityMessages.CONTROL_CHAT_STAFF.color()));
+
+            if (VelocityConfig.TAKE_CHATLOGS.get(Boolean.class)) {
+                LogUtils.addLine(
+                        player.getProxyPlayer().getUsername(),
+                        LegacyComponentSerializer.legacySection().serialize(message));
+            }
+
+            instance.getValue(PlayerCache.getCouples(), player.getProxyPlayer()).sendMessage(message);
+            player.getProxyPlayer().sendMessage(message);
             return;
         }
 
         if (PlayerCache.getCouples().containsValue(player.getProxyPlayer())) {
-            instance.getKey(PlayerCache.getCouples(), player.getProxyPlayer()).sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.CONTROL_CHAT_FORMAT.color()
+
+            TextComponent message = LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.CONTROL_CHAT_FORMAT.color()
                     .replace("%prefix%", VelocityMessages.PREFIX.color())
                     .replace("%player%", player.getProxyPlayer().getUsername())
                     .replace("%message%", chat)
                     .replace("%userprefix%", user_prefix.replace("&", "§"))
                     .replace("%usersuffix%", user_suffix.replace("&", "§"))
-                    .replace("%state%", VelocityMessages.CONTROL_CHAT_SUS.color())));
-            player.getProxyPlayer().sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.CONTROL_CHAT_FORMAT.color()
-                    .replace("%prefix%", VelocityMessages.PREFIX.color())
-                    .replace("%player%", player.getProxyPlayer().getUsername())
-                    .replace("%message%", chat)
-                    .replace("%userprefix%", user_prefix.replace("&", "§"))
-                    .replace("%usersuffix%", user_suffix.replace("&", "§"))
-                    .replace("%state%", VelocityMessages.CONTROL_CHAT_SUS.color())));
+                    .replace("%state%", VelocityMessages.CONTROL_CHAT_SUS.color()));
+
+            if (VelocityConfig.TAKE_CHATLOGS.get(Boolean.class)) {
+                LogUtils.addLine(
+                        instance.getKey(PlayerCache.getCouples(), player.getProxyPlayer()).getUsername(),
+                        LegacyComponentSerializer.legacySection().serialize(message));
+            }
+
+            instance.getKey(PlayerCache.getCouples(), player.getProxyPlayer()).sendMessage(message);
+            player.getProxyPlayer().sendMessage(message);
         }
     }
 }

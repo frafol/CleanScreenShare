@@ -33,6 +33,7 @@ public enum BungeeMessages {
 
     CONTROL_FINISH_MESSAGE("messages.staff_message.finish_message"),
     CONTROL_FINISH_MESSAGE_DELAY("messages.staff_message.finish_message_delay"),
+    CONTROL_FINISH_LINK("messages.staff_message.chatlogs_link"),
 
     CONTROL_ADMIT_MESSAGE("messages.staff_message.admit_message"),
     CONTROL_ADMIT_RESENDBUTTONS("messages.staff_message.admit_resend_buttons"),

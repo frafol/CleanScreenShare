@@ -121,6 +121,11 @@ public class Utils {
                 PlayerCache.getIn_control().put(administrator.getUniqueId(), 0);
             }
 
+            if (BungeeConfig.TAKE_CHATLOGS.get(Boolean.class)) {
+                if (BungeeConfig.UPLOAD_CHATLOGS.get(Boolean.class)) PasteUtils.uploadLogByFileName(LogUtils.writeLogFile(administrator.getName()), administrator);
+                else LogUtils.writeLogFile(administrator.getName());
+            }
+
             if (administrator.getServer() != null && isInControlServer(administrator.getServer().getInfo())) {
                 if (proxyServer == null) return;
                 if (!BungeeConfig.USE_DISCONNECT.get(Boolean.class) && !BungeeConfig.NOT_FALLBACK_STAFF.get(Boolean.class)) {
@@ -152,6 +157,11 @@ public class Utils {
                 MessageUtil.sendChannelMessage(suspicious, "DISCONNECT_NOW");
             }
 
+            if (BungeeConfig.TAKE_CHATLOGS.get(Boolean.class)) {
+                if (BungeeConfig.UPLOAD_CHATLOGS.get(Boolean.class)) PasteUtils.uploadLogByFileName(LogUtils.writeLogFile(administrator.getName()), administrator);
+                else LogUtils.writeLogFile(administrator.getName());
+            }
+
             PlayerCache.getCouples().remove(administrator);
             TitleUtil.sendEndTitle(suspicious);
             suspicious.sendMessage(TextComponent.fromLegacy(BungeeMessages.FINISHSUS.color()
@@ -175,6 +185,11 @@ public class Utils {
                 MessageUtil.sendChannelMessage(administrator, "DISCONNECT_NOW");
             }
 
+            if (BungeeConfig.TAKE_CHATLOGS.get(Boolean.class)) {
+                if (BungeeConfig.UPLOAD_CHATLOGS.get(Boolean.class)) PasteUtils.uploadLogByFileName(LogUtils.writeLogFile(administrator.getName()), administrator);
+                else LogUtils.writeLogFile(administrator.getName());
+            }
+
             PlayerCache.getCouples().remove(administrator);
             TitleUtil.sendAdminEndTitle(administrator, suspicious);
             administrator.sendMessage(TextComponent.fromLegacy(BungeeMessages.LEAVESUS.color()
@@ -194,6 +209,11 @@ public class Utils {
             PlayerCache.getAdministrator().remove(administrator.getUniqueId());
             PlayerCache.getSuspicious().remove(suspicious.getUniqueId());
             PlayerCache.getCouples().remove(administrator);
+
+            if (BungeeConfig.TAKE_CHATLOGS.get(Boolean.class)) {
+                if (BungeeConfig.UPLOAD_CHATLOGS.get(Boolean.class)) PasteUtils.uploadLogByFileName(LogUtils.writeLogFile(administrator.getName()), administrator);
+                else LogUtils.writeLogFile(administrator.getName());
+            }
 
             if (BungeeConfig.MYSQL.get(Boolean.class)) {
                 instance.getData().setInControl(suspicious.getUniqueId(), 0);

@@ -158,6 +158,8 @@ messages:
     admit_message: "%prefix% &c&lWARNING! &7Player %suspect% admitted using &dcheats&7."
     admit_resend_buttons: true
 
+    chatlogs_link: "%prefix% &7You can view the &dconversation logs &7here: %link%"
+
   spectate:
 
     # General messages.
