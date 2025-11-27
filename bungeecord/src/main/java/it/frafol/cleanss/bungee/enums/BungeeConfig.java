@@ -11,6 +11,7 @@ public enum BungeeConfig {
     INFO_PERMISSION("permissions.info"),
     RELOAD_PERMISSION("permissions.reload"),
     CHECK_FOR_PROBLEMS("settings.check_for_problems"),
+    CONNECTION_DELAY("settings.connection_delay"),
     PING_DELAY("settings.ping_delay"),
     UPDATE_CHECK("settings.update_check"),
     UPDATE_ALERT("settings.update_alert"),

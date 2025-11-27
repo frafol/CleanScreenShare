@@ -54,6 +54,11 @@ settings:
   # Decreasing this value may increase the lag on your server.
   ping_delay: 5
 
+  # Delay (in milliseconds) from the admin connection to the suspect connection.
+  # If the suspect is not entering the screenshare server, increase it to something like 500.
+  # This solves a BungeeCord issue.
+  connection_delay: 200
+
   # This will enable premiumvanish/velocityvanish hook.
   # With this, you can show the number of players online without counting vanished players in Discord webhook.
   # With this you can also block staff to control vanished players.
@@ -81,7 +86,7 @@ settings:
     # Increment this if the control server says that the player is not connected.
     # Decrement this if you want a more rapid connection and synchronization with your Spigot server.
     # NOTE: Do not change this value if you don't know what you're doing. Do not set it to <=0 values and >=20000 values.
-    server_message_delay: 500
+    server_message_delay: 2000
 
     # By activating this feature, for every command execute by a staff member, the plugin will require a confirmation.
     admin_commands:

@@ -34,7 +34,7 @@ public class Utils {
         }
         
         if (!Objects.equals(suspicious.getServer().getInfo(), proxyServer)) {
-            connect(suspicious, proxyServer);
+            instance.getProxy().getScheduler().schedule(instance, () -> connect(suspicious, proxyServer), BungeeConfig.CONNECTION_DELAY.get(Integer.class), TimeUnit.MILLISECONDS);
         } else {
             MessageUtil.sendChannelMessage(suspicious, "SUSPECT");
         }
@@ -376,7 +376,9 @@ public class Utils {
     }
 
     public boolean isInControlServer(ServerInfo server) {
-        for (String string : BungeeConfig.CONTROL.getStringList()) if (string.equals(server.getName())) return true;
+        for (String string : BungeeConfig.CONTROL.getStringList()) {
+            if (string.equalsIgnoreCase(server.getName())) return true;
+        }
         return false;
     }
 
@@ -481,17 +483,15 @@ public class Utils {
 
     public ServerInfo getBestServer(List<ServerInfo> list) {
         if (list.isEmpty()) return null;
-        switch (BungeeConfig.STRATEGY.get(String.class)) {
-            case "RANDOM":
-                return getRandomServer(list);
-            case "LEAST_PLAYERS":
-                return getLeastPlayersServer(list);
-            case "MOST_PLAYERS":
-                return getMostPlayersServer(list);
-            default:
+        return switch (BungeeConfig.STRATEGY.get(String.class)) {
+            case "RANDOM" -> getRandomServer(list);
+            case "LEAST_PLAYERS" -> getLeastPlayersServer(list);
+            case "MOST_PLAYERS" -> getMostPlayersServer(list);
+            default -> {
                 instance.getLogger().severe("The strategy '" + BungeeConfig.STRATEGY.get(String.class) + "' is not valid, using 'RANDOM' instead.");
-                return getRandomServer(list);
-        }
+                yield getRandomServer(list);
+            }
+        };
     }
 
     public List<ServerInfo> getOnlineServers(List<ServerInfo> list) {
@@ -566,7 +566,7 @@ public class Utils {
     }
 
     private void connect(ProxiedPlayer player, ServerInfo server) {
-        player.connect(server, ServerConnectEvent.Reason.PLUGIN);
+        player.connect(server, ServerConnectEvent.Reason.COMMAND);
     }
 
     public final boolean isLuckPerms = instance.getProxy().getPluginManager().getPlugin("LuckPerms") != null;

@@ -92,8 +92,8 @@ public class ChatListener implements Listener {
             CompletableFuture<String> stateFuture = BungeeMessages.CONTROL_CHAT_STAFF.color(player);
             CompletableFuture<String> formatFuture = BungeeMessages.CONTROL_CHAT_FORMAT.color(player);
             CompletableFuture.allOf(formatFuture, stateFuture).thenAccept(__ -> {
-                String formatString = formatFuture.join();
-                String state = stateFuture.join();
+                String formatString = formatFuture.getNow(BungeeMessages.CONTROL_CHAT_FORMAT.color());
+                String state = stateFuture.getNow(BungeeMessages.CONTROL_CHAT_STAFF.color());
                 String finalString = formatString
                         .replace("%prefix%", prefix)
                         .replace("%player%", player.getName())
@@ -129,8 +129,8 @@ public class ChatListener implements Listener {
             CompletableFuture<String> stateFuture = BungeeMessages.CONTROL_CHAT_SUS.color(player);
             CompletableFuture<String> formatFuture = BungeeMessages.CONTROL_CHAT_FORMAT.color(player);
             CompletableFuture.allOf(formatFuture, stateFuture).thenAccept(__ -> {
-                String formatString = formatFuture.join();
-                String state = stateFuture.join();
+                String formatString = formatFuture.getNow(BungeeMessages.CONTROL_CHAT_FORMAT.color());
+                String state = stateFuture.getNow(BungeeMessages.CONTROL_CHAT_SUS.color());
                 String finalString = formatString
                         .replace("%prefix%", prefix)
                         .replace("%player%", player.getName())
