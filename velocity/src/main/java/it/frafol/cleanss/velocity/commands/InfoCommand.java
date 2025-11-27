@@ -56,7 +56,7 @@ public class InfoCommand implements SimpleCommand {
             player = instance.getServer().getPlayer(invocation.arguments()[0]);
         }
 
-        if (!player.isPresent()) {
+        if (player.isEmpty()) {
             source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.NOT_ONLINE.color()
                     .replace("%prefix%", VelocityMessages.PREFIX.color())
                     .replace("%player%", invocation.arguments()[0])));

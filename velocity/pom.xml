@@ -59,6 +59,10 @@
             <url>https://repo.spicord.org/</url>
         </repository>
         <repository>
+            <id>william278-repo</id>
+            <url>https://repo.william278.net/releases/</url>
+        </repository>
+        <repository>
             <id>maven_central</id>
             <name>Maven Central</name>
             <url>https://repo.maven.apache.org/maven2/</url>
@@ -87,6 +91,12 @@
             <groupId>net.dv8tion</groupId>
             <artifactId>JDA</artifactId>
             <version>5.5.1</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.william278</groupId>
+            <artifactId>papiproxybridge</artifactId>
+            <version>1.6</version>
             <scope>provided</scope>
         </dependency>
         <dependency>

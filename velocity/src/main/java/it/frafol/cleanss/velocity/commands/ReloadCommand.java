@@ -16,13 +16,7 @@ import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import java.util.List;
 import java.util.Optional;
 
-public class ReloadCommand implements SimpleCommand {
-
-    public final CleanSS PLUGIN;
-
-    public ReloadCommand(CleanSS plugin) {
-        this.PLUGIN = plugin;
-    }
+public record ReloadCommand(CleanSS PLUGIN) implements SimpleCommand {
 
     @SuppressWarnings("UnstableApiUsage")
     @Override
@@ -44,11 +38,9 @@ public class ReloadCommand implements SimpleCommand {
 
         startTasks();
 
-        if (!(source instanceof Player)) {
+        if (!(source instanceof Player sender)) {
             return;
         }
-
-        final Player sender = (Player) source;
 
         ByteArrayDataOutput buf = ByteStreams.newDataOutput();
         buf.writeUTF("RELOAD");

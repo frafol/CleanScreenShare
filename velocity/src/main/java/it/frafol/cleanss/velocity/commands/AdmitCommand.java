@@ -21,13 +21,12 @@ public class AdmitCommand implements SimpleCommand {
     public void execute(Invocation invocation) {
 
         CommandSource source = invocation.source();
-        if (!(source instanceof Player)) {
+        if (!(source instanceof Player player)) {
             source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.ONLY_PLAYERS.color()
                     .replace("%prefix%", VelocityMessages.PREFIX.color())));
             return;
         }
 
-        Player player = (Player) source;
         if (!PlayerCache.getSuspicious().contains(player.getUniqueId())) {
             player.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.NOT_CONTROL.color()
                     .replace("%prefix%", VelocityMessages.PREFIX.color())));

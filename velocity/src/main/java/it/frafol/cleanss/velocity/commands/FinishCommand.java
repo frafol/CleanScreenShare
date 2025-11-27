@@ -72,7 +72,7 @@ public class FinishCommand implements SimpleCommand {
                     proxyServer = Optional.empty();
                 }
 
-                if (!player.isPresent()) {
+                if (player.isEmpty()) {
                     source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.NOT_ONLINE.color()
                             .replace("%prefix%", VelocityMessages.PREFIX.color())
                             .replace("%player%", invocation.arguments()[0])));
@@ -89,7 +89,7 @@ public class FinishCommand implements SimpleCommand {
                     return;
                 }
 
-                if (!proxyServer.isPresent()) {
+                if (proxyServer.isEmpty()) {
                     return;
                 }
 

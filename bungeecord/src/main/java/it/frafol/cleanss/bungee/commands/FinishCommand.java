@@ -93,7 +93,7 @@ public class FinishCommand extends Command implements TabExecutor {
 
                 Utils.finishControl(player, (ProxiedPlayer) invocation, proxyServer);
                 instance.getProxy().getScheduler().schedule(instance, () ->
-                        player.sendMessage(TextComponent.fromLegacy(BungeeMessages.CONTROL_FINISH_MESSAGE.color()
+                        invocation.sendMessage(TextComponent.fromLegacy(BungeeMessages.CONTROL_FINISH_MESSAGE.color()
                                 .replace("%prefix%", BungeeMessages.PREFIX.color())
                                 .replace("%suspect%", player.getName()))),
                         BungeeMessages.CONTROL_FINISH_MESSAGE_DELAY.get(Integer.class), TimeUnit.SECONDS);

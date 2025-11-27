@@ -535,4 +535,8 @@ public class CleanSS extends Plugin {
 	private boolean getProtocolize() {
 		return getProxy().getPluginManager().getPlugin("Protocolize") != null;
 	}
+
+    public boolean getPAPIProxyBridge() {
+        return getProxy().getPluginManager().getPlugin("PAPIProxyBridge") != null;
+    }
 }

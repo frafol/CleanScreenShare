@@ -17,6 +17,8 @@ import net.luckperms.api.LuckPerms;
 import net.luckperms.api.LuckPermsProvider;
 import net.luckperms.api.model.user.User;
 
+import java.util.concurrent.CompletableFuture;
+
 public class ChatListener {
 
     public final CleanSS instance;
@@ -83,50 +85,66 @@ public class ChatListener {
 
         if (PlayerCache.getCouples().containsKey(player)) {
 
-            TextComponent message =LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.CONTROL_CHAT_FORMAT.color()
-                    .replace("%prefix%", VelocityMessages.PREFIX.color())
-                    .replace("%player%", player.getUsername())
-                    .replace("%message%", event.getMessage())
-                    .replace("%userprefix%", ChatUtil.color(user_prefix))
-                    .replace("%usersuffix%", ChatUtil.color(user_suffix))
-                    .replace("%state%", VelocityMessages.CONTROL_CHAT_STAFF.color()));
+            CompletableFuture<String> formatFuture = VelocityMessages.CONTROL_CHAT_FORMAT.color(player);
+            String prefix = VelocityMessages.PREFIX.color();
+            String userPrefix = ChatUtil.color(user_prefix);
+            String userSuffix = ChatUtil.color(user_suffix);
+            String state = VelocityMessages.CONTROL_CHAT_STAFF.color();
+            formatFuture.thenAccept(formatString -> {
+                String finalString = formatString
+                        .replace("%prefix%", prefix)
+                        .replace("%player%", player.getUsername())
+                        .replace("%message%", event.getMessage())
+                        .replace("%userprefix%", userPrefix)
+                        .replace("%usersuffix%", userSuffix)
+                        .replace("%state%", state);
+                TextComponent messageComponent = LegacyComponentSerializer.legacy('§')
+                        .deserialize(finalString);
 
-            if (VelocityConfig.TAKE_CHATLOGS.get(Boolean.class)) {
-                LogUtils.addLine(
-                        player.getUsername(),
-                        LegacyComponentSerializer.legacySection().serialize(message));
-            }
+                if (VelocityConfig.TAKE_CHATLOGS.get(Boolean.class)) {
+                    LogUtils.addLine(
+                            player.getUsername(),
+                            LegacyComponentSerializer.legacySection().serialize(messageComponent));
+                }
 
-            instance.getValue(PlayerCache.getCouples(), player).sendMessage(message);
-            player.sendMessage(message);
-            instance.getServer().getAllPlayers().stream().filter
-                            (players -> PlayerCache.getSpectators().contains(players.getUniqueId()))
-                    .forEach(players -> players.sendMessage(message));
-            return;
+                instance.getValue(PlayerCache.getCouples(), player).sendMessage(messageComponent);
+                player.sendMessage(messageComponent);
+                instance.getServer().getAllPlayers().stream().filter
+                                (players -> PlayerCache.getSpectators().contains(players.getUniqueId()))
+                        .forEach(players -> players.sendMessage(messageComponent));
+            });
         }
 
         if (PlayerCache.getCouples().containsValue(player)) {
 
-            TextComponent message = LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.CONTROL_CHAT_FORMAT.color()
-                    .replace("%prefix%", VelocityMessages.PREFIX.color())
-                    .replace("%player%", player.getUsername())
-                    .replace("%message%", event.getMessage())
-                    .replace("%userprefix%", ChatUtil.color(user_prefix))
-                    .replace("%usersuffix%", ChatUtil.color(user_suffix))
-                    .replace("%state%", VelocityMessages.CONTROL_CHAT_SUS.color()));
+            CompletableFuture<String> formatFuture = VelocityMessages.CONTROL_CHAT_FORMAT.color(player);
+            String prefix = VelocityMessages.PREFIX.color();
+            String userPrefix = ChatUtil.color(user_prefix);
+            String userSuffix = ChatUtil.color(user_suffix);
+            String state = VelocityMessages.CONTROL_CHAT_SUS.color();
+            formatFuture.thenAccept(formatString -> {
+                String finalString = formatString
+                        .replace("%prefix%", prefix)
+                        .replace("%player%", player.getUsername())
+                        .replace("%message%", event.getMessage())
+                        .replace("%userprefix%", userPrefix)
+                        .replace("%usersuffix%", userSuffix)
+                        .replace("%state%", state);
+                TextComponent messageComponent = LegacyComponentSerializer.legacy('§')
+                        .deserialize(finalString);
 
-            if (VelocityConfig.TAKE_CHATLOGS.get(Boolean.class)) {
-                LogUtils.addLine(
-                        instance.getKey(PlayerCache.getCouples(), player).getUsername(),
-                        LegacyComponentSerializer.legacySection().serialize(message));
-            }
+                if (VelocityConfig.TAKE_CHATLOGS.get(Boolean.class)) {
+                    LogUtils.addLine(
+                            instance.getKey(PlayerCache.getCouples(), player).getUsername(),
+                            LegacyComponentSerializer.legacySection().serialize(messageComponent));
+                }
 
-            instance.getKey(PlayerCache.getCouples(), player).sendMessage(message);
-            player.sendMessage(message);
-            instance.getServer().getAllPlayers().stream().filter
-                            (players -> PlayerCache.getSpectators().contains(players.getUniqueId()))
-                    .forEach(players -> players.sendMessage(message));
-
+                instance.getKey(PlayerCache.getCouples(), player).sendMessage(messageComponent);
+                player.sendMessage(messageComponent);
+                instance.getServer().getAllPlayers().stream().filter
+                                (players -> PlayerCache.getSpectators().contains(players.getUniqueId()))
+                        .forEach(players -> players.sendMessage(messageComponent));
+            });
         }
     }
 }

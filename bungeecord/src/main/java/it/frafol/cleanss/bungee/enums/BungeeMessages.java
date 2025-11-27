@@ -3,11 +3,13 @@ package it.frafol.cleanss.bungee.enums;
 import it.frafol.cleanss.bungee.CleanSS;
 import it.frafol.cleanss.bungee.objects.ChatUtil;
 import it.frafol.cleanss.bungee.objects.Placeholder;
+import it.frafol.cleanss.bungee.objects.PlaceholderUtil;
 import lombok.Getter;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
+import java.util.concurrent.CompletableFuture;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -147,6 +149,15 @@ public enum BungeeMessages {
     public String color() {
         String hex = convertHexColors(get(String.class));
         return hex.replace("&", "§");
+    }
+
+    public CompletableFuture<String> color(ProxiedPlayer player) {
+        CompletableFuture<String> message = CompletableFuture.completedFuture(get(String.class));
+        if (instance.getPAPIProxyBridge()) message = PlaceholderUtil.applyPlaceholders(get(String.class), player);
+        return message.thenApply(msg -> {
+            String hex = convertHexColors(msg);
+            return hex.replace("&", "§");
+        });
     }
 
     public static String convertHexColors(String str) {

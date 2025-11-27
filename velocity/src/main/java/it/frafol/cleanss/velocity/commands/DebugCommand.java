@@ -28,7 +28,7 @@ public class DebugCommand implements SimpleCommand {
             return;
         }
 
-        if (!instance.getContainer().getDescription().getVersion().isPresent()) {
+        if (instance.getContainer().getDescription().getVersion().isEmpty()) {
             return;
         }
 
@@ -59,7 +59,7 @@ public class DebugCommand implements SimpleCommand {
 
         Utils.getServerList(VelocityConfig.CONTROL.getStringList()).forEach(server -> {
 
-            if (!server.isPresent()) {
+            if (server.isEmpty()) {
                 return;
             }
 
@@ -76,7 +76,7 @@ public class DebugCommand implements SimpleCommand {
 
         Utils.getServerList(VelocityConfig.CONTROL_FALLBACK.getStringList()).forEach(server -> {
 
-            if (!server.isPresent()) {
+            if (server.isEmpty()) {
                 return;
             }
 

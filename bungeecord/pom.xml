@@ -54,6 +54,10 @@
             <id>spicord-repo</id>
             <url>https://repo.spicord.org/</url>
         </repository>
+        <repository>
+            <id>william278-repo</id>
+            <url>https://repo.william278.net/releases/</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -78,6 +82,12 @@
             <groupId>org.spicord</groupId>
             <artifactId>spicord-common</artifactId>
             <version>5.4.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.william278</groupId>
+            <artifactId>papiproxybridge</artifactId>
+            <version>1.6</version>
             <scope>provided</scope>
         </dependency>
         <dependency>

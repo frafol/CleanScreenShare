@@ -65,7 +65,7 @@ public class ControlCommand implements SimpleCommand {
 			final Optional<Player> player = instance.getServer().getPlayer(invocation.arguments()[0]);
 			final Player sender = (Player) source;
 
-			if (!player.isPresent()) {
+			if (player.isEmpty()) {
 				source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.NOT_ONLINE.color()
 						.replace("%prefix%", VelocityMessages.PREFIX.color())
 						.replace("%player%", invocation.arguments()[0])));
@@ -205,7 +205,7 @@ public class ControlCommand implements SimpleCommand {
 
 			Optional<RegisteredServer> proxyServer = Utils.getBestServer(servers);
 
-			if (!proxyServer.isPresent()) {
+			if (proxyServer.isEmpty()) {
 				source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.NO_EXIST.color()
 						.replace("%prefix%", VelocityMessages.PREFIX.color())));
 				return;

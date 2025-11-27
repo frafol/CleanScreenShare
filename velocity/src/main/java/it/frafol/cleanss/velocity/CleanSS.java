@@ -641,38 +641,35 @@ public class CleanSS {
 		return null;
 	}
 
-	@SuppressWarnings("ALL")
 	public boolean getUnsignedVelocityAddon() {
 		return getServer().getPluginManager().isLoaded("unsignedvelocity") || getServer().getPluginManager().isLoaded("signedvelocity");
 	}
 
-	@SuppressWarnings("ALL")
 	public boolean getPremiumVanish() {
 		return getServer().getPluginManager().isLoaded("premiumvanish");
 	}
 
-	@SuppressWarnings("ALL")
 	public boolean getVelocityVanish() {
 		return getServer().getPluginManager().isLoaded("velocityvanish");
 	}
 
-	@SuppressWarnings("ALL")
 	public boolean getClientCatcher() {
 		return getServer().getPluginManager().isLoaded("clientcatcher");
 	}
 
-	@SuppressWarnings("ALL")
 	public boolean getLuckPerms() {
 		return getServer().getPluginManager().isLoaded("luckperms");
 	}
 
-	@SuppressWarnings("ALL")
 	public boolean getSpicord() {
 		return getServer().getPluginManager().isLoaded("spicord");
 	}
 
-	@SuppressWarnings("ALL")
 	public boolean getProtocolize() {
 		return getServer().getPluginManager().isLoaded("protocolize");
 	}
+
+    public boolean getPapiProxyBridge() {
+        return getServer().getPluginManager().isLoaded("papiproxybridge");
+    }
 }

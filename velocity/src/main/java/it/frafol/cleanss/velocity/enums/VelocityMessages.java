@@ -5,7 +5,9 @@ import com.velocitypowered.api.proxy.Player;
 import it.frafol.cleanss.velocity.CleanSS;
 import it.frafol.cleanss.velocity.objects.ChatUtil;
 import it.frafol.cleanss.velocity.objects.Placeholder;
+import it.frafol.cleanss.velocity.objects.PlaceholderUtil;
 
+import java.util.concurrent.CompletableFuture;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -143,6 +145,15 @@ public enum VelocityMessages {
     public String color() {
         String hex = convertHexColors(get(String.class));
         return hex.replace("&", "§");
+    }
+
+    public CompletableFuture<String> color(Player player) {
+        CompletableFuture<String> message = CompletableFuture.completedFuture(get(String.class));
+        if (instance.getPapiProxyBridge()) message = PlaceholderUtil.applyPlaceholders(get(String.class), player);
+        return message.thenApply(msg -> {
+            String hex = convertHexColors(msg);
+            return hex.replace("&", "§");
+        });
     }
 
     private String convertHexColors(String message) {
