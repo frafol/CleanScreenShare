@@ -88,10 +88,12 @@ public class ChatListener implements Listener {
             String prefix = BungeeMessages.PREFIX.color();
             String userPrefix = ChatUtil.color(user_prefix);
             String userSuffix = ChatUtil.color(user_suffix);
-            String state = BungeeMessages.CONTROL_CHAT_STAFF.color();
 
+            CompletableFuture<String> stateFuture = BungeeMessages.CONTROL_CHAT_STAFF.color(player);
             CompletableFuture<String> formatFuture = BungeeMessages.CONTROL_CHAT_FORMAT.color(player);
-            formatFuture.thenAccept(formatString -> {
+            CompletableFuture.allOf(formatFuture, stateFuture).thenAccept(__ -> {
+                String formatString = formatFuture.join();
+                String state = stateFuture.join();
                 String finalString = formatString
                         .replace("%prefix%", prefix)
                         .replace("%player%", player.getName())
@@ -123,9 +125,12 @@ public class ChatListener implements Listener {
             String prefix = BungeeMessages.PREFIX.color();
             String userPrefix = ChatUtil.color(user_prefix);
             String userSuffix = ChatUtil.color(user_suffix);
-            String state = BungeeMessages.CONTROL_CHAT_SUS.color();
+
+            CompletableFuture<String> stateFuture = BungeeMessages.CONTROL_CHAT_SUS.color(player);
             CompletableFuture<String> formatFuture = BungeeMessages.CONTROL_CHAT_FORMAT.color(player);
-            formatFuture.thenAccept(formatString -> {
+            CompletableFuture.allOf(formatFuture, stateFuture).thenAccept(__ -> {
+                String formatString = formatFuture.join();
+                String state = stateFuture.join();
                 String finalString = formatString
                         .replace("%prefix%", prefix)
                         .replace("%player%", player.getName())

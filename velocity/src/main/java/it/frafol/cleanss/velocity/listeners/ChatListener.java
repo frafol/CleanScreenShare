@@ -85,12 +85,15 @@ public class ChatListener {
 
         if (PlayerCache.getCouples().containsKey(player)) {
 
-            CompletableFuture<String> formatFuture = VelocityMessages.CONTROL_CHAT_FORMAT.color(player);
             String prefix = VelocityMessages.PREFIX.color();
             String userPrefix = ChatUtil.color(user_prefix);
             String userSuffix = ChatUtil.color(user_suffix);
-            String state = VelocityMessages.CONTROL_CHAT_STAFF.color();
-            formatFuture.thenAccept(formatString -> {
+
+            CompletableFuture<String> stateFuture = VelocityMessages.CONTROL_CHAT_STAFF.color(player);
+            CompletableFuture<String> formatFuture = VelocityMessages.CONTROL_CHAT_FORMAT.color(player);
+            CompletableFuture.allOf(stateFuture, formatFuture).thenAccept(__ -> {
+                String state = stateFuture.join();
+                String formatString = formatFuture.join();
                 String finalString = formatString
                         .replace("%prefix%", prefix)
                         .replace("%player%", player.getUsername())
@@ -117,12 +120,15 @@ public class ChatListener {
 
         if (PlayerCache.getCouples().containsValue(player)) {
 
-            CompletableFuture<String> formatFuture = VelocityMessages.CONTROL_CHAT_FORMAT.color(player);
             String prefix = VelocityMessages.PREFIX.color();
             String userPrefix = ChatUtil.color(user_prefix);
             String userSuffix = ChatUtil.color(user_suffix);
-            String state = VelocityMessages.CONTROL_CHAT_SUS.color();
-            formatFuture.thenAccept(formatString -> {
+
+            CompletableFuture<String> stateFuture = VelocityMessages.CONTROL_CHAT_SUS.color(player);
+            CompletableFuture<String> formatFuture = VelocityMessages.CONTROL_CHAT_FORMAT.color(player);
+            CompletableFuture.allOf(stateFuture, formatFuture).thenAccept(__ -> {
+                String state = stateFuture.join();
+                String formatString = formatFuture.join();
                 String finalString = formatString
                         .replace("%prefix%", prefix)
                         .replace("%player%", player.getUsername())
