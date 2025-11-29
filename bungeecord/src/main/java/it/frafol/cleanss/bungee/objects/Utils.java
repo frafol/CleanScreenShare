@@ -107,8 +107,8 @@ public class Utils {
     }
 
     public void finishControl(ProxiedPlayer suspicious, ProxiedPlayer administrator, ServerInfo proxyServer) {
-
         if (administrator == null || suspicious == null) return;
+        MessageUtil.sendFinishChannelMessage(administrator, suspicious);
         if (administrator.isConnected() && suspicious.isConnected()) {
             PlayerCache.getAdministrator().remove(administrator.getUniqueId());
             PlayerCache.getSuspicious().remove(suspicious.getUniqueId());

@@ -19,15 +19,12 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 @UtilityClass
 public class PasteUtils {
 
     private final CleanSS instance = CleanSS.getInstance();
     private static final String DPASTE_API_URL = "https://dpaste.com/api/v2/";
-    private static final ExecutorService executor = Executors.newFixedThreadPool(2);
 
     @SneakyThrows
     public static String uploadLogFile(Path logFilePath) {
@@ -89,7 +86,7 @@ public class PasteUtils {
             }
             BaseComponent[] messageComponents = builder.create();
             targetMessage.sendMessage(messageComponents);
-        }, executor);
+        });
     }
 }
 

@@ -23,6 +23,7 @@ import net.byteflux.libby.BukkitLibraryManager;
 import net.byteflux.libby.Library;
 import net.byteflux.libby.relocation.Relocation;
 import org.apache.commons.lang.time.DurationFormatUtils;
+import org.bukkit.GameRule;
 import org.bukkit.World;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -169,15 +170,25 @@ public class CleanSS extends JavaPlugin {
 			getLogger().info("PlaceholderAPI found, placeholders enabled.");
 		}
 
-		UpdateChecker();
+        if (SpigotConfig.UPDATE_CHECK.get(Boolean.class)) {
+            getServer().getScheduler().runTaskTimer(this, this::UpdateChecker, 20L, 20L * 3600);
+        }
 
 		if (SpigotConfig.DAY_CYCLE.get(Boolean.class)) {
 			if (!isFolia()) {
 				for (World worlds : getServer().getWorlds()) {
-					worlds.setGameRuleValue("doDaylightCycle", "false");
+                    try {
+                        worlds.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
+                    } catch (NoSuchMethodError ignored) {
+                        worlds.setGameRuleValue("doDaylightCycle", "false");
+                    }
 				}
 			} else {
-				getLogger().severe("Cannot disable daylight cycle on Folia, please disable it manually.");
+                try {
+                    for (World worlds : getServer().getWorlds()) worlds.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
+                } catch (Exception ignored) {
+                    getLogger().severe("Cannot disable daylight cycle on Folia, please disable it manually.");
+                }
 			}
 		}
 
@@ -212,29 +223,17 @@ public class CleanSS extends JavaPlugin {
 	}
 
 	private void UpdateChecker() {
-
-		if (!SpigotConfig.UPDATE_CHECK.get(Boolean.class)) {
-			return;
-		}
-
 		new UpdateCheck(this).getVersion(version -> {
-
 			if (Integer.parseInt(getDescription().getVersion().replace(".", "")) < Integer.parseInt(version.replace(".", ""))) {
-
 				if (SpigotConfig.AUTO_UPDATE.get(Boolean.class) && !updated) {
 					autoUpdate();
 					return;
 				}
-
-				if (!updated) {
-					getLogger().warning("There is a new update available, download it on SpigotMC!");
-				}
+				if (!updated) getLogger().warning("There is a new update available, download it on SpigotMC!");
 			}
-
 			if (Integer.parseInt(getDescription().getVersion().replace(".", "")) > Integer.parseInt(version.replace(".", ""))) {
 				getLogger().warning("You are using a development version, please report any bugs!");
 			}
-
 		});
 	}
 
@@ -271,9 +270,7 @@ public class CleanSS extends JavaPlugin {
 
 	private String getFileNameFromUrl(String fileUrl) {
 		int slashIndex = fileUrl.lastIndexOf('/');
-		if (slashIndex != -1 && slashIndex < fileUrl.length() - 1) {
-			return fileUrl.substring(slashIndex + 1);
-		}
+		if (slashIndex != -1 && slashIndex < fileUrl.length() - 1) return fileUrl.substring(slashIndex + 1);
 		throw new IllegalArgumentException("Invalid file URL");
 	}
 
@@ -288,16 +285,9 @@ public class CleanSS extends JavaPlugin {
 	@SneakyThrows
 	public void deleteFile(String directoryPath, String file_start) {
 		File directory = new File(directoryPath);
-
-		if (!directory.isDirectory()) {
-			throw new IllegalArgumentException();
-		}
-
+		if (!directory.isDirectory()) throw new IllegalArgumentException();
 		File[] files = directory.listFiles();
-		if (files == null) {
-			throw new IOException();
-		}
-
+		if (files == null) throw new IOException();
 		for (File file : files) {
 			if (file.isFile() && file.getName().startsWith(file_start)) {
 				getLogger().warning("Found an old plugin file: " + file.getName());
@@ -332,18 +322,9 @@ public class CleanSS extends JavaPlugin {
 	}
 
 	public String getFormattedSeconds(UUID uuid) {
-		if (seconds.get(uuid) == null) {
-			return "00:00";
-		}
-
-		if (seconds.get(uuid) > 86400) {
-			return DurationFormatUtils.formatDuration(seconds.get(uuid) * 1000L, "dd:HH:mm:ss");
-		}
-
-		if (seconds.get(uuid) > 3600) {
-			return DurationFormatUtils.formatDuration(seconds.get(uuid) * 1000L, "HH:mm:ss");
-		}
-
+		if (seconds.get(uuid) == null) return "00:00";
+		if (seconds.get(uuid) > 86400) return DurationFormatUtils.formatDuration(seconds.get(uuid) * 1000L, "dd:HH:mm:ss");
+		if (seconds.get(uuid) > 3600) return DurationFormatUtils.formatDuration(seconds.get(uuid) * 1000L, "HH:mm:ss");
 		return DurationFormatUtils.formatDuration(seconds.get(uuid) * 1000L, "mm:ss");
 	}
 }

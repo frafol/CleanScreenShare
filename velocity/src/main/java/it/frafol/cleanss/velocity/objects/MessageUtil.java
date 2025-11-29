@@ -147,6 +147,24 @@ public class MessageUtil {
     }
 
     @SuppressWarnings("UnstableApiUsage")
+    public void sendFinishChannelMessage(Player administrator, Player suspect) {
+        try {
+            final ByteArrayDataOutput buf = ByteStreams.newDataOutput();
+            buf.writeUTF("FINISH");
+            buf.writeUTF(administrator.getUsername());
+            buf.writeUTF(suspect.getUsername());
+            administrator.getCurrentServer().ifPresent(sv ->
+                    sv.sendPluginMessage(CleanSS.channel_join, buf.toByteArray()));
+            if (administrator.getCurrentServer().isEmpty()) {
+                suspect.getCurrentServer().ifPresent(sv ->
+                        sv.sendPluginMessage(CleanSS.channel_join, buf.toByteArray()));
+            }
+        } catch (IllegalStateException exception) {
+            instance.getLogger().error("Failed to send a control finish message for players " + administrator.getUsername() + " and" + suspect.getUsername() + ".");
+        }
+    }
+
+    @SuppressWarnings("UnstableApiUsage")
     public void sendChannelAdvancedMessage(Player administrator, Player suspicious, String type) {
         try {
             final ByteArrayDataOutput buf = ByteStreams.newDataOutput();

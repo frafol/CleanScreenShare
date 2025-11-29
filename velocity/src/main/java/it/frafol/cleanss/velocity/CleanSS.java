@@ -28,8 +28,6 @@ import lombok.SneakyThrows;
 import net.byteflux.libby.Library;
 import net.byteflux.libby.VelocityLibraryManager;
 import net.byteflux.libby.relocation.Relocation;
-import net.kyori.adventure.text.event.ClickEvent;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.slf4j.Logger;
 import ru.vyarus.yaml.updater.YamlUpdater;
 import ru.vyarus.yaml.updater.util.FileUtils;

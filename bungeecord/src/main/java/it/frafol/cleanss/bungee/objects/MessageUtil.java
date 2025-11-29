@@ -126,38 +126,30 @@ public class MessageUtil {
         }
     }
 
-    @SuppressWarnings("UnstableApiUsage")
     public void sendChannelMessage(ProxiedPlayer player, String type) {
-
         final ByteArrayDataOutput buf = ByteStreams.newDataOutput();
-
         buf.writeUTF(type);
         buf.writeUTF(player.getName());
-
-        if (player.getServer() == null) {
-            instance.getLogger().severe("The player " + player.getName() + " has no server, please check your control server if it's working correctly!");
-            return;
-        }
-
-        player.getServer().sendData("cleanss:join", buf.toByteArray());
-
+        if (player.getServer() != null) player.getServer().sendData("cleanss:join", buf.toByteArray());
+        else instance.getLogger().severe("The player " + player.getName() + " has no server, please check your control server if it's working correctly!");
     }
 
-    @SuppressWarnings("UnstableApiUsage")
-    public void sendChannelAdvancedMessage(ProxiedPlayer administrator, ProxiedPlayer suspicious, String type) {
-
+    public void sendFinishChannelMessage(ProxiedPlayer administrator, ProxiedPlayer suspect) {
         final ByteArrayDataOutput buf = ByteStreams.newDataOutput();
+        buf.writeUTF("FINISH");
+        buf.writeUTF(administrator.getName());
+        buf.writeUTF(suspect.getName());
+        if (administrator.isConnected() && administrator.getServer() != null) administrator.getServer().sendData("cleanss:join", buf.toByteArray());
+        else if (suspect.isConnected() && suspect.getServer() != null) suspect.getServer().sendData("cleanss:join", buf.toByteArray());
+    }
 
+    public void sendChannelAdvancedMessage(ProxiedPlayer administrator, ProxiedPlayer suspicious, String type) {
+        final ByteArrayDataOutput buf = ByteStreams.newDataOutput();
         buf.writeUTF(type);
         buf.writeUTF(administrator.getName());
         buf.writeUTF(suspicious.getName());
-
-        if (administrator.getServer() == null) {
-            instance.getLogger().severe("The player " + administrator.getName() + " has no server, please check your control server if it's working correctly!");
-            return;
-        }
-
-        administrator.getServer().sendData("cleanss:join", buf.toByteArray());
+        if (administrator.getServer() == null) instance.getLogger().severe("The player " + administrator.getName() + " has no server, please check your control server if it's working correctly!");
+        else administrator.getServer().sendData("cleanss:join", buf.toByteArray());
     }
 
     public void sendButtons(ProxiedPlayer administrator, ProxiedPlayer suspicious, String admin_prefix, String admin_suffix, String sus_prefix, String sus_suffix) {
@@ -185,9 +177,7 @@ public class MessageUtil {
     }
 
     private int getDelay() {
-        if (BungeeMessages.CONTROL_DELAYMESSAGE.get(Integer.class) <= 1) {
-            return 1;
-        }
+        if (BungeeMessages.CONTROL_DELAYMESSAGE.get(Integer.class) <= 1) return 1;
         return BungeeMessages.CONTROL_DELAYMESSAGE.get(Integer.class);
     }
 }

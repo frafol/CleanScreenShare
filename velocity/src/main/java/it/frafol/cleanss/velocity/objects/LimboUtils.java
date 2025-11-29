@@ -50,25 +50,18 @@ public class LimboUtils {
             if (VelocityLimbo.SCHEMATIC_USE.get(Boolean.class)) {
                 WorldFile schematic;
                 File file = new File(instance.getPath() + "/" + VelocityLimbo.SCHEMATIC_FILE.get(String.class));
-                switch (VelocityLimbo.SCHEMATIC_TYPE.get(String.class)) {
-                    case "SCHEMATIC":
-                         schematic = factory.openWorldFile(
-                                BuiltInWorldFileType.SCHEMATIC,
-                                file.toPath());
-                         break;
-                    case "WORLDEDIT_SCHEM":
-                        schematic = factory.openWorldFile(
-                                BuiltInWorldFileType.WORLDEDIT_SCHEM,
-                                file.toPath());
-                        break;
-                    case "STRUCTURE":
-                        schematic = factory.openWorldFile(
-                                BuiltInWorldFileType.STRUCTURE,
-                                file.toPath());
-                        break;
-                    default:
-                        schematic = null;
-                }
+                schematic = switch (VelocityLimbo.SCHEMATIC_TYPE.get(String.class)) {
+                    case "SCHEMATIC" -> factory.openWorldFile(
+                            BuiltInWorldFileType.SCHEMATIC,
+                            file.toPath());
+                    case "WORLDEDIT_SCHEM" -> factory.openWorldFile(
+                            BuiltInWorldFileType.WORLDEDIT_SCHEM,
+                            file.toPath());
+                    case "STRUCTURE" -> factory.openWorldFile(
+                            BuiltInWorldFileType.STRUCTURE,
+                            file.toPath());
+                    default -> null;
+                };
 
                 if (schematic != null) {
                     schematic.toWorld(

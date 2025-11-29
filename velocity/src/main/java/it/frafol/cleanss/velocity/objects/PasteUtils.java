@@ -8,7 +8,6 @@ import lombok.experimental.UtilityClass;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.ClickEvent;
-import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.intellij.lang.annotations.RegExp;
 
@@ -21,15 +20,12 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 @UtilityClass
 public class PasteUtils {
 
     private final CleanSS instance = CleanSS.getInstance();
     private static final String DPASTE_API_URL = "https://dpaste.com/api/v2/";
-    private static final ExecutorService executor = Executors.newFixedThreadPool(2);
 
     @SneakyThrows
     public static String uploadLogFile(Path logFilePath) {
@@ -83,7 +79,7 @@ public class PasteUtils {
             Component messageComponent = LegacyComponentSerializer.legacyAmpersand().deserialize(raw);
             Component finalMessage = messageComponent.replaceText(r -> r.match(link).replacement(linkComponent));
             targetMessage.sendMessage(finalMessage);
-        }, executor);
+        });
     }
 }
 

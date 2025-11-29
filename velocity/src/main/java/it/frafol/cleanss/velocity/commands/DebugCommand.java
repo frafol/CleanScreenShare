@@ -7,7 +7,6 @@ import it.frafol.cleanss.velocity.CleanSS;
 import it.frafol.cleanss.velocity.enums.VelocityConfig;
 import it.frafol.cleanss.velocity.enums.VelocityMessages;
 import it.frafol.cleanss.velocity.objects.Placeholder;
-import it.frafol.cleanss.velocity.objects.PlayerCache;
 import it.frafol.cleanss.velocity.objects.Utils;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 

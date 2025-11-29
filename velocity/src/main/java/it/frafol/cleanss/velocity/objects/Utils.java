@@ -219,6 +219,7 @@ public class Utils {
 
     public void finishControl(Player suspicious, Player administrator, RegisteredServer proxyServer) {
         if (suspicious == null || administrator == null) return;
+        MessageUtil.sendFinishChannelMessage(administrator, suspicious);
         if (suspicious.isActive() && administrator.isActive()) {
 
             if (VelocityConfig.TAKE_CHATLOGS.get(Boolean.class)) {
