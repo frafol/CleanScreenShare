@@ -125,7 +125,7 @@ public class PluginMessageReceiver implements PluginMessageListener {
     private void handleFinish(String username) {
         Player player = instance.getServer().getPlayer(username);
         if (player == null) return;
-        instance.getLogger().warning("Finish command received: Removing " + username + "from the database.");
+        instance.getLogger().warning("Finish command received: Removing " + username + " from the database.");
         NametagUtil.removeTag(player);
         PlayerCache.getNo_chat().remove(player.getUniqueId());
         if (PlayerCache.getSuspicious().contains(player.getUniqueId())) PlayerCache.deleteSuspectScoreboard(player);
