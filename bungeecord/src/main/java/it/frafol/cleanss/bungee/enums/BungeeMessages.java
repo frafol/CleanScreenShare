@@ -9,6 +9,7 @@ import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -151,9 +152,9 @@ public enum BungeeMessages {
         return hex.replace("&", "§");
     }
 
-    public CompletableFuture<String> color(ProxiedPlayer player) {
+    public CompletableFuture<String> color(UUID uuid) {
         CompletableFuture<String> message = CompletableFuture.completedFuture(get(String.class));
-        if (instance.getPAPIProxyBridge()) message = PlaceholderUtil.applyPlaceholders(get(String.class), player);
+        if (instance.getPAPIProxyBridge()) message = PlaceholderUtil.applyPlaceholders(get(String.class), uuid);
         return message.thenApply(msg -> {
             String hex = convertHexColors(msg);
             return hex.replace("&", "§");

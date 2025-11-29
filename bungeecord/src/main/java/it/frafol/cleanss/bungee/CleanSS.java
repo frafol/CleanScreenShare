@@ -57,6 +57,12 @@ public class CleanSS extends Plugin {
 	private TextFile dataTextFile;
 	private TextFile versionTextFile;
 
+    @Getter
+    private boolean update = false;
+
+    @Getter
+    private String updateVersion = "";
+
 	@Getter
 	@Setter
 	private JDA jda;
@@ -112,7 +118,7 @@ public class CleanSS extends Plugin {
 			getLogger().info("§7Metrics loaded §dsuccessfully§7!");
 		}
 
-		UpdateChecker();
+        if (BungeeConfig.UPDATE_CHECK.get(Boolean.class)) getProxy().getScheduler().schedule(this, this::UpdateChecker, 0L, 1L, TimeUnit.HOURS);
 		startTasks();
 		getLogger().info("§7Plugin §dsuccessfully §7loaded!");
 	}
@@ -178,11 +184,6 @@ public class CleanSS extends Plugin {
 	}
 
 	private void UpdateChecker() {
-
-		if (!BungeeConfig.UPDATE_CHECK.get(Boolean.class)) {
-			return;
-		}
-
 		new UpdateCheck(this).getVersion(version -> {
 			if (Integer.parseInt(getDescription().getVersion().replace(".", "")) < Integer.parseInt(version.replace(".", ""))) {
 				if (BungeeConfig.AUTO_UPDATE.get(Boolean.class) && !updated) {
@@ -190,6 +191,8 @@ public class CleanSS extends Plugin {
 					return;
 				}
 				if (!updated) {
+                    update = true;
+                    updateVersion = version;
 					getLogger().warning("§eThere is a new update available, download it on SpigotMC!");
 				}
 			}
@@ -275,34 +278,6 @@ public class CleanSS extends Plugin {
 				PlayerCache.getControls_suffered().put(players.getUniqueId(), data.getStats(players.getUniqueId(), "controls"));
 			}
 		}, 1L, 1L, TimeUnit.SECONDS);
-	}
-
-	public void UpdateChecker(ProxiedPlayer player) {
-
-		if (!BungeeConfig.UPDATE_CHECK.get(Boolean.class)) {
-			return;
-		}
-
-		new UpdateCheck(this).getVersion(version -> {
-
-			if (Integer.parseInt(getDescription().getVersion().replace(".", "")) < Integer.parseInt(version.replace(".", ""))) {
-
-				if (BungeeConfig.AUTO_UPDATE.get(Boolean.class) && !updated) {
-					autoUpdate();
-					return;
-				}
-
-				if (!updated && BungeeConfig.UPDATE_ALERT.get(Boolean.class)) {
-					TextComponent update = new TextComponent(BungeeMessages.UPDATE_ALERT.color()
-							.replace("%old_version%", getDescription().getVersion())
-							.replace("%new_version%", version));
-					update.setClickEvent(new ClickEvent(
-							ClickEvent.Action.OPEN_URL,
-							BungeeMessages.UPDATE_LINK.get(String.class)));
-					player.sendMessage(update);
-				}
-			}
-		});
 	}
 
 	private void loadDiscord() {

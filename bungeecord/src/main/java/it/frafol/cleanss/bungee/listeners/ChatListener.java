@@ -17,6 +17,7 @@ import net.md_5.bungee.api.event.ChatEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
 
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 public class ChatListener implements Listener {
@@ -81,6 +82,7 @@ public class ChatListener implements Listener {
             user_prefix = "";
         }
 
+        UUID uuid = player.getUniqueId();
         if (PlayerCache.getCouples().containsKey(player)) {
 
             event.setCancelled(true);
@@ -89,8 +91,8 @@ public class ChatListener implements Listener {
             String userPrefix = ChatUtil.color(user_prefix);
             String userSuffix = ChatUtil.color(user_suffix);
 
-            CompletableFuture<String> stateFuture = BungeeMessages.CONTROL_CHAT_STAFF.color(player);
-            CompletableFuture<String> formatFuture = BungeeMessages.CONTROL_CHAT_FORMAT.color(player);
+            CompletableFuture<String> stateFuture = BungeeMessages.CONTROL_CHAT_STAFF.color(uuid);
+            CompletableFuture<String> formatFuture = BungeeMessages.CONTROL_CHAT_FORMAT.color(uuid);
             CompletableFuture.allOf(formatFuture, stateFuture).thenAccept(__ -> {
                 String formatString = formatFuture.getNow(BungeeMessages.CONTROL_CHAT_FORMAT.color());
                 String state = stateFuture.getNow(BungeeMessages.CONTROL_CHAT_STAFF.color());
@@ -126,8 +128,8 @@ public class ChatListener implements Listener {
             String userPrefix = ChatUtil.color(user_prefix);
             String userSuffix = ChatUtil.color(user_suffix);
 
-            CompletableFuture<String> stateFuture = BungeeMessages.CONTROL_CHAT_SUS.color(player);
-            CompletableFuture<String> formatFuture = BungeeMessages.CONTROL_CHAT_FORMAT.color(player);
+            CompletableFuture<String> stateFuture = BungeeMessages.CONTROL_CHAT_SUS.color(uuid);
+            CompletableFuture<String> formatFuture = BungeeMessages.CONTROL_CHAT_FORMAT.color(uuid);
             CompletableFuture.allOf(formatFuture, stateFuture).thenAccept(__ -> {
                 String formatString = formatFuture.getNow(BungeeMessages.CONTROL_CHAT_FORMAT.color());
                 String state = stateFuture.getNow(BungeeMessages.CONTROL_CHAT_SUS.color());

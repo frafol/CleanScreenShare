@@ -72,6 +72,12 @@ public class CleanSS {
 	@Inject
 	private final ProxyServer server;
 
+    @Getter
+    private boolean update = false;
+
+    @Getter
+    private String updateVersion = "";
+
 	private final Path path;
 	private final Metrics.Factory metricsFactory;
 
@@ -174,7 +180,7 @@ public class CleanSS {
 			logger.info("Metrics loaded successfully!");
 		}
 
-		UpdateChecker();
+        if (VelocityConfig.UPDATE_CHECK.get(Boolean.class)) server.getScheduler().buildTask(this, () -> UpdateChecker()).repeat(1, TimeUnit.HOURS).schedule();
 		startTasks();
 		logger.info("Plugin successfully loaded!");
 	}
@@ -520,22 +526,18 @@ public class CleanSS {
 	}
 
 	private void UpdateChecker() {
-
-		if (!VelocityConfig.UPDATE_CHECK.get(Boolean.class)) {
-			return;
-		}
-
-		if (!container.getDescription().getVersion().isPresent()) {
-			return;
-		}
-
+		if (container.getDescription().getVersion().isEmpty()) return;
 		new UpdateCheck(this).getVersion(version -> {
 			if (Integer.parseInt(container.getDescription().getVersion().get().replace(".", "")) < Integer.parseInt(version.replace(".", ""))) {
 				if (VelocityConfig.AUTO_UPDATE.get(Boolean.class) && !updated) {
 					autoUpdate();
 					return;
 				}
-				if (!updated) logger.warn("There is a new update available, download it on SpigotMC!");
+				if (!updated) {
+                    update = true;
+                    updateVersion = version;
+                    logger.warn("There is a new update available, download it on SpigotMC!");
+                }
 			}
 			if (Integer.parseInt(container.getDescription().getVersion().get().replace(".", "")) > Integer.parseInt(version.replace(".", ""))) {
 				logger.warn("You are using a development version, please report any bugs!");
@@ -551,39 +553,6 @@ public class CleanSS {
 				PlayerCache.getControls_suffered().put(players.getUniqueId(), data.getStats(players.getUniqueId(), "suffered"));
 			}
 		}).repeat(1, TimeUnit.SECONDS).schedule();
-	}
-
-	public void UpdateChecker(Player player) {
-
-		if (!VelocityConfig.UPDATE_CHECK.get(Boolean.class)) {
-			return;
-		}
-
-		if (!container.getDescription().getVersion().isPresent()) {
-			return;
-		}
-
-		new UpdateCheck(this).getVersion(version -> {
-
-			if (!(Integer.parseInt(container.getDescription().getVersion().get().replace(".", ""))
-					< Integer.parseInt(version.replace(".", "")))) {
-				return;
-			}
-
-			if (VelocityConfig.AUTO_UPDATE.get(Boolean.class) && !updated) {
-				autoUpdate();
-				return;
-			}
-
-			if (!updated && VelocityConfig.UPDATE_ALERT.get(Boolean.class)) {
-				player.sendMessage(LegacyComponentSerializer.legacy('§')
-						.deserialize(
-								VelocityMessages.UPDATE_ALERT.color()
-										.replace("%old_version%", container.getDescription().getVersion().get())
-										.replace("%new_version%", version)
-						).clickEvent(ClickEvent.clickEvent(ClickEvent.Action.OPEN_URL, VelocityMessages.UPDATE_LINK.get(String.class))));
-			}
-		});
 	}
 
 	private void updateTaskJDA() {

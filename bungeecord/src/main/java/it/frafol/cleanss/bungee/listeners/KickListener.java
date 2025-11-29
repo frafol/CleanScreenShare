@@ -10,6 +10,7 @@ import it.frafol.cleanss.bungee.objects.Utils;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.LuckPermsProvider;
 import net.luckperms.api.model.user.User;
+import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -35,7 +36,15 @@ public class KickListener implements Listener {
         final ProxiedPlayer player = event.getPlayer();
 
         if (player.hasPermission(BungeeConfig.RELOAD_PERMISSION.get(String.class))) {
-                instance.UpdateChecker(player);
+            if (instance.isUpdate()) {
+                TextComponent update = new TextComponent(BungeeMessages.UPDATE_ALERT.color()
+                        .replace("%old_version%", instance.getDescription().getVersion())
+                        .replace("%new_version%", instance.getUpdateVersion()));
+                update.setClickEvent(new ClickEvent(
+                        ClickEvent.Action.OPEN_URL,
+                        BungeeMessages.UPDATE_LINK.get(String.class)));
+                player.sendMessage(update);
+            }
         }
 
         if (instance.getData() != null) {

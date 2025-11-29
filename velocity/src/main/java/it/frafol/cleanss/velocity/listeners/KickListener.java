@@ -13,6 +13,7 @@ import it.frafol.cleanss.velocity.objects.ChatUtil;
 import it.frafol.cleanss.velocity.objects.MessageUtil;
 import it.frafol.cleanss.velocity.objects.PlayerCache;
 import it.frafol.cleanss.velocity.objects.Utils;
+import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.LuckPermsProvider;
@@ -113,7 +114,14 @@ public class KickListener {
         final Player player = event.getPlayer();
 
         if (player.hasPermission(VelocityConfig.RELOAD_PERMISSION.get(String.class))) {
-            instance.UpdateChecker(player);
+            if (instance.isUpdate()) {
+                player.sendMessage(LegacyComponentSerializer.legacy('§')
+                        .deserialize(
+                                VelocityMessages.UPDATE_ALERT.color()
+                                        .replace("%old_version%", String.valueOf(instance.getContainer().getDescription().getVersion()))
+                                        .replace("%new_version%", instance.getUpdateVersion())
+                        ).clickEvent(ClickEvent.clickEvent(ClickEvent.Action.OPEN_URL, ClickEvent.Payload.string(VelocityMessages.UPDATE_LINK.get(String.class)))));
+            }
         }
 
         if (instance.getData() != null) {
