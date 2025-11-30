@@ -153,6 +153,7 @@ public class CleanSS extends JavaPlugin {
 
 		getLogger().info("Loading channels...");
 		getServer().getMessenger().registerIncomingPluginChannel(this, "cleanss:join", new PluginMessageReceiver());
+        getServer().getMessenger().registerOutgoingPluginChannel(this, "cleanss:chat");
 
 		getLogger().info("Loading commands...");
 		getCommand("setadminspawn").setExecutor(new AdminSpawnCommand());

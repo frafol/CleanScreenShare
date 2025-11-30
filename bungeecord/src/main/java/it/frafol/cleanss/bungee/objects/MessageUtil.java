@@ -152,6 +152,16 @@ public class MessageUtil {
         else administrator.getServer().sendData("cleanss:join", buf.toByteArray());
     }
 
+    public void sendChatPAPIMessage(ProxiedPlayer player, String message, boolean staff) {
+        final ByteArrayDataOutput buf = ByteStreams.newDataOutput();
+        buf.writeUTF("CHAT");
+        buf.writeUTF(player.getName());
+        buf.writeUTF(String.valueOf(staff));
+        buf.writeUTF(message);
+        if (player.getServer() == null) instance.getLogger().severe("The player " + player.getName() + " has no server, please check your control server if it's working correctly!");
+        else player.getServer().sendData("cleanss:join", buf.toByteArray());
+    }
+
     public void sendButtons(ProxiedPlayer administrator, ProxiedPlayer suspicious, String admin_prefix, String admin_suffix, String sus_prefix, String sus_suffix) {
         instance.getProxy().getScheduler().schedule(instance, () -> {
             if (BungeeMessages.CONTROL_USEVERTICALFORMAT.get(Boolean.class)) {

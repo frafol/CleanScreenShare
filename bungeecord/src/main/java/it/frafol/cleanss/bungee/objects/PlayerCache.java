@@ -41,4 +41,7 @@ public class PlayerCache {
 
     @Getter
     private final HashMap<UUID, Integer> in_control = new HashMap<>();
+
+    @Getter
+    private final HashMap<UUID, String> sendMessages = new HashMap<>();
 }

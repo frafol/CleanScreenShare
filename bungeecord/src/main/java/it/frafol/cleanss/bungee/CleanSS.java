@@ -95,6 +95,7 @@ public class CleanSS extends Plugin {
 		getLogger().info("§7Loading §dplugin§7...");
 
 		getProxy().registerChannel("cleanss:join");
+        getProxy().registerChannel("cleanss:chat");
 		registerCommands();
 		registerListeners();
 

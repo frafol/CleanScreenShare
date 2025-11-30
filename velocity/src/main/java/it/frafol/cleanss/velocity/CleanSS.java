@@ -60,6 +60,7 @@ import java.util.concurrent.TimeUnit;
 public class CleanSS {
 
 	public static final ChannelIdentifier channel_join = MinecraftChannelIdentifier.create("cleanss", "join");
+    public static final ChannelIdentifier channel_chat = MinecraftChannelIdentifier.create("cleanss", "chat");
 
 	public boolean mysql_installation = false;
 	public boolean updated = false;
@@ -499,6 +500,7 @@ public class CleanSS {
 
 	private void loadChannelRegistrar() {
 		server.getChannelRegistrar().register(channel_join);
+        server.getChannelRegistrar().register(channel_chat);
 	}
 
 	private void loadListeners() {

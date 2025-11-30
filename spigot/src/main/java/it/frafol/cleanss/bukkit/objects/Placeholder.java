@@ -1,6 +1,9 @@
 package it.frafol.cleanss.bukkit.objects;
 
+import it.frafol.cleanss.bukkit.CleanSS;
 import lombok.experimental.UtilityClass;
+import me.clip.placeholderapi.PlaceholderAPI;
+import org.bukkit.entity.Player;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -8,8 +11,17 @@ import java.util.regex.Pattern;
 @UtilityClass
 public class Placeholder {
 
+    private final CleanSS instance = CleanSS.getInstance();
+
     public String color(String string) {
         String hex = convertHexColors(string);
+        return hex.replace("&", "§");
+    }
+
+    public String color(String string, Player player) {
+        String message = string;
+        if (instance.isPAPI()) message = PlaceholderAPI.setPlaceholders(player, message);
+        String hex = convertHexColors(message);
         return hex.replace("&", "§");
     }
 

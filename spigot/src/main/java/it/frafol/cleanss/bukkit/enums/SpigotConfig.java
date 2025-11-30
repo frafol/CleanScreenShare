@@ -129,6 +129,13 @@ public enum SpigotConfig {
         return hex.replace("&", "§");
     }
 
+    public String color(Player player) {
+        String message = get(String.class);
+        if (instance.isPAPI()) message = PlaceholderAPI.setPlaceholders(player, message);
+        String hex = convertHexColors(message);
+        return hex.replace("&", "§");
+    }
+
     private String convertHexColors(String message) {
 
         if (!containsHexColor(message)) {

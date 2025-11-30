@@ -47,6 +47,8 @@ public enum BungeeConfig {
     EXPIRE_CHATLOGS("settings.chat_logs.logs_expire"),
     UPLOAD_CHATLOGS("settings.chat_logs.upload"),
     SEND_ADMIN_MESSAGE("settings.start.send_admin_message"),
+    PAPI_PROXYBRIDGE("settings.papiproxybridge_hook"),
+    PAPI_NATIVE("settings.native_papi_hook"),
     ENABLE_SPECTATING("settings.spectate.enable"),
     SPECTATOR_SERVER_SWITCH("settings.spectate.teleport_spectator"),
     CHAT_DISABLED("settings.spectate.block_chat"),

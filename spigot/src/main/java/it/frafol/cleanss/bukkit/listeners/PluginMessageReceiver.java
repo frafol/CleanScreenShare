@@ -6,6 +6,7 @@ import com.google.common.io.ByteStreams;
 import it.frafol.cleanss.bukkit.CleanSS;
 import it.frafol.cleanss.bukkit.enums.SpigotCache;
 import it.frafol.cleanss.bukkit.enums.SpigotConfig;
+import it.frafol.cleanss.bukkit.objects.Placeholder;
 import it.frafol.cleanss.bukkit.objects.PlayerCache;
 import it.frafol.cleanss.bukkit.objects.TextFile;
 import it.frafol.cleanss.bukkit.objects.utils.NametagUtil;
@@ -16,6 +17,9 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.messaging.PluginMessageListener;
 import org.jetbrains.annotations.NotNull;
+
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
 
 public class PluginMessageReceiver implements PluginMessageListener {
 
@@ -33,6 +37,15 @@ public class PluginMessageReceiver implements PluginMessageListener {
                 final Player final_player = instance.getServer().getPlayer(player_found);
                 if (final_player == null) return;
                 PlayerCache.getNo_chat().add(final_player.getUniqueId());
+            }
+            case "CHAT" -> {
+                String player_found = dataInput.readUTF();
+                final Player final_player = instance.getServer().getPlayer(player_found);
+                if (final_player == null) return;
+                Boolean staff = Boolean.valueOf(dataInput.readUTF());
+                String chatMessage = dataInput.readUTF();
+                String finalChatMessage = Placeholder.color(chatMessage, final_player);
+                sendResponsePluginMessage(final_player, player_found, staff, finalChatMessage);
             }
             case "DISCONNECT_NOW" -> {
                 String player_found = dataInput.readUTF();
@@ -135,5 +148,17 @@ public class PluginMessageReceiver implements PluginMessageListener {
         PlayerCache.getAdministrator().remove(player.getUniqueId());
         instance.stopTimer(player.getUniqueId());
         if (PlayerCache.getCouples().get(player.getUniqueId()) != null) PlayerCache.getCouples().remove(player.getUniqueId());
+    }
+
+    private void sendResponsePluginMessage(Player player, String playerName, Boolean staff, String message) {
+        try {
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            DataOutputStream data = new DataOutputStream(out);
+            data.writeUTF("CHAT");
+            data.writeUTF(playerName);
+            data.writeUTF(String.valueOf(staff));
+            data.writeUTF(message);
+            player.sendPluginMessage(instance, "cleanss:chat", out.toByteArray());
+        } catch (Exception ignored) {}
     }
 }

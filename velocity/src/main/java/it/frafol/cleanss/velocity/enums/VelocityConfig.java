@@ -44,6 +44,8 @@ public enum VelocityConfig {
     TAKE_CHATLOGS("settings.chat_logs.enable"),
     EXPIRE_CHATLOGS("settings.chat_logs.logs_expire"),
     UPLOAD_CHATLOGS("settings.chat_logs.upload"),
+    PAPI_PROXYBRIDGE("settings.papiproxybridge_hook"),
+    PAPI_NATIVE("settings.native_papi_hook"),
     MYSQL_DATABASE("mysql.database"),
     MYSQL_PASSWORD("mysql.password"),
     MYSQL_ARGUMENTS("mysql.arguments"),

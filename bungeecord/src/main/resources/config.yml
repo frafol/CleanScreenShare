@@ -66,6 +66,14 @@ settings:
   premiumvanish_hook: false
   velocityvanish_hook: false
 
+  # With these options, you can use PlaceholderAPI placeholders in conversation messages between the administrator and the suspect.
+  # PAPIProxyBridge: You will need to install PAPIProxyBridge on both your proxy and your control server.
+  # Native: You just need to install CleanScreenShare on your control server as well.
+  # NOTE: If you do not see any messages when enabling “native_papi_hook,” there may be issues with proxy -> spigot communication.
+  # Ensure that the forwarding method is functioning!!
+  papiproxybridge_hook: false
+  native_papi_hook: false
+
   # Check for plugin updates.
   update_check: true
   update_alert: true

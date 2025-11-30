@@ -165,6 +165,21 @@ public class MessageUtil {
     }
 
     @SuppressWarnings("UnstableApiUsage")
+    public void sendChatPAPIMessage(Player player, String message, boolean staff) {
+        try {
+            final ByteArrayDataOutput buf = ByteStreams.newDataOutput();
+            buf.writeUTF("CHAT");
+            buf.writeUTF(player.getUsername());
+            buf.writeUTF(String.valueOf(staff));
+            buf.writeUTF(message);
+            player.getCurrentServer().ifPresent(sv ->
+                    sv.sendPluginMessage(CleanSS.channel_join, buf.toByteArray()));
+        } catch (IllegalStateException exception) {
+            instance.getLogger().error("Failed to send a chat message for player " + player.getUsername() + ".");
+        }
+    }
+
+    @SuppressWarnings("UnstableApiUsage")
     public void sendChannelAdvancedMessage(Player administrator, Player suspicious, String type) {
         try {
             final ByteArrayDataOutput buf = ByteStreams.newDataOutput();
