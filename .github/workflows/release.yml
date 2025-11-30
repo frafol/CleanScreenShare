@@ -1,4 +1,4 @@
-name: Build and Release
+name: Build, Release & Modrinth
 
 on:
   push:
@@ -8,10 +8,10 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
+    outputs:
+      jar-file: ${{ steps.find_jar.outputs.JAR_FILE }}
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
       - name: Set up JDK 17 (Amazon Corretto)
         uses: actions/setup-java@v3
@@ -27,6 +27,7 @@ jobs:
         run: |
           JAR_FILE=$(find target -maxdepth 1 -name "*.jar" ! -name "original*.jar" | head -n 1)
           echo "JAR_FILE=$JAR_FILE" >> $GITHUB_ENV
+          echo "::set-output name=JAR_FILE::$JAR_FILE"
 
       - name: Upload JAR artifact
         uses: actions/upload-artifact@v4
@@ -37,10 +38,8 @@ jobs:
   release:
     needs: build
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
       - name: Download JAR artifact
         uses: actions/download-artifact@v4
@@ -48,43 +47,44 @@ jobs:
           name: my-plugin-jar
           path: ./target
 
-      - name: Find JAR file in downloaded artifacts
-        id: find_downloaded_jar
+      - name: Find downloaded JAR
+        id: find_jar2
         run: |
           JAR_FILE=$(find ./target -maxdepth 1 -name "*.jar" ! -name "original*.jar" | head -n 1)
           echo "JAR_FILE=$JAR_FILE" >> $GITHUB_ENV
 
-      - name: Remove older releases
-        uses: dev-drprasad/delete-tag-and-release@v0.2.1
-        if: ${{ github.event_name == 'push' }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          delete_release: true
-          tag_name: dev-build
-
-      - name: Find git version
+      - name: Determine version name from commit
         id: git-version
         run: |
-          echo "id=$(git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
+          VERSION=$(git rev-parse --short HEAD)
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
 
       - name: Create GitHub Release
-        id: create_release
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: dev-build
-          release_name: Release ${{ steps.git-version.outputs.id }}
+          tag_name: dev-build-${{ env.VERSION }}
+          release_name: Release ${{ env.VERSION }}
           draft: false
           prerelease: true
 
-      - name: Upload JAR to Release
+      - name: Upload JAR to GitHub Release
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ${{ env.JAR_FILE }}
-          asset_name: cleanscreenshare-${{ steps.git-version.outputs.id }}.jar
+          asset_name: cleanscreenshare-${{ env.VERSION }}.jar
           asset_content_type: application/java-archive
+
+      - name: Publish to Modrinth
+        uses: cloudnode-pro/modrinth-publish@v2
+        with:
+          token: ${{ secrets.MODRINTH_TOKEN }}
+          project: KSHzrYFK
+          version: ${{ env.VERSION }}
+          version-type: alpha
+          loaders: "spigot,bungeecord,velocity,waterfall,folia,paper,purpur"
+          files: target/cleanscreenshare-${{ env.VERSION }}.jar
