@@ -95,7 +95,7 @@ jobs:
           token: ${{ secrets.MODRINTH_TOKEN }}
           project: "KSHzrYFK"
           version: ${{ steps.git-version.outputs.id }}
-          version-type: alpha
+          channel: alpha
           name: "Release ${{ steps.git-version.outputs.id }}"
           changelog: "Auto-generated release for commit ${{ steps.git-version.outputs.id }}"
           files: ${{ env.JAR_FILE }}
