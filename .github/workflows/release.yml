@@ -1,4 +1,4 @@
-name: Build, Release & Modrinth
+name: Build, Release & Publish to Modrinth
 
 on:
   push:
@@ -8,8 +8,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    outputs:
-      jar-file: ${{ steps.find_jar.outputs.JAR_FILE }}
     steps:
       - uses: actions/checkout@v3
 
@@ -27,12 +25,11 @@ jobs:
         run: |
           JAR_FILE=$(find target -maxdepth 1 -name "*.jar" ! -name "original*.jar" | head -n 1)
           echo "JAR_FILE=$JAR_FILE" >> $GITHUB_ENV
-          echo "::set-output name=JAR_FILE::$JAR_FILE"
 
-      - name: Upload JAR artifact
+      - name: Persist JAR as artifact
         uses: actions/upload-artifact@v4
         with:
-          name: my-plugin-jar
+          name: plugin-jar
           path: ${{ env.JAR_FILE }}
 
   release:
@@ -44,14 +41,8 @@ jobs:
       - name: Download JAR artifact
         uses: actions/download-artifact@v4
         with:
-          name: my-plugin-jar
+          name: plugin-jar
           path: ./target
-
-      - name: Find downloaded JAR
-        id: find_jar2
-        run: |
-          JAR_FILE=$(find ./target -maxdepth 1 -name "*.jar" ! -name "original*.jar" | head -n 1)
-          echo "JAR_FILE=$JAR_FILE" >> $GITHUB_ENV
 
       - name: Determine version name from commit
         id: git-version
@@ -59,25 +50,14 @@ jobs:
           VERSION=$(git rev-parse --short HEAD)
           echo "VERSION=$VERSION" >> $GITHUB_ENV
 
-      - name: Create GitHub Release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Create GitHub Release + upload JAR
+        uses: softprops/action-gh-release@v2
         with:
           tag_name: dev-build-${{ env.VERSION }}
-          release_name: Release ${{ env.VERSION }}
-          draft: false
+          name: Release ${{ env.VERSION }}
           prerelease: true
-
-      - name: Upload JAR to GitHub Release
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ${{ env.JAR_FILE }}
-          asset_name: cleanscreenshare-${{ env.VERSION }}.jar
-          asset_content_type: application/java-archive
+          files: |
+            target/cleanscreenshare-${{ env.VERSION }}.jar
 
       - name: Publish to Modrinth
         uses: cloudnode-pro/modrinth-publish@v2
@@ -86,5 +66,28 @@ jobs:
           project: KSHzrYFK
           version: ${{ env.VERSION }}
           version-type: alpha
-          loaders: "spigot,bungeecord,velocity,waterfall,folia,paper,purpur"
-          files: target/cleanscreenshare-${{ env.VERSION }}.jar
+          loaders: |
+            spigot
+            bungeecord
+            velocity
+            waterfall
+            folia
+            paper
+            purpur
+          game-versions: |
+            1.8.x
+            1.9.x
+            1.10.x
+            1.11.x
+            1.12.x
+            1.13.x
+            1.14.x
+            1.15.x
+            1.16.x
+            1.17.x
+            1.18.x
+            1.19.x
+            1.20.x
+            1.21.x
+          files: |
+            target/cleanscreenshare-${{ env.VERSION }}.jar
