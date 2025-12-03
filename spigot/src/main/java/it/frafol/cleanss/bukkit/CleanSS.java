@@ -180,7 +180,7 @@ public class CleanSS extends JavaPlugin {
 				for (World worlds : getServer().getWorlds()) {
                     try {
                         worlds.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
-                    } catch (NoSuchMethodError ignored) {
+                    } catch (NoClassDefFoundError ignored) {
                         worlds.setGameRuleValue("doDaylightCycle", "false");
                     }
 				}
