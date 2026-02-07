@@ -67,6 +67,11 @@ public class PasteUtils {
     @SneakyThrows
     public static void uploadLogByFileName(String fileName, ProxiedPlayer targetMessage) {
         Path logsFolder = instance.getDataFolder().toPath().resolve("chat-logs");
+        try {
+            logsFolder.resolve(fileName);
+        } catch (NullPointerException ignored) {
+            return;
+        }
         Path logFile = logsFolder.resolve(fileName);
         if (!Files.exists(logFile) || !Files.isRegularFile(logFile)) return;
         CompletableFuture.runAsync(() -> {
