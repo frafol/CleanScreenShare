@@ -92,6 +92,7 @@ public class KickListener {
                                         .replace("%old_version%", String.valueOf(instance.getContainer().getDescription().getVersion()))
                                         .replace("%new_version%", instance.getUpdateVersion())
                                         .replace("%changelog%", instance.getUpdateChangelog())
+                                        .replace("%link%", VelocityMessages.UPDATE_LINK.get(String.class))
                         ).clickEvent(ClickEvent.clickEvent(ClickEvent.Action.OPEN_URL, ClickEvent.Payload.string(VelocityMessages.UPDATE_LINK.get(String.class)))));
             }
         }

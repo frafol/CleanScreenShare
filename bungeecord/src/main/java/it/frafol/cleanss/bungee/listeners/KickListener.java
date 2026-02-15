@@ -40,7 +40,8 @@ public class KickListener implements Listener {
                 TextComponent update = new TextComponent(BungeeMessages.UPDATE_ALERT.color()
                         .replace("%old_version%", instance.getDescription().getVersion())
                         .replace("%new_version%", instance.getUpdateVersion())
-                        .replace("%changelog%", instance.getUpdateChangelog()));
+                        .replace("%changelog%", instance.getUpdateChangelog())
+                        .replace("%link%", BungeeMessages.UPDATE_LINK.get(String.class)));
                 update.setClickEvent(new ClickEvent(
                         ClickEvent.Action.OPEN_URL,
                         BungeeMessages.UPDATE_LINK.get(String.class)));
