@@ -77,6 +77,9 @@ public class CleanSS {
     @Getter
     private String updateVersion = "";
 
+	@Getter
+	private String updateChangelog = "";
+
 	private final Path path;
 	private final Metrics.Factory metricsFactory;
 
@@ -286,7 +289,7 @@ public class CleanSS {
 			return;
 		}
 
-		new UpdateCheck(this).getVersion(version -> {
+		new UpdateCheck(this).getLatestUpdate((version, changelog) -> {
 			String fileUrl = "https://github.com/frafol/CleanScreenShare/releases/download/release/cleanscreenshare-"+ version + " .jar";
 			String destination = "./plugins/";
 
@@ -527,7 +530,7 @@ public class CleanSS {
 
 	private void UpdateChecker() {
 		if (container.getDescription().getVersion().isEmpty()) return;
-		new UpdateCheck(this).getVersion(version -> {
+		new UpdateCheck(this).getLatestUpdate((version, changelog) -> {
 			if (Integer.parseInt(container.getDescription().getVersion().get().replace(".", "")) < Integer.parseInt(version.replace(".", ""))) {
 				if (VelocityConfig.AUTO_UPDATE.get(Boolean.class) && !updated) {
 					autoUpdate();
@@ -536,7 +539,9 @@ public class CleanSS {
 				if (!updated) {
                     update = true;
                     updateVersion = version;
+					updateChangelog = changelog;
                     logger.warn("There is a new update available, download it on SpigotMC!");
+					logger.warn("Update changelog: " + changelog);
                 }
 			}
 			if (Integer.parseInt(container.getDescription().getVersion().get().replace(".", "")) > Integer.parseInt(version.replace(".", ""))) {

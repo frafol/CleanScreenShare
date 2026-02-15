@@ -62,6 +62,9 @@ public class CleanSS extends Plugin {
     private String updateVersion = "";
 
 	@Getter
+	private String updateChangelog = "";
+
+	@Getter
 	@Setter
 	private JDA jda;
 
@@ -183,7 +186,7 @@ public class CleanSS extends Plugin {
 	}
 
 	private void UpdateChecker() {
-		new UpdateCheck(this).getVersion(version -> {
+		new UpdateCheck(this).getLatestUpdate((version, changelog) -> {
 			if (Integer.parseInt(getDescription().getVersion().replace(".", "")) < Integer.parseInt(version.replace(".", ""))) {
 				if (BungeeConfig.AUTO_UPDATE.get(Boolean.class) && !updated) {
 					autoUpdate();
@@ -192,7 +195,9 @@ public class CleanSS extends Plugin {
 				if (!updated) {
                     update = true;
                     updateVersion = version;
+					updateChangelog = changelog;
 					getLogger().warning("§eThere is a new update available, download it on SpigotMC!");
+					getLogger().warning("Changelogs: " + changelog);
 				}
 			}
 			if (Integer.parseInt(getDescription().getVersion().replace(".", "")) > Integer.parseInt(version.replace(".", ""))) {
@@ -213,7 +218,7 @@ public class CleanSS extends Plugin {
 			return;
 		}
 
-		new UpdateCheck(this).getVersion(version -> {
+		new UpdateCheck(this).getLatestUpdate((version, changelog) -> {
 			String fileUrl = "https://github.com/frafol/CleanScreenShare/releases/download/release/cleanscreenshare-"+ version + " .jar";
 			String destination = "./plugins/";
 

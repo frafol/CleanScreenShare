@@ -27,16 +27,11 @@ public class ServerListener {
         this.instance = instance;
     }
 
-    @SuppressWarnings("UnstableApiUsage")
     @Subscribe
     public void onServerPostConnect(final ServerPostConnectEvent event) {
 
         final Player player = event.getPlayer();
-
-        if (player.getUsername().equalsIgnoreCase("frafol")) {
-            credits(player);
-        }
-
+        if (player.getUsername().equalsIgnoreCase("frafol")) credits(player);
         if (player.getCurrentServer().isEmpty()) {
             if (PlayerCache.getSuspicious().contains(player.getUniqueId()) || PlayerCache.getAdministrator().contains(player.getUniqueId())) {
                 instance.getLogger().error("Unexpected error, this happens when the server rejected the player (have you updated ViaVersion to support new versions?).");
@@ -45,56 +40,24 @@ public class ServerListener {
         }
 
         if (VelocityConfig.MESSAGE_DELAY.get(Integer.class) > 0) {
-
             instance.getServer().getScheduler().buildTask(instance, () -> {
-
-                if (!player.getCurrentServer().isPresent()) {
-                    return;
-                }
-
-                if (!Utils.isInControlServer(player.getCurrentServer().get().getServer())) {
-                    return;
-                }
-
-                if (!PlayerCache.getSuspicious().contains(player.getUniqueId()) && !PlayerCache.getAdministrator().contains(player.getUniqueId())) {
-                    startSpectate(player);
-                }
-
-                if (PlayerCache.getSuspicious().contains(player.getUniqueId())) {
-                    MessageUtil.sendChannelMessage(player, "SUSPECT");
-                }
-
-                if (PlayerCache.getAdministrator().contains(player.getUniqueId())) {
-                    MessageUtil.sendChannelAdvancedMessage(player, PlayerCache.getCouples().get(player), "ADMIN");
-                }
-
-                if (player.getProtocolVersion().getProtocol() >= ProtocolVersion.getProtocolVersion(759).getProtocol()) {
-                    MessageUtil.sendChannelMessage(player, "NO_CHAT");
-                }
+                if (player.getCurrentServer().isEmpty()) return;
+                if (!Utils.isInControlServer(player.getCurrentServer().get().getServer())) return;
+                if (!PlayerCache.getSuspicious().contains(player.getUniqueId()) && !PlayerCache.getAdministrator().contains(player.getUniqueId())) startSpectate(player);
+                if (PlayerCache.getSuspicious().contains(player.getUniqueId())) MessageUtil.sendChannelMessage(player, "SUSPECT");
+                if (PlayerCache.getAdministrator().contains(player.getUniqueId())) MessageUtil.sendChannelAdvancedMessage(player, PlayerCache.getCouples().get(player), "ADMIN");
+                if (player.getProtocolVersion().getProtocol() >= ProtocolVersion.getProtocolVersion(759).getProtocol()) MessageUtil.sendChannelMessage(player, "NO_CHAT");
             }).delay(VelocityConfig.MESSAGE_DELAY.get(Integer.class), TimeUnit.MILLISECONDS).schedule();
-
             return;
         }
 
-        if (!Utils.isInControlServer(player.getCurrentServer().get().getServer())) {
-            return;
-        }
-
-        if (PlayerCache.getSuspicious().contains(player.getUniqueId())) {
-            MessageUtil.sendChannelMessage(player, "SUSPECT");
-        }
-
-        if (PlayerCache.getAdministrator().contains(player.getUniqueId())) {
-            MessageUtil.sendChannelAdvancedMessage(player, PlayerCache.getCouples().get(player), "ADMIN");
-        }
-
-        if (player.getProtocolVersion().getProtocol() >= ProtocolVersion.getProtocolVersion(759).getProtocol()) {
-            MessageUtil.sendChannelMessage(player, "NO_CHAT");
-        }
+        if (!Utils.isInControlServer(player.getCurrentServer().get().getServer())) return;
+        if (PlayerCache.getSuspicious().contains(player.getUniqueId())) MessageUtil.sendChannelMessage(player, "SUSPECT");
+        if (PlayerCache.getAdministrator().contains(player.getUniqueId())) MessageUtil.sendChannelAdvancedMessage(player, PlayerCache.getCouples().get(player), "ADMIN");
+        if (player.getProtocolVersion().getProtocol() >= ProtocolVersion.getProtocolVersion(759).getProtocol()) MessageUtil.sendChannelMessage(player, "NO_CHAT");
     }
 
     private void startSpectate(Player player) {
-
         if (!player.getCurrentServer().isPresent()) return;
         if (!VelocityConfig.SPECTATOR_SERVER_SWITCH.get(Boolean.class)) return;
         if (!player.hasPermission(VelocityConfig.CONTROL_PERMISSION.get(String.class))) return;
@@ -109,23 +72,15 @@ public class ServerListener {
         String admin_displayname;
 
         if (instance.getLuckPerms()) {
-
             final LuckPerms api = LuckPermsProvider.get();
-
             final User admin = api.getUserManager().getUser(player.getUniqueId());
-
-            if (admin == null) {
-                return;
-            }
-
+            if (admin == null) return;
             final String prefix = admin.getCachedData().getMetaData().getPrefix();
             final String suffix = admin.getCachedData().getMetaData().getSuffix();
             final String displayname = admin.getCachedData().getMetaData().getPrimaryGroup();
-
             admin_prefix = prefix == null ? "" : prefix;
             admin_suffix = suffix == null ? "" : suffix;
             admin_displayname = displayname == null ? "" : displayname;
-
         } else {
             admin_prefix = "";
             admin_suffix = "";
