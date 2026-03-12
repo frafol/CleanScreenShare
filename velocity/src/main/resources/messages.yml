@@ -83,6 +83,12 @@ messages:
     - "§d| §7Discord: §d%discord%"
     - "§d| §7Update Notifier: §d%update_notifier%"
     - "§d| "
+    - "§d| §7Control servers: "
+    - "%servers%"
+    - "§d| "
+    - "§d| §7Fallback servers: "
+    - "%fallbackservers%"
+    - "§d| "
 
   info:
 

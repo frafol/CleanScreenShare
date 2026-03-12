@@ -37,6 +37,8 @@ public class DebugCommand extends Command {
                 new Placeholder("plugin_version", instance.getDescription().getVersion()),
                 new Placeholder("mysql", getMySQL()),
                 new Placeholder("discord", getDiscord()),
+                new Placeholder("servers", getServers()),
+                new Placeholder("fallbackservers", getFallbackServers()),
                 new Placeholder("update_notifier", String.valueOf(BungeeConfig.UPDATE_CHECK.get(Boolean.class))));
     }
 
@@ -76,6 +78,24 @@ public class DebugCommand extends Command {
         });
 
         invocation.sendMessage(TextComponent.fromLegacy("§d| "));
+    }
+
+    private String getServers() {
+        StringBuilder builder = new StringBuilder();
+        Utils.getServerList(BungeeConfig.CONTROL.getStringList()).forEach(server -> {
+            String color = Utils.getOnlineServers(Utils.getServerList(BungeeConfig.CONTROL.getStringList())).contains(server) ? "§a" : "§c";
+            builder.append("§d| §7- ").append(color).append(server.getName()).append("\n");
+        });
+        return builder.toString().trim();
+    }
+
+    private String getFallbackServers() {
+        StringBuilder builder = new StringBuilder();
+        Utils.getServerList(BungeeConfig.CONTROL_FALLBACK.getStringList()).forEach(server -> {
+            String color = Utils.getOnlineServers(Utils.getServerList(BungeeConfig.CONTROL_FALLBACK.getStringList())).contains(server) ? "§a" : "§c";
+            builder.append("§d| §7- ").append(color).append(server.getName()).append("\n");
+        });
+        return builder.toString().trim();
     }
 
     private String getMySQL() {

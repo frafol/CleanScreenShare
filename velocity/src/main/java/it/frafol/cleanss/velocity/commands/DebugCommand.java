@@ -41,6 +41,8 @@ public class DebugCommand implements SimpleCommand {
                 new Placeholder("plugin_version", instance.getContainer().getDescription().getVersion().get()),
                 new Placeholder("mysql", getMySQL()),
                 new Placeholder("discord", getDiscord()),
+                new Placeholder("servers", getServers()),
+                new Placeholder("fallbackservers", getFallbackServers()),
                 new Placeholder("update_notifier", String.valueOf(VelocityConfig.UPDATE_CHECK.get(Boolean.class))));
     }
 
@@ -88,6 +90,24 @@ public class DebugCommand implements SimpleCommand {
         });
 
         source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize("§d| "));
+    }
+
+    private String getServers() {
+        StringBuilder builder = new StringBuilder();
+        Utils.getServerList(VelocityConfig.CONTROL.getStringList()).forEach(server -> {
+            String color = Utils.getOnlineServers(Utils.getServerList(VelocityConfig.CONTROL.getStringList())).contains(server) ? "§a" : "§c";
+            builder.append("§d| §7- ").append(color).append(server.get().getServerInfo().getName()).append("\n");
+        });
+        return builder.toString().trim();
+    }
+
+    private String getFallbackServers() {
+        StringBuilder builder = new StringBuilder();
+        Utils.getServerList(VelocityConfig.CONTROL_FALLBACK.getStringList()).forEach(server -> {
+            String color = Utils.getOnlineServers(Utils.getServerList(VelocityConfig.CONTROL_FALLBACK.getStringList())).contains(server) ? "§a" : "§c";
+            builder.append("§d| §7- ").append(color).append(server.get().getServerInfo().getName()).append("\n");
+        });
+        return builder.toString().trim();
     }
 
     private String getMySQL() {
