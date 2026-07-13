@@ -86,7 +86,7 @@ public class CleanSS extends JavaPlugin {
 		Library scoreboard = Library.builder()
 				.groupId("fr{}mrmicky")
 				.artifactId("FastBoard")
-				.version("2.1.5")
+				.version("2.2.0")
 				.relocate(scoreboardrelocation)
 				.build();
 
