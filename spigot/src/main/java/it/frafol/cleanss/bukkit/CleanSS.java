@@ -88,6 +88,7 @@ public class CleanSS extends JavaPlugin {
 				.artifactId("FastBoard")
 				.version("2.2.0")
 				.relocate(scoreboardrelocation)
+				.url("https://github.com/MrMicky-FR/FastBoard/releases/download/v2.2.0/fastboard-2.2.0.jar")
 				.build();
 
 		final Relocation schedulerrelocation = new Relocation("scheduler", "it{}frafol{}libs{}scheduler");
