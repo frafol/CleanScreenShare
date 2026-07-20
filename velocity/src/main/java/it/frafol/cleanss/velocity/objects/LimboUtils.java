@@ -71,24 +71,16 @@ public class LimboUtils {
                 }
             }
 
-            GameMode gameMode;
-            switch (VelocityLimbo.GAMEMODE.get(String.class)) {
-                case "survival":
-                    gameMode = GameMode.SURVIVAL;
-                    break;
-                case "creative":
-                    gameMode = GameMode.CREATIVE;
-                    break;
-                case "adventure":
-                    gameMode = GameMode.ADVENTURE;
-                    break;
-                case "spectator":
-                    gameMode = GameMode.SPECTATOR;
-                    break;
-                default:
+            GameMode gameMode = switch (VelocityLimbo.GAMEMODE.get(String.class)) {
+                case "survival" -> GameMode.SURVIVAL;
+                case "creative" -> GameMode.CREATIVE;
+                case "adventure" -> GameMode.ADVENTURE;
+                case "spectator" -> GameMode.SPECTATOR;
+                default -> {
                     instance.getLogger().warn("Invalid Limbo GameMode specified in limboapi.yml. Defaulting to survival.");
-                    gameMode = GameMode.SURVIVAL;
-            }
+                    yield GameMode.SURVIVAL;
+                }
+            };
 
             limbo = factory.createLimbo(world)
                     .setName("CleanScreenShare")

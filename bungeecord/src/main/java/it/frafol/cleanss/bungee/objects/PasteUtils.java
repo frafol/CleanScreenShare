@@ -18,13 +18,17 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 
 @UtilityClass
 public class PasteUtils {
 
     private final CleanSS instance = CleanSS.getInstance();
     private static final String DPASTE_API_URL = "https://dpaste.com/api/v2/";
+    private final ConcurrentHashMap<UUID, String> paste_urls = new ConcurrentHashMap<>();
 
     @SneakyThrows
     public static String uploadLogFile(Path logFilePath) {
@@ -65,7 +69,7 @@ public class PasteUtils {
     }
 
     @SneakyThrows
-    public static void uploadLogByFileName(String fileName, ProxiedPlayer targetMessage) {
+    public static void uploadLogByFileName(ProxiedPlayer suspect, String fileName, ProxiedPlayer targetMessage) {
         Path logsFolder = instance.getDataFolder().toPath().resolve("chat-logs");
         try {
             logsFolder.resolve(fileName);
@@ -76,6 +80,8 @@ public class PasteUtils {
         if (!Files.exists(logFile) || !Files.isRegularFile(logFile)) return;
         CompletableFuture.runAsync(() -> {
             String link = uploadLogFile(logFile);
+            paste_urls.put(suspect.getUniqueId(), link);
+            instance.getProxy().getScheduler().schedule(instance, () -> paste_urls.remove(suspect.getUniqueId(), link), 1, TimeUnit.MINUTES);
             String raw = BungeeMessages.CONTROL_FINISH_LINK.color()
                     .replace("%link%", link)
                     .replace("%prefix%", BungeeMessages.PREFIX.color());
@@ -92,6 +98,14 @@ public class PasteUtils {
             BaseComponent[] messageComponents = builder.create();
             targetMessage.sendMessage(messageComponents);
         });
+    }
+
+    public String getLink(UUID uuid) {
+        if (paste_urls.get(uuid) != null) {
+            return paste_urls.get(uuid);
+        } else {
+            return "";
+        }
     }
 }
 

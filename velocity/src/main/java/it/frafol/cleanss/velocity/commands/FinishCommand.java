@@ -93,8 +93,8 @@ public class FinishCommand implements SimpleCommand {
                     return;
                 }
 
-                String admin_group = "";
-                String suspect_group = "";
+                String admin_group;
+                String suspect_group;
 
                 if (luckperms) {
                     final LuckPerms api = LuckPermsProvider.get();
@@ -119,6 +119,9 @@ public class FinishCommand implements SimpleCommand {
                         }
                     } else suspectroup_displayname = "";
                     suspect_group = suspectgroup == null ? "" : suspectroup_displayname;
+                } else {
+                    admin_group = "";
+                    suspect_group = "";
                 }
 
                 String admin_prefix;
@@ -169,14 +172,16 @@ public class FinishCommand implements SimpleCommand {
                                                 .replace("%suspect%", player.get().getUsername()))))
                         .delay(VelocityMessages.CONTROL_FINISH_MESSAGE_DELAY.get(Integer.class), TimeUnit.SECONDS).schedule();
 
-                MessageUtil.sendDiscordMessage(
+                instance.getServer().getScheduler().buildTask(instance, () -> MessageUtil.sendDiscordMessage(
                         player.get(),
                         sender,
                         VelocityMessages.DISCORD_FINISHED.get(String.class)
                                 .replace("%suspectgroup%", suspect_group)
-                                .replace("%admingroup%", admin_group),
+                                .replace("%admingroup%", admin_group)
+                                .replace("%link%", PasteUtils.getLink(player.get().getUniqueId())),
                         VelocityMessages.CLEAN.get(String.class),
-                        VelocityMessages.DISCORD_FINISHED_THUMBNAIL.get(String.class));
+                        VelocityMessages.DISCORD_FINISHED_THUMBNAIL.get(String.class)))
+                        .delay(5, TimeUnit.SECONDS).schedule();
             } else {
                 source.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.NOT_ONLINE.color()
                         .replace("%prefix%", VelocityMessages.PREFIX.color())

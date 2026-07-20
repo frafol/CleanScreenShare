@@ -122,7 +122,7 @@ public class Utils {
             }
 
             if (BungeeConfig.TAKE_CHATLOGS.get(Boolean.class)) {
-                if (BungeeConfig.UPLOAD_CHATLOGS.get(Boolean.class)) PasteUtils.uploadLogByFileName(LogUtils.writeLogFile(administrator.getName()), administrator);
+                if (BungeeConfig.UPLOAD_CHATLOGS.get(Boolean.class)) PasteUtils.uploadLogByFileName(suspicious, LogUtils.writeLogFile(administrator.getName()), administrator);
                 else LogUtils.writeLogFile(administrator.getName());
             }
 
@@ -158,7 +158,7 @@ public class Utils {
             }
 
             if (BungeeConfig.TAKE_CHATLOGS.get(Boolean.class)) {
-                if (BungeeConfig.UPLOAD_CHATLOGS.get(Boolean.class)) PasteUtils.uploadLogByFileName(LogUtils.writeLogFile(administrator.getName()), administrator);
+                if (BungeeConfig.UPLOAD_CHATLOGS.get(Boolean.class)) PasteUtils.uploadLogByFileName(suspicious, LogUtils.writeLogFile(administrator.getName()), administrator);
                 else LogUtils.writeLogFile(administrator.getName());
             }
 
@@ -186,7 +186,7 @@ public class Utils {
             }
 
             if (BungeeConfig.TAKE_CHATLOGS.get(Boolean.class)) {
-                if (BungeeConfig.UPLOAD_CHATLOGS.get(Boolean.class)) PasteUtils.uploadLogByFileName(LogUtils.writeLogFile(administrator.getName()), administrator);
+                if (BungeeConfig.UPLOAD_CHATLOGS.get(Boolean.class)) PasteUtils.uploadLogByFileName(suspicious, LogUtils.writeLogFile(administrator.getName()), administrator);
                 else LogUtils.writeLogFile(administrator.getName());
             }
 
@@ -211,7 +211,7 @@ public class Utils {
             PlayerCache.getCouples().remove(administrator);
 
             if (BungeeConfig.TAKE_CHATLOGS.get(Boolean.class)) {
-                if (BungeeConfig.UPLOAD_CHATLOGS.get(Boolean.class)) PasteUtils.uploadLogByFileName(LogUtils.writeLogFile(administrator.getName()), administrator);
+                if (BungeeConfig.UPLOAD_CHATLOGS.get(Boolean.class)) PasteUtils.uploadLogByFileName(suspicious, LogUtils.writeLogFile(administrator.getName()), administrator);
                 else LogUtils.writeLogFile(administrator.getName());
             }
 
@@ -229,8 +229,8 @@ public class Utils {
 
         boolean luckperms = instance.getProxy().getPluginManager().getPlugin("LuckPerms") != null;
 
-        String admin_group = "";
-        String suspect_group = "";
+        String admin_group;
+        String suspect_group;
 
         if (luckperms) {
 
@@ -275,25 +275,28 @@ public class Utils {
 
             suspect_group = suspectgroup == null ? "" : suspectroup_displayname;
 
+        } else {
+            suspect_group = "";
+            admin_group = "";
         }
 
         if (PlayerCache.getBan_execution().contains(administrator)) {
 
             if (!PlayerCache.getAdmits().contains(suspect.getUniqueId())) {
-                MessageUtil.sendDiscordMessage(
+                instance.getProxy().getScheduler().schedule(instance, () -> MessageUtil.sendDiscordMessage(
                         suspect,
                         administrator_player,
-                        BungeeMessages.DISCORD_FINISHED.get(String.class).replace("%admingroup%", admin_group).replace("%suspectgroup%", suspect_group),
+                        BungeeMessages.DISCORD_FINISHED.get(String.class).replace("%link%", PasteUtils.getLink(suspect.getUniqueId())).replace("%admingroup%", admin_group).replace("%suspectgroup%", suspect_group),
                         BungeeMessages.CHEATER.get(String.class),
-                        BungeeMessages.DISCORD_FINISHED_THUMBNAIL.get(String.class));
+                        BungeeMessages.DISCORD_FINISHED_THUMBNAIL.get(String.class)), 5, TimeUnit.SECONDS);
             } else {
                 PlayerCache.getAdmits().remove(suspect.getUniqueId());
-                MessageUtil.sendDiscordMessage(
+                instance.getProxy().getScheduler().schedule(instance, () -> MessageUtil.sendDiscordMessage(
                         suspect,
                         administrator_player,
-                        BungeeMessages.DISCORD_FINISHED.get(String.class).replace("%admingroup%", admin_group).replace("%suspectgroup%", suspect_group),
+                        BungeeMessages.DISCORD_FINISHED.get(String.class).replace("%link%", PasteUtils.getLink(suspect.getUniqueId())).replace("%admingroup%", admin_group).replace("%suspectgroup%", suspect_group),
                         BungeeMessages.ADMIT.get(String.class),
-                        BungeeMessages.DISCORD_FINISHED_THUMBNAIL.get(String.class));
+                        BungeeMessages.DISCORD_FINISHED_THUMBNAIL.get(String.class)), 5, TimeUnit.SECONDS);
             }
 
             String admin_prefix;
@@ -329,12 +332,15 @@ public class Utils {
             return;
         }
 
-        MessageUtil.sendDiscordMessage(
+        instance.getProxy().getScheduler().schedule(instance, () -> MessageUtil.sendDiscordMessage(
                 suspect,
                 administrator_player,
-                BungeeMessages.DISCORD_QUIT.get(String.class).replace("%admingroup%", admin_group).replace("%suspectgroup%", suspect_group),
+                BungeeMessages.DISCORD_QUIT.get(String.class)
+                        .replace("%link%", PasteUtils.getLink(suspect.getUniqueId()))
+                        .replace("%admingroup%", admin_group)
+                        .replace("%suspectgroup%", suspect_group),
                 BungeeMessages.LEFT.get(String.class),
-                BungeeMessages.DISCORD_QUIT_THUMBNAIL.get(String.class));
+                BungeeMessages.DISCORD_QUIT_THUMBNAIL.get(String.class)), 5, TimeUnit.SECONDS);
 
         String admin_prefix;
         String admin_suffix;

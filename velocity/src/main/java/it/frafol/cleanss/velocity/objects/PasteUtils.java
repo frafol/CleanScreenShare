@@ -19,13 +19,17 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 
 @UtilityClass
 public class PasteUtils {
 
     private final CleanSS instance = CleanSS.getInstance();
     private static final String DPASTE_API_URL = "https://dpaste.com/api/v2/";
+    private final ConcurrentHashMap<UUID, String> paste_urls = new ConcurrentHashMap<>();
 
     @SneakyThrows
     public static String uploadLogFile(Path logFilePath) {
@@ -66,7 +70,7 @@ public class PasteUtils {
     }
 
     @SneakyThrows
-    public void uploadLogByFileName(String fileName, Player targetMessage) {
+    public void uploadLogByFileName(Player suspect, String fileName, Player targetMessage) {
         Path logsFolder = instance.getPath().resolve("chat-logs");
         try {
             logsFolder.resolve(fileName);
@@ -77,6 +81,8 @@ public class PasteUtils {
         if (!Files.exists(logFile) || !Files.isRegularFile(logFile)) return;
         CompletableFuture.runAsync(() -> {
             @RegExp String link = uploadLogFile(logFile);
+            paste_urls.put(suspect.getUniqueId(), link);
+            instance.getServer().getScheduler().buildTask(instance, () -> paste_urls.remove(suspect.getUniqueId(), link)).delay(1, TimeUnit.MINUTES).schedule();
             String raw = VelocityMessages.CONTROL_FINISH_LINK.color()
                     .replace("%link%", link)
                     .replace("%prefix%", VelocityMessages.PREFIX.color());
@@ -85,6 +91,14 @@ public class PasteUtils {
             Component finalMessage = messageComponent.replaceText(r -> r.match(link).replacement(linkComponent));
             targetMessage.sendMessage(finalMessage);
         });
+    }
+
+    public String getLink(UUID uuid) {
+        if (paste_urls.get(uuid) != null) {
+            return paste_urls.get(uuid);
+        } else {
+            return "";
+        }
     }
 }
 

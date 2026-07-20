@@ -151,8 +151,8 @@ public class FinishCommand extends Command implements TabExecutor {
                                     .replace("%result%", BungeeMessages.CLEAN.color()))));
                 }
 
-                String admin_group = "";
-                String suspect_group = "";
+                String admin_group;
+                String suspect_group;
 
                 if (luckperms) {
 
@@ -197,14 +197,21 @@ public class FinishCommand extends Command implements TabExecutor {
 
                     suspect_group = suspectgroup == null ? "" : suspectroup_displayname;
 
+                } else {
+                    admin_group = "";
+                    suspect_group = "";
                 }
 
-                MessageUtil.sendDiscordMessage(
+                instance.getProxy().getScheduler().schedule(instance, () -> MessageUtil.sendDiscordMessage(
                         player,
                         (ProxiedPlayer) invocation,
-                        BungeeMessages.DISCORD_FINISHED.get(String.class).replace("%suspectgroup%", suspect_group).replace("%admingroup%", admin_group),
+                        BungeeMessages.DISCORD_FINISHED.get(String.class)
+                                .replace("%link%", PasteUtils.getLink(player.getUniqueId()))
+                                .replace("%suspectgroup%", suspect_group)
+                                .replace("%admingroup%", admin_group),
                         BungeeMessages.CLEAN.get(String.class),
-                        BungeeMessages.DISCORD_FINISHED_THUMBNAIL.get(String.class));
+                        BungeeMessages.DISCORD_FINISHED_THUMBNAIL.get(String.class)), 5, TimeUnit.SECONDS);
+
             }
         }
     }

@@ -28,8 +28,8 @@ public class Utils {
     public void punishPlayer(UUID administrator, String suspicious, Player administrator_user, Player suspect) {
 
         boolean luckperms = instance.getServer().getPluginManager().isLoaded("luckperms");
-        String admin_group = "";
-        String suspect_group = "";
+        String admin_group;
+        String suspect_group;
 
         if (luckperms) {
 
@@ -74,29 +74,37 @@ public class Utils {
 
             suspect_group = suspectgroup == null ? "" : suspectroup_displayname;
 
+        } else {
+            suspect_group = "";
+            admin_group = "";
         }
 
         if (PlayerCache.getBan_execution().contains(administrator)) {
 
             if (!PlayerCache.getAdmits().contains(suspect.getUniqueId())) {
-                MessageUtil.sendDiscordMessage(
+                instance.getServer().getScheduler().buildTask(instance, () -> MessageUtil.sendDiscordMessage(
                         suspect,
                         administrator_user,
                         VelocityMessages.DISCORD_FINISHED.get(String.class)
                                 .replace("%suspectgroup%", suspect_group)
-                                .replace("%admingroup%", admin_group),
+                                .replace("%admingroup%", admin_group)
+                                .replace("%link%", PasteUtils.getLink(suspect.getUniqueId())),
                         VelocityMessages.CHEATER.get(String.class),
-                        VelocityMessages.DISCORD_FINISHED_THUMBNAIL.get(String.class));
+                        VelocityMessages.DISCORD_FINISHED_THUMBNAIL.get(String.class)))
+                        .delay(5, TimeUnit.SECONDS).schedule();
             } else {
                 PlayerCache.getAdmits().remove(suspect.getUniqueId());
-                MessageUtil.sendDiscordMessage(
+                instance.getServer().getScheduler().buildTask(instance, () ->
+                        MessageUtil.sendDiscordMessage(
                         suspect,
                         administrator_user,
                         VelocityMessages.DISCORD_FINISHED.get(String.class)
                                 .replace("%suspectgroup%", suspect_group)
-                                .replace("%admingroup%", admin_group),
+                                .replace("%admingroup%", admin_group)
+                                .replace("%link%", PasteUtils.getLink(suspect.getUniqueId())),
                         VelocityMessages.ADMIT.get(String.class),
-                        VelocityMessages.DISCORD_FINISHED_THUMBNAIL.get(String.class));
+                        VelocityMessages.DISCORD_FINISHED_THUMBNAIL.get(String.class)))
+                        .delay(5, TimeUnit.SECONDS).schedule();
             }
 
             String admin_prefix;
@@ -132,14 +140,17 @@ public class Utils {
             return;
         }
 
-        MessageUtil.sendDiscordMessage(
+        instance.getServer().getScheduler().buildTask(instance, () -> MessageUtil.sendDiscordMessage(
                 suspect,
                 administrator_user,
                 VelocityMessages.DISCORD_QUIT.get(String.class)
                         .replace("%suspectgroup%", suspect_group)
-                        .replace("%admingroup%", admin_group),
+                        .replace("%admingroup%", admin_group)
+                        .replace("%link%", PasteUtils.getLink(suspect.getUniqueId())),
                 VelocityMessages.LEFT.get(String.class),
-                VelocityMessages.DISCORD_LEAVE_DURING_CONTROL_THUMBNAIL.get(String.class));
+                VelocityMessages.DISCORD_LEAVE_DURING_CONTROL_THUMBNAIL.get(String.class)))
+                .delay(5, TimeUnit.SECONDS).schedule();
+
 
         String admin_prefix;
         String admin_suffix;
@@ -181,7 +192,6 @@ public class Utils {
                 VelocityConfig.SLOG_COMMAND.get(String.class)
                         .replace("%player%", suspicious)
                         .replace("%admin%", administrator_user.getUsername()));
-
     }
 
     public boolean isInControlServer(RegisteredServer server) {
@@ -223,7 +233,7 @@ public class Utils {
         if (suspicious.isActive() && administrator.isActive()) {
 
             if (VelocityConfig.TAKE_CHATLOGS.get(Boolean.class)) {
-                if (VelocityConfig.UPLOAD_CHATLOGS.get(Boolean.class)) PasteUtils.uploadLogByFileName(LogUtils.writeLogFile(administrator.getUsername()), administrator);
+                if (VelocityConfig.UPLOAD_CHATLOGS.get(Boolean.class)) PasteUtils.uploadLogByFileName(suspicious, LogUtils.writeLogFile(administrator.getUsername()), administrator);
                 else LogUtils.writeLogFile(administrator.getUsername());
             }
 
@@ -271,7 +281,7 @@ public class Utils {
             PlayerCache.getAdministrator().remove(administrator.getUniqueId());
 
             if (VelocityConfig.TAKE_CHATLOGS.get(Boolean.class)) {
-                if (VelocityConfig.UPLOAD_CHATLOGS.get(Boolean.class)) PasteUtils.uploadLogByFileName(LogUtils.writeLogFile(administrator.getUsername()), administrator);
+                if (VelocityConfig.UPLOAD_CHATLOGS.get(Boolean.class)) PasteUtils.uploadLogByFileName(suspicious, LogUtils.writeLogFile(administrator.getUsername()), administrator);
                 else LogUtils.writeLogFile(administrator.getUsername());
             }
 
@@ -306,7 +316,7 @@ public class Utils {
             }
 
             if (VelocityConfig.TAKE_CHATLOGS.get(Boolean.class)) {
-                if (VelocityConfig.UPLOAD_CHATLOGS.get(Boolean.class)) PasteUtils.uploadLogByFileName(LogUtils.writeLogFile(administrator.getUsername()), administrator);
+                if (VelocityConfig.UPLOAD_CHATLOGS.get(Boolean.class)) PasteUtils.uploadLogByFileName(suspicious, LogUtils.writeLogFile(administrator.getUsername()), administrator);
                 else LogUtils.writeLogFile(administrator.getUsername());
             }
 
@@ -327,7 +337,7 @@ public class Utils {
             PlayerCache.getCouples().remove(administrator);
 
             if (VelocityConfig.TAKE_CHATLOGS.get(Boolean.class)) {
-                if (VelocityConfig.UPLOAD_CHATLOGS.get(Boolean.class)) PasteUtils.uploadLogByFileName(LogUtils.writeLogFile(administrator.getUsername()), administrator);
+                if (VelocityConfig.UPLOAD_CHATLOGS.get(Boolean.class)) PasteUtils.uploadLogByFileName(suspicious, LogUtils.writeLogFile(administrator.getUsername()), administrator);
                 else LogUtils.writeLogFile(administrator.getUsername());
             }
 
