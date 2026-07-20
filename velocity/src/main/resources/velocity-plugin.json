@@ -1,0 +1,44 @@
+{
+  "id": "cleanscreenshare",
+  "name": "CleanScreenShare",
+  "version": "2.8.3",
+  "description": "Make control hacks on your players.",
+  "authors": [
+    "frafol"
+  ],
+  "dependencies": [
+    {
+      "id": "luckperms",
+      "optional": true
+    },
+    {
+      "id": "mysqlandconfigurateforvelocity",
+      "optional": true
+    },
+    {
+      "id": "limboapi",
+      "optional": true
+    },
+    {
+      "id": "ajqueue",
+      "optional": true
+    },
+    {
+      "id": "premiumvanish",
+      "optional": true
+    },
+    {
+      "id": "velocityvanish",
+      "optional": true
+    },
+    {
+      "id": "spicord",
+      "optional": true
+    },
+    {
+      "id": "clientcatcher",
+      "optional": true
+    }
+  ],
+  "main": "it.frafol.cleanss.velocity.CleanSS"
+}

@@ -52,7 +52,7 @@ import java.util.concurrent.TimeUnit;
 @Plugin(
 		id = "cleanscreenshare",
 		name = "CleanScreenShare",
-		version = "2.8.2",
+		version = "2.8.3",
 		description = "Make control hacks on your players.",
 		dependencies = {@Dependency(id = "luckperms", optional = true), @Dependency(id = "mysqlandconfigurateforvelocity", optional = true), @Dependency(id = "limboapi", optional = true), @Dependency(id = "ajqueue", optional = true), @Dependency(id = "premiumvanish", optional = true), @Dependency(id = "velocityvanish", optional = true), @Dependency(id = "spicord", optional = true), @Dependency(id = "clientcatcher", optional = true)},
 		authors = { "frafol" })
@@ -332,9 +332,9 @@ public class CleanSS {
 		Library discord = Library.builder()
 				.groupId("net{}dv8tion")
 				.artifactId("JDA")
-				.version("5.5.1")
+				.version("6.5.0")
 				.relocate(jda)
-				.url("https://github.com/DV8FromTheWorld/JDA/releases/download/v5.5.1/JDA-5.5.1-withDependencies-min.jar")
+				.url("https://github.com/DV8FromTheWorld/JDA/releases/download/v6.5.0/JDA-6.5.0-withDependencies-min.jar")
 				.build();
 
 		velocityLibraryManager.addMavenCentral();
@@ -361,6 +361,16 @@ public class CleanSS {
 	private void checkIncompatibilities() {
 		if (getSpicord()) logger.error("Spicord found, this plugin is completely unsupported and you won't receive any support.");
 		if (getProtocolize()) logger.error("Protocolize found, this plugin is completely unsupported and you won't receive any support.");
+		if (!getServerVersion().startsWith("4.")) {
+			String majorVersionStr = getServerVersion().split("\\.")[0];
+			int majorVersion = Integer.parseInt(majorVersionStr);
+			if (majorVersion < 4) {
+				logger.error("!!! CLEAN SCREENSHARE REQUIRES VELOCITY 4.0.0+ !!!");
+				logger.error("Your Velocity version: " + getServerVersion());
+				logger.error("We can't start the plugin. Update your Velocity Proxy.");
+				throw new IllegalStateException("Your Velocity Version is not supported, please update your Velocity Proxy.");
+			}
+		}
 	}
 
 	public boolean isWindows() {
@@ -421,6 +431,7 @@ public class CleanSS {
 		YamlUpdater.create(new File(path + "/messages.yml"), findFile("messages.yml")).backup(true).update();
 		YamlUpdater.create(new File(path + "/aliases.yml"), findFile("aliases.yml")).backup(true).update();
 		YamlUpdater.create(new File(path + "/limboapi.yml"), findFile("limboapi.yml")).backup(true).update();
+
 		versionTextFile.getConfig().set("version", container.getDescription().getVersion().get());
 		versionTextFile.getConfig().save();
 		loadFiles();

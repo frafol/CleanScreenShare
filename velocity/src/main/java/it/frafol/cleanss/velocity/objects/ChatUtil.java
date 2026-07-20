@@ -84,8 +84,8 @@ public class ChatUtil {
     public void sendList(CommandSource commandSource, List<String> stringList) {
         for (String message : stringList) {
             if (!containsCommand(message).equals("none")) {
-                commandSource.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(message).clickEvent(ClickEvent
-                        .clickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/" + containsCommand(message) + " ")));
+                commandSource.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(message).clickEvent(
+                        ClickEvent.suggestCommand("/" + containsCommand(message) + " ")));
                 continue;
             }
             commandSource.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(message));
@@ -107,11 +107,11 @@ public class ChatUtil {
             }
 
             String button = getButton(message);
-            ClickEvent.Action action = ClickEvent.Action.SUGGEST_COMMAND;
+            ClickEvent.Action<ClickEvent.Payload.Text> action = ClickEvent.Action.SUGGEST_COMMAND;
             if (VelocityMessages.BUTTON_EXECUTION.get(Boolean.class)) action = ClickEvent.Action.RUN_COMMAND;
             commandSource.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(message.replace("%" + button + "name%", color(instance.getMessagesTextFile().getConfig().getString("messages.staff_message.buttons." + button + ".name"))))
-                    .clickEvent(ClickEvent.clickEvent(action, instance.getMessagesTextFile().getConfig().getString("messages.staff_message.buttons." + button + ".command")
-                            .replace("%player%", player_name.getUsername()))));
+                    .clickEvent(ClickEvent.clickEvent(action, ClickEvent.Payload.string(instance.getMessagesTextFile().getConfig().getString("messages.staff_message.buttons." + button + ".command")
+                            .replace("%player%", player_name.getUsername())))));
         }
     }
 
@@ -121,7 +121,7 @@ public class ChatUtil {
             if (message.contains("%buttons%")) {
                 for (String key : getButtons(player_name).keySet()) {
                     TextComponent button = LegacyComponentSerializer.legacy('§').deserialize(key)
-                            .clickEvent(ClickEvent.clickEvent(ClickEvent.Action.SUGGEST_COMMAND, getButtons(player_name).get(key)
+                            .clickEvent(ClickEvent.suggestCommand(getButtons(player_name).get(key)
                                     .replace("%player%", player_name.getUsername()))).append(Component.text(" "));
                     buttons.add(button);
                 }

@@ -87,7 +87,7 @@ public class CommandListener {
         command.put(player.getUniqueId(), event.getCommand());
         player.sendMessage(LegacyComponentSerializer.legacy('§').deserialize(VelocityMessages.COMMAND_REQUEST.color()
                         .replace("%prefix%", VelocityMessages.PREFIX.color()))
-                .clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, "/" + event.getCommand())));
+                .clickEvent(ClickEvent.runCommand("/" + event.getCommand())));
         task(player);
     }
 

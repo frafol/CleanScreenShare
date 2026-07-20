@@ -32,13 +32,13 @@ public class PluginMessageReceiver implements PluginMessageListener {
         ByteArrayDataInput dataInput = ByteStreams.newDataInput(message);
         String subChannel = dataInput.readUTF();
         switch (subChannel) {
-            case "NO_CHAT" -> {
+            case "NO_CHAT": {
                 String player_found = dataInput.readUTF();
                 final Player final_player = instance.getServer().getPlayer(player_found);
                 if (final_player == null) return;
                 PlayerCache.getNo_chat().add(final_player.getUniqueId());
             }
-            case "CHAT" -> {
+            case "CHAT": {
                 String player_found = dataInput.readUTF();
                 final Player final_player = instance.getServer().getPlayer(player_found);
                 if (final_player == null) return;
@@ -47,25 +47,25 @@ public class PluginMessageReceiver implements PluginMessageListener {
                 String finalChatMessage = Placeholder.color(chatMessage, final_player);
                 sendResponsePluginMessage(final_player, player_found, staff, finalChatMessage);
             }
-            case "DISCONNECT_NOW" -> {
+            case "DISCONNECT_NOW": {
                 String player_found = dataInput.readUTF();
                 final Player final_player = instance.getServer().getPlayer(player_found);
                 if (final_player == null) return;
                 if (!final_player.isOnline()) return;
                 final_player.kickPlayer(null);
             }
-            case "RELOAD" -> {
+            case "RELOAD": {
                 instance.getLogger().warning("CleanScreenShare is reloading on your proxy, running a global reload on this server.");
                 player.sendMessage(SpigotConfig.RELOADED.color());
                 TextFile.reloadAll();
             }
-            case "FINISH" -> {
+            case "FINISH": {
                 String administrator = dataInput.readUTF();
                 String suspect = dataInput.readUTF();
                 handleFinish(administrator);
                 handleFinish(suspect);
             }
-            case "SUSPECT" -> {
+            case "SUSPECT": {
                 String player_found = dataInput.readUTF();
                 instance.getLogger().warning("Received data (suspect) from the proxy. [" + player_found + "]");
                 final Player final_player = instance.getServer().getPlayer(player_found);
@@ -90,7 +90,7 @@ public class PluginMessageReceiver implements PluginMessageListener {
                 if (SpigotConfig.JOIN_SOUNDS.get(Boolean.class)) SoundUtil.playSound(final_player, SpigotConfig.SOUND_SUSPECT.get(String.class));
                 if (SpigotConfig.TABLIST_SUSPECT.get(Boolean.class)) UniversalScheduler.getScheduler(instance).runTaskLater(() -> PlayerCache.setSuspectTabList(player), 10);
             }
-            case "ADMIN" -> {
+            case "ADMIN": {
                 String player_found = dataInput.readUTF();
                 String suspicious_found = dataInput.readUTF();
                 instance.getLogger().warning("Received data (staff) from the proxy. [" + player_found + "]");
