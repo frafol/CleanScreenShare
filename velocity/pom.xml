@@ -134,7 +134,8 @@
             <groupId>net.elytrium.limboapi</groupId>
             <artifactId>api</artifactId>
             <version>1.1.27</version>
-            <scope>provided</scope>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/libs/limboapi-1.1.27-SNAPSHOT.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>ir.syrent.velocityvanish</groupId>
