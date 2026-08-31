@@ -16,6 +16,7 @@ import org.simpleyaml.configuration.ConfigurationSection;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -119,14 +120,18 @@ public class ChatUtil {
         List<TextComponent> buttons = new ArrayList<>();
         for (String message : stringList) {
             if (message.contains("%buttons%")) {
-                for (String key : getButtons(player_name).keySet()) {
-                    TextComponent button = LegacyComponentSerializer.legacy('§').deserialize(key)
-                            .clickEvent(ClickEvent.suggestCommand(getButtons(player_name).get(key)
-                                    .replace("%player%", player_name.getUsername()))).append(Component.text(" "));
+                HashMap<String, String> buttonsMap = getButtons(player_name);
+                for (Map.Entry<String, String> entry : buttonsMap.entrySet()) {
+                    TextComponent button = LegacyComponentSerializer.legacy('§')
+                            .deserialize(color(entry.getKey()))
+                            .clickEvent(ClickEvent.suggestCommand(entry.getValue()))
+                            .append(Component.text(" "));
                     buttons.add(button);
                 }
                 ComponentBuilder<TextComponent, TextComponent.Builder> builder = Component.text();
-                for (TextComponent component : buttons) builder.append(component);
+                for (TextComponent component : buttons) {
+                    builder.append(component);
+                }
                 commandSource.sendMessage(builder.build());
                 continue;
             }
@@ -146,13 +151,20 @@ public class ChatUtil {
 
     private HashMap<String, String> getButtons(Player suspect) {
         HashMap<String, String> buttons = new HashMap<>();
-        for (String button : instance.getMessagesTextFile().getConfig().getStringList("messages.staff_message.buttons")) {
-            buttons.put(
-                    instance.getMessagesTextFile().getConfig().getString("messages.staff_message.buttons." + button + ".name"),
-                    instance.getMessagesTextFile().getConfig().getString("messages.staff_message.buttons." + button + ".command")
-                            .replace("%player%", suspect.getUsername()));
+        ConfigurationSection section = instance.getMessagesTextFile().getConfig()
+                .getConfigurationSection("messages.staff_message.buttons");
+        if (section == null) return buttons;
+        for (String buttonKey : section.getKeys(false)) {
+            String name = instance.getMessagesTextFile().getConfig()
+                    .getString("messages.staff_message.buttons." + buttonKey + ".name");
+            String command = instance.getMessagesTextFile().getConfig()
+                    .getString("messages.staff_message.buttons." + buttonKey + ".command");
+
+            if (name != null && command != null) {
+                buttons.put(name, command.replace("%player%", suspect.getUsername()));
+            }
         }
-         return buttons;
+        return buttons;
     }
 
     public static String getCommand(String input) {
