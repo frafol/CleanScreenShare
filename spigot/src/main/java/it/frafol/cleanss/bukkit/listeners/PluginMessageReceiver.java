@@ -38,7 +38,7 @@ public class PluginMessageReceiver implements PluginMessageListener {
                     player_found = dataInput.readUTF();
                 } catch (Exception exception) {
                     instance.getLogger().warning(
-                            "Failed to read plugin message from " + player.getName()
+                            "Failed to read plugin message (NO_CHAT) from " + player.getName()
                                     + ". Message length: " + message.length
                     );
                     return;
@@ -46,6 +46,7 @@ public class PluginMessageReceiver implements PluginMessageListener {
                 final Player final_player = instance.getServer().getPlayer(player_found);
                 if (final_player == null) return;
                 PlayerCache.getNo_chat().add(final_player.getUniqueId());
+                return;
             }
             case "CHAT": {
                 String player_found;
@@ -53,7 +54,7 @@ public class PluginMessageReceiver implements PluginMessageListener {
                      player_found = dataInput.readUTF();
                 } catch (Exception exception) {
                     instance.getLogger().warning(
-                            "Failed to read plugin message from " + player.getName()
+                            "Failed to read plugin message (CHAT) from " + player.getName()
                                     + ". Message length: " + message.length
                     );
                     return;
@@ -64,6 +65,7 @@ public class PluginMessageReceiver implements PluginMessageListener {
                 String chatMessage = dataInput.readUTF();
                 String finalChatMessage = Placeholder.color(chatMessage, final_player);
                 sendResponsePluginMessage(final_player, player_found, staff, finalChatMessage);
+                return;
             }
             case "DISCONNECT_NOW": {
                 String player_found;
@@ -80,11 +82,13 @@ public class PluginMessageReceiver implements PluginMessageListener {
                 if (final_player == null) return;
                 if (!final_player.isOnline()) return;
                 final_player.kickPlayer(null);
+                return;
             }
             case "RELOAD": {
                 instance.getLogger().warning("CleanScreenShare is reloading on your proxy, running a global reload on this server.");
                 player.sendMessage(SpigotConfig.RELOADED.color());
                 TextFile.reloadAll();
+                return;
             }
             case "FINISH": {
                 String administrator;
@@ -109,6 +113,7 @@ public class PluginMessageReceiver implements PluginMessageListener {
                 }
                 handleFinish(administrator);
                 handleFinish(suspect);
+                return;
             }
             case "SUSPECT": {
                 String player_found;
@@ -143,6 +148,7 @@ public class PluginMessageReceiver implements PluginMessageListener {
                 if (SpigotConfig.SB_SUSPECT.get(Boolean.class)) PlayerCache.createSuspectScoreboard(final_player);
                 if (SpigotConfig.JOIN_SOUNDS.get(Boolean.class)) SoundUtil.playSound(final_player, SpigotConfig.SOUND_SUSPECT.get(String.class));
                 if (SpigotConfig.TABLIST_SUSPECT.get(Boolean.class)) UniversalScheduler.getScheduler(instance).runTaskLater(() -> PlayerCache.setSuspectTabList(player), 10);
+                return;
             }
             case "ADMIN": {
                 String player_found;
