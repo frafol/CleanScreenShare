@@ -33,13 +33,31 @@ public class PluginMessageReceiver implements PluginMessageListener {
         String subChannel = dataInput.readUTF();
         switch (subChannel) {
             case "NO_CHAT": {
-                String player_found = dataInput.readUTF();
+                String player_found;
+                try {
+                    player_found = dataInput.readUTF();
+                } catch (Exception exception) {
+                    instance.getLogger().warning(
+                            "Failed to read plugin message from " + player.getName()
+                                    + ". Message length: " + message.length
+                    );
+                    return;
+                }
                 final Player final_player = instance.getServer().getPlayer(player_found);
                 if (final_player == null) return;
                 PlayerCache.getNo_chat().add(final_player.getUniqueId());
             }
             case "CHAT": {
-                String player_found = dataInput.readUTF();
+                String player_found;
+                try {
+                     player_found = dataInput.readUTF();
+                } catch (Exception exception) {
+                    instance.getLogger().warning(
+                            "Failed to read plugin message from " + player.getName()
+                                    + ". Message length: " + message.length
+                    );
+                    return;
+                }
                 final Player final_player = instance.getServer().getPlayer(player_found);
                 if (final_player == null) return;
                 Boolean staff = Boolean.valueOf(dataInput.readUTF());
@@ -48,7 +66,16 @@ public class PluginMessageReceiver implements PluginMessageListener {
                 sendResponsePluginMessage(final_player, player_found, staff, finalChatMessage);
             }
             case "DISCONNECT_NOW": {
-                String player_found = dataInput.readUTF();
+                String player_found;
+                try {
+                    player_found = dataInput.readUTF();
+                } catch (Exception exception) {
+                    instance.getLogger().warning(
+                            "Failed to read plugin message from " + player.getName()
+                                    + ". Message length: " + message.length
+                    );
+                    return;
+                }
                 final Player final_player = instance.getServer().getPlayer(player_found);
                 if (final_player == null) return;
                 if (!final_player.isOnline()) return;
@@ -60,13 +87,40 @@ public class PluginMessageReceiver implements PluginMessageListener {
                 TextFile.reloadAll();
             }
             case "FINISH": {
-                String administrator = dataInput.readUTF();
-                String suspect = dataInput.readUTF();
+                String administrator;
+                try {
+                    administrator = dataInput.readUTF();
+                } catch (Exception exception) {
+                    instance.getLogger().warning(
+                            "Failed to read plugin message (administrator) from " + player.getName()
+                                    + ". Message length: " + message.length
+                    );
+                    return;
+                }
+                String suspect;
+                try {
+                    suspect = dataInput.readUTF();
+                } catch (Exception exception) {
+                    instance.getLogger().warning(
+                            "Failed to read plugin message (suspect) from " + player.getName()
+                                    + ". Message length: " + message.length
+                    );
+                    return;
+                }
                 handleFinish(administrator);
                 handleFinish(suspect);
             }
             case "SUSPECT": {
-                String player_found = dataInput.readUTF();
+                String player_found;
+                try {
+                    player_found = dataInput.readUTF();
+                } catch (Exception exception) {
+                    instance.getLogger().warning(
+                            "Failed to read plugin message (suspect join) from " + player.getName()
+                                    + ". Message length: " + message.length
+                    );
+                    return;
+                }
                 instance.getLogger().warning("Received data (suspect) from the proxy. [" + player_found + "]");
                 final Player final_player = instance.getServer().getPlayer(player_found);
                 if (final_player == null) {
@@ -91,8 +145,26 @@ public class PluginMessageReceiver implements PluginMessageListener {
                 if (SpigotConfig.TABLIST_SUSPECT.get(Boolean.class)) UniversalScheduler.getScheduler(instance).runTaskLater(() -> PlayerCache.setSuspectTabList(player), 10);
             }
             case "ADMIN": {
-                String player_found = dataInput.readUTF();
-                String suspicious_found = dataInput.readUTF();
+                String player_found;
+                try {
+                    player_found = dataInput.readUTF();
+                } catch (Exception exception) {
+                    instance.getLogger().warning(
+                            "Failed to read plugin message (administrator join) from " + player.getName()
+                                    + ". Message length: " + message.length
+                    );
+                    return;
+                }
+                String suspicious_found;
+                try {
+                    suspicious_found = dataInput.readUTF();
+                } catch (Exception exception) {
+                    instance.getLogger().warning(
+                            "Failed to read plugin message (suspicious link to administrator) from " + player.getName()
+                                    + ". Message length: " + message.length
+                    );
+                    return;
+                }
                 instance.getLogger().warning("Received data (staff) from the proxy. [" + player_found + "]");
                 final Player final_player = instance.getServer().getPlayer(player_found);
 
